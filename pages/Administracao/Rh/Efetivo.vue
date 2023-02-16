@@ -10,6 +10,11 @@
             {{ item.rota.numero }} - {{ item.rota.local }}
           </span>
         </template>
+        <template v-slot:[`body.hora_extra`]="{ item }">
+          <span v-if="item.hora_extra" class="whitespace-nowrap">
+            {{ horaExtra(item.hora_extra) }}
+          </span>
+        </template>
         <template v-slot:[`body.data_demissao`]="{ item }">
           <span v-if="item.data_demissao" class="whitespace-nowrap"></span>
         </template>
@@ -25,12 +30,7 @@
         <template v-slot:rodape>
           <div>
             <div>
-              <AppFormSwitch />
-              <button>
-                Demitidos
-              </button>
-            </div>
-            <div>
+<!--              <AppFormSwitch />-->
               <button>
                 Demitidos
               </button>
@@ -55,7 +55,7 @@
 import AppTabela from "~/components/Ui/AppTabela.vue";
 import RodapePagina from "~/components/Shared/RodapePagina.vue";
 import BotaoExcel from "~/components/Ui/Buttons/BotaoExcel.vue";
-import AppFormSwitch from "~/components/Ui/AppFormSwitch.vue";
+// import AppFormSwitch from "~/components/Ui/AppFormSwitch.vue";
 
 import gerarExcel from "~/functions/gerarExcel";
 import {horaExtra} from "@/mixins/horaExtra";
@@ -68,14 +68,14 @@ export default {
     AppTabela,
     RodapePagina,
     BotaoExcel,
-    AppFormSwitch
+    // AppFormSwitch
   },
   data() {
     return {
       cabecalho: [
-        {nome: 'Matrícula', valor: 'chapa', filtro: true, ordenar: true},
+        {nome: 'Matrícula', valor: 'chapa', filtro: true, ordenar: true, centralizar: true},
         {nome: 'Nome', valor: 'nome', filtro: true},
-        {nome: 'Hora Extra', valor: 'hora_extra', filtro: true},
+        {nome: 'Hora Extra', valor: 'hora_extra', filtro: true, centralizar: true},
         {nome: "Cargo", valor: "cargo", filtro: true},
         {nome: "Disciplina", valor: "sub_setor", filtro: true},
         {nome: "Setor", valor: "setor", filtro: true},
@@ -92,7 +92,7 @@ export default {
       ],
       dados: [],
       filtros: [],
-      itensPorPagina: 100,
+      itensPorPagina: 200,
       pagina: 1,
       totalItens: 0
     }
