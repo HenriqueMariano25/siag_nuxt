@@ -10,10 +10,13 @@
 					type="text"
 					placeholder="henrique.mariano"
 					label="Usuário"
-					v-model="usuario.usuario" />
+					v-model="usuario.usuario"
+          id="usuario"
+        />
 				<AppFormInput
 					type="password"
 					label="Senha"
+          id="senha"
 					v-model="usuario.senha" />
         <div class="bg-red-200 text-red-700 p-1 border border-red-800" v-if="erro !== null">
           <span v-if="erro === 'server_error'">Erro no servidor, entre em contato com o suporte!</span>

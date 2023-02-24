@@ -1,16 +1,29 @@
 <template>
   <div class="flex flex-col text-gray-800 relative">
-    <label for="inputPersonalizado" class="ml-1.5 text-xs font-medium mb-0.5">{{ label }}</label>
+    <label :for="'inputPersonalizado'+id" class="ml-1.5 text-xs font-medium mb-0.5">{{ label }}
+      <span v-if="obrigatorio" class="text-red-700">*</span>
+      <span v-if="disabled" class="text-red-600">{{ textoDesabilitado }}</span>
+    </label>
     <div class="w-full flex items-center">
       <input
-        id="inputPersonalizado"
-        name="inputPersonalizado"
+        :id="'inputPersonalizado'+id"
+        :name="'inputPersonalizado'+id"
         :placeholder="placeholder"
         :type="type"
         :value="value"
         v-on="inputListeners"
-        class="h-9 w-full border border-gray-400 rounded-sm px-2 py-1 focus:border-grey-800 focus:outline-none focus:ring focus:ring-gray-300"
-        :class="{'pr-10': limparCampo }"
+        :required="obrigatorio"
+        :class="{
+          'pr-10': limparCampo,
+          'bg-red-100 border-red-400 focus:ring-red-300': invalido,
+          'bg-white border-gray-400 focus:ring-gray-300' : !invalido,
+          'uppercase': uppercase
+        }"
+        class="h-9 w-full border rounded-sm px-2 py-1 focus:border-grey-800 focus:outline-none
+          focus:ring  disabled:bg-gray-200 read-only:bg-gray-200
+        "
+        :readonly="readonly"
+        :disabled="disabled"
       />
       <div class="absolute right-1 flex" v-if="limparCampo">
         <button class="hover:bg-gray-300 p-1 rounded-full text-gray-500 " @click="limpar()">
@@ -21,6 +34,9 @@
           </svg>
         </button>
       </div>
+    </div>
+    <div class="text-xs text-red-500 ml-2" v-if="invalido" >
+      <span>{{ textoInvalido }}</span>
     </div>
   </div>
 </template>
@@ -42,7 +58,42 @@ export default {
     limparCampo: {
       type: Boolean,
       default: false,
+    },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    textoDesabilitado:{
+      type: String,
+      default: ""
+    },
+    obrigatorio:{
+      type: Boolean,
+      default: false
+    },
+    id:{
+      type: String,
+      required: true,
+      default: ""
+    },
+    invalido: {
+      type: Boolean,
+      default: false
+    },
+    textoInvalido: {
+      type: String,
+      default: "",
+    },
+    uppercase:{
+      type: Boolean,
+      default: false
     }
+
+
   },
   data() {
     return {
@@ -55,7 +106,8 @@ export default {
       return {
         ...this.$listeners,
         input(event) {
-          vm.$emit('input', event.target.value);
+
+          vm.$emit('input', vm.uppercase ? event.target.value.toUpperCase() : event.target.value);
         },
       };
     },
