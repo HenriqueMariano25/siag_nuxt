@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input type="checkbox" :id="'inputCheckbox' + id" :value="valor" v-model="model" >
+    <input class="cursor-pointer" type="checkbox" :id="'inputCheckbox' + id" :value="valor" v-model="model" @click.stop>
     <label :for="'inputCheckbox' + id">{{ label }}</label>
   </div>
 </template>
@@ -10,12 +10,11 @@ export default {
   name: "AppFormCheckbox",
   props: {
     label: {
-      type: String,
-      required: true,
+      type: [String, Number],
       default: ""
     },
     valor: {
-      type: [String, Number],
+      type: [String, Number, Array, Object],
       required: true,
       default: ""
     },

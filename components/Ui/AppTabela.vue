@@ -74,6 +74,7 @@
 										"></div>
 									<div class="flex items-end">
 										<AppFormInput
+                      :id="'filtro'+cab.nome"
 											class="w-full"
 											type="text"
 											:label="'Buscar por ' + cab.nome"
