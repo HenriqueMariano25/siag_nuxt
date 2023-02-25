@@ -25,11 +25,6 @@ export default {
       required: true
     }
   },
-  // data(){
-  //   return{
-  //     localValor: this.value
-  //   }
-  // },
   computed: {
     model: {
       get() {

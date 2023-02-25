@@ -1,6 +1,6 @@
 <template>
     <div class="grow">
-      <AppTabela :cabecalho="cabecalho" :dados="dados" @filtrar="recendoFiltro" :itensPorPagina="itensPorPagina"
+      <AppTabela :cabecalho="cabecalho" :dados="dados" @filtrar="recebendoFiltro" :itensPorPagina="itensPorPagina"
                  :pagina="pagina"
                  :totalItens="totalItens"
                  @atualizar="atualizarDados"
@@ -101,7 +101,7 @@ export default {
     this.dados = this.buscarEfetivo()
   },
   methods:{
-    recendoFiltro(filtros){
+    recebendoFiltro(filtros){
       this.filtros = filtros
     },
     async atualizarDados(parametros) {
