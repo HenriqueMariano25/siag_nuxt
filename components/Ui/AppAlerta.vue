@@ -28,6 +28,7 @@
 </template>
 
 <script>
+
 export default {
   name: "AppAlerta",
   props: {
@@ -43,14 +44,10 @@ export default {
   },
   watch:{
     mostrar(valor){
-      console.log(valor)
-      if(valor == true){
-        this.mostrar = true
-
-        setTimeout(function () {
-          this.mostrar = false;
+      if(valor === true){
+        setTimeout(() => {
           this.$emit("escondeu")
-        }, 500)
+        }, 3000)
       }
     }
   }

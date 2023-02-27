@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="flex">
     <input class="cursor-pointer" type="checkbox" :id="'inputCheckbox' + id" :value="valor" v-model="model" @click.stop>
-    <label :for="'inputCheckbox' + id">{{ label }}</label>
+    <label :for="'inputCheckbox' + id" v-if="label">{{ label }}</label>
   </div>
 </template>
 

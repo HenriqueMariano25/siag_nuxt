@@ -14,7 +14,7 @@
       <option
         v-for="option in options"
         :key="option.id"
-        :value="option.id"
+        :value="retornarObjeto ? option : option.id"
         :selected="value === option.id"
       >
         {{ option.nome }}
@@ -43,6 +43,10 @@ export default {
     id: {
       type: [String, Number],
       required: true
+    },
+    retornarObjeto:{
+      type: Boolean,
+      default: false
     }
   },
   computed: {

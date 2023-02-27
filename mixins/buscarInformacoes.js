@@ -88,26 +88,17 @@ export const buscarNrs = {
 // 	},
 // }
 //
-// export const buscarEtapa = {
-// 	methods: {
-// 		async buscarEtapa(salvarStore) {
-// 			let etapaBuscados = await api
-// 				.get("/contratacao/etapa/buscarTodos")
-// 				.then((resp) => resp.data.etapas)
-//
-// 			if (salvarStore) {
-// 				let etapa = this.$store.state.etapa
-//
-// 				if (etapa != null) {
-// 					this.$store.commit("DEFINIR_ETAPAS", etapaBuscados)
-// 				}
-// 			}
-//
-// 			return etapaBuscados
-// 		},
-// 	},
-// }
-//
+export const buscarEtapa = {
+	methods: {
+		async buscarEtapa() {
+			let etapaBuscados = await this.$axios.$get("/contratacao/etapa/buscarTodos")
+				.then((resp) => resp.etapas)
+
+			return etapaBuscados
+		},
+	},
+}
+
 // export const buscarEquipamentoCard = {
 // 	methods: {
 // 		async buscarEquipamentoCard(salvarStore) {
