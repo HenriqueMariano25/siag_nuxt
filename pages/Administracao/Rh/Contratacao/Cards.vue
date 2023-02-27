@@ -56,14 +56,24 @@
 						{{ $dayjs(item.data_necessidade).format("DD/MM/YYYY") }}
 					</span>
 				</template>
-        <template v-slot:[`body.comentarios`]="{ item }">
-          <button class="flex hover:bg-gray-400 w-full p-1 " v-if="item.Comentarios.length > 0">
-            <img src="@/assets/icons/comentarios-b.svg" alt="close" class="w-7 h-7 mr-1"/>
-            <span v-if="item.Comentarios.at(-1).descricao">
-              {{ item.Comentarios.at(-1).descricao.substr(0, 20) }}{{ item.Comentarios.at(-1).descricao.length > 20 ? "..." : "" }}
-            </span>
-          </button>
-        </template>
+				<template v-slot:[`body.comentarios`]="{ item }">
+					<button
+						class="flex hover:bg-gray-400 w-full p-1"
+						v-if="item.Comentarios.length > 0"
+						@click="
+							card_id = item.id;
+							mostrarDialogComentariosCard = true;
+						">
+						<img
+							src="@/assets/icons/comentarios-b.svg"
+							alt="close"
+							class="w-7 h-7 mr-1" />
+						<span v-if="item.Comentarios.at(-1).descricao">
+							{{ item.Comentarios.at(-1).descricao.substr(0, 20)
+							}}{{ item.Comentarios.at(-1).descricao.length > 20 ? "..." : "" }}
+						</span>
+					</button>
+				</template>
 			</AppTabela>
 		</div>
 		<RodapePagina>
@@ -100,11 +110,14 @@
 						</BotaoPadrao>
 						<BotaoPadrao
 							texto="Processar Card"
-              :disabled="selecionados.length === 0"
+							:disabled="selecionados.length === 0"
 							@click="mostrarDialogProcessarCard = true">
 							<template v-slot>
-                <img src="@/assets/icons/check-circle-b.svg" alt="close" class="w-6 h-6"/>
-              </template>
+								<img
+									src="@/assets/icons/check-circle-b.svg"
+									alt="close"
+									class="w-6 h-6" />
+							</template>
 						</BotaoPadrao>
 					</div>
 				</div>
@@ -119,9 +132,19 @@
 			v-if="mostrarDialogProcessarCard"
 			@cancelar="mostrarDialogProcessarCard = false"
 			@processado="processado" />
-    <AppAlerta tipo="sucesso" :mostrar="mostrarAlerta" @escondeu="mostrarAlerta = false">
-      {{ textoAlerta }}
-    </AppAlerta>
+		<AppAlerta
+			tipo="sucesso"
+			:mostrar="mostrarAlerta"
+			@escondeu="mostrarAlerta = false">
+			{{ textoAlerta }}
+		</AppAlerta>
+		<DialogComentariosCard
+			:card_id="card_id"
+			v-if="mostrarDialogComentariosCard"
+			@cancelar="
+				mostrarDialogComentariosCard = false
+				card_id = null
+			" />
 	</div>
 </template>
 
@@ -133,7 +156,8 @@
 	import BotaoIconeEditar from "~/components/Ui/Buttons/BotaoIconeEditar.vue"
 	import AppFormCheckbox from "~/components/Ui/Form/AppFormCheckbox.vue"
 	import DialogProcessarCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogProcessarCard.vue"
-  import AppAlerta from "~/components/Ui/AppAlerta.vue";
+	import AppAlerta from "~/components/Ui/AppAlerta.vue"
+	import DialogComentariosCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogComentariosCard.vue"
 	export default {
 		name: "Cards",
 		components: {
@@ -144,7 +168,8 @@
 			BotaoIconeEditar,
 			AppFormCheckbox,
 			DialogProcessarCard,
-      AppAlerta
+			AppAlerta,
+			DialogComentariosCard,
 		},
 		data() {
 			return {
@@ -173,8 +198,9 @@
 				card_id: null,
 				selecionados: [],
 				mostrarDialogProcessarCard: false,
-        mostrarAlerta: false,
-        textoAlerta: ""
+				mostrarDialogComentariosCard: false,
+				mostrarAlerta: false,
+				textoAlerta: "",
 			}
 		},
 		created() {
@@ -224,7 +250,6 @@
 
 				this.mostrarDialogProcessarCard = false
 				for (let card of cards) {
-
 					let index = this.dados.findIndex((obj) => {
 						return obj.id === card
 					})
