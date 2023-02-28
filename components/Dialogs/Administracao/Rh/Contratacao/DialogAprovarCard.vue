@@ -94,21 +94,9 @@ export default {
     async aprovarCard(aprovacao) {
       let cards = this.cards.map((card) => card.id)
 
-      console.log(cards)
       let usuario_id = this.$store.state.usuario.usuario.id
 
       let tipo_aprovacao = this.tipoAprovacao
-
-      console.log(this.tipoAprovacao)
-
-      if (tipo_aprovacao === "controle") {
-        await this.$axios.$post("/contratacao/card/aprovacao/controle", {
-          cards: cards,
-          aprovacao: aprovacao,
-          usuario_id,
-          comentario: this.comentario,
-        })
-      }
 
       if (tipo_aprovacao === "gestor_area") {
         await this.$axios.$post("/contratacao/card/aprovacao/gestor_area", {

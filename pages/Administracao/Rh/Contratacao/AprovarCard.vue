@@ -4,21 +4,30 @@
 			<button
 				@click="tipoAprovacao = 'controle'"
 				class="px-4 hover:bg-blue-600"
-				v-if="$store.state.usuario.usuario && $store.state.usuario.usuario.permissoes.includes('aprovar_card_controle')"
+				v-if="
+					$store.state.usuario.usuario &&
+					$store.state.usuario.usuario.permissoes.includes('aprovar_card_controle')
+				"
 				:class="{ 'border-b-4 border-b-white': tipoAprovacao === 'controle' }">
 				Controle
 			</button>
 			<button
 				@click="tipoAprovacao = 'gestor_area'"
 				class="px-4 hover:bg-blue-600"
-				v-if="$store.state.usuario.usuario && $store.state.usuario.usuario.permissoes.includes('aprovar_card_gerente_area')"
+				v-if="
+					$store.state.usuario.usuario &&
+					$store.state.usuario.usuario.permissoes.includes('aprovar_card_gerente_area')
+				"
 				:class="{ 'border-b-4 border-b-white': tipoAprovacao === 'gestor_area' }">
 				Gestor Área
 			</button>
 			<button
 				@click="tipoAprovacao = 'site_manager'"
 				class="px-4 hover:bg-blue-600"
-				v-if="$store.state.usuario.usuario && $store.state.usuario.usuario.permissoes.includes('aprovar_card_site_manager')"
+				v-if="
+					$store.state.usuario.usuario &&
+					$store.state.usuario.usuario.permissoes.includes('aprovar_card_site_manager')
+				"
 				:class="{ 'border-b-4 border-b-white': tipoAprovacao === 'site_manager' }">
 				Site Manager
 			</button>
@@ -43,7 +52,16 @@
 					</div>
 				</template>
 				<template v-slot:[`body.acoes`]="{ item }">
-					<!--                <BotaoIconeEditar @click="editarCard(item)"/>-->
+					<BotaoIcone
+						@click="
+							card = item
+							mostrarDialogAprovControleCard = true
+						">
+						<img
+							src="@/assets/icons/check-circle-b.svg"
+							alt="close"
+							class="w-6 h-6" />
+					</BotaoIcone>
 				</template>
 				<template v-slot:[`body.Etapa.nome`]="{ item }">
 					<span v-if="item.Etapa && item.Etapa.nome">
@@ -80,11 +98,30 @@
 						{{ $dayjs(item.data_necessidade).format("DD/MM/YYYY") }}
 					</span>
 				</template>
+        <template v-slot:[`body.comentarios`]="{ item }">
+          <button
+            class="flex hover:bg-gray-400 w-full p-1"
+            v-if="item.Comentarios.length > 0"
+            @click="
+							card_id = item.id;
+							mostrarDialogComentariosCard = true;
+						">
+            <img
+              src="@/assets/icons/comentarios-b.svg"
+              alt="close"
+              class="w-7 h-7 mr-1"/>
+            <span v-if="item.Comentarios.at(-1).descricao">
+							{{
+                item.Comentarios.at(-1).descricao.substr(0, 20)
+              }}{{ item.Comentarios.at(-1).descricao.length > 20 ? "..." : "" }}
+						</span>
+          </button>
+        </template>
 			</AppTabela>
 		</div>
 		<RodapePagina>
 			<template v-slot>
-				<div class="flex items-center w-full">
+				<div class="flex items-center w-full" v-if="tipoAprovacao !== 'controle'">
 					<div class="flex w-full justify-end">
 						<BotaoPadrao
 							:disabled="selecionados.length <= 0"
@@ -105,11 +142,29 @@
 			v-if="mostrarDialogAprovarCard"
 			:cards="selecionados"
 			:tipoAprovacao="tipoAprovacao"
-      @aprovado="aprovado"
+			@aprovado="aprovado"
 			@cancelar="mostrarDialogAprovarCard = false" />
-    <AppAlerta tipo="sucesso" :mostrar="mostrarAlerta" @escondeu="mostrarAlerta = false">
-      {{ textoAlerta }}
-    </AppAlerta>
+		<DialogAprovControleCard
+			:card="card"
+			v-if="mostrarDialogAprovControleCard"
+      @aprovado="aprovado"
+			@cancelar="
+				mostrarDialogAprovControleCard = false
+				card = null
+			" />
+    <DialogComentariosCard
+      :card_id="card_id"
+      v-if="mostrarDialogComentariosCard"
+      @cancelar="
+				mostrarDialogComentariosCard = false
+				card_id = null
+			"/>
+		<AppAlerta
+			tipo="sucesso"
+			:mostrar="mostrarAlerta"
+			@escondeu="mostrarAlerta = false">
+			{{ textoAlerta }}
+		</AppAlerta>
 	</div>
 </template>
 
@@ -119,7 +174,10 @@
 	import RodapePagina from "~/components/Shared/RodapePagina.vue"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import DialogAprovarCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogAprovarCard.vue"
-  import AppAlerta from "~/components/Ui/AppAlerta.vue";
+	import AppAlerta from "~/components/Ui/AppAlerta.vue"
+	import BotaoIcone from "~/components/Ui/Buttons/BotaoIcone.vue"
+	import DialogAprovControleCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogAprovControleCard.vue";
+  import DialogComentariosCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogComentariosCard.vue";
 
 	export default {
 		name: "AprovarCard",
@@ -129,25 +187,13 @@
 			RodapePagina,
 			BotaoPadrao,
 			DialogAprovarCard,
-      AppAlerta
+			AppAlerta,
+			BotaoIcone,
+      DialogAprovControleCard,
+      DialogComentariosCard
 		},
 		data() {
 			return {
-				cabecalho: [
-					{ nome: "Selecione", valor: "selecione", centralizar: true },
-					{ nome: "", valor: "acoes", centralizar: true },
-					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true },
-					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true },
-					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
-					{ nome: "Setor", valor: "Setor.nome", filtro: true },
-					{ nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true },
-					{ nome: "PEP", valor: "CentroCustoPEP.numero_pep", filtro: true },
-					{ nome: "Função", valor: "FuncaoCard.nome", filtro: true },
-					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
-					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true },
-					{ nome: "Última data", valor: "ultima_data", filtro: true },
-					{ nome: "Comentários", valor: "Comentarios.at(-1).descricao", filtro: true },
-				],
 				dados: [],
 				filtros: [],
 				itensPorPagina: 10,
@@ -157,13 +203,15 @@
 				tiposAprovacao: [],
 				selecionados: [],
 				mostrarDialogAprovarCard: false,
-        mostrarAlerta: false,
-        textoAlerta: ""
+				mostrarAlerta: false,
+				textoAlerta: "",
+        mostrarDialogAprovControleCard: false,
+				card: null,
+        mostrarDialogComentariosCard: false,
+        card_id: null,
 			}
 		},
 		created() {
-			// console.log(this.$store.state.usuario.usuario)
-			//
 			if (this.$store.state.usuario.usuario) {
 				let todasPermissoes = this.$store.state.usuario.usuario.permissoes
 
@@ -182,8 +230,31 @@
 					this.tipoAprovacao === null ? (this.tipoAprovacao = "site_manager") : false
 				}
 			}
-			//
 			this.buscarCards()
+		},
+		computed: {
+			cabecalho() {
+				let cabecalho = [
+					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true },
+					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true },
+					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
+					{ nome: "Setor", valor: "Setor.nome", filtro: true },
+					{ nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true },
+					{ nome: "PEP", valor: "CentroCustoPEP.numero_pep", filtro: true },
+					{ nome: "Função", valor: "FuncaoCard.nome", filtro: true },
+					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
+					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true },
+					{ nome: "Última data", valor: "ultima_data", filtro: true },
+					{ nome: "Comentários", valor: "comentarios", filtro: true },
+				]
+
+				if (this.tipoAprovacao === "controle") {
+					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true })
+				} else {
+					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true })
+				}
+				return cabecalho
+			},
 		},
 		methods: {
 			async buscarCards() {
@@ -221,28 +292,21 @@
 				await this.buscarCards()
 			},
 
-      async aprovado(cards, aprovacao) {
-        this.mostrarDialogAprovarCard = false;
+			async aprovado(cards, aprovacao) {
+        this.mostrarDialogAprovarCard = false
+        this.mostrarDialogAprovControleCard = false
 
-        console.log(cards)
-        for (let card of cards) {
+				for (let card of cards) {
+					let index = this.dados.findIndex((obj) => {
+						return obj.id === card
+					})
 
-
-          let index = this.dados.findIndex((obj) => {
-            return obj.id === card;
-          });
-
-          this.dados.splice(index, 1);
-        }
-        // this.corAlerta = "#539051";
-        this.mostrarAlerta = true;
-        this.textoAlerta = aprovacao
-          ? "Cards aprovados com sucesso!"
-          : "Cards negados com sucesso!"
-        this.selecionados = []
-        // this.cardsPrAprovarDialog = [];
-        // this.cardsPrAprovar = [];
-      },
+					this.dados.splice(index, 1)
+				}
+				this.mostrarAlerta = true
+				this.textoAlerta = aprovacao ? "Cards aprovados com sucesso!" : "Cards negados com sucesso!"
+				this.selecionados = []
+			},
 		},
 		watch: {
 			tipoAprovacao() {
