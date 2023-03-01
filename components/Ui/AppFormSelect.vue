@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-col">
-    <label for="selectPersonalizado" class="ml-1.5 text-xs font-medium mb-0.5">{{ label }}</label>
+    <label for="selectPersonalizado" class="ml-1.5 text-xs font-medium mb-0.5">
+      {{ label }}
+      <span v-if="obrigatorio" class="text-red-700">*</span>
+    </label>
     <select name="selectPersonalizado" id="selectPersonalizado"
             v-model="model"
             @change="$emit('change', $event.target.value)"
@@ -45,6 +48,10 @@ export default {
       required: true
     },
     retornarObjeto:{
+      type: Boolean,
+      default: false
+    },
+    obrigatorio: {
       type: Boolean,
       default: false
     }

@@ -33,8 +33,7 @@ export default {
   plugins: [
     '@/plugins/lodash',
     '@/plugins/dayjs',
-    '@/plugins/vue-the-mask',
-    '@/plugins/maska',
+    '@/plugins/maska'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -59,6 +58,9 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    transpile: [
+      'maska',
+    ],
     postcss: {
       plugins: {
         tailwindcss: {},

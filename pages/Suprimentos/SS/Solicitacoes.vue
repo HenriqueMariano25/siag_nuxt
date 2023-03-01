@@ -27,7 +27,13 @@
         </div>
       </template>
     </RodapePagina>
-    <DialogCriarSS v-if="mostrarDialogCriarSolicitacao" @cancelar="mostrarDialogCriarSolicitacao = false" :ss_id="ss_id"/>
+    <DialogCriarSS v-if="mostrarDialogCriarSolicitacao" @cancelar="mostrarDialogCriarSolicitacao = false" :ss_id="ss_id" @adicionado="ssAdicionado"/>
+    <AppAlerta
+      tipo="sucesso"
+      :mostrar="mostrarAlerta"
+      @escondeu="mostrarAlerta = false">
+      {{ textoAlerta }}
+    </AppAlerta>
   </div>
 </template>
 
@@ -35,18 +41,29 @@
 import RodapePagina from "~/components/Shared/RodapePagina.vue";
 import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
 import DialogCriarSS from "~/components/Dialogs/Suprimentos/SS/DialogCriarSS.vue";
+import AppAlerta from "~/components/Ui/AppAlerta.vue";
 export default {
   name: "Solicitacoes",
   components:{
     RodapePagina,
     BotaoPadrao,
-    DialogCriarSS
+    DialogCriarSS,
+    AppAlerta
   },
   data(){
     return{
       mostrarDialogCriarSolicitacao: false,
-      ss_id: null
+      ss_id: null,
+      mostrarAlerta: false,
+      textoAlerta: "",
     }
+  },
+  methods:{
+    async ssAdicionado(){
+      this.mostrarDialogCriarSolicitacao = false
+      this.mostrarAlerta = true
+      this.textoAlerta = "Solicitação criada com sucesso!"
+    },
   }
 }
 </script>

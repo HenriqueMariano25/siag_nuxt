@@ -6,7 +6,7 @@
       </strong>
     </span>
     <div v-for="item in itens" v-if="itens.length > 0 && !simNao">
-      <input type="radio" :id="'radio-'+item.valor" :value="item.valor" v-model="model">
+      <input type="radio" :id="'radio-'+item.valor" :value="item.valor" v-model="model" :disabled="item.disabled || disabled" >
       <label :for="'radio-'+item.valor">
         <span :class="{
             'text-red-500 font-bold':invalido
@@ -71,6 +71,10 @@ export default {
       type: Boolean,
       default: false
     },
+    disabled: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
     model: {

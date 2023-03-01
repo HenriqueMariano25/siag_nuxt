@@ -5,8 +5,9 @@
       <span v-if="disabled" class="text-red-600">{{ textoDesabilitado }}</span>
     </label>
     <div class="w-full flex items-center">
-<!--      {{ mask }}-->
       <input
+        v-maska
+        :data-maska="mask"
         :id="'inputPersonalizado'+id"
         :name="'inputPersonalizado'+id"
         :placeholder="placeholder"
@@ -42,8 +43,10 @@
   </div>
 </template>
 
-<script>
 
+<script setup>
+</script>
+<script>
 export default {
   name: "AppFormInput",
   props: {
