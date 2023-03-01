@@ -5,6 +5,7 @@
       <span v-if="disabled" class="text-red-600">{{ textoDesabilitado }}</span>
     </label>
     <div class="w-full flex items-center">
+<!--      {{ mask }}-->
       <input
         :id="'inputPersonalizado'+id"
         :name="'inputPersonalizado'+id"
@@ -42,6 +43,7 @@
 </template>
 
 <script>
+
 export default {
   name: "AppFormInput",
   props: {
@@ -91,9 +93,11 @@ export default {
     uppercase:{
       type: Boolean,
       default: false
+    },
+    mask:{
+      type: [String,Array, Boolean],
+      default: null
     }
-
-
   },
   data() {
     return {

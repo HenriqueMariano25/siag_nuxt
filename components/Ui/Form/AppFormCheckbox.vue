@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <input class="cursor-pointer" type="checkbox" :id="'inputCheckbox' + id" :value="valor" v-model="model" @click.stop>
+    <input class="cursor-pointer mr-2" type="checkbox" :id="'inputCheckbox' + id" :value="valor" v-model="model" @click.stop>
     <label :for="'inputCheckbox' + id" v-if="label">{{ label }}</label>
   </div>
 </template>
@@ -14,13 +14,13 @@ export default {
       default: ""
     },
     valor: {
-      type: [String, Number, Array, Object],
+      type: [String, Number, Array, Object, Boolean],
       required: true,
       default: ""
     },
-    value: Array,
+    value: [Boolean, Array],
     id: {
-      type: Number,
+      type: [Number, String],
       required: true
     }
   },
