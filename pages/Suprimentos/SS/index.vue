@@ -4,6 +4,9 @@
       <ButtonNavegacao titulo="Visualizar SSs" cor="bg-[#0077B6]" link="/suprimentos/ss/solicitacoes">
         <img src="@/assets/icons/files-w.svg" alt="close" class="w-8 h-8"/>
       </ButtonNavegacao>
+      <ButtonNavegacao titulo="Aprovar SSs" cor="bg-[#0077B6]" link="/suprimentos/ss/aprovarSSs">
+        <img src="@/assets/icons/check-circle-w.svg" alt="close" class="w-8 h-8"/>
+      </ButtonNavegacao>
     </div>
   </div>
 </template>
