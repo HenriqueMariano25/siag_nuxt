@@ -43,9 +43,8 @@
 					</template>
 					<template v-slot:[`body.acoes`]="{ item }">
 						<BotaoIconeEditar
-							v-if="etapa_id === 7"
 							@click="
-								mostrarDialogAnaliseDemanda = true
+								mostrarDialogProcessarSS = true
 								ss = item
 							" />
 					</template>
@@ -106,18 +105,18 @@
 									class="w-8 h-8" />
 							</template>
 						</BotaoPadrao>
-            <BotaoPadrao
-              v-if="listaSelect.includes(etapa_id)"
-              texto="Processar SS"
-              :disabled="selecionados.length === 0"
-              @click="escolherProcessar()">
-              <template v-slot>
-                <img
-                  src="@/assets/icons/check-circle-b.svg"
-                  alt="close"
-                  class="w-6 h-6"/>
-              </template>
-            </BotaoPadrao>
+						<BotaoPadrao
+							v-if="listaSelect.includes(etapa_id)"
+							texto="Processar SS"
+							:disabled="selecionados.length === 0"
+							@click="escolherProcessar()">
+							<template v-slot>
+								<img
+									src="@/assets/icons/check-circle-b.svg"
+									alt="close"
+									class="w-6 h-6" />
+							</template>
+						</BotaoPadrao>
 					</div>
 				</div>
 			</template>
@@ -147,7 +146,27 @@
 				mostrarDialogAnaliseDemanda = false
 				selecionados = null
 			"
-      @definido="definidoComprador"
+			@definido="definidoComprador" />
+
+		<DialogProcessarSS
+			:label="labelDialog"
+			:placeholder="placeholderDialog"
+			:campo="campoDialog"
+			:ss="ss"
+			v-if="mostrarDialogProcessarSS"
+			@processado="processadoSS"
+      :typeInput="typeInputDialog"
+			@cancelar="
+				mostrarDialogProcessarSS = false
+				ss = null
+			" />
+
+		<DialogProcessarMultSS
+			:solicitacoes="selecionados"
+			v-if="mostrarDialogProcessarMultSS"
+      @processado="processadoSS"
+			@cancelar="mostrarDialogProcessarMultSS = false"
+      :pularProxEtapa="pularProxEtapa"
     />
 	</div>
 </template>
@@ -162,6 +181,8 @@
 	import BotaoIconeEditar from "~/components/Ui/Buttons/BotaoIconeEditar.vue"
 	import DialogAnaliseDemanda from "~/components/Dialogs/Suprimentos/SS/DialogAnaliseDemanda.vue"
 	import AppFormCheckbox from "~/components/Ui/Form/AppFormCheckbox.vue"
+	import DialogProcessarSS from "~/components/Dialogs/Suprimentos/SS/DialogProcessarSS.vue"
+	import DialogProcessarMultSS from "~/components/Dialogs/Suprimentos/SS/DialogProcessarMultSS.vue"
 
 	import { buscarEtapaSS } from "@/mixins/buscarInformacoes"
 	export default {
@@ -177,6 +198,8 @@
 			BotaoIconeEditar,
 			DialogAnaliseDemanda,
 			AppFormCheckbox,
+			DialogProcessarSS,
+			DialogProcessarMultSS,
 		},
 		data() {
 			return {
@@ -195,8 +218,15 @@
 				selecionados: [],
 				etapas: [],
 				etapa_id: null,
-				listaAcao: [],
-				listaSelect: [7],
+				listaAcao: [8,10, 13, 14, 16, 18, 26, 27],
+				listaSelect: [7, 9, 11, 12, 21, 22,23,24,25],
+				placeholderDialog: null,
+				labelDialog: null,
+				campoDialog: null,
+				mostrarDialogProcessarSS: false,
+				mostrarDialogProcessarMultSS: false,
+        pularProxEtapa: false,
+        typeInputDialog: "text"
 			}
 		},
 		computed: {
@@ -229,7 +259,6 @@
 				// }
 				return cabecalho
 			},
-
 		},
 		async mounted() {
 			this.etapas = await this.buscarEtapaSS()
@@ -249,9 +278,10 @@
 			recebendoFiltro(filtros) {
 				this.filtros = filtros
 			},
-      escolherProcessar() {
-        if (this.etapa_id === 7) this.mostrarDialogAnaliseDemanda = true
-      },
+			escolherProcessar() {
+				if (this.etapa_id === 7) this.mostrarDialogAnaliseDemanda = true
+				if (this.listaSelect.includes(this.etapa_id)) this.mostrarDialogProcessarMultSS = true
+			},
 			async atualizarDados(parametros) {
 				let { itensPorPagina, pagina, filtros } = parametros
 
@@ -286,24 +316,72 @@
 					this.dados = SSs
 				}
 			},
-      async definidoComprador(SSs) {
-        for (let ss of SSs) {
+			async definidoComprador(SSs) {
+				for (let ss of SSs) {
+					let index = this.dados.findIndex((obj) => {
+						return (obj.id = ss)
+					})
+					this.dados.splice(index, 1)
+				}
+
+				this.mostrarDialogAnaliseDemanda = false
+				this.mostrarAlerta = true
+				this.textoAlerta = "Comprador definido com sucesso!"
+				this.selecionados = []
+			},
+			async processadoSS(solicitacoes) {
+        for(let ss of solicitacoes){
           let index = this.dados.findIndex((obj) => {
-            return (obj.id = ss)
+          	return (obj.id = ss)
           })
           this.dados.splice(index, 1)
         }
 
-        this.mostrarDialogAnaliseDemanda = false
-        this.mostrarAlerta = true
-        this.textoAlerta = "Comprador definido com sucesso!"
+				this.mostrarDialogProcessarSS = false
+				this.mostrarDialogProcessarMultSS = false
+				this.mostrarAlerta = true
+				this.textoAlerta = "Solicitação processada com sucesso!"
+				this.ss = null
         this.selecionados = []
-      },
+			},
 		},
 		watch: {
 			etapa_id(valor) {
 				console.log(valor)
 				this.buscarSolicitacoes()
+        this.typeInputDialog = "text"
+
+				if (valor === 8) {
+					this.labelDialog = "N° da requisição SAP"
+					this.campoDialog = "n_contrato_sap"
+				} else if (valor === 9) {
+          this.pularProxEtapa = true
+        } else if(valor === 10){
+          this.labelDialog = "N° da Carta Convite"
+          this.campoDialog = "n_carta_convite"
+        } else if (valor === 13) {
+          this.labelDialog = "Data de Recebimento PATEC"
+          this.campoDialog = "data_patec"
+          this.typeInputDialog = "date"
+        } else if (valor === 16) {
+          this.labelDialog = "Nº Pedido de Compra"
+          this.campoDialog = "numero_pedido_compra"
+        } else if (valor === 18) {
+          this.labelDialog = "Handover"
+          this.campoDialog = "data_envio_handover"
+          this.typeInputDialog = "date"
+        } else if (valor === 26) {
+          this.labelDialog = "N° Contrato Juridico"
+          this.campoDialog = "n_contrato_juridico"
+        } else if (valor === 27) {
+          this.labelDialog = "N° Contrato SAP"
+          this.campoDialog = "n_contrato_sap"
+        } else {
+					this.labelDialog = null
+					this.campoDialog = null
+          this.pularProxEtapa = false
+          this.typeInputDialog = "text"
+				}
 			},
 		},
 	}

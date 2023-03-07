@@ -21,7 +21,9 @@
                   ss.numero_acompanhamento
                 }}
               </td>
-              <td class="px-1 py-0.5 border border-collapse border-gray-600">{{ ss.natureza_operacao ? ss.natureza_operacao : "" }}</td>
+              <td class="px-1 py-0.5 border border-collapse border-gray-600">
+                {{ ss.natureza_operacao ? ss.natureza_operacao : "" }}
+              </td>
               <td class="px-1 py-0.5 border border-collapse border-gray-600">
                 {{ ss.tipo_solicitacao }}
               </td>
@@ -33,11 +35,6 @@
           </table>
         </div>
         <div class="pt-2 px-2 space-y-2">
-          <AppFormSelect
-            label="Comprador"
-            :options="compradores"
-            v-model="processo.comprador"
-            id="pep"/>
           <AppFormTextarea
             id="comentario"
             label="Comentário"
@@ -50,14 +47,26 @@
     <template v-slot:rodape-btn-direito>
       <div class="flex items-center gap-5 text-black">
         <BotaoPadrao
+          v-if="pularProxEtapa"
+          :disabled="processo.comprador === null"
+          texto="Processar e Pular"
+          @click="processarSS(true)">
+          <template v-slot>
+            <img
+              src="@/assets/icons/right-down-b.svg"
+              alt="close"
+              class="w-6 h-6"/>
+          </template>
+        </BotaoPadrao>
+        <BotaoPadrao
           :disabled="processo.comprador === null"
           texto="Processar SS"
-          @click="processarSS()">
+          @click="processarSS(false)">
           <template v-slot>
             <img
               src="@/assets/icons/check-b.svg"
               alt="close"
-              class="w-7 h-7"/>
+              class="w-8 h-8"/>
           </template>
         </BotaoPadrao>
       </div>
@@ -66,74 +75,58 @@
 </template>
 
 <script>
-import BaseDialog from "~/components/Shared/BaseDialog.vue"
-import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
-import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue"
-import AppFormSelect from "~/components/Ui/AppFormSelect.vue"
+import BaseDialog from "~/components/Shared/BaseDialog.vue";
+import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
+import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue";
+
 export default {
-  name: "DialogAnaliseDemanda",
+  name: "DialogProcessarMultSS",
   components: {
     BaseDialog,
     BotaoPadrao,
     AppFormTextarea,
-    AppFormSelect,
   },
   props: {
     solicitacoes: {
       type: [String, Number, Object, Array],
     },
+    pularProxEtapa: {
+      type: [Boolean]
+    }
   },
   data() {
     return {
       processo: {
         comentario: null,
-        comprador: null,
       },
-      compradores: []
     }
   },
-  async created() {
-    await this.buscarCompradores()
-  },
   methods:{
-    cancelar(){
+    cancelar() {
       this.processo = {
         comentario: null,
-        comprador: null
       }
-      this.emit("cancelar")
+      this.$emit("cancelar")
     },
-    async buscarCompradores() {
-      let resp = await this.$axios.$get("/suprimentos/ss/compradores")
 
-      if (!resp.falha) {
-        let compradores = resp.dados.compradores
-
-        let options = compradores.map((o) => {
-          console.log(o)
-          return {id: o.Usuario.id, nome: o.Usuario.nome}
-        })
-
-        this.compradores = options
-      }
-    },
-    async processarSS(){
-      let definir = this.processo
-      let SSs = this.solicitacoes.map((ss) => {
+    async processarSS(pularEtapa) {
+      let { comentario } = this.processo
+      let solicitacoes = this.solicitacoes.map((ss) => {
         return ss.id
       })
-      let usuario_id = this.$store.state.usuario.usuario.id
-      //
-      //
-      let resp = await this.$axios
-        .$post("/suprimentos/ss/definir_comprador", {
-          definir,
-          SSs,
-          usuario_id,
-        })
-      if (!resp.falha) {
 
-        this.$emit("definido", SSs)
+      let usuario_id = this.$store.state.usuario.usuario.id
+
+      let resp = await this.$axios
+        .$post("/suprimentos/ss/processar_mult_ss", {
+          comentario,
+          solicitacoes,
+          usuario_id,
+          pularEtapa
+        })
+
+      if (!resp.falha) {
+        this.$emit("processado", solicitacoes)
       }
     }
   }
