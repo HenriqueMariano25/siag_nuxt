@@ -264,8 +264,6 @@ export default {
       })
 
       if (!resp.falha) {
-        console.log(resp.dados)
-
         let SSs = resp.dados.SSs.rows
         this.totalItens = resp.dados.SSs.count
         this.dados = SSs

@@ -235,27 +235,19 @@ export const buscarEtapa = {
 // 	},
 // }
 //
-// export const buscarEtapaSS = {
-// 	methods: {
-// 		async buscarEtapaSS(salvarStore, filtros = {}) {
-// 			let etapasBuscado = await api
-// 				.get("/suprimentos/ss/etapas_ss", { params: { filtros: filtros } })
-// 				.then((resp) => resp.data.dados.etapas)
-//
-// 			etapasBuscado.sort((a, b) => parseInt(a.ordem) - parseInt(b.ordem))
-//
-// 			if (salvarStore) {
-// 				let etapas = this.$store.state.etapas
-//
-// 				if (etapas != null) {
-// 					this.$store.commit("DEFINIR_ETAPASS", etapasBuscado)
-// 				}
-// 			}
-//
-// 			return etapasBuscado
-// 		},
-// 	},
-// }
+export const buscarEtapaSS = {
+	methods: {
+		async buscarEtapaSS(filtros = {}) {
+			let etapasBuscado = await this.$axios
+				.$get("/suprimentos/ss/etapas_ss", { params: { filtros: filtros } })
+				.then((resp) => resp.dados.etapas)
+
+			etapasBuscado.sort((a, b) => parseInt(a.ordem) - parseInt(b.ordem))
+
+			return etapasBuscado
+		},
+	},
+}
 //
 // export const buscarVeiculos = {
 // 	methods: {
