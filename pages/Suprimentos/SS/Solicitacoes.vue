@@ -1,10 +1,10 @@
 <template>
-	<div class="w-full">
+	<div class="w-full ">
 		<div
-			class="flex bg-primaria-500 w-[96.5vw]"
+			class="flex bg-primaria-500 w-[96.5vw] print:hidden"
 			style="overflow-x: scroll">
 			<button
-				class="flex p-2 hover:bg-gray-300 box-border"
+				class="flex p-2 hover:bg-gray-300 box-border print:hidden"
 				:class="{ 'border-t-4 border-black bg-gray-200': etapa_id === 0 }"
 				@click="etapa_id = 0">
 				Todos
@@ -21,7 +21,7 @@
 				</button>
 			</div>
 		</div>
-		<div class="">
+		<div class="print:hidden">
 			<div class="flex">
 				<AppTabela
 					:cabecalho="cabecalho"
@@ -32,6 +32,7 @@
 					altura="calc(100vh - 194px)"
 					:totalItens="totalItens"
 					@atualizar="atualizarDados"
+					@dblclick="verDetalhesSS"
 					:temDetalhes="false">
 					<template v-slot:[`body.selecione`]="{ item }">
 						<div class="flex justify-center">
@@ -91,7 +92,7 @@
 				</AppTabela>
 			</div>
 		</div>
-		<RodapePagina>
+		<RodapePagina class="print:hidden">
 			<template v-slot>
 				<div class="flex items-center w-full">
 					<div class="flex w-full justify-end gap-4">
@@ -155,7 +156,7 @@
 			:ss="ss"
 			v-if="mostrarDialogProcessarSS"
 			@processado="processadoSS"
-      :typeInput="typeInputDialog"
+			:typeInput="typeInputDialog"
 			@cancelar="
 				mostrarDialogProcessarSS = false
 				ss = null
@@ -164,10 +165,17 @@
 		<DialogProcessarMultSS
 			:solicitacoes="selecionados"
 			v-if="mostrarDialogProcessarMultSS"
-      @processado="processadoSS"
+			@processado="processadoSS"
 			@cancelar="mostrarDialogProcessarMultSS = false"
-      :pularProxEtapa="pularProxEtapa"
-    />
+			:pularProxEtapa="pularProxEtapa" />
+
+		<DialogDetalhesSS
+			v-if="mostrarDialogDetalhesSS"
+			@cancelar="
+				mostrarDialogDetalhesSS = false
+				ss_id = null
+			"
+			:ss_id="ss_id" />
 	</div>
 </template>
 
@@ -183,6 +191,7 @@
 	import AppFormCheckbox from "~/components/Ui/Form/AppFormCheckbox.vue"
 	import DialogProcessarSS from "~/components/Dialogs/Suprimentos/SS/DialogProcessarSS.vue"
 	import DialogProcessarMultSS from "~/components/Dialogs/Suprimentos/SS/DialogProcessarMultSS.vue"
+	import DialogDetalhesSS from "~/components/Dialogs/Suprimentos/SS/DialogDetalhesSS.vue"
 
 	import { buscarEtapaSS } from "@/mixins/buscarInformacoes"
 	export default {
@@ -200,6 +209,7 @@
 			AppFormCheckbox,
 			DialogProcessarSS,
 			DialogProcessarMultSS,
+			DialogDetalhesSS,
 		},
 		data() {
 			return {
@@ -218,15 +228,16 @@
 				selecionados: [],
 				etapas: [],
 				etapa_id: null,
-				listaAcao: [8,10, 13, 14, 16, 18, 26, 27],
-				listaSelect: [7, 9, 11, 12, 21, 22,23,24,25],
+				listaAcao: [8, 10, 13, 14, 16, 18, 26, 27],
+				listaSelect: [7, 9, 11, 12, 21, 22, 23, 24, 25],
 				placeholderDialog: null,
 				labelDialog: null,
 				campoDialog: null,
 				mostrarDialogProcessarSS: false,
 				mostrarDialogProcessarMultSS: false,
-        pularProxEtapa: false,
-        typeInputDialog: "text"
+				pularProxEtapa: false,
+				typeInputDialog: "text",
+				mostrarDialogDetalhesSS: false,
 			}
 		},
 		computed: {
@@ -330,57 +341,63 @@
 				this.selecionados = []
 			},
 			async processadoSS(solicitacoes) {
-        for(let ss of solicitacoes){
-          let index = this.dados.findIndex((obj) => {
-          	return (obj.id = ss)
-          })
-          this.dados.splice(index, 1)
-        }
+				for (let ss of solicitacoes) {
+					let index = this.dados.findIndex((obj) => {
+						return (obj.id = ss)
+					})
+					this.dados.splice(index, 1)
+				}
 
 				this.mostrarDialogProcessarSS = false
 				this.mostrarDialogProcessarMultSS = false
 				this.mostrarAlerta = true
 				this.textoAlerta = "Solicitação processada com sucesso!"
 				this.ss = null
-        this.selecionados = []
+				this.selecionados = []
+			},
+			verDetalhesSS(dados) {
+				console.log(dados)
+
+				this.ss_id = dados.id
+				this.mostrarDialogDetalhesSS = true
 			},
 		},
 		watch: {
 			etapa_id(valor) {
 				console.log(valor)
 				this.buscarSolicitacoes()
-        this.typeInputDialog = "text"
+				this.typeInputDialog = "text"
 
 				if (valor === 8) {
 					this.labelDialog = "N° da requisição SAP"
 					this.campoDialog = "n_contrato_sap"
 				} else if (valor === 9) {
-          this.pularProxEtapa = true
-        } else if(valor === 10){
-          this.labelDialog = "N° da Carta Convite"
-          this.campoDialog = "n_carta_convite"
-        } else if (valor === 13) {
-          this.labelDialog = "Data de Recebimento PATEC"
-          this.campoDialog = "data_patec"
-          this.typeInputDialog = "date"
-        } else if (valor === 16) {
-          this.labelDialog = "Nº Pedido de Compra"
-          this.campoDialog = "numero_pedido_compra"
-        } else if (valor === 18) {
-          this.labelDialog = "Handover"
-          this.campoDialog = "data_envio_handover"
-          this.typeInputDialog = "date"
-        } else if (valor === 26) {
-          this.labelDialog = "N° Contrato Juridico"
-          this.campoDialog = "n_contrato_juridico"
-        } else if (valor === 27) {
-          this.labelDialog = "N° Contrato SAP"
-          this.campoDialog = "n_contrato_sap"
-        } else {
+					this.pularProxEtapa = true
+				} else if (valor === 10) {
+					this.labelDialog = "N° da Carta Convite"
+					this.campoDialog = "n_carta_convite"
+				} else if (valor === 13) {
+					this.labelDialog = "Data de Recebimento PATEC"
+					this.campoDialog = "data_patec"
+					this.typeInputDialog = "date"
+				} else if (valor === 16) {
+					this.labelDialog = "Nº Pedido de Compra"
+					this.campoDialog = "numero_pedido_compra"
+				} else if (valor === 18) {
+					this.labelDialog = "Handover"
+					this.campoDialog = "data_envio_handover"
+					this.typeInputDialog = "date"
+				} else if (valor === 26) {
+					this.labelDialog = "N° Contrato Juridico"
+					this.campoDialog = "n_contrato_juridico"
+				} else if (valor === 27) {
+					this.labelDialog = "N° Contrato SAP"
+					this.campoDialog = "n_contrato_sap"
+				} else {
 					this.labelDialog = null
 					this.campoDialog = null
-          this.pularProxEtapa = false
-          this.typeInputDialog = "text"
+					this.pularProxEtapa = false
+					this.typeInputDialog = "text"
 				}
 			},
 		},

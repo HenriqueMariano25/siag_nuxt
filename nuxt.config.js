@@ -33,7 +33,7 @@ export default {
   plugins: [
     '@/plugins/lodash',
     '@/plugins/dayjs',
-    '@/plugins/maska'
+    '@/plugins/maska',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

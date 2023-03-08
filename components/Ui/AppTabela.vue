@@ -102,6 +102,7 @@
 							:class="{ '!bg-gray-500 !text-white': trAberto === dado.id }"
 							class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white"
 							:key="dado.id"
+              @dblclick.prevent.stop="mostrarDbl(dado, $event)"
 							@click.prevent.stop="mostrarDetalhes(dado, $event)">
 							<td
 								v-for="(c, index) in cabecalho"
@@ -322,6 +323,10 @@
 					this.trAberto = item.id
 				}
 			},
+
+      mostrarDbl(item, event){
+        this.$emit("dblclick", item)
+      },
 
 			adicionarFiltro(item, event) {
 				let valor = event.target.value
