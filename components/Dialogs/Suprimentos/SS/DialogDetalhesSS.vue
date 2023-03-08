@@ -88,16 +88,22 @@
           <span class="py-1 pl-1"><strong>Anexo V: </strong>{{ ss.anexo_v}}</span>
           <span class="py-1 pl-1 bg-gray-300"><strong>Observações</strong></span>
           <span class="py-1 pl-1">{{ ss.observacoes_geral }}</span>
-          <div>
-            <span><strong>Aprovadores</strong></span>
-            <div>
-              <span><strong>Controle: </strong></span>
+          <div class="w-full grid grid-cols-1 divide-y divide-gray-300">
+            <div class="bg-gray-300 py-1 pl-1">
+              <span ><strong>Aprovadores</strong></span>
             </div>
-            <div>
-              <span><strong>Gestor da Área: </strong></span>
+            <div class="py-1 pl-1">
+              <span><strong>Controle: </strong>{{ ss && ss.aprovador_controle ? `${ss.aprovador_controle.nome} - ${ $dayjs(ss.data_aprov_controle).format("DD/MM/YYYY HH:mm:ss")}` : "" }}</span>
             </div>
-            <div>
-              <span><strong>Site Manager: </strong></span>
+            <div class="py-1 pl-1">
+              <span><strong>Gestor da Área: </strong>{{
+                  ss && ss.aprovador_setor ? `${ss.aprovador_setor.nome} - ${$dayjs(ss.data_aprov_setor).format("DD/MM/YYYY HH:mm:ss")}` : ""
+                }}</span>
+            </div>
+            <div class="py-1 pl-1">
+              <span><strong>Site Manager: </strong>{{
+                  ss && ss.aprovador_site_manager ? `${ss.aprovador_site_manager.nome} - ${$dayjs(ss.data_aprov_site_manager).format("DD/MM/YYYY HH:mm:ss")}` : ""
+                }}</span>
             </div>
           </div>
         </div>
