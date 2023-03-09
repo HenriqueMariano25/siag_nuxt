@@ -1,11 +1,11 @@
 <template>
 	<div class="w-full ">
 		<div
-			class="flex bg-primaria-500 w-[96.5vw] print:hidden"
+			class="flex bg-primaria-500 w-[96.5vw] print:hidden menuEtapas"
 			style="overflow-x: scroll">
 			<button
-				class="flex p-2 hover:bg-gray-300 box-border print:hidden"
-				:class="{ 'border-t-4 border-black bg-gray-200': etapa_id === 0 }"
+				class="flex p-2 hover:bg-gray-300  hover:text-black box-border print:hidden text-white"
+				:class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === 0 }"
 				@click="etapa_id = 0">
 				Todos
 			</button>
@@ -14,10 +14,10 @@
 				:key="etapa.id"
 				class="grid grid-flow-col auto-cols-max divide-y-2 divide-amber-50">
 				<button
-					class="flex py-2 px-3 hover:bg-gray-400 box-border"
-					:class="{ 'border-t-4 border-black bg-gray-200': etapa_id === etapa.id }"
+					class="flex py-2 px-3 hover:bg-gray-400 box-border text-white hover:text-black"
+					:class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === etapa.id }"
 					@click="etapa_id = etapa.id">
-					<span class="whitespace-nowrap">{{ etapa.nome }}</span>
+					<span class="whitespace-nowrap ">{{ etapa.nome }}</span>
 				</button>
 			</div>
 		</div>
@@ -171,10 +171,7 @@
 
 		<DialogDetalhesSS
 			v-if="mostrarDialogDetalhesSS"
-			@cancelar="
-				mostrarDialogDetalhesSS = false
-				ss_id = null
-			"
+			@cancelar="mostrarDialogDetalhesSS = false; ss_id = null"
 			:ss_id="ss_id" />
 	</div>
 </template>
@@ -228,7 +225,7 @@
 				selecionados: [],
 				etapas: [],
 				etapa_id: null,
-				listaAcao: [8, 10, 13, 14, 16, 18, 26, 27],
+				listaAcao: [8, 10, 13, 14, 15, 16, 18, 26, 27],
 				listaSelect: [7, 9, 11, 12, 21, 22, 23, 24, 25],
 				placeholderDialog: null,
 				labelDialog: null,
@@ -356,7 +353,6 @@
 				this.selecionados = []
 			},
 			verDetalhesSS(dados) {
-				console.log(dados)
 
 				this.ss_id = dados.id
 				this.mostrarDialogDetalhesSS = true
@@ -380,7 +376,15 @@
 					this.labelDialog = "Data de Recebimento PATEC"
 					this.campoDialog = "data_patec"
 					this.typeInputDialog = "date"
-				} else if (valor === 16) {
+				} else if (valor === 14) {
+          this.labelDialog = "Data de Negociação"
+          this.campoDialog = "data_negociacao"
+          this.typeInputDialog = "date"
+        } else if (valor === 15) {
+          this.labelDialog = "Data de MCO"
+          this.campoDialog = "data_mco"
+          this.typeInputDialog = "date"
+        }else if (valor === 16) {
 					this.labelDialog = "Nº Pedido de Compra"
 					this.campoDialog = "numero_pedido_compra"
 				} else if (valor === 18) {
@@ -404,4 +408,18 @@
 	}
 </script>
 
-<style scoped></style>
+<style >
+.menuEtapas::-webkit-scrollbar{
+  width: 12px;
+}
+.menuEtapas::-webkit-scrollbar-track{
+  background-color: #898989;
+}
+
+.menuEtapas::-webkit-scrollbar-thumb{
+  border-radius: 10px;
+  background-color: #0B1B36;
+  border:1px solid white;
+}
+
+</style>

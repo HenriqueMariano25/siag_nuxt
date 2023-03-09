@@ -92,14 +92,17 @@ export default {
       textoAlerta: "",
     }
   },
-  created() {
+  mounted() {
     this.buscarComentarios()
+    console.log(this.ss_id)
   },
   methods: {
     cancelar() {
       this.$emit("cancelar")
     },
     async buscarComentarios() {
+      console.log(this.ss_id)
+
       if (this.ss_id !== null) {
         let resp = await this.$axios.$get("/suprimentos/ss/comentarios/buscar", {
           params: {id: this.ss_id},

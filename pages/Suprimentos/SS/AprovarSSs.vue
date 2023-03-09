@@ -42,6 +42,7 @@
         :totalItens="totalItens"
         altura="calc(100vh - 190px)"
         @atualizar="atualizarDados"
+        @dblclick="verDetalhesSS"
         :temDetalhes="false">
         <template v-slot:[`body.selecione`]="{ item }">
           <div class="flex justify-center">
@@ -98,8 +99,8 @@
             class="flex hover:bg-gray-400 w-full p-1"
             v-if="item.ComentarioSSes.length > 0"
             @click="
-							card_id = item.id;
-							mostrarDialogComentariosCard = true;
+							ss_id = item.id;
+							mostrarDialogComentariosSS = true;
 						">
             <img
               src="@/assets/icons/comentarios-b.svg"
@@ -147,12 +148,12 @@
 				mostrarDialogAprovControleSS = false
 				ss = null
 			"/>
-    <DialogComentariosCard
-      :card_id="card_id"
-      v-if="mostrarDialogComentariosCard"
+    <DialogComentariosSS
+      :ss_id="ss_id"
+      v-if="mostrarDialogComentariosSS"
       @cancelar="
-				mostrarDialogComentariosCard = false
-				card_id = null
+				mostrarDialogComentariosSS = false
+				ss_id = null
 			"/>
     <AppAlerta
       tipo="sucesso"
@@ -160,6 +161,10 @@
       @escondeu="mostrarAlerta = false">
       {{ textoAlerta }}
     </AppAlerta>
+    <DialogDetalhesSS
+      v-if="mostrarDialogDetalhesSS"
+      @cancelar="mostrarDialogDetalhesSS = false; ss_id = null"
+      :ss_id="ss_id"/>
   </div>
 </template>
 
@@ -171,11 +176,13 @@ import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 import AppAlerta from "~/components/Ui/AppAlerta.vue"
 import BotaoIcone from "~/components/Ui/Buttons/BotaoIcone.vue"
 import DialogAprovControleSS from "~/components/Dialogs/Suprimentos/SS/DialogAprovControleSS.vue";
-import DialogComentariosCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogComentariosCard.vue";
 import DialogAprovarSS from "~/components/Dialogs/Suprimentos/SS/DialogAprovarSS.vue";
+import DialogComentariosSS from "~/components/Dialogs/Suprimentos/SS/DialogComentariosSS.vue";
+import DialogDetalhesSS from "~/components/Dialogs/Suprimentos/SS/DialogDetalhesSS.vue";
 export default {
   name: "AprovarSSs",
   components: {
+    DialogComentariosSS,
     DialogAprovarSS,
     AppTabela,
     AppFormCheckbox,
@@ -184,7 +191,7 @@ export default {
     AppAlerta,
     BotaoIcone,
     DialogAprovControleSS,
-    DialogComentariosCard,
+    DialogDetalhesSS
   },
   data() {
     return {
@@ -201,8 +208,9 @@ export default {
       textoAlerta: "",
       mostrarDialogAprovControleSS: false,
       ss: null,
-      mostrarDialogComentariosCard: false,
-      card_id: null,
+      mostrarDialogComentariosSS: false,
+      ss_id: null,
+      mostrarDialogDetalhesSS: false,
     }
   },
   created() {
@@ -232,7 +240,7 @@ export default {
         {nome: "Num. Acompanhamento", valor: "numero_acompanhamento", filtro: true, centralizar: true},
         {nome: "Natureza Operação", valor: "natureza_operacao", filtro: true, ordenar: true},
         {nome: "Tipo de Solicitação", valor: "tipo_solicitacao", filtro: true},
-        {nome: "Elemento PEP", valor: "CentroCustoPEP.descricao", filtro: true},
+        {nome: "Centro de Custo", valor: "CentroCustoPEP.descricao", filtro: true},
         {nome: "Prazo Execução", valor: "prazo_execucao", filtro: true},
         {nome: "Necessidade", valor: "data_necessidade", filtro: true},
         {nome: "Etapa", valor: "EtapaSS.nome", filtro: true},
@@ -252,8 +260,6 @@ export default {
       let setor_id = this.$store.state.usuario.usuario.setor_id
       this.selecionados = []
 
-      console.log("Buscando")
-
       let resp = await this.$axios.$get("/suprimentos/ss/aprovacao/buscarPaginados", {
         params: {
           tipoAprovacao: this.tipoAprovacao,
@@ -268,6 +274,12 @@ export default {
         this.totalItens = resp.dados.SSs.count
         this.dados = SSs
       }
+    },
+
+    verDetalhesSS(dados) {
+
+      this.ss_id = dados.id
+      this.mostrarDialogDetalhesSS = true
     },
 
     recebendoFiltro(filtros) {

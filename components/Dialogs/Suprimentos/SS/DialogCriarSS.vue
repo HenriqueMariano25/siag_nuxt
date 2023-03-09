@@ -18,7 +18,7 @@
 								obrigatorio
 								id="cod_acompanhamento"
 								mask="@@@@@"
-                :invalido="erro.includes('numero_acompanhamento')"
+								:invalido="erro.includes('numero_acompanhamento')"
 								v-model="ss.numero_acompanhamento" />
 							<AppFormInput
 								label="Data de Emissão"
@@ -26,18 +26,18 @@
 								obrigatorio
 								:readonly="true"
 								id="data_emissao"
-                :invalido="erro.includes('data_emissao')"
+								:invalido="erro.includes('data_emissao')"
 								v-model="ss.data_emissao" />
 							<AppFormInput
 								label="Data de Necessidade"
 								type="date"
 								obrigatorio
 								id="data_necessidade"
-                :invalido="erro.includes('data_necessidade')"
+								:invalido="erro.includes('data_necessidade')"
 								v-model="ss.data_necessidade" />
 							<AppFormSelect
 								class="col-span-2"
-                obrigatorio
+								obrigatorio
 								label="Elemento PEP"
 								:options="centrosCusto"
 								v-model="ss.centro_custo_pep_id"
@@ -47,7 +47,7 @@
 								label="Ordem de Serviço"
 								type="text"
 								id="order_servico"
-                placeholder="Opcional"
+								placeholder="Opcional"
 								v-model="ss.ordem_servico" />
 						</div>
 						<div class="grid grid-cols-2">
@@ -56,10 +56,10 @@
 								titulo="Natureza Operação"
 								obrigatorio
 								v-model="ss.natureza_operacao"
-                disabled
+								disabled
 								:invalido="erro.includes('natureza_operacao')" />
 							<AppFormRadio
-                :disabled="!selecionarTipoSolicitacao"
+								:disabled="!selecionarTipoSolicitacao"
 								:itens="opcoesTipoSolicitacao"
 								titulo="Tipo de Solicitação"
 								obrigatorio
@@ -74,24 +74,24 @@
 								label="Data de Ínicio"
 								type="date"
 								:readonly="true"
-                obrigatorio
+								obrigatorio
 								id="data_inicio"
-                :invalido="erro.includes('data_inicio')"
-                v-model="ss.data_inicio" />
+								:invalido="erro.includes('data_inicio')"
+								v-model="ss.data_inicio" />
 							<AppFormInput
 								label="Data de Término"
 								type="date"
 								id="data_fim"
-                obrigatorio
-                :invalido="erro.includes('data_fim')"
+								obrigatorio
+								:invalido="erro.includes('data_fim')"
 								v-model="ss.data_fim" />
 							<AppFormInput
 								label="Prazo Total(dias)"
 								type="text"
 								:readonly="true"
 								id="dias_totais"
-                obrigatorio
-                :invalido="erro.includes('prazo')"
+								obrigatorio
+								:invalido="erro.includes('prazo')"
 								v-model="ss.prazo" />
 						</div>
 					</div>
@@ -110,11 +110,11 @@
 							<span class="col-span-3 text-md"><strong>3 - ABRANGÊNCIA DO ESCOPO</strong></span>
 							<AppFormTextarea
 								id="observacoes_matriz"
-                obrigatorio
+								obrigatorio
 								label="Abragência do Escopo"
 								placeholder="Descrição mais detalhada do escopo selecionado a cima"
 								v-model="ss.abrangencia_escopo"
-                :invalido="erro.includes('abrangencia_escopo')"
+								:invalido="erro.includes('abrangencia_escopo')"
 								class="mt-1" />
 						</div>
 						<div class="grid grid-cols-4 gap-y-1">
@@ -162,8 +162,8 @@
 					</div>
 					<div class="flex-col bg-blue-100 p-2 border border-blue-200">
 						<span class="col-span-3 text-md">
-              <strong>4 - LOCAL DA PRESTAÇÃO DO SERVIÇO</strong>
-            </span>
+							<strong>4 - LOCAL DA PRESTAÇÃO DO SERVIÇO</strong>
+						</span>
 						<div class="flex items-end space-x-2">
 							<AppFormRadio
 								class="w-2/12 self-start"
@@ -178,8 +178,8 @@
 								type="text"
 								id="endereco_prestacao"
 								v-model="ss.endereco_prestacao"
-                :invalido="erro.includes('endereco_prestacao')"
-                :disabled="ss.local_prestacao_obra !== 'fora_obra'"/>
+								:invalido="erro.includes('endereco_prestacao')"
+								:disabled="ss.local_prestacao_obra !== 'fora_obra'" />
 						</div>
 					</div>
 					<div class="bg-blue-100 p-2 border border-blue-200">
@@ -859,8 +859,8 @@
 								label="Jornada de Trabalho"
 								placeholder="Jornada de Trabalho"
 								type="text"
-                obrigatorio
-                :invalido="erro.includes('jornada_trabalho')"
+								obrigatorio
+								:invalido="erro.includes('jornada_trabalho')"
 								id="outros"
 								v-model="ss.jornada_trabalho" />
 							<table class="border-collapse w-full mt-2 bg-white">
@@ -879,7 +879,7 @@
 										<td class="px-2 py-1">
 											<input
 												type="radio"
-                        id="permitido_trabalho_noturno_nao"
+												id="permitido_trabalho_noturno_nao"
 												v-model="ss.permitido_trabalho_noturno"
 												:value="false"
 												class="mr-1" /><label for="permitido_trabalho_noturno_nao">Não</label>
@@ -894,7 +894,7 @@
 												type="radio"
 												v-model="ss.permitido_hora_extra"
 												:value="true"
-                        id="permitido_hora_extra_sim"
+												id="permitido_hora_extra_sim"
 												class="mr-1" /><label for="permitido_hora_extra_sim">Sim</label>
 										</td>
 										<td class="px-2 py-1">
@@ -902,7 +902,7 @@
 												type="radio"
 												v-model="ss.permitido_hora_extra"
 												:value="false"
-                        id="permitido_hora_extra_nao"
+												id="permitido_hora_extra_nao"
 												class="mr-1" /><label for="permitido_hora_extra_nao">Não</label>
 										</td>
 									</tr>
@@ -915,7 +915,7 @@
 												type="radio"
 												v-model="ss.permitido_sabado_feriado"
 												:value="true"
-                        id="permitido_sabado_feriado_sim"
+												id="permitido_sabado_feriado_sim"
 												class="mr-1" /><label for="permitido_sabado_feriado_sim">Sim</label>
 										</td>
 										<td class="px-2 py-1">
@@ -923,7 +923,7 @@
 												type="radio"
 												v-model="ss.permitido_sabado_feriado"
 												:value="false"
-                        id="permitido_sabado_feriado_nao"
+												id="permitido_sabado_feriado_nao"
 												class="mr-1" /><label for="permitido_sabado_feriado_nao">Não</label>
 										</td>
 									</tr>
@@ -949,8 +949,8 @@
 								class="mt-2"
 								label="Prazo para integração(dias)"
 								placeholder="Prazo para integração(dias)"
-                obrigatorio
-                :invalido="erro.includes('prazo_integracao')"
+								obrigatorio
+								:invalido="erro.includes('prazo_integracao')"
 								type="text"
 								id="outros"
 								v-model="ss.prazo_integracao" />
@@ -1026,7 +1026,7 @@
 					v-if="erro.length > 0">
 					<span>Campos obrigatórios necessários</span>
 				</div>
-        {{ ss_id }}
+				{{ ss_id }}
 				<BotaoSalvar @click="ss_id !== null ? editarSS() : adicionarSS()" />
 			</div>
 		</template>
@@ -1073,13 +1073,13 @@
 				opcoesTipoSolicitacao: [
 					{ label: "Solicitação de Serviço PONTUAL (SPOT)", valor: "spot", disabled: true },
 					{ label: "Solicitação de Serviço CONTRATO", valor: "contrato" },
-					{ label: "Solicitação de Contratação de SUBEMPREITADA", valor: "subempreitada",},
+					{ label: "Solicitação de Contratação de SUBEMPREITADA", valor: "subempreitada" },
 				],
 				opcoesLocalPrestacao: [
 					{ label: "Na obra", valor: "obra" },
 					{ label: "Fora da obra", valor: "fora_obra" },
 				],
-        selecionarTipoSolicitacao: false,
+				selecionarTipoSolicitacao: false,
 
 				fornecedores: [],
 				ss: {
@@ -1164,7 +1164,10 @@
 		computed: {
 			validarAddFornecedor() {
 				return (
-          (Object.values(this.fornecedor).includes(null) || Object.values(this.fornecedor).includes('')) || !( this.fornecedor.telefone.length == 14 || this.fornecedor.telefone.length == 13 )
+					Object.values(this.fornecedor).includes(null) ||
+					Object.values(this.fornecedor).includes("") ||
+					!(this.fornecedor.telefone.length == 14 || this.fornecedor.telefone.length == 13) ||
+          this.fornecedores.length === 4
 				)
 			},
 		},
@@ -1173,6 +1176,9 @@
 			await this.buscarEscopoSS()
 		},
 		methods: {
+			cancelar() {
+				this.$emit("cancelar")
+			},
 			async buscarCentroCusto() {
 				let { centrosCusto } = await this.$axios.$get("/contratacao/centro_custo/buscarTodos")
 
@@ -1199,72 +1205,77 @@
 			},
 
 			adicionarFornecedor() {
-				let fornecedor = this.fornecedor
+				if (this.fornecedores.length < 4) {
+					let fornecedor = this.fornecedor
 
-				this.fornecedores.push(fornecedor)
+					this.fornecedores.push(fornecedor)
 
-				this.fornecedor = {
-					nome: null,
-					email: null,
-					pessoa_contato: null,
-					telefone: "",
+					this.fornecedor = {
+						nome: null,
+						email: null,
+						pessoa_contato: null,
+						telefone: "",
+					}
 				}
 			},
 			removerFornecedor(index) {
 				this.fornecedores.splice(index, 1)
 			},
 
-      validarFormulario() {
-        this.erro = []
+			validarFormulario() {
+				this.erro = []
 
-        let camposObrigatorio = [
-          "numero_acompanhamento",
-          "data_necessidade",
-          "centro_custo_pep_id",
-          "natureza_operacao",
-          "tipo_solicitacao",
-          "data_inicio",
-          "data_fim",
-          "escoposs_id",
-          "abrangencia_escopo",
-          "mobilizacao",
-          "local_prestacao_obra",
-          "jornada_trabalho",
-          "prazo_integracao",
-          "permitido_trabalho_noturno",
-          "permitido_hora_extra",
-          "permitido_sabado_feriado",
-        ]
+				let camposObrigatorio = [
+					"numero_acompanhamento",
+					"data_necessidade",
+					"centro_custo_pep_id",
+					"natureza_operacao",
+					"tipo_solicitacao",
+					"data_inicio",
+					"data_fim",
+					"escoposs_id",
+					"abrangencia_escopo",
+					"mobilizacao",
+					"local_prestacao_obra",
+					"jornada_trabalho",
+					"prazo_integracao",
+					"permitido_trabalho_noturno",
+					"permitido_hora_extra",
+					"permitido_sabado_feriado",
+				]
 
-        if (this.local_prestacao_obra === 'fora_obra') camposObrigatorio.push("endereco_prestacao")
+				if (this.ss.local_prestacao_obra === "fora_obra") camposObrigatorio.push("endereco_prestacao")
 
-        for (let campo of camposObrigatorio) {
-          if (this.ss[`${campo}`] === null || this.ss[`${campo}`] === "") this.erro.push(campo)
-        }
-      },
+        if (this.ss.data_inicio > this.ss.data_fim || this.ss.data_inicio === this.ss.data_fim) this.erro.push('data_fim')
+
+				for (let campo of camposObrigatorio) {
+					if (this.ss[`${campo}`] === null || this.ss[`${campo}`] === "") this.erro.push(campo)
+				}
+
+			},
 
 			async adicionarSS() {
-        this.validarFormulario()
+				this.validarFormulario()
 
-        if(this.erro.length === 0){
-          let setor_id = this.$store.state.usuario.usuario.setor_id
-          let usuario_id = this.$store.state.usuario.usuario.id
+				if (this.erro.length === 0) {
+					let setor_id = this.$store.state.usuario.usuario.setor_id
+					let usuario_id = this.$store.state.usuario.usuario.id
 
-          let dados = {
-            ss: {...this.ss, setor_id},
-            matriz: this.matriz,
-            fornecedores: this.fornecedores,
-            usuario_id: usuario_id,
-          }
-          let resp = await this.$axios.$post("/ss/cadastrar", {...dados})
+					let dados = {
+						ss: { ...this.ss, setor_id },
+						matriz: this.matriz,
+						fornecedores: this.fornecedores,
+						usuario_id: usuario_id,
+					}
+					let resp = await this.$axios.$post("/ss/cadastrar", { ...dados })
 
-          console.log(resp)
+					console.log(resp)
 
-          if(!resp.falha){
-            this.$emit("adicionado")
-          }
-        }
-      },
+					if (!resp.falha) {
+						this.$emit("adicionado")
+					}
+				}
+			},
 			editarSS() {},
 		},
 		watch: {
@@ -1293,14 +1304,13 @@
 
 					this.ss.prazo = diferenca
 
-          if (diferenca > 0 && diferenca <= 10) {
-            this.ss.tipo_solicitacao = "spot"
-            this.selecionarTipoSolicitacao = false
-          } else {
-            this.ss.tipo_solicitacao = null
-            this.selecionarTipoSolicitacao = true
-          }
-
+					if (diferenca > 0 && diferenca <= 10) {
+						this.ss.tipo_solicitacao = "spot"
+						this.selecionarTipoSolicitacao = false
+					} else {
+						this.ss.tipo_solicitacao = null
+						this.selecionarTipoSolicitacao = true
+					}
 				}
 			},
 
@@ -1313,15 +1323,18 @@
 
 					this.ss.prazo = diferenca
 
-
-						if (diferenca > 0 && diferenca <= 10) {
-							this.ss.tipo_solicitacao = "spot"
-							this.selecionarTipoSolicitacao = false
-							this.selecionarTipoSolicitacao = false
-						} else {
-							this.ss.tipo_solicitacao = null
-							this.selecionarTipoSolicitacao = true
-						}
+          if(diferenca > 0){
+            if (diferenca > 0 && diferenca <= 10) {
+              this.ss.tipo_solicitacao = "spot"
+              this.selecionarTipoSolicitacao = false
+            } else {
+              this.ss.tipo_solicitacao = null
+              this.selecionarTipoSolicitacao = true
+            }
+          }else{
+            this.ss.tipo_solicitacao = null
+            this.selecionarTipoSolicitacao = false
+          }
 				}
 			},
 			"ss.numero_acompanhamento": function (valor) {

@@ -37,7 +37,7 @@
     <template v-slot:rodape-btn-direito>
       <div class="flex items-center gap-5 text-black">
         <BotaoPadrao
-          texto="Negar SSs"
+          texto="Negar SS"
           cor="bg-red-500"
           @click="aprovarSSs(false)">
           <template v-slot>
@@ -45,7 +45,7 @@
           </template>
         </BotaoPadrao>
         <BotaoPadrao
-          texto="Aprovar SSs"
+          texto="Aprovar SS"
           cor="bg-green-500"
           @click="aprovarSSs(true)">
           <template v-slot>
