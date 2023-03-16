@@ -1,12 +1,13 @@
 <template>
   <BaseDialog
     :titulo="'Comentários'"
+    :carregando="carregando"
     @cancelar="cancelar()">
     <template v-slot:corpo>
-      <div class="flex-col w-full">
+      <div class="flex flex-col w-full relative">
         <div class="grid w-full">
           <div
-            class="flex-col w-full px-2 overflow-auto space-y-3"
+            class="flex-col w-full px-2 overflow-auto space-y-3 relative"
             style="max-height: calc(70vh)">
             <div
               class="w-full flex-col bg-blue-100 px-1 py-1 border border-blue-200 font-xl"
@@ -90,6 +91,7 @@ export default {
       comentario: null,
       mostrarAlerta: false,
       textoAlerta: "",
+      carregando: false
     }
   },
   mounted() {
@@ -101,7 +103,7 @@ export default {
       this.$emit("cancelar")
     },
     async buscarComentarios() {
-      console.log(this.ss_id)
+      this.carregando = true
 
       if (this.ss_id !== null) {
         let resp = await this.$axios.$get("/suprimentos/ss/comentarios/buscar", {
@@ -110,6 +112,7 @@ export default {
 
         if(!resp.falha){
           this.comentarios = resp.dados.comentarios
+          this.carregando = false
         }
       }
     },

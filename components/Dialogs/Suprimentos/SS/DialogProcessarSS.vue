@@ -41,6 +41,19 @@
     <template v-slot:rodape-btn-direito>
       <div class="flex items-center gap-5 text-black">
         <BotaoPadrao
+          v-if="etapa_id === 18 || etapa_id === 27"
+          :disabled="processo.input === null || processo.input === ''"
+          texto="Finalizar SS"
+          @click="finalizarSS()">
+          <template v-slot>
+            <img
+              src="@/assets/icons/check-circle-b.svg"
+              alt="close"
+              class="w-6 h-6"/>
+          </template>
+        </BotaoPadrao>
+        <BotaoPadrao
+          v-if="etapa_id !== 27"
           :disabled="processo.input === null || processo.input === ''"
           texto="Processar SS"
           @click="processarSS()">
@@ -84,6 +97,9 @@ export default {
     },
     typeInput:{
       type: String
+    },
+    etapa_id:{
+      type: [Number, String]
     }
   },
   data(){
@@ -118,6 +134,31 @@ export default {
         this.$emit('processado', [ss_id])
       }
 
+    },
+
+    async finalizarSS(){
+      let {comentario, input} = this.processo
+      let campo = this.campo
+      let label = this.label
+      let ss_id = this.ss.id
+      let usuario_id = this.$store.state.usuario.usuario.id
+
+      let resp = await this.$axios.$post('/suprimentos/ss/finalizar_ss', {
+        comentario,
+        input,
+        campo,
+        ss_id,
+        label,
+        usuario_id
+      })
+
+      if (!resp.falha) {
+        this.processo = {
+          comentario: null,
+          input: null
+        }
+        this.$emit('processado', [ss_id])
+      }
     }
   }
 }

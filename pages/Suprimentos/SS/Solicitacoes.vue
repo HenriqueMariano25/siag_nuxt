@@ -34,20 +34,35 @@
 					@atualizar="atualizarDados"
 					@dblclick="verDetalhesSS"
 					:temDetalhes="false">
-					<template v-slot:[`body.selecione`]="{ item }">
+          <template v-slot:[`body.selecione`]="{ item }">
+            <div class="flex justify-center">
+              <AppFormCheckbox
+                :id="parseInt(item.id)"
+                :valor="item"
+                v-model="selecionados"/>
+            </div>
+          </template>
+					<template v-slot:[`body.situacao`]="{ item }">
 						<div class="flex justify-center">
-							<AppFormCheckbox
-								:id="parseInt(item.id)"
-								:valor="item"
-								v-model="selecionados" />
+              <div v-if="!$dayjs().isAfter(item.data_necessidade, 'day')" class="bg-blue-400 text-black px-2 rounded">
+                No prazo
+              </div>
+              <div v-if="$dayjs().isAfter(item.data_necessidade, 'day')" class="bg-red-400 text-black px-2 rounded">Atrasado</div>
 						</div>
 					</template>
 					<template v-slot:[`body.acoes`]="{ item }">
 						<BotaoIconeEditar
+              v-if="etapa_id !== 1"
 							@click="
 								mostrarDialogProcessarSS = true
 								ss = item
 							" />
+            <BotaoIconeEditar
+              v-if="etapa_id === 1"
+              @click="
+								mostrarDialogCriarSolicitacao = true
+								ss_id = item.id
+							"/>
 					</template>
 					<template v-slot:[`body.prazo_execucao`]="{ item }">
 						<span v-if="item">
@@ -83,9 +98,9 @@
 								src="@/assets/icons/comentarios-b.svg"
 								alt="close"
 								class="w-7 h-7 mr-1" />
-							<span v-if="item.ComentarioSSes.at(-1).descricao">
-								{{ item.ComentarioSSes.at(-1).descricao.substr(0, 20)
-								}}{{ item.ComentarioSSes.at(-1).descricao.length > 20 ? "..." : "" }}
+							<span v-if="item.ComentarioSSes.at(0).descricao">
+								{{ item.ComentarioSSes.at(0).descricao.substr(0, 25)
+								}}{{ item.ComentarioSSes.at(0).descricao.length > 25 ? "..." : "" }}
 							</span>
 						</button>
 					</template>
@@ -124,9 +139,10 @@
 		</RodapePagina>
 		<DialogCriarSS
 			v-if="mostrarDialogCriarSolicitacao"
-			@cancelar="mostrarDialogCriarSolicitacao = false"
+			@cancelar="mostrarDialogCriarSolicitacao = false; ss_id = null"
 			:ss_id="ss_id"
-			@adicionado="ssAdicionado" />
+			@adicionado="ssAdicionado"
+      @editado="ssEditado"/>
 		<DialogComentariosSS
 			:ss_id="ss_id"
 			v-if="mostrarDialogComentariosSS"
@@ -157,6 +173,7 @@
 			v-if="mostrarDialogProcessarSS"
 			@processado="processadoSS"
 			:typeInput="typeInputDialog"
+      :etapa_id="etapa_id"
 			@cancelar="
 				mostrarDialogProcessarSS = false
 				ss = null
@@ -218,14 +235,14 @@
 				mostrarAlerta: false,
 				textoAlerta: "",
 				dados: [],
-				filtros: [],
+				filtros: {},
 				itensPorPagina: 50,
 				pagina: 1,
 				totalItens: 0,
 				selecionados: [],
 				etapas: [],
 				etapa_id: null,
-				listaAcao: [8, 10, 13, 14, 15, 16, 18, 26, 27],
+				listaAcao: [1, 8, 10, 13, 14, 15, 16, 18, 26, 27],
 				listaSelect: [7, 9, 11, 12, 21, 22, 23, 24, 25],
 				placeholderDialog: null,
 				labelDialog: null,
@@ -250,7 +267,7 @@
 					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
 					{ nome: "Natureza Operação", valor: "natureza_operacao", filtro: true },
 					{ nome: "Tipo Solicitação", valor: "tipo_solicitacao", filtro: true },
-					{ nome: "Prazo de Execução", valor: "prazo_execucao", filtro: true },
+					{ nome: "Prazo de Execução", valor: "prazo_execucao" },
 					{ nome: "Necessidade", valor: "data_necessidade", filtro: true },
 					{ nome: "Etapa", valor: "EtapaSS.nome", filtro: true },
 					{ nome: "Solicitante", valor: "solicitante", filtro: true },
@@ -279,6 +296,15 @@
 				this.mostrarAlerta = true
 				this.textoAlerta = "Solicitação criada com sucesso!"
 			},
+      async ssEditado(id) {
+        this.mostrarDialogCriarSolicitacao = false
+        this.mostrarAlerta = true
+        this.textoAlerta = "Solicitação editada com sucesso!"
+
+        let index = this.dados.findIndex( o => o.id = id )
+
+        this.dados.splice(index, 1)
+      },
 			cancelar() {
 				this.card_id = null
 				this.mostrarDialogCriarCard = false
@@ -298,17 +324,45 @@
 				if (pagina) this.pagina = pagina
 
 				if (filtros) this.filtros = filtros
-				await this.buscarSSs()
+
+				await this.buscarSolicitacoes()
 			},
 			async buscarSolicitacoes() {
-				let filtros = {}
+				let filtros = Object.assign({}, this.filtros)
+				// let filtros = { 'numero_acompanhamento': {'$like': '%ACO%'}}
+        //
+        // if(Object.keys(filtros).length > 1){
+        //
+        // }
+
+
+
+        for(let f of Object.keys(filtros)){
+          filtros[f] = { '$like': `%${filtros[f]}%` }
+        }
+
 
 				let etapa_id = this.etapa_id
 				if (etapa_id !== 0) {
-					filtros = { etapa_ss_id: etapa_id }
-				} else {
-					filtros = {}
+					// filtros = { etapa_ss_id: etapa_id }
+					filtros['etapa_ss_id'] = etapa_id
 				}
+
+        if(etapa_id === 0){
+          delete filtros['etapa_ss_id'];
+        }
+
+        // if (Object.keys(this.filtros).length > 0) {
+        //   for (let filtro of Object.keys(this.filtros)) {
+        //     let rgx = new RegExp(`${this.filtros[filtro]}`, "gi");
+        //
+        //     funcionarios = this.$lodash.filter(funcionarios, o => {
+        //       return rgx.test(o[filtro])
+        //     })
+        //   }
+        // }
+
+        console.log(filtros)
 
 				let resp = await this.$axios.$get("/suprimentos/ss/buscar_todas", {
 					params: {
@@ -364,7 +418,7 @@
 				this.buscarSolicitacoes()
 				this.typeInputDialog = "text"
 
-				if (valor === 8) {
+         if (valor === 8) {
 					this.labelDialog = "N° da requisição SAP"
 					this.campoDialog = "n_contrato_sap"
 				} else if (valor === 9) {
@@ -395,7 +449,7 @@
 					this.labelDialog = "N° Contrato Juridico"
 					this.campoDialog = "n_contrato_juridico"
 				} else if (valor === 27) {
-					this.labelDialog = "N° Contrato SAP"
+					this.labelDialog = "N° Contrato SAP - Data da Aprovação"
 					this.campoDialog = "n_contrato_sap"
 				} else {
 					this.labelDialog = null

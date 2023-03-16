@@ -106,10 +106,10 @@
               src="@/assets/icons/comentarios-b.svg"
               alt="close"
               class="w-7 h-7 mr-1"/>
-            <span v-if="item.ComentarioSSes.at(-1).descricao">
+            <span v-if="item.ComentarioSSes.at(0).descricao">
 							{{
-                item.ComentarioSSes.at(-1).descricao.substr(0, 20)
-              }}{{ item.ComentarioSSes.at(-1).descricao.length > 20 ? "..." : "" }}
+                item.ComentarioSSes.at(0).descricao.substr(0, 25)
+              }}{{ item.ComentarioSSes.at(0).descricao.length > 25 ? "..." : "" }}
 						</span>
           </button>
         </template>

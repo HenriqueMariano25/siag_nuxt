@@ -3,10 +3,11 @@
 		:titulo="
 			ss_id === null ? 'Criar Solicitação de Serviço' : `Editando Solicitação de Serviço - ${ss_id}`
 		"
+    :carregando="carregando"
 		@cancelar="cancelar()">
 		<template v-slot:corpo>
 			<div
-				class="flex w-full overflow-auto px-2"
+				class="flex w-full overflow-auto px-2 relative"
 				style="max-height: calc(80vh)">
 				<div class="w-full flex-col space-y-2">
 					<div class="bg-blue-100 p-2 border border-blue-200 space-y-1">
@@ -253,6 +254,7 @@
 													class="w-6 h-6" />
 											</BotaoIcone>
 										</td>
+
 										<td class="border border-gray-400 pl-2">{{ forn.nome }}</td>
 										<td class="border border-gray-400 pl-2">{{ forn.telefone }}</td>
 										<td class="border border-gray-400 pl-2">{{ forn.email }}</td>
@@ -1026,7 +1028,6 @@
 					v-if="erro.length > 0">
 					<span>Campos obrigatórios necessários</span>
 				</div>
-				{{ ss_id }}
 				<BotaoSalvar @click="ss_id !== null ? editarSS() : adicionarSS()" />
 			</div>
 		</template>
@@ -1156,9 +1157,9 @@
 					pessoa_contato: null,
 					telefone: "",
 				},
-
 				centrosCusto: [],
 				escopos: [],
+        carregando: false,
 			}
 		},
 		computed: {
@@ -1172,8 +1173,17 @@
 			},
 		},
 		async fetch() {
+      this.carregando = true
 			await this.buscarCentroCusto()
 			await this.buscarEscopoSS()
+
+      if(this.ss_id){
+
+        console.log("Aquiiiii")
+        console.log(this.ss_id)
+        await this.buscarSolicitacao()
+
+      }
 		},
 		methods: {
 			cancelar() {
@@ -1203,6 +1213,30 @@
 					this.escopos = options
 				}
 			},
+
+      async buscarSolicitacao(){
+        this.carregando = true
+        let id  = this.ss_id
+
+        let resp = await this.$axios.$get(`/suprimentos/ss/${id}`)
+
+        if(!resp.falha){
+          this.ss = Object.assign({}, resp.dados.ss)
+
+          console.log(resp.dados.ss)
+
+          this.fornecedores = this.ss.FornecedorSSes ? this.ss.FornecedorSSes : []
+          this.matriz = this.ss.MatrizResponsabilidadeSS ? this.ss.MatrizResponsabilidadeSS : []
+          this.carregando = false
+
+          setTimeout(() => {
+            this.ss.tipo_solicitacao = resp.dados.ss.tipo_solicitacao
+          }, 300)
+        }
+
+
+        console.log(resp)
+      },
 
 			adicionarFornecedor() {
 				if (this.fornecedores.length < 4) {
@@ -1276,7 +1310,28 @@
 					}
 				}
 			},
-			editarSS() {},
+			async editarSS() {
+        this.validarFormulario()
+
+        if (this.erro.length === 0) {
+          // let setor_id = this.$store.state.usuario.usuario.setor_id
+          let usuario_id = this.$store.state.usuario.usuario.id
+
+          let dados = {
+            ss: {...this.ss},
+            matriz: this.matriz,
+            fornecedores: this.fornecedores,
+            usuario_id: usuario_id,
+          }
+          let resp = await this.$axios.$put("/suprimentos/ss/editar", {...dados})
+
+          console.log(resp)
+
+          if (!resp.falha) {
+            this.$emit("editado", this.ss.id )
+          }
+        }
+      },
 		},
 		watch: {
 			"ss.data_necessidade": function (valor) {
@@ -1299,43 +1354,45 @@
 				let inicio = this.$dayjs(this.ss.data_inicio)
 				let fim = this.ss.data_fim != null ? this.$dayjs(this.ss.data_fim) : null
 
-				if (inicio != null && fim != null) {
-					let diferenca = this.$dayjs(fim).diff(inicio, "day")
 
-					this.ss.prazo = diferenca
+          if (inicio != null && fim != null) {
+            let diferenca = this.$dayjs(fim).diff(inicio, "day")
 
-					if (diferenca > 0 && diferenca <= 10) {
-						this.ss.tipo_solicitacao = "spot"
-						this.selecionarTipoSolicitacao = false
-					} else {
-						this.ss.tipo_solicitacao = null
-						this.selecionarTipoSolicitacao = true
-					}
-				}
+            this.ss.prazo = diferenca
+
+
+              if (diferenca > 0 && diferenca <= 10) {
+                this.ss.tipo_solicitacao = "spot"
+                this.selecionarTipoSolicitacao = false
+              } else {
+                this.ss.tipo_solicitacao = null
+                this.selecionarTipoSolicitacao = true
+              }
+          }
 			},
 
 			"ss.data_fim": function () {
 				let inicio = this.ss.data_inicio != null ? this.$dayjs(this.ss.data_inicio) : null
 				let fim = this.$dayjs(this.ss.data_fim)
 
-				if (inicio != null && fim != null) {
-					let diferenca = this.$dayjs(fim).diff(inicio, "day")
+          if (inicio != null && fim != null) {
+            let diferenca = this.$dayjs(fim).diff(inicio, "day")
 
-					this.ss.prazo = diferenca
+            this.ss.prazo = diferenca
 
-          if(diferenca > 0){
-            if (diferenca > 0 && diferenca <= 10) {
-              this.ss.tipo_solicitacao = "spot"
-              this.selecionarTipoSolicitacao = false
-            } else {
-              this.ss.tipo_solicitacao = null
-              this.selecionarTipoSolicitacao = true
-            }
-          }else{
-            this.ss.tipo_solicitacao = null
-            this.selecionarTipoSolicitacao = false
+              if (diferenca > 0) {
+                if (diferenca > 0 && diferenca <= 10) {
+                  this.ss.tipo_solicitacao = "spot"
+                  this.selecionarTipoSolicitacao = false
+                } else {
+                  this.ss.tipo_solicitacao = null
+                  this.selecionarTipoSolicitacao = true
+                }
+              } else {
+                this.ss.tipo_solicitacao = null
+                this.selecionarTipoSolicitacao = false
+              }
           }
-				}
 			},
 			"ss.numero_acompanhamento": function (valor) {
 				this.ss.numero_acompanhamento = valor.toUpperCase()

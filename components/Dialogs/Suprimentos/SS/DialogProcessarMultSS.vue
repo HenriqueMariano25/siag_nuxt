@@ -11,7 +11,7 @@
               <th>Num. Acompanhamento</th>
               <th>Natureza Operação</th>
               <th>Tipo de solicitação</th>
-              <th>Elemento PEP:</th>
+              <th>Centro de Custo:</th>
             </tr>
             </thead>
             <tbody>
@@ -46,10 +46,11 @@
     </template>
     <template v-slot:rodape-btn-direito>
       <div class="flex items-center gap-5 text-black">
+
         <BotaoPadrao
           v-if="pularProxEtapa"
           :disabled="processo.comprador === null"
-          texto="Processar e Pular"
+          texto="Processar p/ Cotar"
           @click="processarSS(true)">
           <template v-slot>
             <img
@@ -92,7 +93,7 @@ export default {
     },
     pularProxEtapa: {
       type: [Boolean]
-    }
+    },
   },
   data() {
     return {
