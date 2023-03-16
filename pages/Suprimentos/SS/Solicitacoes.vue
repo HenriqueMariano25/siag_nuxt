@@ -33,6 +33,7 @@
 					:totalItens="totalItens"
 					@atualizar="atualizarDados"
 					@dblclick="verDetalhesSS"
+          :carregando="carregandoTabela"
 					:temDetalhes="false">
           <template v-slot:[`body.selecione`]="{ item }">
             <div class="flex justify-center">
@@ -79,7 +80,7 @@
 							<span class="whitespace-nowrap">{{ item.EtapaSS.nome }}</span>
 						</span>
 					</template>
-					<template v-slot:[`body.solicitante`]="{ item }">
+					<template v-slot:[`body.Usuario.nome`]="{ item }">
 						<span
 							v-if="item.Usuario"
 							class="whitespace-nowrap">
@@ -252,6 +253,7 @@
 				pularProxEtapa: false,
 				typeInputDialog: "text",
 				mostrarDialogDetalhesSS: false,
+        carregandoTabela: false,
 			}
 		},
 		computed: {
@@ -270,8 +272,8 @@
 					{ nome: "Prazo de Execução", valor: "prazo_execucao" },
 					{ nome: "Necessidade", valor: "data_necessidade", filtro: true },
 					{ nome: "Etapa", valor: "EtapaSS.nome", filtro: true },
-					{ nome: "Solicitante", valor: "solicitante", filtro: true },
-					{ nome: "Comentários", valor: "comentarios", filtro: true },
+					{ nome: "Solicitante", valor: "Usuario.nome", filtro: true },
+					{ nome: "Comentários", valor: "comentarios", filtro: false },
 				]
 
 				if (this.listaAcao.includes(this.etapa_id)) {
@@ -328,23 +330,15 @@
 				await this.buscarSolicitacoes()
 			},
 			async buscarSolicitacoes() {
+        this.carregandoTabela = true
 				let filtros = Object.assign({}, this.filtros)
-				// let filtros = { 'numero_acompanhamento': {'$like': '%ACO%'}}
-        //
-        // if(Object.keys(filtros).length > 1){
-        //
-        // }
-
-
 
         for(let f of Object.keys(filtros)){
-          filtros[f] = { '$like': `%${filtros[f]}%` }
+          filtros[f] = { '$iLike': `%${filtros[f]}%` }
         }
-
 
 				let etapa_id = this.etapa_id
 				if (etapa_id !== 0) {
-					// filtros = { etapa_ss_id: etapa_id }
 					filtros['etapa_ss_id'] = etapa_id
 				}
 
@@ -352,30 +346,20 @@
           delete filtros['etapa_ss_id'];
         }
 
-        // if (Object.keys(this.filtros).length > 0) {
-        //   for (let filtro of Object.keys(this.filtros)) {
-        //     let rgx = new RegExp(`${this.filtros[filtro]}`, "gi");
-        //
-        //     funcionarios = this.$lodash.filter(funcionarios, o => {
-        //       return rgx.test(o[filtro])
-        //     })
-        //   }
-        // }
-
-        console.log(filtros)
-
 				let resp = await this.$axios.$get("/suprimentos/ss/buscar_todas", {
 					params: {
 						filtros: filtros,
 						page: this.pagina - 1,
 						size: this.itensPorPagina,
 					},
+
 				})
 
 				if (!resp.falha) {
 					let SSs = resp.dados.SSs.rows
 					this.totalItens = resp.dados.SSs.count
 					this.dados = SSs
+          this.carregandoTabela = false
 				}
 			},
 			async definidoComprador(SSs) {

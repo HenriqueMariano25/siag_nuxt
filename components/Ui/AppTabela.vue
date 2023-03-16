@@ -37,13 +37,13 @@
 												</svg>
 											</button>
 											<button
-												v-if="cab.filtro === true"
-												@click="
+                        v-if="cab.filtro === true"
+                        @click="
 													filtroAberto !== cab.valor
 														? (filtroAberto = cab.valor)
 														: (filtroAberto = null)
 												"
-												:class="{ 'text-blue-400': Object.keys(filtros).includes(cab.valor) }">
+                        :class="{ 'text-blue-400': Object.keys(filtros).includes(cab.valor.includes('.') ? `$${cab.valor}$` : cab.valor) }">
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
 													viewBox="0 0 24 24"
@@ -78,7 +78,7 @@
 											class="w-full"
 											type="text"
 											:label="'Buscar por ' + cab.nome"
-											:value="filtros[cab.valor]"
+											:value="filtros[cab.valor.includes('.') ? `$${cab.valor}$` : cab.valor]"
 											placeholder="Pressione ENTER para buscar"
 											@keyup.enter.prevent.stop="adicionarFiltro(cab.valor, $event)" />
 									</div>
@@ -97,7 +97,16 @@
 				<tbody
 					class="pt-10 overflow-auto !h-16"
 					:style="'height:' + altura">
-					<template v-for="dado in dados">
+          <tr v-if="carregando">
+            <td :colspan="cabecalho.length">
+              <div class="text-center bg-gray-400 text-4xl py-2">
+                <span>
+                  <strong>CARREGANDO DADOS...</strong>
+                </span>
+              </div>
+            </td>
+          </tr>
+					<template v-for="dado in dados" v-if="!carregando">
 						<tr
 							:class="{ '!bg-gray-500 !text-white': trAberto === dado.id }"
 							class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white"
@@ -215,6 +224,10 @@
 				type: Boolean,
 				default: false,
 			},
+      carregando: {
+        type: Boolean,
+        default: false
+      }
 		},
 		components: {
 			AppFormInput,
@@ -329,6 +342,12 @@
       },
 
 			adicionarFiltro(item, event) {
+        console.log(item)
+        console.log(item.includes("."))
+        console.log(event)
+
+        if(item.includes(".")) item = `$${item}$`
+
 				let valor = event.target.value
 				this.filtros = Object.assign(this.filtros, { [item]: valor })
 				let pagina = 1
@@ -339,6 +358,8 @@
 			},
 
 			removerFiltro(item) {
+        if (item.includes(".")) item = `$${item}$`
+
 				delete this.filtros[item]
 				let pagina = 1
 				this.localPagina = 1
