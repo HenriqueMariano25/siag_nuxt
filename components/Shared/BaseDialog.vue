@@ -30,7 +30,23 @@
 			<div
 				class="rounded-b bg-primaria-700 text-white px-2 py-1 flex items-center justify-between print:hidden">
 				<slot name="rodape">
-					<BotaoCancelar @click="$emit('cancelar')" />
+          <div class="flex items-center">
+            <BotaoCancelar @click="$emit('cancelar')"/>
+            <slot name="rodape-btn-deletar" v-if="btnDeletar">
+              <div>
+                <BotaoPadrao texto="Deletar" cor="bg-red-500" class="ml-2" @click="estaDeletando = !estaDeletando" v-if="!estaDeletando">
+                  <template v-slot>
+                    <img src="@/assets/icons/delete-b.svg" alt="close" class="w-6 h-6"/>
+                  </template>
+                </BotaoPadrao>
+                <div class="flex items-center ml-2" v-if="estaDeletando" >
+                  <BotaoPadrao texto="Não" cor=" bg-red-500" @click="estaDeletando = false"></BotaoPadrao>
+                  <span class="px-2">Certeza que deseja deletar esse item ?</span>
+                  <BotaoPadrao texto="Sim" cor="bg-green-500" @click="deletar"></BotaoPadrao>
+                </div>
+              </div>
+            </slot>
+          </div>
 					<slot name="rodape-btn-direito"></slot>
 				</slot>
 			</div>
@@ -41,6 +57,7 @@
 <script>
 	import BotaoCancelar from "~/components/Ui/Buttons/BotaoCancelar.vue"
 	import BotaoSalvar from "~/components/Ui/Buttons/BotaoSalvar.vue"
+  import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
 	export default {
 		name: "BaseDialog",
 		props: {
@@ -52,12 +69,28 @@
       carregando:{
         type: Boolean,
         default: false
+      },
+      btnDeletar:{
+        type: Boolean,
+        default: false
       }
 		},
 		components: {
+      BotaoPadrao,
 			BotaoCancelar,
 			BotaoSalvar,
 		},
+    data(){
+      return{
+        estaDeletando: false
+      }
+    },
+    methods:{
+      deletar(){
+        this.estaDeletando = false
+        this.$emit("deletar")
+      }
+    }
 	}
 </script>
 

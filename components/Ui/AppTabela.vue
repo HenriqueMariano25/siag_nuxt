@@ -16,6 +16,7 @@
 						<th
 							v-for="cab in cabecalho"
 							:key="cab.valor"
+              :class="cab.largura"
 							class="uppercase px-2 py-1 text-sm text-white relative">
 							<slot
 								:name="'header.' + cab.valor"
@@ -95,7 +96,7 @@
 					</tr>
 				</thead>
 				<tbody
-					class="pt-10 overflow-auto !h-16"
+					class="pt-10 overflow-auto !h-10"
 					:style="'height:' + altura">
           <tr v-if="carregando">
             <td :colspan="cabecalho.length">
@@ -109,14 +110,14 @@
 					<template v-for="dado in dados" v-if="!carregando">
 						<tr
 							:class="{ '!bg-gray-500 !text-white': trAberto === dado.id }"
-							class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white"
+							class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white h-10"
 							:key="dado.id"
               @dblclick.prevent.stop="mostrarDbl(dado, $event)"
 							@click.prevent.stop="mostrarDetalhes(dado, $event)">
 							<td
 								v-for="(c, index) in cabecalho"
 								:key="index"
-								class="px-1 py-0.5 border border-collapse border-gray-600"
+								class="px-1 py-0.5 border border-collapse border-gray-600 "
 								:class="{ 'text-center': c.centralizar }">
 								<slot
 									:name="'body.' + c.valor"
