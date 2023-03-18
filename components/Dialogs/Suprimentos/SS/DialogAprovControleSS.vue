@@ -113,8 +113,8 @@
 			},
 			async aprovarSSControle(aprovacao) {
 				let { id } = this.ss
-				let usuario_id = this.$store.state.usuario.usuario
-					? this.$store.state.usuario.usuario.id
+				let usuario_id = this.$auth.user
+					? this.$auth.user.id
 					: null
 
 				let { comentario, pep: centro_custo_id } = this.processo

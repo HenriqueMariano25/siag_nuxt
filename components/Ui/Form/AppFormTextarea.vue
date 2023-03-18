@@ -33,7 +33,6 @@ export default {
     },
     placeholder: {
       type: String,
-      required: true
     },
     readonly: {
       type: Boolean,

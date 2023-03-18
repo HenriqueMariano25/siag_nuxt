@@ -300,12 +300,12 @@
 		},
 		computed: {
 			nomeSetor() {
-				this.card.setor_id = this.$store.state.usuario.usuario
-					? this.$store.state.usuario.usuario.setor_id
+				this.card.setor_id = this.$auth.user
+					? this.$auth.user.setor_id
 					: ""
 
-				return this.$store.state.usuario.usuario && this.$store.state.usuario.usuario.Setor
-					? this.$store.state.usuario.usuario.Setor.nome
+				return this.$auth.user && this.$auth.user.Setor
+					? this.$auth.user.Setor.nome
 					: ""
 			},
 		},
@@ -322,7 +322,7 @@
 			},
 
 			async buscarCentrosCusto() {
-				let setor_id = this.$store.state.usuario.usuario.setor_id
+				let setor_id = this.$auth.user.setor_id
 
 				let resp = await this.$axios.$get("/contratacao/centro_custo/por_setor", {
 					params: { setor_id },
@@ -338,7 +338,7 @@
 			},
 
 			async buscarFuncao() {
-				let setor_id = this.$store.state.usuario.usuario.setor_id
+				let setor_id = this.$auth.user.setor_id
 
 				let resp = await this.$axios.$get("/contratacao/funcao/porSetor", { params: { setor_id } })
 				if (!resp.falha) {
@@ -349,7 +349,7 @@
 			},
 
 			async buscarDisciplina() {
-				let setor_id = this.$store.state.usuario.usuario.setor_id
+				let setor_id = this.$auth.user.setor_id
 
 				let resp = await this.$axios.$get("/efetivo/sub_setor/porSetor", { params: { setor_id } })
 				if (!resp.falha) {
@@ -420,7 +420,7 @@
 				this.validarFormulario()
 
 				if (this.erro.length === 0) {
-					let usuario_id = this.$store.state.usuario.usuario.id
+					let usuario_id = this.$auth.user.id
 
 					const config = { headers: { "Content-Type": "multipart/form-data" } }
 					let formData = new FormData()
@@ -476,7 +476,7 @@
 			},
 
       async editarContratacao(){
-        let usuario_id = this.$store.state.usuario.id;
+        let usuario_id = this.$auth.user.id;
 
         const config = {headers: {"Content-Type": "multipart/form-data"}};
         let formData = new FormData();

@@ -13,6 +13,7 @@
 import MenuLateralAdmin from "@/components/Menu/MenuLateralAdmin.vue"
 export default {
   name: "admin",
+  middleware: ['auth-admin'],
   components:{
     MenuLateralAdmin
   }

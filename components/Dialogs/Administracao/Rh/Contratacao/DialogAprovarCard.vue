@@ -94,7 +94,7 @@ export default {
     async aprovarCard(aprovacao) {
       let cards = this.cards.map((card) => card.id)
 
-      let usuario_id = this.$store.state.usuario.usuario.id
+      let usuario_id = this.$auth.user.id
 
       let tipo_aprovacao = this.tipoAprovacao
 

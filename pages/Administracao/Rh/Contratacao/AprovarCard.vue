@@ -5,8 +5,8 @@
 				@click="tipoAprovacao = 'controle'"
 				class="px-4 hover:bg-blue-600"
 				v-if="
-					$store.state.usuario.usuario &&
-					$store.state.usuario.usuario.permissoes.includes('aprovar_card_controle')
+					$auth.user &&
+					$auth.user.permissoes.includes('aprovar_card_controle')
 				"
 				:class="{ 'border-b-4 border-b-white': tipoAprovacao === 'controle' }">
 				Controle
@@ -15,8 +15,8 @@
 				@click="tipoAprovacao = 'gestor_area'"
 				class="px-4 hover:bg-blue-600"
 				v-if="
-					$store.state.usuario.usuario &&
-					$store.state.usuario.usuario.permissoes.includes('aprovar_card_gerente_area')
+					$auth.user &&
+					$auth.user.permissoes.includes('aprovar_card_gerente_area')
 				"
 				:class="{ 'border-b-4 border-b-white': tipoAprovacao === 'gestor_area' }">
 				Gestor Área
@@ -25,8 +25,8 @@
 				@click="tipoAprovacao = 'site_manager'"
 				class="px-4 hover:bg-blue-600"
 				v-if="
-					$store.state.usuario.usuario &&
-					$store.state.usuario.usuario.permissoes.includes('aprovar_card_site_manager')
+					$auth.user &&
+					$auth.user.includes('aprovar_card_site_manager')
 				"
 				:class="{ 'border-b-4 border-b-white': tipoAprovacao === 'site_manager' }">
 				Site Manager
@@ -212,8 +212,8 @@
 			}
 		},
 		created() {
-			if (this.$store.state.usuario.usuario) {
-				let todasPermissoes = this.$store.state.usuario.usuario.permissoes
+			if (this.$auth.user) {
+				let todasPermissoes = this.$auth.user.permissoes
 
 				if (todasPermissoes.includes("aprovar_card_controle")) {
 					this.tiposAprovacao.push("controle")
@@ -258,7 +258,7 @@
 		},
 		methods: {
 			async buscarCards() {
-				let setor_id = this.$store.state.usuario.usuario.setor_id
+				let setor_id = this.$auth.user.setor_id
 				this.selecionados = []
 
 				let resp = await this.$axios.$get("/contratacao/card/aprovacao/buscarPaginados", {

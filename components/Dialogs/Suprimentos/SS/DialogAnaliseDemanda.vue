@@ -122,7 +122,7 @@ export default {
       let SSs = this.solicitacoes.map((ss) => {
         return ss.id
       })
-      let usuario_id = this.$store.state.usuario.usuario.id
+      let usuario_id = this.$auth.user.id
       //
       //
       let resp = await this.$axios

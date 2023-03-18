@@ -110,7 +110,7 @@
 				}
 			},
       async comentar(){
-        let usuario_id = this.$store.state.usuario.usuario.id
+        let usuario_id = this.$auth.user.id
         let card_id = this.card_id
         let comentario = this.comentario
 

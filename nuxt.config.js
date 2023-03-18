@@ -26,7 +26,7 @@ export default {
   },
 
   router: {
-    // middleware: 'auth'
+    // middleware: ['auth', 'admin']
   },
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -46,8 +46,8 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/auth-next'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -67,5 +67,28 @@ export default {
         autoprefixer: {},
       },
     },
+  },
+
+  auth: {
+    strategies: {
+      local: {
+        token: {
+          property: 'token',
+          global: true,
+          // required: true,
+          // type: 'Bearer'
+        },
+        user: {
+          property: false,
+          // autoFetch: true
+        },
+        endpoints: {
+          login: { url: '/usuario/login_admin', method: 'post'},
+          user: { url: '/usuario/login_admin/buscar', method: 'get', propertyName: false},
+          logout: {url: '/api/auth/logout', method: 'post'},
+        },
+        tokenType: ''
+      }
+    }
   }
 }

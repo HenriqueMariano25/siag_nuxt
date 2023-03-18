@@ -101,7 +101,7 @@ export default {
     },
     async processarCards(){
       let cards = this.cards.map((card) => card.id)
-      let usuario_id = this.$store.state.usuario.usuario ? this.$store.state.usuario.usuario.id : null
+      let usuario_id = this.$auth.user ? this.$auth.user.id : null
 
       let { comentario } = this.processo
 

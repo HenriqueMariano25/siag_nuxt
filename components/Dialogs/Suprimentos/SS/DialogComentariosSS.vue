@@ -18,7 +18,7 @@
 								  <strong>Usuário: </strong> {{ c.Usuario ? c.Usuario.nome : "" }}
                 </span>
                 <span class="flex">
-                   {{ $dayjs(c.createdAt).format("DD/MM/YYYY hh:mm:ss") }}
+                   {{ $dayjs(c.createdAt).format("DD/MM/YYYY HH:mm:ss") }}
                 </span>
 
               </div>
@@ -117,7 +117,7 @@ export default {
       }
     },
     async comentar() {
-      let usuario_id = this.$store.state.usuario.usuario.id
+      let usuario_id = this.$auth.user.id
       let ss_id = this.ss_id
       let comentario = this.comentario
 

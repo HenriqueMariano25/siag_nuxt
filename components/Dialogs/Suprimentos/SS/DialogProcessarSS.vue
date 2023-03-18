@@ -120,7 +120,7 @@ export default {
       let campo = this.campo
       let label = this.label
       let ss_id = this.ss.id
-      let usuario_id = this.$store.state.usuario.usuario.id
+      let usuario_id = this.$auth.user.id
 
       let resp = await this.$axios.$post('/suprimentos/ss/processar_geral_ss', { comentario, input, campo, ss_id, label,
         usuario_id })
@@ -141,7 +141,7 @@ export default {
       let campo = this.campo
       let label = this.label
       let ss_id = this.ss.id
-      let usuario_id = this.$store.state.usuario.usuario.id
+      let usuario_id = this.$auth.user.id
 
       let resp = await this.$axios.$post('/suprimentos/ss/finalizar_ss', {
         comentario,

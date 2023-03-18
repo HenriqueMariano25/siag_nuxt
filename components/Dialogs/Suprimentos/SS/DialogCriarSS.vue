@@ -1292,8 +1292,8 @@
 				this.validarFormulario()
 
 				if (this.erro.length === 0) {
-					let setor_id = this.$store.state.usuario.usuario.setor_id
-					let usuario_id = this.$store.state.usuario.usuario.id
+					let setor_id = this.$auth.user.setor_id
+					let usuario_id = this.$auth.user.id
 
 					let dados = {
 						ss: { ...this.ss, setor_id },
@@ -1314,8 +1314,7 @@
         this.validarFormulario()
 
         if (this.erro.length === 0) {
-          // let setor_id = this.$store.state.usuario.usuario.setor_id
-          let usuario_id = this.$store.state.usuario.usuario.id
+          let usuario_id = this.$auth.user.id
 
           let dados = {
             ss: {...this.ss},

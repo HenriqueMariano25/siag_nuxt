@@ -91,7 +91,7 @@ export default {
 
     async aprovarSSs(aprovacao) {
       let SSs = this.sss.map(ss => (ss.id))
-      let usuario_id = this.$store.state.usuario.usuario.id
+      let usuario_id = this.$auth.user.id
       let comentario = this.comentario
 
       try{

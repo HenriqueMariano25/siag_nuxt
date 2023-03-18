@@ -1,10 +1,10 @@
 <template>
-	<div class="w-full ">
+	<div class="w-full">
 		<div
 			class="flex bg-primaria-500 w-[96.5vw] print:hidden menuEtapas"
 			style="overflow-x: scroll">
 			<button
-				class="flex p-2 hover:bg-gray-300  hover:text-black box-border print:hidden text-white"
+				class="flex p-2 hover:bg-gray-300 hover:text-black box-border print:hidden text-white"
 				:class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === 0 }"
 				@click="etapa_id = 0">
 				Todos
@@ -17,7 +17,7 @@
 					class="flex py-2 px-3 hover:bg-gray-400 box-border text-white hover:text-black"
 					:class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === etapa.id }"
 					@click="etapa_id = etapa.id">
-					<span class="whitespace-nowrap ">{{ etapa.nome }}</span>
+					<span class="whitespace-nowrap">{{ etapa.nome }}</span>
 				</button>
 			</div>
 		</div>
@@ -33,37 +33,43 @@
 					:totalItens="totalItens"
 					@atualizar="atualizarDados"
 					@dblclick="verDetalhesSS"
-          :carregando="carregandoTabela"
+					:carregando="carregandoTabela"
 					:temDetalhes="false">
-          <template v-slot:[`body.selecione`]="{ item }">
-            <div class="flex justify-center">
-              <AppFormCheckbox
-                :id="parseInt(item.id)"
-                :valor="item"
-                v-model="selecionados"/>
-            </div>
-          </template>
+					<template v-slot:[`body.selecione`]="{ item }">
+						<div class="flex justify-center">
+							<AppFormCheckbox
+								:id="parseInt(item.id)"
+								:valor="item"
+								v-model="selecionados" />
+						</div>
+					</template>
 					<template v-slot:[`body.situacao`]="{ item }">
 						<div class="flex justify-center">
-              <div v-if="!$dayjs().isAfter(item.data_necessidade, 'day')" class="bg-blue-400 text-black px-2 rounded">
-                No prazo
-              </div>
-              <div v-if="$dayjs().isAfter(item.data_necessidade, 'day')" class="bg-red-400 text-black px-2 rounded">Atrasado</div>
+							<div
+								v-if="!$dayjs().isAfter(item.data_necessidade, 'day')"
+								class="bg-blue-400 text-black px-2 rounded">
+								No prazo
+							</div>
+							<div
+								v-if="$dayjs().isAfter(item.data_necessidade, 'day')"
+								class="bg-red-400 text-black px-2 rounded">
+								Atrasado
+							</div>
 						</div>
 					</template>
 					<template v-slot:[`body.acoes`]="{ item }">
 						<BotaoIconeEditar
-              v-if="etapa_id !== 1"
+							v-if="etapa_id !== 1"
 							@click="
 								mostrarDialogProcessarSS = true
 								ss = item
 							" />
-            <BotaoIconeEditar
-              v-if="etapa_id === 1"
-              @click="
+						<BotaoIconeEditar
+							v-if="etapa_id === 1 && item.Usuario.id === $auth.user.id"
+							@click="
 								mostrarDialogCriarSolicitacao = true
 								ss_id = item.id
-							"/>
+							" />
 					</template>
 					<template v-slot:[`body.prazo_execucao`]="{ item }">
 						<span v-if="item">
@@ -140,10 +146,13 @@
 		</RodapePagina>
 		<DialogCriarSS
 			v-if="mostrarDialogCriarSolicitacao"
-			@cancelar="mostrarDialogCriarSolicitacao = false; ss_id = null"
+			@cancelar="
+				mostrarDialogCriarSolicitacao = false
+				ss_id = null
+			"
 			:ss_id="ss_id"
 			@adicionado="ssAdicionado"
-      @editado="ssEditado"/>
+			@editado="ssEditado" />
 		<DialogComentariosSS
 			:ss_id="ss_id"
 			v-if="mostrarDialogComentariosSS"
@@ -174,7 +183,7 @@
 			v-if="mostrarDialogProcessarSS"
 			@processado="processadoSS"
 			:typeInput="typeInputDialog"
-      :etapa_id="etapa_id"
+			:etapa_id="etapa_id"
 			@cancelar="
 				mostrarDialogProcessarSS = false
 				ss = null
@@ -189,7 +198,10 @@
 
 		<DialogDetalhesSS
 			v-if="mostrarDialogDetalhesSS"
-			@cancelar="mostrarDialogDetalhesSS = false; ss_id = null"
+			@cancelar="
+				mostrarDialogDetalhesSS = false
+				ss_id = null
+			"
 			:ss_id="ss_id" />
 	</div>
 </template>
@@ -243,8 +255,6 @@
 				selecionados: [],
 				etapas: [],
 				etapa_id: null,
-				listaAcao: [1, 8, 10, 13, 14, 15, 16, 18, 26, 27],
-				listaSelect: [7, 9, 11, 12, 21, 22, 23, 24, 25],
 				placeholderDialog: null,
 				labelDialog: null,
 				campoDialog: null,
@@ -253,10 +263,48 @@
 				pularProxEtapa: false,
 				typeInputDialog: "text",
 				mostrarDialogDetalhesSS: false,
-        carregandoTabela: false,
+				carregandoTabela: false,
 			}
 		},
 		computed: {
+			listaAcao() {
+				let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
+
+				if (permissoes.includes("ss_gerenciamento")) {
+					return [8, 10, 13, 14, 15, 16, 18, 24, 25]
+				}
+
+				if (permissoes.includes("ss_sap")) {
+					return [8]
+				}
+
+				if (permissoes.includes("ss_comprador")) {
+					return [10, 13, 14, 15, 16, 18]
+				}
+
+				if (permissoes.includes("ss_juridico")) {
+					return [10, 13, 14, 15, 16, 24, 25]
+				}
+
+				return []
+			},
+			listaSelect() {
+        let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
+
+				if (permissoes.includes("ss_gerenciamento")) {
+					return [7, 9, 11, 12, 19, 20, 21, 22, 23]
+				}
+
+				if (permissoes.includes("ss_comprador")) {
+					return [9, 11, 12]
+				}
+
+				if (permissoes.includes("ss_juridico")) {
+					return [19, 20, 21, 22, 23]
+				}
+
+				return []
+			},
 			cabecalho() {
 				let cabecalho = [
 					{
@@ -276,20 +324,24 @@
 					{ nome: "Comentários", valor: "comentarios", filtro: false },
 				]
 
+				console.log(this.listaAcao)
+
 				if (this.listaAcao.includes(this.etapa_id)) {
-					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true })
+					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-10" })
 				} else if (this.listaSelect.includes(this.etapa_id)) {
-					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true })
+					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true, largura: "w-10" })
 				}
-				// else {
-				//   cabecalho.unshift({nome: "", valor: "selecione", centralizar: true})
-				// }
+
+				if (this.etapa_id === 1) {
+					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-10" })
+				}
 				return cabecalho
 			},
 		},
 		async mounted() {
 			this.etapas = await this.buscarEtapaSS()
 			this.etapa_id = 0
+
 			this.buscarSolicitacoes()
 		},
 		methods: {
@@ -298,15 +350,15 @@
 				this.mostrarAlerta = true
 				this.textoAlerta = "Solicitação criada com sucesso!"
 			},
-      async ssEditado(id) {
-        this.mostrarDialogCriarSolicitacao = false
-        this.mostrarAlerta = true
-        this.textoAlerta = "Solicitação editada com sucesso!"
+			async ssEditado(id) {
+				this.mostrarDialogCriarSolicitacao = false
+				this.mostrarAlerta = true
+				this.textoAlerta = "Solicitação editada com sucesso!"
 
-        let index = this.dados.findIndex( o => o.id = id )
+				let index = this.dados.findIndex((o) => (o.id = id))
 
-        this.dados.splice(index, 1)
-      },
+				this.dados.splice(index, 1)
+			},
 			cancelar() {
 				this.card_id = null
 				this.mostrarDialogCriarCard = false
@@ -330,21 +382,36 @@
 				await this.buscarSolicitacoes()
 			},
 			async buscarSolicitacoes() {
-        this.carregandoTabela = true
+				this.carregandoTabela = true
 				let filtros = Object.assign({}, this.filtros)
 
-        for(let f of Object.keys(filtros)){
-          filtros[f] = { '$iLike': `%${filtros[f]}%` }
-        }
+				for (let f of Object.keys(filtros)) {
+					filtros[f] = { $iLike: `%${filtros[f]}%` }
+				}
 
 				let etapa_id = this.etapa_id
 				if (etapa_id !== 0) {
-					filtros['etapa_ss_id'] = etapa_id
+					filtros["etapa_ss_id"] = etapa_id
 				}
 
-        if(etapa_id === 0){
-          delete filtros['etapa_ss_id'];
-        }
+				if (etapa_id === 0) {
+					delete filtros["etapa_ss_id"]
+				}
+
+				let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
+        console.log(permissoes)
+				if (
+					!permissoes.includes([
+						"ss_comprador",
+						"ss_gerenciamento",
+						"ss_sap",
+						"ss_juridico",
+						"aprovar_ss_site_manager",
+						"aprovar_ss_controle",
+					])
+				) {
+          filtros['setor_id'] = this.$auth.user.setor_id
+				}
 
 				let resp = await this.$axios.$get("/suprimentos/ss/buscar_todas", {
 					params: {
@@ -352,14 +419,13 @@
 						page: this.pagina - 1,
 						size: this.itensPorPagina,
 					},
-
 				})
 
 				if (!resp.falha) {
 					let SSs = resp.dados.SSs.rows
 					this.totalItens = resp.dados.SSs.count
 					this.dados = SSs
-          this.carregandoTabela = false
+					this.carregandoTabela = false
 				}
 			},
 			async definidoComprador(SSs) {
@@ -391,7 +457,6 @@
 				this.selecionados = []
 			},
 			verDetalhesSS(dados) {
-
 				this.ss_id = dados.id
 				this.mostrarDialogDetalhesSS = true
 			},
@@ -402,7 +467,7 @@
 				this.buscarSolicitacoes()
 				this.typeInputDialog = "text"
 
-         if (valor === 8) {
+				if (valor === 8) {
 					this.labelDialog = "N° da requisição SAP"
 					this.campoDialog = "n_contrato_sap"
 				} else if (valor === 9) {
@@ -415,24 +480,24 @@
 					this.campoDialog = "data_patec"
 					this.typeInputDialog = "date"
 				} else if (valor === 14) {
-          this.labelDialog = "Data de Negociação"
-          this.campoDialog = "data_negociacao"
-          this.typeInputDialog = "date"
-        } else if (valor === 15) {
-          this.labelDialog = "Data de MCO"
-          this.campoDialog = "data_mco"
-          this.typeInputDialog = "date"
-        }else if (valor === 16) {
+					this.labelDialog = "Data de Negociação"
+					this.campoDialog = "data_negociacao"
+					this.typeInputDialog = "date"
+				} else if (valor === 15) {
+					this.labelDialog = "Data de MCO"
+					this.campoDialog = "data_mco"
+					this.typeInputDialog = "date"
+				} else if (valor === 16) {
 					this.labelDialog = "Nº Pedido de Compra"
 					this.campoDialog = "numero_pedido_compra"
 				} else if (valor === 18) {
 					this.labelDialog = "Handover"
 					this.campoDialog = "data_envio_handover"
 					this.typeInputDialog = "date"
-				} else if (valor === 26) {
+				} else if (valor === 24) {
 					this.labelDialog = "N° Contrato Juridico"
 					this.campoDialog = "n_contrato_juridico"
-				} else if (valor === 27) {
+				} else if (valor === 25) {
 					this.labelDialog = "N° Contrato SAP - Data da Aprovação"
 					this.campoDialog = "n_contrato_sap"
 				} else {
@@ -446,18 +511,17 @@
 	}
 </script>
 
-<style >
-.menuEtapas::-webkit-scrollbar{
-  width: 12px;
-}
-.menuEtapas::-webkit-scrollbar-track{
-  background-color: #898989;
-}
+<style>
+	.menuEtapas::-webkit-scrollbar {
+		width: 12px;
+	}
+	.menuEtapas::-webkit-scrollbar-track {
+		background-color: #898989;
+	}
 
-.menuEtapas::-webkit-scrollbar-thumb{
-  border-radius: 10px;
-  background-color: #0B1B36;
-  border:1px solid white;
-}
-
+	.menuEtapas::-webkit-scrollbar-thumb {
+		border-radius: 10px;
+		background-color: #0b1b36;
+		border: 1px solid white;
+	}
 </style>

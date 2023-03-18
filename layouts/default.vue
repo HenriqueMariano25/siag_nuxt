@@ -20,6 +20,7 @@ export default {
     MenuLateral,
     AppAlerta
   },
+  middleware: ['auth'],
   data(){
     return{
       mostrarLocal: this.$store.state.funcionarios.estaBuscando
