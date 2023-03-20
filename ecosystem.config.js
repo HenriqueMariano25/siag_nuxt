@@ -1,11 +1,10 @@
 module.exports = {
   apps: [
     {
-      name: 'Siag',
-      port: '82',
+      name: 'NuxtAppName',
       exec_mode: 'cluster',
-      instances: 'max',
-      script: './.output/server/index.mjs',
+      instances: 'max', // Or a number of instances
+      script: './node_modules/nuxt/bin/nuxt.js',
       args: 'start'
     }
   ]
