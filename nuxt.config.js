@@ -71,6 +71,25 @@ export default {
 
   auth: {
     strategies: {
+      localAdmin: {
+        scheme: 'local',
+        token: {
+          property: 'token',
+          global: true,
+          // required: true,
+          // type: 'Bearer'
+        },
+        user: {
+          property: false,
+          // autoFetch: true
+        },
+        endpoints: {
+          login: {url: '/usuario/login_admin', method: 'post'},
+          user: {url: '/usuario/login_admin/buscar', method: 'get', propertyName: false},
+          logout: {url: '/api/auth/logout', method: 'post'},
+        },
+        tokenType: ''
+      },
       local: {
         token: {
           property: 'token',
@@ -83,8 +102,8 @@ export default {
           // autoFetch: true
         },
         endpoints: {
-          login: { url: '/usuario/login_admin', method: 'post'},
-          user: { url: '/usuario/login_admin/buscar', method: 'get', propertyName: false},
+          login: { url: '/usuario/login/', method: 'post'},
+          user: { url: '/usuario/login/buscar', method: 'get', propertyName: false},
           logout: {url: '/api/auth/logout', method: 'post'},
         },
         tokenType: ''

@@ -64,6 +64,7 @@
 								mostrarDialogProcessarSS = true
 								ss = item
 							" />
+            {{ $auth.user }}
 						<BotaoIconeEditar
 							v-if="etapa_id === 1 && item.Usuario.id === $auth.user.id"
 							@click="

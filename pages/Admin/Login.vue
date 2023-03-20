@@ -57,27 +57,23 @@ export default {
 
 
       try {
-        let resp = await this.$auth.loginWith('local', {
+        let resp = await this.$auth.loginWith('localAdmin', {
           data: {
             usuario,
             senha
           },
         })
 
-        this.$router.push("/admin/login")
-      }catch (e) {
-        console.log(e)
-        console.log(e.response)
+        console.log(resp)
 
+        this.$router.push("/admin")
+      }catch (e) {
         if (!e.response){
           this.erro = "server_error"
         }else{
           if (e.response && e.response.status === 401)
             this.erro = "invalid_data"
         }
-
-
-
       }
 
 
