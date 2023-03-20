@@ -1,11 +1,15 @@
 module.exports = {
   apps: [
     {
-      name: 'NuxtAppName',
-      exec_mode: 'cluster',
-      instances: 'max', // Or a number of instances
+      name: 'SiagNuxt',
       script: './node_modules/nuxt/bin/nuxt.js',
       args: 'start'
     }
-  ]
+  ],
+  deploy: {
+    production: {
+      path: '/home/utent/Sistema/siag/siag_nuxt',
+      'post-deploy': 'npm install && npm build && pm2 startOrRestart ecosystem.config.js --env production'
+    }
+  }
 }
