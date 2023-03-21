@@ -3,10 +3,9 @@ module.exports = {
     {
       name: 'SiagNuxt',
       exec_mode: 'cluster',
-      instances: 'max',
+      instances: '1',
       script: './node_modules/nuxt/bin/nuxt.js',
       args: 'start',
-      port: 85
     }
   ],
   deploy: {
