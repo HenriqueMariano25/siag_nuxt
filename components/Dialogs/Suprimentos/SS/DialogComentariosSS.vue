@@ -38,7 +38,7 @@
             </div>
           </div>
         </div>
-        <div class="pt-2 px-2">
+        <div class="pt-2 px-2" v-if="podeComentar">
           <AppFormTextarea
             id="comentario"
             label="Comentário"
@@ -54,7 +54,7 @@
       </AppAlerta>
     </template>
     <template v-slot:rodape-btn-direito>
-      <BotaoPadrao texto="Comentar" @click="comentar()">
+      <BotaoPadrao texto="Comentar" @click="comentar()" v-if="podeComentar">
         <img
           src="@/assets/icons/add-b.svg"
           alt="btn-add"
@@ -83,7 +83,9 @@ export default {
       type: [String, Number],
       require: true,
     },
-    mostrar: {},
+    podeComentar: {
+      type: Boolean
+    },
   },
   data() {
     return {
@@ -96,7 +98,6 @@ export default {
   },
   mounted() {
     this.buscarComentarios()
-    console.log(this.ss_id)
   },
   methods: {
     cancelar() {

@@ -64,7 +64,6 @@
 								mostrarDialogProcessarSS = true
 								ss = item
 							" />
-            {{ $auth.user }}
 						<BotaoIconeEditar
 							v-if="etapa_id === 1 && item.Usuario.id === $auth.user.id"
 							@click="
@@ -101,6 +100,7 @@
 							@click="
 								ss_id = item.id
 								mostrarDialogComentariosSS = true
+								usuario_ss_id = item.usuario_id
 							">
 							<img
 								src="@/assets/icons/comentarios-b.svg"
@@ -157,6 +157,7 @@
 		<DialogComentariosSS
 			:ss_id="ss_id"
 			v-if="mostrarDialogComentariosSS"
+      :podeComentar="podeComentar"
 			@cancelar="
 				mostrarDialogComentariosSS = false
 				ss_id = null
@@ -265,6 +266,7 @@
 				typeInputDialog: "text",
 				mostrarDialogDetalhesSS: false,
 				carregandoTabela: false,
+        usuario_ss_id: false,
 			}
 		},
 		computed: {
@@ -325,8 +327,6 @@
 					{ nome: "Comentários", valor: "comentarios", filtro: false },
 				]
 
-				console.log(this.listaAcao)
-
 				if (this.listaAcao.includes(this.etapa_id)) {
 					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-10" })
 				} else if (this.listaSelect.includes(this.etapa_id)) {
@@ -338,6 +338,18 @@
 				}
 				return cabecalho
 			},
+      podeComentar(){
+        let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
+
+        let permEspeciais = [
+          "ss_comprador",
+          "ss_gerenciamento",
+          "ss_sap",
+          "ss_juridico",
+        ]
+
+        return permEspeciais.some(i => permissoes.includes(i)) || this.usuario_ss_id == this.$auth.user.id
+      }
 		},
 		async mounted() {
 			this.etapas = await this.buscarEtapaSS()
@@ -400,19 +412,20 @@
 				}
 
 				let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
-        console.log(permissoes)
-				if (
-					!permissoes.includes([
-						"ss_comprador",
-						"ss_gerenciamento",
-						"ss_sap",
-						"ss_juridico",
-						"aprovar_ss_site_manager",
-						"aprovar_ss_controle",
-					])
-				) {
+
+        let permEspeciais = [
+          "ss_comprador",
+          "ss_gerenciamento",
+          "ss_sap",
+          "ss_juridico",
+          "aprovar_ss_site_manager",
+          "aprovar_ss_controle"
+        ]
+
+        let temPermissao = permEspeciais.some(i => permissoes.includes(i))
+
+        if(!temPermissao)
           filtros['setor_id'] = this.$auth.user.setor_id
-				}
 
 				let resp = await this.$axios.$get("/suprimentos/ss/buscar_todas", {
 					params: {
@@ -464,7 +477,6 @@
 		},
 		watch: {
 			etapa_id(valor) {
-				console.log(valor)
 				this.buscarSolicitacoes()
 				this.typeInputDialog = "text"
 

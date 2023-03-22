@@ -112,7 +112,6 @@
     <template v-slot:rodape-btn-direito>
       <div class="flex items-center">
         <BotaoPadrao texto="Gerar PDF" @click="imprimir()">
-<!--          Mudar icone -->
           <img src="@/assets/icons/printer-b.svg" alt="" class="w-7 h-7">
         </BotaoPadrao>
       </div>
@@ -156,16 +155,9 @@ export default {
       if(!resp.falha){
           this.ss = resp.dados.ss
       }
-
-      console.log(resp)
     },
     async imprimir(){
       window.print()
-      // html2pdf(document.getElementById("imprimir"), {
-      //   margin: 1,
-      //   filename: "i-was-html.pdf",
-      // }).set({height: 1000}).from('canvas')
-      // this.$refs.html2Pdf.generatePdf()
     }
   }
 }
