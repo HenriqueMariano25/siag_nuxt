@@ -11,6 +11,7 @@
   "dependencies": {
     "@nuxtjs/auth-next": "5.0.0-1667386184.dfbbb54",
     "@nuxtjs/axios": "^5.13.6",
+    "@nuxtjs/tailwindcss": "^6.6.4",
     "core-js": "^3.25.3",
     "dayjs": "^1.11.7",
     "exceljs": "^4.3.0",

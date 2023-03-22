@@ -10,8 +10,8 @@ module.exports = {
   ],
   deploy: {
     production: {
-      path: '/home/utent/Sistema/siag/siag_nuxt',
-      'post-deploy': 'npm install && npm build && pm2 startOrRestart ecosystem.config.js --env production'
+      path: '/home/utent/Sistemas/siag/siag_nuxt',
+      'post-deploy': 'npm install && nuxt build && pm2 startOrRestart ecosystem.config.js --env production'
     }
   }
 }
