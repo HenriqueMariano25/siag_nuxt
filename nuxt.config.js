@@ -47,7 +47,8 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     '@nuxtjs/axios',
-    '@nuxtjs/auth-next'
+    '@nuxtjs/auth-next',
+    '@nuxtjs/tailwindcss',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -86,7 +87,7 @@ export default {
         endpoints: {
           login: {url: '/usuario/login_admin', method: 'post'},
           user: {url: '/usuario/login_admin/buscar', method: 'get', propertyName: false},
-          logout: {url: '/api/auth/logout', method: 'post'},
+          logout: {url: '/usuario/logout', method: 'post'},
         },
         tokenType: ''
       },
@@ -99,12 +100,12 @@ export default {
         },
         user: {
           property: false,
-          // autoFetch: true
+          autoFetch: true
         },
         endpoints: {
           login: { url: '/usuario/login/', method: 'post'},
           user: { url: '/usuario/login/buscar', method: 'get', propertyName: false},
-          logout: {url: '/api/auth/logout', method: 'post'},
+          logout: {url: '/usuario/logout', method: 'post'},
         },
         tokenType: ''
       }

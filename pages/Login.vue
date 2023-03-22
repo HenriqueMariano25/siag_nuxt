@@ -66,8 +66,6 @@
             },
           })
 
-          console.log(resp)
-
           await this.$router.push("/")
         } catch (e) {
           if (!e.response) {
@@ -77,43 +75,6 @@
               this.erro = "invalid_data"
           }
         }
-
-        // try {
-        //   let resp = await this.$auth.loginWith('local', {
-        //     data: {
-        //       usuario,
-        //       senha
-        //     },
-        //   })
-        //
-        //
-        //   // let resp = await this.$axios.$post("/usuario/login/", {usuario, senha})
-        //   //   .catch(error =>  error.response.data )
-        //   //
-        //   // if(!resp.falha){
-        //   //
-        //   //   let token = resp.dados["Authorization"]
-        //   //   let usuario = resp.dados.usuario
-        //   //
-        //   //   let permissoes = usuario.Permissaos.map((a) => a.descricao)
-        //   //   usuario.permissoes = permissoes
-        //   //
-        //   //   this.$store.commit("usuario/DEFINIR_USUARIO_LOGADO", {
-        //   //     token: token,
-        //   //     usuario,
-        //   //   })
-        //   //
-        //   //   this.$router.push({
-        //   //     path: '/'
-        //   //   })
-        //   // }else{
-        //   //   if(resp.dados.type === "invalid_data"){
-        //   //     this.erro = "invalid_data"
-        //   //   }
-        //   // }
-        // }catch (e) {
-        //   this.erro = "server_error"
-        // }
 			},
 		},
 	}
