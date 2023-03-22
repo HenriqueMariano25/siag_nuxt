@@ -89,7 +89,7 @@ export default {
           autoFetch: true
         },
         endpoints: {
-          login: { url: '/usuario/login/', method: 'post'},
+          login: { url: '/usuario/login/novo_padrao', method: 'post'},
           user: { url: '/usuario/login/buscar', method: 'get', propertyName: false},
           logout: {url: '/usuario/logout', method: 'post'},
         },
