@@ -1173,16 +1173,12 @@
 			},
 		},
 		async fetch() {
-      this.carregando = true
 			await this.buscarCentroCusto()
 			await this.buscarEscopoSS()
 
       if(this.ss_id){
-
-        console.log("Aquiiiii")
-        console.log(this.ss_id)
+        this.carregando = true
         await this.buscarSolicitacao()
-
       }
 		},
 		methods: {
@@ -1223,8 +1219,6 @@
         if(!resp.falha){
           this.ss = Object.assign({}, resp.dados.ss)
 
-          console.log(resp.dados.ss)
-
           this.fornecedores = this.ss.FornecedorSSes ? this.ss.FornecedorSSes : []
           this.matriz = this.ss.MatrizResponsabilidadeSS ? this.ss.MatrizResponsabilidadeSS : []
           this.carregando = false
@@ -1233,9 +1227,6 @@
             this.ss.tipo_solicitacao = resp.dados.ss.tipo_solicitacao
           }, 300)
         }
-
-
-        console.log(resp)
       },
 
 			adicionarFornecedor() {
@@ -1303,8 +1294,6 @@
 					}
 					let resp = await this.$axios.$post("/ss/cadastrar", { ...dados })
 
-					console.log(resp)
-
 					if (!resp.falha) {
 						this.$emit("adicionado")
 					}
@@ -1323,8 +1312,6 @@
             usuario_id: usuario_id,
           }
           let resp = await this.$axios.$put("/suprimentos/ss/editar", {...dados})
-
-          console.log(resp)
 
           if (!resp.falha) {
             this.$emit("editado", this.ss.id )

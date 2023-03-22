@@ -96,7 +96,7 @@
 					<template v-slot:[`body.comentarios`]="{ item }">
 						<button
 							class="flex hover:bg-gray-400 w-full p-1"
-							v-if="item.ComentarioSSes.length > 0"
+							v-if="item.ComentarioSS.length > 0"
 							@click="
 								ss_id = item.id
 								mostrarDialogComentariosSS = true
@@ -106,9 +106,9 @@
 								src="@/assets/icons/comentarios-b.svg"
 								alt="close"
 								class="w-7 h-7 mr-1" />
-							<span v-if="item.ComentarioSSes.at(0).descricao">
-								{{ item.ComentarioSSes.at(0).descricao.substr(0, 25)
-								}}{{ item.ComentarioSSes.at(0).descricao.length > 25 ? "..." : "" }}
+							<span v-if="item.ComentarioSS.at(0).descricao">
+								{{ item.ComentarioSS.at(0).descricao.substr(0, 25)
+								}}{{ item.ComentarioSS.at(0).descricao.length > 25 ? "..." : "" }}
 							</span>
 						</button>
 					</template>
@@ -434,6 +434,8 @@
 						size: this.itensPorPagina,
 					},
 				})
+
+        console.log(resp)
 
 				if (!resp.falha) {
 					let SSs = resp.dados.SSs.rows
