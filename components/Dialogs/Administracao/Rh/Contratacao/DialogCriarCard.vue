@@ -140,6 +140,7 @@
 							type="text"
 							obrigatorio
 							id="telefoneIndicacao"
+              mask="['(##)####-####','(##)#####-####']"
 							v-model="card.indicacao.telefone"
 							:invalido="erro.includes('indicacao.telefone')" />
 						<AppFormInput
@@ -161,6 +162,7 @@
 							label="CPF"
 							type="text"
 							id="cpfIndicacao"
+              mask="###.###.###-##"
 							v-model="card.indicacao.cpf" />
 						<AppFormFile
 							label="Currículo em PDF"
@@ -195,7 +197,7 @@
 					v-if="erro.length > 0">
 					<span>Campos obrigatórios necessários</span>
 				</div>
-				<BotaoSalvar @click="this.card_id !== null ? editarContratacao() : adicionarContratacao()" />
+				<BotaoSalvar @click="card_id !== null ? editarContratacao() : adicionarContratacao()" />
 			</div>
 		</template>
 	</BaseDialog>
@@ -227,7 +229,8 @@
 		},
 		props: {
 			card_id: {
-				type: Number,
+				type: [String, Number],
+        required: true
 			},
 		},
 		data() {
@@ -310,7 +313,7 @@
 			},
 		},
 
-		async mounted() {
+		async created() {
 			console.log(this.card_id)
 			if (this.card_id !== null) {
 				await this.buscarCard()
@@ -476,6 +479,8 @@
 			},
 
       async editarContratacao(){
+        console.log("Aqui")
+
         let usuario_id = this.$auth.user.id;
 
         const config = {headers: {"Content-Type": "multipart/form-data"}};
@@ -491,7 +496,12 @@
         formData.append("data", rawData);
 
         try {
-          await this.$axios.$put("/contratacao/card/editar", formData, config);
+          let resp = await this.$axios.$put("/contratacao/card/editar_novo_padrao", formData, config);
+
+          if(!resp.falha){
+            let comentario = resp.dados.comentario
+            this.$emit("editado", { card_id: this.card_id, comentario})
+          }
         } catch (error) {
           console.log(error);
         }

@@ -1,5 +1,26 @@
 <template>
 	<div>
+    <div
+      class="flex bg-primaria-500 w-[96.5vw] print:hidden menuEtapas"
+      style="overflow-x: scroll">
+      <button
+        class="flex p-2 hover:bg-gray-300 hover:text-black box-border print:hidden text-white"
+        :class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === 0 }"
+        @click="etapa_id = 0">
+        Todos
+      </button>
+      <div
+        v-for="etapa in etapas"
+        :key="etapa.id"
+        class="grid grid-flow-col auto-cols-max divide-y-2 divide-amber-50">
+        <button
+          class="flex py-2 px-3 hover:bg-gray-400 box-border text-white hover:text-black"
+          :class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === etapa.id }"
+          @click="etapa_id = etapa.id">
+          <span class="whitespace-nowrap">{{ etapa.nome }}</span>
+        </button>
+      </div>
+    </div>
 		<div>
 			<AppTabela
 				:cabecalho="cabecalho"
@@ -8,7 +29,9 @@
 				:itensPorPagina="itensPorPagina"
 				:pagina="pagina"
 				:totalItens="totalItens"
+        altura="calc(100vh - 194px)"
 				@atualizar="atualizarDados"
+        :carregando="carregandoTabela"
 				:temDetalhes="false">
 				<template v-slot:[`body.selecione`]="{ item }">
 					<div class="flex justify-center">
@@ -68,6 +91,7 @@
 							src="@/assets/icons/comentarios-b.svg"
 							alt="close"
 							class="w-7 h-7 mr-1" />
+
 						<span v-if="item.Comentarios.at(-1).descricao">
 							{{ item.Comentarios.at(-1).descricao.substr(0, 20)
 							}}{{ item.Comentarios.at(-1).descricao.length > 20 ? "..." : "" }}
@@ -126,6 +150,7 @@
 		<DialogCriarCard
 			v-if="mostrarDialogCriarCard"
 			:card_id="card_id"
+      @editado="cardEditado"
 			@cancelar="cancelar" />
 		<DialogProcessarCard
 			:cards="selecionados"
@@ -158,7 +183,9 @@
 	import DialogProcessarCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogProcessarCard.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import DialogComentariosCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogComentariosCard.vue"
+  import {buscarEtapa} from "~/mixins/buscarInformacoes";
 	export default {
+    mixins: [buscarEtapa],
 		name: "Cards",
 		components: {
 			RodapePagina,
@@ -174,22 +201,6 @@
 		data() {
 			return {
 				mostrarDialogCriarCard: false,
-				cabecalho: [
-					{ nome: "", valor: "selecione", centralizar: true },
-					{ nome: "", valor: "acoes", centralizar: true },
-					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true },
-					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true },
-					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
-					{ nome: "Setor", valor: "Setor.nome", filtro: true },
-					{ nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true },
-					{ nome: "PEP", valor: "CentroCustoPEP.numero_pep", filtro: true },
-					{ nome: "Função", valor: "FuncaoCard.nome", filtro: true },
-					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
-					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true },
-					{ nome: "Previsão Entrega", valor: "previsao_entrega", filtro: true },
-					{ nome: "Última data", valor: "ultima_data", filtro: true },
-					{ nome: "Comentários", valor: "comentarios", filtro: true },
-				],
 				dados: [],
 				filtros: [],
 				itensPorPagina: 10,
@@ -201,11 +212,47 @@
 				mostrarDialogComentariosCard: false,
 				mostrarAlerta: false,
 				textoAlerta: "",
+        etapas: [],
+        etapa_id: null,
+        carregandoTabela: false
 			}
 		},
-		created() {
-			this.buscarCards()
-		},
+    computed:{
+      cabecalho() {
+        let cabecalho = [
+          {nome: "", valor: "selecione", centralizar: true},
+          {nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true},
+          {nome: "Cod.", valor: "id", filtro: true, centralizar: true},
+          {nome: "Situação", valor: "situacao", filtro: true, centralizar: true},
+          {nome: "Setor", valor: "Setor.nome", filtro: true},
+          {nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true},
+          {nome: "PEP", valor: "CentroCustoPEP.numero_pep", filtro: true},
+          {nome: "Função", valor: "FuncaoCard.nome", filtro: true},
+          {nome: "Nome", valor: "Indicacao.nome", filtro: true},
+          {nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true},
+          {nome: "Previsão Entrega", valor: "previsao_entrega", filtro: true},
+          {nome: "Última data", valor: "ultima_data", filtro: true},
+          {nome: "Comentários", valor: "comentarios", filtro: true},
+        ]
+
+        // if (this.listaAcao.includes(this.etapa_id)) {
+        //   cabecalho.unshift({nome: "", valor: "acoes", centralizar: true, largura: "w-10"})
+        // } else if (this.listaSelect.includes(this.etapa_id)) {
+        //   cabecalho.unshift({nome: "", valor: "selecione", centralizar: true, largura: "w-10"})
+        // }
+
+        if (this.etapa_id !== 0) {
+          cabecalho.unshift({nome: "", valor: "acoes", centralizar: true, largura: "w-10"})
+        }
+        return cabecalho
+      },
+    },
+    async mounted() {
+      this.etapas = await this.buscarEtapa()
+      this.etapa_id = 0
+
+      await this.buscarCards()
+    },
 		methods: {
 			cancelar() {
 				this.card_id = null
@@ -215,10 +262,19 @@
 				this.filtros = filtros
 			},
 			async buscarCards() {
+        this.carregandoTabela = true
+        let filtros = Object.assign({}, this.filtros)
+
+        let etapa_id = this.etapa_id
+        if (etapa_id !== 0) {
+          filtros["etapa_id"] = etapa_id
+        }
+
 				let resp = await this.$axios.$get("/contratacao/card/buscarPaginados", {
 					params: {
 						page: this.pagina - 1,
 						size: this.itensPorPagina,
+            filtros
 					},
 				})
 
@@ -226,6 +282,7 @@
 					let cards = resp.dados.cards.rows
 					this.totalItens = resp.dados.cards.count
 					this.dados = cards
+          this.carregandoTabela = false
 				}
 			},
 
@@ -245,6 +302,24 @@
 				this.mostrarDialogCriarCard = true
 			},
 
+      cardEditado(dados){
+        console.log(dados)
+
+        let idx = this.dados.findIndex(o => o.id === dados.card_id)
+
+        console.log(this.dados[idx])
+
+        if(this.dados[idx].etapa_id !== 1)
+          this.dados.splice(idx, 1)
+        else
+          this.dados[idx].Comentarios.push({ descricao: dados.comentario })
+
+        this.mostrarDialogCriarCard = false
+        this.mostrarAlerta = true
+        this.textoAlerta = "Card editado com sucesso"
+        this.card_id = null
+      },
+
 			async processado(dados) {
 				let { cards, etapa_id } = dados
 
@@ -263,6 +338,11 @@
 				}
 			},
 		},
+    watch: {
+      etapa_id(valor) {
+        this.buscarCards()
+      }
+    },
 	}
 </script>
 

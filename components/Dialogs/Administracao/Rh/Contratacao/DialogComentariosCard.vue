@@ -30,11 +30,10 @@
 								<strong>Moveu para: </strong>
 								{{ c.etapa_destino ? c.etapa_destino.nome : "" }}
 							</span>
-							<span
-								v-if="c.descricao"
-								class="flex bg-gray-300 px-2 border border-gray-400">
-								<strong>Comentário: </strong>{{ c.descricao }}
-							</span>
+              <div class="flex flex-col bg-gray-300 px-1 border border-gray-400 whitespace-pre-line" v-if="c.descricao">
+                <span><strong>Comentário: </strong></span>
+                <pre class="ml-3">{{ c.descricao }}</pre>
+              </div>
 						</div>
 					</div>
 				</div>

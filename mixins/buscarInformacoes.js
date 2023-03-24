@@ -94,6 +94,8 @@ export const buscarEtapa = {
 			let etapaBuscados = await this.$axios.$get("/contratacao/etapa/buscarTodos")
 				.then((resp) => resp.etapas)
 
+      etapaBuscados.sort((a, b) => parseInt(a.ordem) - parseInt(b.ordem))
+
 			return etapaBuscados
 		},
 	},
