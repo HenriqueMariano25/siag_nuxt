@@ -38,7 +38,8 @@
 						<AppFormCheckbox
 							:id="parseInt(item.id)"
 							:valor="item"
-							v-model="selecionados" />
+							v-model="selecionados"
+            />
 					</div>
 				</template>
 				<template v-slot:[`body.acoes`]="{ item }">
@@ -203,10 +204,10 @@
 				mostrarDialogCriarCard: false,
 				dados: [],
 				filtros: [],
-				itensPorPagina: 10,
+				itensPorPagina: 20,
 				pagina: 1,
-				totalItens: 0,
 				card_id: null,
+        totalItens: 0,
 				selecionados: [],
 				mostrarDialogProcessarCard: false,
 				mostrarDialogComentariosCard: false,
@@ -214,13 +215,13 @@
 				textoAlerta: "",
         etapas: [],
         etapa_id: null,
-        carregandoTabela: false
+        carregandoTabela: false,
 			}
 		},
     computed:{
       cabecalho() {
         let cabecalho = [
-          {nome: "", valor: "selecione", centralizar: true},
+
           {nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true},
           {nome: "Cod.", valor: "id", filtro: true, centralizar: true},
           {nome: "Situação", valor: "situacao", filtro: true, centralizar: true},
@@ -243,6 +244,11 @@
 
         if (this.etapa_id !== 0) {
           cabecalho.unshift({nome: "", valor: "acoes", centralizar: true, largura: "w-10"})
+        }
+
+        let listaNaoSelect = [0, 1, 2, 3]
+        if (!listaNaoSelect.some(o => this.etapa_id === o )) {
+          cabecalho.unshift({nome: "", valor: "selecione", centralizar: true, largura: "w-10"},)
         }
         return cabecalho
       },
@@ -321,6 +327,8 @@
       },
 
 			async processado(dados) {
+        console.log(dados)
+
 				let { cards, etapa_id } = dados
 
 				this.mostrarDialogProcessarCard = false
@@ -332,10 +340,12 @@
 					this.dados[index].etapa_id = etapa_id.id
 					this.dados[index].Etapa = etapa_id
 
-					this.mostrarAlerta = true
-					this.textoAlerta = "Cards processados com sucesso!"
-					this.selecionados = []
+          this.dados.splice(index, 1)
+          this.totalItens -= 1
 				}
+        this.mostrarAlerta = true
+        this.textoAlerta = "Cards processados com sucesso!"
+        this.selecionados = []
 			},
 		},
     watch: {
@@ -346,4 +356,18 @@
 	}
 </script>
 
-<style scoped></style>
+<style scoped>
+.menuEtapas::-webkit-scrollbar {
+  width: 12px;
+}
+
+.menuEtapas::-webkit-scrollbar-track {
+  background-color: #898989;
+}
+
+.menuEtapas::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #0b1b36;
+  border: 1px solid white;
+}
+</style>

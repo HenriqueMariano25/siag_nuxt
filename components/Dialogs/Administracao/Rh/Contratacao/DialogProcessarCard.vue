@@ -48,6 +48,7 @@
     <template v-slot:rodape-btn-direito>
       <div class="flex items-center gap-5 text-black">
         <BotaoPadrao
+          :disabled="processo.etapa_id === null || processo.etapa_id === ''"
           texto="Processar Cards"
           @click="processarCards()">
           <template v-slot>
