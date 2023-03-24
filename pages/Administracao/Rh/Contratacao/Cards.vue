@@ -1,27 +1,27 @@
 <template>
-	<div>
-    <div
-      class="flex bg-primaria-500 w-[96.5vw] print:hidden menuEtapas"
-      style="overflow-x: scroll">
-      <button
-        class="flex p-2 hover:bg-gray-300 hover:text-black box-border print:hidden text-white"
-        :class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === 0 }"
-        @click="etapa_id = 0">
-        Todos
-      </button>
-      <div
-        v-for="etapa in etapas"
-        :key="etapa.id"
-        class="grid grid-flow-col auto-cols-max divide-y-2 divide-amber-50">
-        <button
-          class="flex py-2 px-3 hover:bg-gray-400 box-border text-white hover:text-black"
-          :class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === etapa.id }"
-          @click="etapa_id = etapa.id">
-          <span class="whitespace-nowrap">{{ etapa.nome }}</span>
-        </button>
-      </div>
-    </div>
-		<div>
+	<div class="w-full">
+		<div
+			class="flex bg-primaria-500 w-[96.5vw] print:hidden menuEtapas"
+			style="overflow-x: scroll">
+			<button
+				class="flex p-2 hover:bg-gray-300 hover:text-black box-border print:hidden text-white"
+				:class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === 0 }"
+				@click="etapa_id = 0">
+				Todos
+			</button>
+			<div
+				v-for="etapa in etapas"
+				:key="etapa.id"
+				class="grid grid-flow-col auto-cols-max divide-y-2 divide-amber-50">
+				<button
+					class="flex py-2 px-3 hover:bg-gray-400 box-border text-white hover:text-black"
+					:class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === etapa.id }"
+					@click="etapa_id = etapa.id">
+					<span class="whitespace-nowrap">{{ etapa.nome }}</span>
+				</button>
+			</div>
+		</div>
+		<div class="print:hidden">
 			<AppTabela
 				:cabecalho="cabecalho"
 				:dados="dados"
@@ -29,17 +29,17 @@
 				:itensPorPagina="itensPorPagina"
 				:pagina="pagina"
 				:totalItens="totalItens"
-        altura="calc(100vh - 194px)"
+				altura="calc(100vh - 194px)"
 				@atualizar="atualizarDados"
-        :carregando="carregandoTabela"
+				@dblclick="verDetalhesSS"
+				:carregando="carregandoTabela"
 				:temDetalhes="false">
 				<template v-slot:[`body.selecione`]="{ item }">
 					<div class="flex justify-center">
 						<AppFormCheckbox
 							:id="parseInt(item.id)"
 							:valor="item"
-							v-model="selecionados"
-            />
+							v-model="selecionados" />
 					</div>
 				</template>
 				<template v-slot:[`body.acoes`]="{ item }">
@@ -80,13 +80,18 @@
 						{{ $dayjs(item.data_necessidade).format("DD/MM/YYYY") }}
 					</span>
 				</template>
+				<template v-slot:[`body.ultima_data`]="{ item }">
+					<span v-if="item.ultima_data">
+						{{ $dayjs(item.ultima_data).format("DD/MM/YYYY") }}
+					</span>
+				</template>
 				<template v-slot:[`body.comentarios`]="{ item }">
 					<button
 						class="flex hover:bg-gray-400 w-full p-1"
 						v-if="item.Comentarios.length > 0"
 						@click="
-							card_id = item.id;
-							mostrarDialogComentariosCard = true;
+							card_id = item.id
+							mostrarDialogComentariosCard = true
 						">
 						<img
 							src="@/assets/icons/comentarios-b.svg"
@@ -101,7 +106,7 @@
 				</template>
 			</AppTabela>
 		</div>
-		<RodapePagina>
+		<RodapePagina class="print:hidden">
 			<template v-slot>
 				<div class="flex items-center w-full">
 					<div class="flex w-full justify-end gap-4">
@@ -151,7 +156,7 @@
 		<DialogCriarCard
 			v-if="mostrarDialogCriarCard"
 			:card_id="card_id"
-      @editado="cardEditado"
+			@editado="cardEditado"
 			@cancelar="cancelar" />
 		<DialogProcessarCard
 			:cards="selecionados"
@@ -171,6 +176,13 @@
 				mostrarDialogComentariosCard = false
 				card_id = null
 			" />
+		<DialogDetalhesCard
+			v-if="mostrarDialogDetalhesCard"
+			@cancelar="
+				mostrarDialogDetalhesCard = false
+				card_id = null
+			"
+			:card_id="card_id" />
 	</div>
 </template>
 
@@ -184,9 +196,10 @@
 	import DialogProcessarCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogProcessarCard.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import DialogComentariosCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogComentariosCard.vue"
-  import {buscarEtapa} from "~/mixins/buscarInformacoes";
+	import { buscarEtapa } from "~/mixins/buscarInformacoes"
+	import DialogDetalhesCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogDetalhesCard.vue"
 	export default {
-    mixins: [buscarEtapa],
+		mixins: [buscarEtapa],
 		name: "Cards",
 		components: {
 			RodapePagina,
@@ -198,6 +211,7 @@
 			DialogProcessarCard,
 			AppAlerta,
 			DialogComentariosCard,
+			DialogDetalhesCard,
 		},
 		data() {
 			return {
@@ -207,59 +221,58 @@
 				itensPorPagina: 20,
 				pagina: 1,
 				card_id: null,
-        totalItens: 0,
+				totalItens: 0,
 				selecionados: [],
 				mostrarDialogProcessarCard: false,
 				mostrarDialogComentariosCard: false,
 				mostrarAlerta: false,
 				textoAlerta: "",
-        etapas: [],
-        etapa_id: null,
-        carregandoTabela: false,
+				etapas: [],
+				etapa_id: null,
+				carregandoTabela: false,
+				mostrarDialogDetalhesCard: false,
 			}
 		},
-    computed:{
-      cabecalho() {
-        let cabecalho = [
+		computed: {
+			cabecalho() {
+				let cabecalho = [
+					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true },
+					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true },
+					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
+					{ nome: "Setor", valor: "Setor.nome", filtro: true },
+					{ nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true },
+					{ nome: "PEP", valor: "CentroCustoPEP.numero_pep", filtro: true },
+					{ nome: "Função", valor: "FuncaoCard.nome", filtro: true },
+					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
+					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true },
+					{ nome: "Previsão Entrega", valor: "previsao_entrega", filtro: true },
+					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true },
+					{ nome: "Comentários", valor: "comentarios", filtro: true },
+				]
 
-          {nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true},
-          {nome: "Cod.", valor: "id", filtro: true, centralizar: true},
-          {nome: "Situação", valor: "situacao", filtro: true, centralizar: true},
-          {nome: "Setor", valor: "Setor.nome", filtro: true},
-          {nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true},
-          {nome: "PEP", valor: "CentroCustoPEP.numero_pep", filtro: true},
-          {nome: "Função", valor: "FuncaoCard.nome", filtro: true},
-          {nome: "Nome", valor: "Indicacao.nome", filtro: true},
-          {nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true},
-          {nome: "Previsão Entrega", valor: "previsao_entrega", filtro: true},
-          {nome: "Última data", valor: "ultima_data", filtro: true},
-          {nome: "Comentários", valor: "comentarios", filtro: true},
-        ]
+				if (this.etapa_id !== 0) {
+					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-10" })
+				}
 
-        // if (this.listaAcao.includes(this.etapa_id)) {
-        //   cabecalho.unshift({nome: "", valor: "acoes", centralizar: true, largura: "w-10"})
-        // } else if (this.listaSelect.includes(this.etapa_id)) {
-        //   cabecalho.unshift({nome: "", valor: "selecione", centralizar: true, largura: "w-10"})
-        // }
+				let listaNaoSelect = [0, 1, 2, 3]
+				if (!listaNaoSelect.some((o) => this.etapa_id === o)) {
+					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true, largura: "w-10" })
+				}
+				return cabecalho
+			},
+		},
+		async mounted() {
+			this.etapas = await this.buscarEtapa()
+			this.etapa_id = 0
 
-        if (this.etapa_id !== 0) {
-          cabecalho.unshift({nome: "", valor: "acoes", centralizar: true, largura: "w-10"})
-        }
-
-        let listaNaoSelect = [0, 1, 2, 3]
-        if (!listaNaoSelect.some(o => this.etapa_id === o )) {
-          cabecalho.unshift({nome: "", valor: "selecione", centralizar: true, largura: "w-10"},)
-        }
-        return cabecalho
-      },
-    },
-    async mounted() {
-      this.etapas = await this.buscarEtapa()
-      this.etapa_id = 0
-
-      await this.buscarCards()
-    },
+			await this.buscarCards()
+		},
 		methods: {
+			verDetalhesSS(dados) {
+				this.card_id = dados.id
+				this.mostrarDialogDetalhesCard = true
+			},
+
 			cancelar() {
 				this.card_id = null
 				this.mostrarDialogCriarCard = false
@@ -268,19 +281,19 @@
 				this.filtros = filtros
 			},
 			async buscarCards() {
-        this.carregandoTabela = true
-        let filtros = Object.assign({}, this.filtros)
+				this.carregandoTabela = true
+				let filtros = Object.assign({}, this.filtros)
 
-        let etapa_id = this.etapa_id
-        if (etapa_id !== 0) {
-          filtros["etapa_id"] = etapa_id
-        }
+				let etapa_id = this.etapa_id
+				if (etapa_id !== 0) {
+					filtros["etapa_id"] = etapa_id
+				}
 
 				let resp = await this.$axios.$get("/contratacao/card/buscarPaginados", {
 					params: {
 						page: this.pagina - 1,
 						size: this.itensPorPagina,
-            filtros
+						filtros,
 					},
 				})
 
@@ -288,7 +301,7 @@
 					let cards = resp.dados.cards.rows
 					this.totalItens = resp.dados.cards.count
 					this.dados = cards
-          this.carregandoTabela = false
+					this.carregandoTabela = false
 				}
 			},
 
@@ -308,26 +321,24 @@
 				this.mostrarDialogCriarCard = true
 			},
 
-      cardEditado(dados){
-        console.log(dados)
+			cardEditado(dados) {
+				console.log(dados)
 
-        let idx = this.dados.findIndex(o => o.id === dados.card_id)
+				let idx = this.dados.findIndex((o) => o.id === dados.card_id)
 
-        console.log(this.dados[idx])
+				console.log(this.dados[idx])
 
-        if(this.dados[idx].etapa_id !== 1)
-          this.dados.splice(idx, 1)
-        else
-          this.dados[idx].Comentarios.push({ descricao: dados.comentario })
+				if (this.dados[idx].etapa_id !== 1) this.dados.splice(idx, 1)
+				else this.dados[idx].Comentarios.push({ descricao: dados.comentario })
 
-        this.mostrarDialogCriarCard = false
-        this.mostrarAlerta = true
-        this.textoAlerta = "Card editado com sucesso"
-        this.card_id = null
-      },
+				this.mostrarDialogCriarCard = false
+				this.mostrarAlerta = true
+				this.textoAlerta = "Card editado com sucesso"
+				this.card_id = null
+			},
 
 			async processado(dados) {
-        console.log(dados)
+				console.log(dados)
 
 				let { cards, etapa_id } = dados
 
@@ -340,34 +351,34 @@
 					this.dados[index].etapa_id = etapa_id.id
 					this.dados[index].Etapa = etapa_id
 
-          this.dados.splice(index, 1)
-          this.totalItens -= 1
+					this.dados.splice(index, 1)
+					this.totalItens -= 1
 				}
-        this.mostrarAlerta = true
-        this.textoAlerta = "Cards processados com sucesso!"
-        this.selecionados = []
+				this.mostrarAlerta = true
+				this.textoAlerta = "Cards processados com sucesso!"
+				this.selecionados = []
 			},
 		},
-    watch: {
-      etapa_id(valor) {
-        this.buscarCards()
-      }
-    },
+		watch: {
+			etapa_id(valor) {
+				this.buscarCards()
+			},
+		},
 	}
 </script>
 
 <style scoped>
-.menuEtapas::-webkit-scrollbar {
-  width: 12px;
-}
+	.menuEtapas::-webkit-scrollbar {
+		width: 12px;
+	}
 
-.menuEtapas::-webkit-scrollbar-track {
-  background-color: #898989;
-}
+	.menuEtapas::-webkit-scrollbar-track {
+		background-color: #898989;
+	}
 
-.menuEtapas::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background-color: #0b1b36;
-  border: 1px solid white;
-}
+	.menuEtapas::-webkit-scrollbar-thumb {
+		border-radius: 10px;
+		background-color: #0b1b36;
+		border: 1px solid white;
+	}
 </style>
