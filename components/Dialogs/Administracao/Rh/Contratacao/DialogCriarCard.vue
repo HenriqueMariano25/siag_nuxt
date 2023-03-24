@@ -67,6 +67,7 @@
 						:disabled="bloquearSalario" />
 					<AppFormRadio
 						:itens="opcoesTurno"
+            id="turno"
 						titulo="Turno"
 						obrigatorio
 						v-model="card.turno"
@@ -74,6 +75,7 @@
 					<AppFormRadio
 						:itens="opcoesTipoRecrutamento"
 						titulo="Tipo de recrutamento"
+            id="tipo_recrutamento"
 						obrigatorio
 						v-model="card.tipo_recrutamento"
 						:invalido="erro.includes('tipo_recrutamento')" />

@@ -5,28 +5,27 @@
 				@click="tipoAprovacao = 'controle'"
 				class="px-4 hover:bg-blue-600"
 				v-if="
-					$auth.user &&
-					$auth.user.permissoes.includes('aprovar_card_controle')
+					$auth.user && $auth.user.permissoes.includes('aprovar_card_controle')
 				"
 				:class="{ 'border-b-4 border-b-white': tipoAprovacao === 'controle' }">
 				Controle
 			</button>
+
 			<button
 				@click="tipoAprovacao = 'gestor_area'"
 				class="px-4 hover:bg-blue-600"
 				v-if="
-					$auth.user &&
-					$auth.user.permissoes.includes('aprovar_card_gerente_area')
+					$auth.user && $auth.user.permissoes.includes('aprovar_card_gerente_area')
 				"
 				:class="{ 'border-b-4 border-b-white': tipoAprovacao === 'gestor_area' }">
 				Gestor Área
 			</button>
+
 			<button
 				@click="tipoAprovacao = 'site_manager'"
 				class="px-4 hover:bg-blue-600"
 				v-if="
-					$auth.user &&
-					$auth.user.includes('aprovar_card_site_manager')
+					$auth.user && $auth.user.permissoes.includes('aprovar_card_site_manager')
 				"
 				:class="{ 'border-b-4 border-b-white': tipoAprovacao === 'site_manager' }">
 				Site Manager
@@ -96,6 +95,11 @@
 				<template v-slot:[`body.data_necessidade`]="{ item }">
 					<span v-if="item.data_necessidade">
 						{{ $dayjs(item.data_necessidade).format("DD/MM/YYYY") }}
+					</span>
+				</template>
+        <template v-slot:[`body.ultima_data`]="{ item }">
+					<span v-if="item.ultima_data">
+						{{ $dayjs(item.ultima_data).format("DD/MM/YYYY") }}
 					</span>
 				</template>
         <template v-slot:[`body.comentarios`]="{ item }">
@@ -196,7 +200,7 @@
 			return {
 				dados: [],
 				filtros: [],
-				itensPorPagina: 10,
+				itensPorPagina: 20,
 				pagina: 1,
 				totalItens: 0,
 				tipoAprovacao: null,
@@ -214,7 +218,6 @@
 		created() {
 			if (this.$auth.user) {
 				let todasPermissoes = this.$auth.user.permissoes
-
 				if (todasPermissoes.includes("aprovar_card_controle")) {
 					this.tiposAprovacao.push("controle")
 					this.tipoAprovacao === null ? (this.tipoAprovacao = "controle") : false
@@ -237,15 +240,15 @@
 				let cabecalho = [
 					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true },
 					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true },
-					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
+					{ nome: "Situação", valor: "situacao", centralizar: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true },
 					{ nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true },
 					{ nome: "PEP", valor: "CentroCustoPEP.numero_pep", filtro: true },
 					{ nome: "Função", valor: "FuncaoCard.nome", filtro: true },
 					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
 					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true },
-					{ nome: "Última data", valor: "ultima_data", filtro: true },
-					{ nome: "Comentários", valor: "comentarios", filtro: true },
+					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true },
+					{ nome: "Comentários", valor: "comentarios"},
 				]
 
 				if (this.tipoAprovacao === "controle") {
