@@ -8,6 +8,7 @@
     <div v-for="item in itens" v-if="itens.length > 0 && !simNao">
       <label class="flex flex-row items-center gap-1" :for="'inputRadio' + item.valor">
         <input class="cursor-pointer mr-2" type="radio" :id="'inputRadio' + item.valor" :value="item.valor" v-model="model"
+               :disabled="item.disabled || disabled"
                @click.stop>
         {{ item.label }}
       </label>
@@ -164,7 +165,7 @@ input[type="radio"]:hover {
 
 input[type="radio"]:disabled {
   --form-control-color: #545458;
-  color: #545458;
+  color: #b3b3bc;
   cursor: not-allowed;
 }
 

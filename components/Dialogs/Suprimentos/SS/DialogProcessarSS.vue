@@ -39,31 +39,46 @@
       </div>
     </template>
     <template v-slot:rodape-btn-direito>
-      <div class="flex items-center gap-5 text-black">
-        <BotaoPadrao
-          v-if="etapa_id === 18 || etapa_id === 27"
-          :disabled="processo.input === null || processo.input === ''"
-          texto="Finalizar SS"
-          @click="finalizarSS()">
-          <template v-slot>
-            <img
-              src="@/assets/icons/check-circle-b.svg"
-              alt="close"
-              class="w-6 h-6"/>
-          </template>
-        </BotaoPadrao>
-        <BotaoPadrao
-          v-if="etapa_id !== 27"
-          :disabled="processo.input === null || processo.input === ''"
-          texto="Processar SS"
-          @click="processarSS()">
-          <template v-slot>
-            <img
-              src="@/assets/icons/check-b.svg"
-              alt="close"
-              class="w-7 h-7"/>
-          </template>
-        </BotaoPadrao>
+      <div class="flex items-center gap-5 text-black justify-between w-full">
+        <div>
+          <div v-if="etapa_id >= 9 && etapa_id <= 18">
+            <BotaoPadrao texto="Negar SS" cor="bg-red-400 hover:bg-red-600" class="ml-5" @click="valNegarSS = true"
+                         v-if="!valNegarSS">
+              <img src="@/assets/icons/close-b.svg" alt="close" class="w-6 h-6"/>
+            </BotaoPadrao>
+            <div class="flex items-center text-white ml-5 gap-x-5" v-if="valNegarSS">
+              <BotaoPadrao texto="Não" cor="bg-red-400 hover:bg-red-600" @click="valNegarSS = false"/>
+              <span>Tem certeza que deseja negar essa solicitação ?</span>
+              <BotaoPadrao texto="Sim" cor="bg-green-400 hover:bg-green-600" @click="negarSS()"/>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-x-2">
+          <BotaoPadrao
+            v-if="etapa_id === 18 || etapa_id === 27"
+            :disabled="processo.input === null || processo.input === ''"
+            texto="Finalizar SS"
+            @click="finalizarSS()">
+            <template v-slot>
+              <img
+                src="@/assets/icons/check-circle-b.svg"
+                alt="close"
+                class="w-6 h-6"/>
+            </template>
+          </BotaoPadrao>
+          <BotaoPadrao
+            v-if="etapa_id !== 27"
+            :disabled="processo.input === null || processo.input === ''"
+            texto="Processar SS"
+            @click="processarSS()">
+            <template v-slot>
+              <img
+                src="@/assets/icons/check-b.svg"
+                alt="close"
+                class="w-7 h-7"/>
+            </template>
+          </BotaoPadrao>
+        </div>
       </div>
     </template>
   </BaseDialog>
@@ -107,7 +122,8 @@ export default {
       processo: {
         comentario: null,
         input: null
-      }
+      },
+      valNegarSS: false
     }
   },
   methods:{
@@ -159,6 +175,28 @@ export default {
         }
         this.$emit('processado', [ss_id])
       }
+    },
+
+    async negarSS(){
+      let {comentario} = this.processo
+      let solicitacoes = [this.ss.id]
+      let usuario_id = this.$auth.user.id
+
+
+      let resp = await this.$axios.$post('/suprimentos/ss/negar_ss', {
+        comentario,
+        solicitacoes,
+        usuario_id
+      })
+
+      if (!resp.falha) {
+        this.processo = {
+          comentario: null,
+          input: null
+        }
+        this.$emit('negado', [this.ss.id])
+      }
+
     }
   }
 }

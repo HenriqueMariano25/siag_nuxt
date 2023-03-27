@@ -58,6 +58,7 @@
 								obrigatorio
 								v-model="ss.natureza_operacao"
 								disabled
+                id="natureza_operacao"
 								:invalido="erro.includes('natureza_operacao')" />
 							<AppFormRadio
 								:disabled="!selecionarTipoSolicitacao"
@@ -65,6 +66,7 @@
 								titulo="Tipo de Solicitação"
 								obrigatorio
 								v-model="ss.tipo_solicitacao"
+                id="tipo_solicitacao"
 								:invalido="erro.includes('tipo_solicitacao')" />
 						</div>
 						<div class="grid grid-cols-3 gap-x-4">
@@ -171,6 +173,7 @@
 								:itens="opcoesLocalPrestacao"
 								titulo=""
 								v-model="ss.local_prestacao_obra"
+                id="local_prestacao_obra"
 								:invalido="erro.includes('local_prestacao_obra')" />
 							<AppFormInput
 								class="w-full mt-4"
@@ -942,8 +945,8 @@
 							<span class="text-md w-full"><strong>9 - REQUISITOS DE ACESSO A OBRA</strong></span>
 							<AppFormInput
 								class="mt-2"
-								label="Exames necessários"
-								placeholder="Exames necessários"
+								label="Exames e requisitos do SMS necessários"
+								placeholder="Exames e requisitos do SMS necessários"
 								type="text"
 								id="exames_necessarios"
 								v-model="ss.exames_necessarios" />

@@ -48,7 +48,18 @@
       </div>
     </template>
     <template v-slot:rodape-btn-direito>
-      <div class="flex items-center gap-5 text-black">
+      <div class="flex items-center gap-5 text-black w-full justify-between">
+        <div>
+          <BotaoPadrao texto="Negar SS" cor="bg-red-400 hover:bg-red-600" class="ml-5" @click="valNegarSS = true"
+                       v-if="!valNegarSS">
+            <img src="@/assets/icons/close-b.svg" alt="close" class="w-6 h-6"/>
+          </BotaoPadrao>
+          <div class="flex items-center text-white ml-5 gap-x-5" v-if="valNegarSS">
+            <BotaoPadrao texto="Não" cor="bg-red-400 hover:bg-red-600" @click="valNegarSS = false"/>
+            <span>Tem certeza que deseja negar essa solicitação ?</span>
+            <BotaoPadrao texto="Sim" cor="bg-green-400 hover:bg-green-600" @click="negarSS()"/>
+          </div>
+        </div>
         <BotaoPadrao
           :disabled="processo.comprador === null"
           texto="Processar SS"
@@ -89,7 +100,8 @@ export default {
         comentario: null,
         comprador: null,
       },
-      compradores: []
+      compradores: [],
+      valNegarSS: false
     }
   },
   async created() {
@@ -101,7 +113,7 @@ export default {
         comentario: null,
         comprador: null
       }
-      this.emit("cancelar")
+      this.$emit("cancelar")
     },
     async buscarCompradores() {
       let resp = await this.$axios.$get("/suprimentos/ss/compradores")
@@ -135,6 +147,31 @@ export default {
 
         this.$emit("definido", SSs)
       }
+    },
+    async negarSS() {
+      let {comentario} = this.processo
+      let solicitacoes = this.solicitacoes.map((ss) => {
+        return ss.id
+      })
+      console.log(solicitacoes)
+      let usuario_id = this.$auth.user.id
+
+      //
+      //
+      let resp = await this.$axios.$post('/suprimentos/ss/negar_analise_demanda_ss', {
+        comentario,
+        solicitacoes,
+        usuario_id
+      })
+      //
+      if (!resp.falha) {
+        this.processo = {
+          comentario: null,
+          input: null
+        }
+        this.$emit('negado',solicitacoes)
+      }
+
     }
   }
 }

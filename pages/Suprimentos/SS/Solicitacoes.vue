@@ -171,9 +171,9 @@
 		<DialogAnaliseDemanda
 			:solicitacoes="selecionados"
 			v-if="mostrarDialogAnaliseDemanda"
+      @negado="negadoSS"
 			@cancelar="
-				mostrarDialogAnaliseDemanda = false
-				selecionados = null
+				mostrarDialogAnaliseDemanda = false;
 			"
 			@definido="definidoComprador" />
 
@@ -184,6 +184,7 @@
 			:ss="ss"
 			v-if="mostrarDialogProcessarSS"
 			@processado="processadoSS"
+			@negado="negadoSS"
 			:typeInput="typeInputDialog"
 			:etapa_id="etapa_id"
 			@cancelar="
@@ -194,7 +195,9 @@
 		<DialogProcessarMultSS
 			:solicitacoes="selecionados"
 			v-if="mostrarDialogProcessarMultSS"
+      :etapa_id="etapa_id"
 			@processado="processadoSS"
+      @negado="negadoSS"
 			@cancelar="mostrarDialogProcessarMultSS = false"
 			:pularProxEtapa="pularProxEtapa" />
 
@@ -282,7 +285,7 @@
 				}
 
 				if (permissoes.includes("ss_comprador")) {
-					return [10, 13, 14, 15, 16, 18]
+					return [10, 13, 14, 15, 16]
 				}
 
 				if (permissoes.includes("ss_juridico")) {
@@ -381,7 +384,7 @@
 			},
 			escolherProcessar() {
 				if (this.etapa_id === 7) this.mostrarDialogAnaliseDemanda = true
-				if (this.listaSelect.includes(this.etapa_id)) this.mostrarDialogProcessarMultSS = true
+				if (this.listaSelect.includes(this.etapa_id) && this.etapa_id !== 7 ) this.mostrarDialogProcessarMultSS = true
 			},
 			async atualizarDados(parametros) {
 				let { itensPorPagina, pagina, filtros } = parametros
@@ -435,8 +438,6 @@
 					},
 				})
 
-        console.log(resp)
-
 				if (!resp.falha) {
 					let SSs = resp.dados.SSs.rows
 					this.totalItens = resp.dados.SSs.count
@@ -472,6 +473,22 @@
 				this.ss = null
 				this.selecionados = []
 			},
+
+      async negadoSS(solicitacoes){
+        for (let ss of solicitacoes) {
+          let index = this.dados.findIndex((obj) => (obj.id = ss))
+          this.dados.splice(index, 1)
+
+          this.mostrarDialogProcessarSS = false
+          this.mostrarDialogAnaliseDemanda = false
+          this.mostrarDialogProcessarMultSS = false
+          this.mostrarAlerta = true
+          this.textoAlerta = "Solicitação negada com sucesso!"
+          this.ss = null
+          this.selecionados = []
+        }
+      },
+
 			verDetalhesSS(dados) {
 				this.ss_id = dados.id
 				this.mostrarDialogDetalhesSS = true
@@ -521,6 +538,8 @@
 					this.pularProxEtapa = false
 					this.typeInputDialog = "text"
 				}
+
+        this.selecionados = []
 			},
 		},
 	}
