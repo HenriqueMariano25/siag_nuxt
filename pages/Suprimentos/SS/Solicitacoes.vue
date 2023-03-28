@@ -126,7 +126,7 @@
 								<img
 									src="@/assets/icons/add-b.svg"
 									alt="close"
-									class="w-8 h-8" />
+									class="w-7 h-7" />
 							</template>
 						</BotaoPadrao>
 						<BotaoPadrao
@@ -152,6 +152,7 @@
 				ss_id = null
 			"
 			:ss_id="ss_id"
+      @cancelado="canceladoSS"
 			@adicionado="ssAdicionado"
 			@editado="ssEditado" />
 		<DialogComentariosSS
@@ -487,6 +488,15 @@
           this.ss = null
           this.selecionados = []
         }
+      },
+      async canceladoSS(id){
+        this.mostrarDialogCriarSolicitacao = false
+        this.mostrarAlerta = true
+        this.textoAlerta = "Solicitação cancelada com sucesso!"
+
+        let index = this.dados.findIndex((o) => (o.id = id))
+
+        this.dados.splice(index, 1)
       },
 
 			verDetalhesSS(dados) {

@@ -3,7 +3,7 @@
 		:titulo="
 			ss_id === null ? 'Criar Solicitação de Serviço' : `Editando Solicitação de Serviço - ${ss_id}`
 		"
-    :carregando="carregando"
+		:carregando="carregando"
 		@cancelar="cancelar()">
 		<template v-slot:corpo>
 			<div
@@ -58,7 +58,7 @@
 								obrigatorio
 								v-model="ss.natureza_operacao"
 								disabled
-                id="natureza_operacao"
+								id="natureza_operacao"
 								:invalido="erro.includes('natureza_operacao')" />
 							<AppFormRadio
 								:disabled="!selecionarTipoSolicitacao"
@@ -66,7 +66,7 @@
 								titulo="Tipo de Solicitação"
 								obrigatorio
 								v-model="ss.tipo_solicitacao"
-                id="tipo_solicitacao"
+								id="tipo_solicitacao"
 								:invalido="erro.includes('tipo_solicitacao')" />
 						</div>
 						<div class="grid grid-cols-3 gap-x-4">
@@ -173,7 +173,7 @@
 								:itens="opcoesLocalPrestacao"
 								titulo=""
 								v-model="ss.local_prestacao_obra"
-                id="local_prestacao_obra"
+								id="local_prestacao_obra"
 								:invalido="erro.includes('local_prestacao_obra')" />
 							<AppFormInput
 								class="w-full mt-4"
@@ -1025,13 +1025,23 @@
 			</div>
 		</template>
 		<template v-slot:rodape-btn-direito>
-			<div class="flex items-center">
-				<div
-					class="text-red-500 text-xl mr-3"
-					v-if="erro.length > 0">
-					<span>Campos obrigatórios necessários</span>
+			<div class="flex items-center justify-end w-full" :class="{'!justify-between': ss_id !== null}">
+				<AppConfirmacao
+          v-if="ss_id !== null"
+					texto="Tem certeza que deseja cancelar essa Solicitação ?"
+					textoBtn="Cancelar SS"
+					iconeBtn="delete-b.svg"
+          @confirmado="cancelarSS()"
+        />
+				<div class="flex items-center">
+					<div
+						class="text-red-500 text-xl mr-3"
+						v-if="erro.length > 0">
+						<span>Campos obrigatórios necessários</span>
+					</div>
+
+					<BotaoSalvar @click="ss_id !== null ? editarSS() : adicionarSS()" />
 				</div>
-				<BotaoSalvar @click="ss_id !== null ? editarSS() : adicionarSS()" />
 			</div>
 		</template>
 	</BaseDialog>
@@ -1047,6 +1057,7 @@
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue"
 	import BotaoIcone from "~/components/Ui/Buttons/BotaoIcone.vue"
+	import AppConfirmacao from "~/components/Ui/AppConfirmacao.vue"
 
 	export default {
 		name: "DialogCriarSS",
@@ -1060,6 +1071,7 @@
 			AppFormCheckbox,
 			AppFormRadio,
 			AppFormTextarea,
+			AppConfirmacao,
 		},
 		props: {
 			ss_id: {
@@ -1162,7 +1174,7 @@
 				},
 				centrosCusto: [],
 				escopos: [],
-        carregando: false,
+				carregando: false,
 			}
 		},
 		computed: {
@@ -1171,7 +1183,7 @@
 					Object.values(this.fornecedor).includes(null) ||
 					Object.values(this.fornecedor).includes("") ||
 					!(this.fornecedor.telefone.length == 14 || this.fornecedor.telefone.length == 13) ||
-          this.fornecedores.length === 4
+					this.fornecedores.length === 4
 				)
 			},
 		},
@@ -1179,10 +1191,10 @@
 			await this.buscarCentroCusto()
 			await this.buscarEscopoSS()
 
-      if(this.ss_id){
-        this.carregando = true
-        await this.buscarSolicitacao()
-      }
+			if (this.ss_id) {
+				this.carregando = true
+				await this.buscarSolicitacao()
+			}
 		},
 		methods: {
 			cancelar() {
@@ -1213,24 +1225,24 @@
 				}
 			},
 
-      async buscarSolicitacao(){
-        this.carregando = true
-        let id  = this.ss_id
+			async buscarSolicitacao() {
+				this.carregando = true
+				let id = this.ss_id
 
-        let resp = await this.$axios.$get(`/suprimentos/ss/${id}`)
+				let resp = await this.$axios.$get(`/suprimentos/ss/${id}`)
 
-        if(!resp.falha){
-          this.ss = Object.assign({}, resp.dados.ss)
+				if (!resp.falha) {
+					this.ss = Object.assign({}, resp.dados.ss)
 
-          this.fornecedores = this.ss.FornecedorSSes ? this.ss.FornecedorSSes : []
-          this.matriz = this.ss.MatrizResponsabilidadeSS ? this.ss.MatrizResponsabilidadeSS : []
-          this.carregando = false
+					this.fornecedores = this.ss.FornecedorSSes ? this.ss.FornecedorSSes : []
+					this.matriz = this.ss.MatrizResponsabilidadeSS ? this.ss.MatrizResponsabilidadeSS : []
+					this.carregando = false
 
-          setTimeout(() => {
-            this.ss.tipo_solicitacao = resp.dados.ss.tipo_solicitacao
-          }, 300)
-        }
-      },
+					setTimeout(() => {
+						this.ss.tipo_solicitacao = resp.dados.ss.tipo_solicitacao
+					}, 300)
+				}
+			},
 
 			adicionarFornecedor() {
 				if (this.fornecedores.length < 4) {
@@ -1272,14 +1284,15 @@
 					"permitido_sabado_feriado",
 				]
 
-				if (this.ss.local_prestacao_obra === "fora_obra") camposObrigatorio.push("endereco_prestacao")
+				if (this.ss.local_prestacao_obra === "fora_obra")
+					camposObrigatorio.push("endereco_prestacao")
 
-        if (this.ss.data_inicio > this.ss.data_fim || this.ss.data_inicio === this.ss.data_fim) this.erro.push('data_fim')
+				if (this.ss.data_inicio > this.ss.data_fim || this.ss.data_inicio === this.ss.data_fim)
+					this.erro.push("data_fim")
 
 				for (let campo of camposObrigatorio) {
 					if (this.ss[`${campo}`] === null || this.ss[`${campo}`] === "") this.erro.push(campo)
 				}
-
 			},
 
 			async adicionarSS() {
@@ -1303,24 +1316,38 @@
 				}
 			},
 			async editarSS() {
-        this.validarFormulario()
+				this.validarFormulario()
 
-        if (this.erro.length === 0) {
-          let usuario_id = this.$auth.user.id
+				if (this.erro.length === 0) {
+					let usuario_id = this.$auth.user.id
 
-          let dados = {
-            ss: {...this.ss},
-            matriz: this.matriz,
-            fornecedores: this.fornecedores,
-            usuario_id: usuario_id,
-          }
-          let resp = await this.$axios.$put("/suprimentos/ss/editar", {...dados})
+					let dados = {
+						ss: { ...this.ss },
+						matriz: this.matriz,
+						fornecedores: this.fornecedores,
+						usuario_id: usuario_id,
+					}
+					let resp = await this.$axios.$put("/suprimentos/ss/editar", { ...dados })
 
-          if (!resp.falha) {
-            this.$emit("editado", this.ss.id )
-          }
+					if (!resp.falha) {
+						this.$emit("editado", this.ss.id)
+					}
+				}
+			},
+      async cancelarSS(){
+        console.log("Cancelando SS")
+        console.log(this.ss_id)
+
+        let usuario_id = this.$auth.user.id
+        let ss_id = this.ss_id
+        console.log(usuario_id)
+
+        let resp = await this.$axios.$post('/suprimentos/ss/cancelar_solicitacao', { ss_id , usuario_id })
+
+        if(!resp.falha){
+          this.$emit("cancelado", ss_id)
         }
-      },
+      }
 		},
 		watch: {
 			"ss.data_necessidade": function (valor) {
@@ -1343,45 +1370,43 @@
 				let inicio = this.$dayjs(this.ss.data_inicio)
 				let fim = this.ss.data_fim != null ? this.$dayjs(this.ss.data_fim) : null
 
+				if (inicio != null && fim != null) {
+					let diferenca = this.$dayjs(fim).diff(inicio, "day")
 
-          if (inicio != null && fim != null) {
-            let diferenca = this.$dayjs(fim).diff(inicio, "day")
+					this.ss.prazo = diferenca
 
-            this.ss.prazo = diferenca
-
-
-              if (diferenca > 0 && diferenca <= 10) {
-                this.ss.tipo_solicitacao = "spot"
-                this.selecionarTipoSolicitacao = false
-              } else {
-                this.ss.tipo_solicitacao = null
-                this.selecionarTipoSolicitacao = true
-              }
-          }
+					if (diferenca > 0 && diferenca <= 10) {
+						this.ss.tipo_solicitacao = "spot"
+						this.selecionarTipoSolicitacao = false
+					} else {
+						this.ss.tipo_solicitacao = null
+						this.selecionarTipoSolicitacao = true
+					}
+				}
 			},
 
 			"ss.data_fim": function () {
 				let inicio = this.ss.data_inicio != null ? this.$dayjs(this.ss.data_inicio) : null
 				let fim = this.$dayjs(this.ss.data_fim)
 
-          if (inicio != null && fim != null) {
-            let diferenca = this.$dayjs(fim).diff(inicio, "day")
+				if (inicio != null && fim != null) {
+					let diferenca = this.$dayjs(fim).diff(inicio, "day")
 
-            this.ss.prazo = diferenca
+					this.ss.prazo = diferenca
 
-              if (diferenca > 0) {
-                if (diferenca > 0 && diferenca <= 10) {
-                  this.ss.tipo_solicitacao = "spot"
-                  this.selecionarTipoSolicitacao = false
-                } else {
-                  this.ss.tipo_solicitacao = null
-                  this.selecionarTipoSolicitacao = true
-                }
-              } else {
-                this.ss.tipo_solicitacao = null
-                this.selecionarTipoSolicitacao = false
-              }
-          }
+					if (diferenca > 0) {
+						if (diferenca > 0 && diferenca <= 10) {
+							this.ss.tipo_solicitacao = "spot"
+							this.selecionarTipoSolicitacao = false
+						} else {
+							this.ss.tipo_solicitacao = null
+							this.selecionarTipoSolicitacao = true
+						}
+					} else {
+						this.ss.tipo_solicitacao = null
+						this.selecionarTipoSolicitacao = false
+					}
+				}
 			},
 			"ss.numero_acompanhamento": function (valor) {
 				this.ss.numero_acompanhamento = valor.toUpperCase()
