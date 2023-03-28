@@ -1,7 +1,9 @@
 <template>
 	<div
-		class="flex fixed bg-cover bg-center bg-no-repeat w-full h-full bg-login justify-center items-center">
-		<div class="border border-gray-800 bg-gray-100/[.80] flex flex-col z-10 p-6 h-fit w-1/3">
+		class="flex fixed bg-cover bg-center bg-no-repeat w-full h-full bg-login justify-center items-center"
+    v-on:keyup.enter="login">
+		<div class="border border-gray-800 bg-gray-100/[.80] flex flex-col z-10 p-6 h-fit w-1/3"
+         >
 			<div class="font-bold text-center text-5xl mb-2">
 				<h1>SIAG</h1>
 			</div>
@@ -11,6 +13,7 @@
 					placeholder="henrique.mariano"
 					label="Usuário"
 					v-model="usuario.usuario"
+
           id="usuario"
         />
 				<AppFormInput
@@ -24,7 +27,9 @@
         </div>
 				<div class="w-full">
 					<button
+            ref="inputUsuario"
 						class="p-1 bg-primaria-700 text-white w-full rounded-sm"
+            v-on:keyup.enter="login"
 						@click.stop.prevent="login">
 						ENTRAR
 					</button>
@@ -51,12 +56,22 @@
         erro: null
 			}
 		},
+    mounted() {
+      this.focusInput();
+      // this.$refs.inputUsuario.$el.focus();
+      // this.$nextTick(() => {
+        // This callback will only be called after the
+        // DOM has been updated
+        // this.$refs.inputUsuario.focus();
+      // });
+    },
 		methods: {
+      focusInput() {
+        this.$refs.inputUsuario.focus();
+      },
 			async login() {
         let {usuario, senha} = this.usuario
         this.erro = null
-
-        console.log("Aqui")
 
         try {
           let resp = await this.$auth.loginWith('local', {

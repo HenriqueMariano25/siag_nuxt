@@ -2,7 +2,7 @@
   <div class="flex">
     <AppAlerta tipo="alerta" :mostrar="mostrarLocal" @escondeu="mostrarLocal = false">Buscando o efetivo, favor aguarde...</AppAlerta>
     <div class="h-[100vh] print:hidden">
-      <MenuLateral/>
+      <MenuLateral v-if="$auth.loggedIn"/>
     </div>
     <div class="flex p-2 w-full bg-gray-200">
       <Nuxt />
