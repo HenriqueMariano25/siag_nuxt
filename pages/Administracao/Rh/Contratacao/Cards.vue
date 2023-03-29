@@ -46,7 +46,7 @@
 					<BotaoIconeEditar @click="editarCard(item)" />
 				</template>
 				<template v-slot:[`body.Etapa.nome`]="{ item }">
-					<span v-if="item.Etapa && item.Etapa.nome">
+					<span v-if="item.Etapa && item.Etapa.nome" class="whitespace-nowrap">
 						{{ item.Etapa.nome }}
 					</span>
 				</template>
@@ -56,38 +56,62 @@
 					</span>
 				</template>
 				<template v-slot:[`body.DisciplinaCard.descricao`]="{ item }">
-					<span v-if="item.DisciplinaCard && item.DisciplinaCard.descricao">
+					<span v-if="item.DisciplinaCard && item.DisciplinaCard.descricao" class="whitespace-nowrap">
 						{{ item.DisciplinaCard.descricao }}
 					</span>
 				</template>
 				<template v-slot:[`body.CentroCustoPEP.numero_pep`]="{ item }">
-					<span v-if="item.CentroCustoPEP && item.CentroCustoPEP.numero_pep">
+					<span v-if="item.CentroCustoPEP && item.CentroCustoPEP.numero_pep" class="whitespace-nowrap">
 						{{ item.CentroCustoPEP.numero_pep }}
 					</span>
 				</template>
+				<template v-slot:[`body.situacao`]="{ item }">
+          <div class="flex justify-center">
+            <div
+              v-if="!($dayjs().diff(item.ultima_data, 'day') > item.Etapa.leadtime)"
+              class="bg-blue-400 text-black px-2 rounded whitespace-nowrap">
+              No prazo
+            </div>
+            <div
+              v-if="$dayjs().diff(item.ultima_data, 'day') > item.Etapa.leadtime"
+              class="bg-red-400 text-black px-2 rounded whitespace-nowrap">
+              Atrasado
+            </div>
+          </div>
+				</template>
 				<template v-slot:[`body.FuncaoCard.nome`]="{ item }">
-					<span v-if="item.FuncaoCard && item.FuncaoCard.nome">
+					<span v-if="item.FuncaoCard && item.FuncaoCard.nome" class="whitespace-nowrap">
 						{{ item.FuncaoCard.nome }}
 					</span>
 				</template>
 				<template v-slot:[`body.Indicacao.nome`]="{ item }">
-					<span v-if="item.Indicacao && item.Indicacao.nome">
+					<span v-if="item.Indicacao && item.Indicacao.nome" class="whitespace-nowrap">
 						{{ item.Indicacao.nome }}
 					</span>
 				</template>
 				<template v-slot:[`body.data_necessidade`]="{ item }">
-					<span v-if="item.data_necessidade">
+					<span v-if="item.data_necessidade" class="whitespace-nowrap">
 						{{ $dayjs(item.data_necessidade).format("DD/MM/YYYY") }}
 					</span>
 				</template>
 				<template v-slot:[`body.ultima_data`]="{ item }">
-					<span v-if="item.ultima_data">
+					<span v-if="item.ultima_data" class="whitespace-nowrap">
 						{{ $dayjs(item.ultima_data).format("DD/MM/YYYY") }}
 					</span>
 				</template>
+        <template v-slot:[`body.data_previsao`]="{ item }">
+					<span v-if="item.data_previsao" class="whitespace-nowrap">
+						{{ $dayjs(item.data_previsao).add(30, 'day').format("DD/MM/YYYY") }}
+					</span>
+				</template>
+        <template v-slot:[`body.criado_por`]="{ item }">
+					<span>
+						{{ item.Usuario ? item.Usuario.nome : '' }}
+					</span>
+        </template>
 				<template v-slot:[`body.comentarios`]="{ item }">
 					<button
-						class="flex hover:bg-gray-400 w-full p-1"
+						class="flex hover:bg-gray-400 min-w-[230px] p-1"
 						v-if="item.Comentarios.length > 0"
 						@click="
 							card_id = item.id
@@ -98,9 +122,9 @@
 							alt="close"
 							class="w-7 h-7 mr-1" />
 
-						<span v-if="item.Comentarios.at(-1).descricao">
-							{{ item.Comentarios.at(-1).descricao.substr(0, 20)
-							}}{{ item.Comentarios.at(-1).descricao.length > 20 ? "..." : "" }}
+						<span v-if="item.Comentarios.at(-1).descricao" class="whitespace-nowrap">
+							{{ item.Comentarios.at(-1).descricao.substr(0, 25)
+							}}{{ item.Comentarios.at(-1).descricao.length > 25 ? "..." : "" }}
 						</span>
 					</button>
 				</template>
@@ -109,6 +133,16 @@
 		<RodapePagina class="print:hidden">
 			<template v-slot>
 				<div class="flex items-center w-full">
+					<div class="flex w-full">
+						<BotaoPadrao
+							texto="Filtros avançados"
+							@click="mostrarDialogFiltroAvancado = true">
+							<img
+								src="@/assets/icons/filter-b.svg"
+								alt="close"
+								class="w-6 h-6" />
+						</BotaoPadrao>
+					</div>
 					<div class="flex w-full justify-end gap-4">
 						<BotaoPadrao
 							texto="Criar Card"
@@ -183,6 +217,10 @@
 				card_id = null
 			"
 			:card_id="card_id" />
+		<DialogFiltroAvancado
+			v-if="mostrarDialogFiltroAvancado"
+			@cancelar="mostrarDialogFiltroAvancado = false"
+			@filtrar="filtrarAvancado" />
 	</div>
 </template>
 
@@ -198,8 +236,10 @@
 	import DialogComentariosCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogComentariosCard.vue"
 	import { buscarEtapa } from "~/mixins/buscarInformacoes"
 	import DialogDetalhesCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogDetalhesCard.vue"
+	import DialogFiltroAvancado from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogFiltroAvancado.vue"
+	import { prepararFiltro } from "~/mixins/prepararFiltro"
 	export default {
-		mixins: [buscarEtapa],
+		mixins: [buscarEtapa, prepararFiltro],
 		name: "Cards",
 		components: {
 			RodapePagina,
@@ -212,6 +252,7 @@
 			AppAlerta,
 			DialogComentariosCard,
 			DialogDetalhesCard,
+			DialogFiltroAvancado,
 		},
 		data() {
 			return {
@@ -231,13 +272,14 @@
 				etapa_id: null,
 				carregandoTabela: false,
 				mostrarDialogDetalhesCard: false,
+				mostrarDialogFiltroAvancado: false,
 			}
 		},
 		computed: {
 			cabecalho() {
 				let cabecalho = [
-					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true },
 					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true },
+					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true },
 					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true },
 					{ nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true },
@@ -245,7 +287,8 @@
 					{ nome: "Função", valor: "FuncaoCard.nome", filtro: true },
 					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
 					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true },
-					{ nome: "Previsão Entrega", valor: "previsao_entrega", filtro: true },
+					{ nome: "Previsão Entrega", valor: "data_previsao", filtro: true, centralizar: true },
+					{ nome: "Criado por", valor: "criado_por", filtro: true, centralizar: true },
 					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true },
 					{ nome: "Comentários", valor: "comentarios", filtro: true },
 				]
@@ -282,12 +325,27 @@
 			},
 			async buscarCards() {
 				this.carregandoTabela = true
-				let filtros = Object.assign({}, this.filtros)
+				let filtrosPrPreparar = Object.assign({}, this.filtros)
+
+				let filtros = this.prepararFiltro(filtrosPrPreparar)
+
+				console.log(filtros)
+
+				// for (let f of Object.keys(filtros)) {
+				//   filtros[f] = {$iLike: `%${filtros[f]}%`}
+				// }
 
 				let etapa_id = this.etapa_id
 				if (etapa_id !== 0) {
 					filtros["etapa_id"] = etapa_id
 				}
+
+
+				filtros = {
+          // "$equipamento_card.id$": 1
+        }
+
+				console.log(filtros)
 
 				let resp = await this.$axios.$get("/contratacao/card/buscarPaginados", {
 					params: {
@@ -299,6 +357,8 @@
 
 				if (!resp.falha) {
 					let cards = resp.dados.cards.rows
+          console.log(resp.dados.cards.rows)
+
 					this.totalItens = resp.dados.cards.count
 					this.dados = cards
 					this.carregandoTabela = false
@@ -313,6 +373,8 @@
 				if (pagina) this.pagina = pagina
 
 				if (filtros) this.filtros = filtros
+				console.log(filtros)
+
 				await this.buscarCards()
 			},
 
@@ -322,11 +384,7 @@
 			},
 
 			cardEditado(dados) {
-				console.log(dados)
-
 				let idx = this.dados.findIndex((o) => o.id === dados.card_id)
-
-				console.log(this.dados[idx])
 
 				if (this.dados[idx].etapa_id !== 1) this.dados.splice(idx, 1)
 				else this.dados[idx].Comentarios.push({ descricao: dados.comentario })
@@ -338,8 +396,6 @@
 			},
 
 			async processado(dados) {
-				console.log(dados)
-
 				let { cards, etapa_id } = dados
 
 				this.mostrarDialogProcessarCard = false
@@ -357,6 +413,14 @@
 				this.mostrarAlerta = true
 				this.textoAlerta = "Cards processados com sucesso!"
 				this.selecionados = []
+			},
+
+			async filtrarAvancado(filtros) {
+				// console.log(filtros)
+				// console.log(this.filtros)
+        this.mostrarDialogFiltroAvancado = false
+				this.filtros = Object.assign(this.filtros, filtros)
+				await this.buscarCards()
 			},
 		},
 		watch: {
