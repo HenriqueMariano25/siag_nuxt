@@ -84,6 +84,7 @@
 						titulo="Mobilização"
 						obrigatorio
 						v-model="card.mobilizacao"
+            id="mobilizacao"
 						:invalido="erro.includes('mobilizacao')" />
 					<AppFormRadio
 						simNao
@@ -165,7 +166,8 @@
 							type="text"
 							id="cpfIndicacao"
               mask="###.###.###-##"
-							v-model="card.indicacao.cpf" />
+							v-model="card.indicacao.cpf"
+              :invalido="erro.includes('indicacao.cpf')"/>
 						<AppFormFile
 							label="Currículo em PDF"
 							id="curriculo"
@@ -408,12 +410,12 @@
 					"equipamento_ti",
 				]
 
-				if (this.card.tem_indicacao) camposObrigatorio.push("indicacao.nome", "indicacao.telefone")
+				if (this.card.tem_indicacao) camposObrigatorio.push("indicacao.nome", "indicacao.telefone", "indicacao.cpf")
 
 				for (let campo of camposObrigatorio) {
 					if (this.card[`${campo}`] === null || this.card[`${campo}`] === "") this.erro.push(campo)
 
-					if (campo === "indicacao.telefone" || campo === "indicacao.nome") {
+					if (campo === "indicacao.telefone" || campo === "indicacao.nome" || campo === "indicacao.cpf") {
 						let key = campo.split(".")[1]
 						if (this.card.indicacao[`${key}`] === null || this.card.indicacao[`${key}`] === "")
 							this.erro.push(campo)
@@ -482,6 +484,7 @@
 
       async editarContratacao(){
         console.log("Aqui")
+        this.validarFormulario()
 
         let usuario_id = this.$auth.user.id;
 

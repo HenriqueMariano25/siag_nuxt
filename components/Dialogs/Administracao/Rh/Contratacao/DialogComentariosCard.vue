@@ -17,7 +17,7 @@
 								  <strong>Usuário: </strong> {{ c.Usuario ? c.Usuario.nome : "" }}
                 </span>
                   <span class="flex">
-                   {{ $dayjs(c.createdAt).format("DD/MM/YYYY hh:mm:ss") }}
+                   {{ $dayjs(c.createdAt).format("DD/MM/YYYY HH:mm:ss") }}
                 </span>
 
               </div>

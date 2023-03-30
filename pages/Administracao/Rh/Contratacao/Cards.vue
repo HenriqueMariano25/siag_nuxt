@@ -43,7 +43,7 @@
 					</div>
 				</template>
 				<template v-slot:[`body.acoes`]="{ item }">
-					<BotaoIconeEditar @click="editarCard(item)" />
+					  <BotaoIconeEditar @click="editarCard(item)" />
 				</template>
 				<template v-slot:[`body.Etapa.nome`]="{ item }">
 					<span v-if="item.Etapa && item.Etapa.nome" class="whitespace-nowrap">
@@ -293,7 +293,12 @@
 					{ nome: "Comentários", valor: "comentarios", filtro: true },
 				]
 
-				if (this.etapa_id !== 0) {
+        let listaEdicao = [1,2,3,4,5,6]
+
+        if(this.$auth.user.permissoes.includes("editar_card_adm_contratacao"))
+          listaEdicao = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+
+        if (listaEdicao.some((o) => this.etapa_id === o)) {
 					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-10" })
 				}
 
@@ -341,9 +346,9 @@
 				}
 
 
-				filtros = {
+				// filtros = {
           // "$equipamento_card.id$": 1
-        }
+        // }
 
 				console.log(filtros)
 

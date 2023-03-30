@@ -18,14 +18,13 @@
           <span class="pb-1 pl-1"><strong>Função: </strong>{{ card.FuncaoCard ? card.FuncaoCard.nome : "" }}</span>
           <span class="pb-1 pl-1"><strong>Disciplina: </strong>{{card.DisciplinaCard ? card.DisciplinaCard.descricao : "" }}</span>
           <span class="pb-1 pl-1"><strong>Centro de Custo: </strong>{{ card.CentroCustoPEP ? card.CentroCustoPEP.descricao : "" }}</span>
-          <span class="pb-1 pl-1"><strong>Salário: </strong>{{ card.salario }}</span>
+          <span class="pb-1 pl-1" v-if="podeVerSalario"><strong>Salário: </strong>{{ card.salario }}</span>
           <span class="pb-1 pl-1"><strong>Setor: </strong>{{ card.Setor ? card.Setor.nome : "" }}</span>
           <span class="pb-1 pl-1"><strong>Data necessidade: </strong>{{ $dayjs(card.data_necessidade).format("DD/MM/YYYY") }}</span>
           <span class="pb-1 pl-1"><strong>Turno: </strong>{{ card.turno }}</span>
           <span class="pb-1 pl-1"><strong>Entrevista c/ gestor: </strong>{{ card.entrevista_gestor ? "Sim" : "Não" }}</span>
           <span class="pb-1 pl-1"><strong>Tipo de Recrutamento: </strong>{{ card.tipo_recrutamento }}</span>
           <span class="pb-1 pl-1"><strong>Mobilização: </strong>{{ card.mobilizacao }}</span>
-          <span class="pb-1 pl-1"><strong>Salário: </strong>{{ card.salario }}</span>
           <span class="pb-1 pl-1"><strong>Necessita de Notebook, Computador ou Login : </strong>{{ precisaEquipamentoTi ? "Sim" : "Não" }}</span>
           <span class="py-1 pl-1 bg-gray-300"><strong>NRs</strong></span>
           <template v-for="nr in card.nrs">
@@ -67,10 +66,15 @@ export default {
   computed:{
     precisaEquipamentoTi(){
       return this.card.equipamento_card && this.card.equipamento_card.some(o => o.nome === "Notebook/Desktop/Usuário")
+    },
+    podeVerSalario(){
+      let permissoes = ['rh_contratacoes', 'aprovar_card_controle', 'aprovar_card_gerente_area', 'aprovar_card_site_manager']
+
+      return permissoes.some(o => this.$auth.user.permissoes.includes(o)) || this.card.usuario_id === this.$auth.user.id
     }
   },
-  created(){
-    this.buscarCard()
+  async fetch(){
+    await this.buscarCard()
   },
   methods:{
     cancelar(){
