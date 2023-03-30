@@ -66,7 +66,7 @@
 					</span>
 				</template>
 				<template v-slot:[`body.situacao`]="{ item }">
-          <div class="flex justify-center">
+          <div class="flex justify-center gap-2">
             <div
               v-if="!($dayjs().diff(item.ultima_data, 'day') > item.Etapa.leadtime)"
               class="bg-blue-400 text-black px-2 rounded whitespace-nowrap">
@@ -76,6 +76,9 @@
               v-if="$dayjs().diff(item.ultima_data, 'day') > item.Etapa.leadtime"
               class="bg-red-400 text-black px-2 rounded whitespace-nowrap">
               Atrasado
+            </div>
+            <div v-if="item.confidencial === true" class="bg-gray-600 text-white px-2 rounded whitespace-nowrap">
+              Confidencial
             </div>
           </div>
 				</template>
@@ -331,10 +334,19 @@
 			async buscarCards() {
 				this.carregandoTabela = true
 				let filtrosPrPreparar = Object.assign({}, this.filtros)
+        let usuario_id = this.$auth.user.id
 
 				let filtros = this.prepararFiltro(filtrosPrPreparar)
 
+
 				console.log(filtros)
+        let confidencial
+        let listaPermissoes = ['aprovar_card_site_manager', 'aprovar_card_controle', 'rh_contratacoes']
+        if(listaPermissoes.some(o => this.$auth.user.permissoes.includes(o))){
+          confidencial = 'todos'
+        }else{
+          confidencial = 'setor'
+        }
 
 				// for (let f of Object.keys(filtros)) {
 				//   filtros[f] = {$iLike: `%${filtros[f]}%`}
@@ -357,6 +369,8 @@
 						page: this.pagina - 1,
 						size: this.itensPorPagina,
 						filtros,
+            confidencial,
+            usuario_id
 					},
 				})
 
