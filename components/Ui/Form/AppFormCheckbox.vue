@@ -1,6 +1,7 @@
 <template>
-  <label class="flex flex-row items-center gap-1" :for="'inputCheckbox' + id">
-    <input class="cursor-pointer mr-2" type="checkbox" :id="'inputCheckbox' + id" :value="valor" v-model="model" @click.stop>
+  <label class="flex flex-row items-center gap-1" :for="'inputCheckbox' + id"  >
+    <input class="cursor-pointer mr-2" type="checkbox" :id="'inputCheckbox' + id" :value="valor" v-model="model"
+           @click="$emit('click')">
       {{ label }}
   </label>
 </template>
@@ -18,7 +19,7 @@ export default {
       required: true,
       default: ""
     },
-    value: [Boolean, Array],
+    value: [Boolean, Array, String],
     id: {
       type: [Number, String],
       required: true

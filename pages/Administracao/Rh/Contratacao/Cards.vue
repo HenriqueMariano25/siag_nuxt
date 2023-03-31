@@ -26,6 +26,7 @@
 				:cabecalho="cabecalho"
 				:dados="dados"
 				@filtrar="recebendoFiltro"
+        @filtrarMult="recebendoFiltro"
 				:itensPorPagina="itensPorPagina"
 				:pagina="pagina"
 				:totalItens="totalItens"
@@ -66,7 +67,7 @@
 					</span>
 				</template>
 				<template v-slot:[`body.situacao`]="{ item }">
-          <div class="flex justify-center gap-2">
+          <div class="flex justify-center gap-1.5">
             <div
               v-if="!($dayjs().diff(item.ultima_data, 'day') > item.Etapa.leadtime)"
               class="bg-blue-400 text-black px-2 rounded whitespace-nowrap">
@@ -278,14 +279,33 @@
 				mostrarDialogFiltroAvancado: false,
 			}
 		},
+
+
 		computed: {
 			cabecalho() {
 				let cabecalho = [
 					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true },
-					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true },
+					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true, opcoes: Array.from(
+              new Set(
+                this.etapas
+                  .filter((item) => {
+                    return item.nome
+                  })
+                  .map((item) => `${item.nome}`),
+              ),
+            )},
 					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
-					{ nome: "Setor", valor: "Setor.nome", filtro: true },
-					{ nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true },
+					{ nome: "Setor", valor: "Setor.nome", filtro: true, opcoes: Array.from(new Set(this.dados
+              .filter((item) => {
+                return item.Setor.nome;
+              })
+              .map((item) => `${item.Setor.nome}`))) },
+					{ nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true,
+            opcoes: Array.from(new Set(this.dados
+              .filter((item) => {
+                return item.DisciplinaCard && item.DisciplinaCard.descricao;
+              })
+              .map((item) => `${item.DisciplinaCard.descricao}`)))},
 					{ nome: "PEP", valor: "CentroCustoPEP.numero_pep", filtro: true },
 					{ nome: "Função", valor: "FuncaoCard.nome", filtro: true },
 					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
@@ -293,7 +313,7 @@
 					{ nome: "Previsão Entrega", valor: "data_previsao", filtro: true, centralizar: true },
 					{ nome: "Criado por", valor: "criado_por", filtro: true, centralizar: true },
 					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true },
-					{ nome: "Comentários", valor: "comentarios", filtro: true },
+					{ nome: "Comentários", valor: "comentarios" },
 				]
 
         let listaEdicao = [1,2,3,4,5,6]
@@ -329,7 +349,7 @@
 				this.mostrarDialogCriarCard = false
 			},
 			recebendoFiltro(filtros) {
-				this.filtros = filtros
+				this.filtros = { ...this.filtros ,filtros }
 			},
 			async buscarCards() {
 				this.carregandoTabela = true
