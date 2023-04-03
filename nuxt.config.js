@@ -31,6 +31,7 @@ export default {
     '@/plugins/lodash',
     '@/plugins/dayjs',
     '@/plugins/maska',
+    '@/plugins/money',
   ],
 
   components: true,
@@ -52,6 +53,7 @@ export default {
   build: {
     transpile: [
       'maska',
+      'money',
     ],
     postcss: {
       plugins: {

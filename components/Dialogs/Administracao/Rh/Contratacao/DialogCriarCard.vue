@@ -21,8 +21,8 @@
 						placeholder="Ex: 3"
 						type="number"
 						id="quantidade"
-            :disabled="card_id !== null"
-            :readonly="card_id !== null"
+						:disabled="card_id !== null"
+						:readonly="card_id !== null"
 						v-model="card.quantidade" />
 					<AppFormSelect
 						label="Status"
@@ -34,21 +34,33 @@
 						label="Centro de Custo"
 						:options="centrosCusto"
 						v-model="card.centro_custo_pep_id"
+            :disabled="podeEditarTudo"
+            :readonly="podeEditarTudo"
 						id="centro_custo"
 						:invalido="erro.includes('centro_custo_pep_id')" />
 					<AppFormSelect
 						label="Função"
 						:options="funcoes"
-            v-model="card.funcao_id"
+						v-model="card.funcao_id"
 						@change="funcaoSelecionada"
+            :disabled="podeEditarTudo"
+            :readonly="podeEditarTudo"
 						id="funcao"
 						:invalido="erro.includes('funcao_id')" />
 					<AppFormSelect
 						label="Disciplina"
 						:options="disciplinas"
+            :disabled="podeEditarTudo"
+            :readonly="podeEditarTudo"
 						v-model="card.disciplina_id"
 						id="disciplina"
 						:invalido="erro.includes('disciplina_id')" />
+					<AppFormSelect
+						label="Responsável pelo funcionário"
+						:options="responsaveis"
+						v-model="card.responsavel_id"
+						id="responsavel"
+						:invalido="erro.includes('responsavel_id')" />
 					<AppFormInput
 						label="Data de necesisdade"
 						type="date"
@@ -62,12 +74,14 @@
 						type="text"
 						id="salario"
 						v-model="card.salario"
+						v-money="{ precision: 2, prefix: 'R$ ', decimal: ',', thousands: '.' }"
 						:textoDesabilitado="txtDesabilitadoSalario"
 						:readonly="bloquearSalario"
 						:disabled="bloquearSalario" />
+					<div />
 					<AppFormRadio
 						:itens="opcoesTurno"
-            id="turno"
+						id="turno"
 						titulo="Turno"
 						obrigatorio
 						v-model="card.turno"
@@ -75,7 +89,7 @@
 					<AppFormRadio
 						:itens="opcoesTipoRecrutamento"
 						titulo="Tipo de recrutamento"
-            id="tipo_recrutamento"
+						id="tipo_recrutamento"
 						obrigatorio
 						v-model="card.tipo_recrutamento"
 						:invalido="erro.includes('tipo_recrutamento')" />
@@ -84,7 +98,7 @@
 						titulo="Mobilização"
 						obrigatorio
 						v-model="card.mobilizacao"
-            id="mobilizacao"
+						id="mobilizacao"
 						:invalido="erro.includes('mobilizacao')" />
 					<AppFormRadio
 						simNao
@@ -98,32 +112,64 @@
 						obrigatorio
 						id="confidencial"
 						v-model="card.confidencial" />
-					<AppFormRadio
-						simNao
-						titulo="Aplicar testes específicos ?"
-						obrigatorio
-						id="testes"
-						v-model="card.teste_especificos" />
+<!--					<AppFormRadio-->
+<!--						simNao-->
+<!--						titulo="Aplicar testes específicos ?"-->
+<!--						obrigatorio-->
+<!--						id="testes"-->
+<!--						v-model="card.teste_especificos" />-->
 					<AppFormRadio
 						simNao
 						titulo="Avaliar inglês ?"
 						obrigatorio
 						id="ingles"
 						v-model="card.avaliar_ingles" />
-					<AppFormRadio
-						simNao
-						titulo="Necessita de Notebook, Computador ou Login ?"
-						obrigatorio
-						id="notebook"
-						v-model="card.equipamento_ti"
-						:invalido="erro.includes('equipamento_ti')" />
-					<AppFormRadio
-						class="col-span-2"
-						simNao
-						titulo="Já tem indicação"
-						obrigatorio
-						id="indicacao"
-						v-model="card.tem_indicacao" />
+
+					<!--          <div>-->
+					<!--            <AppFormRadio-->
+					<!--              class="col-span-2"-->
+					<!--              simNao-->
+					<!--              titulo="Já tem indicação ?"-->
+					<!--              obrigatorio-->
+					<!--              id="indicacao"-->
+					<!--              v-model="card.tem_indicacao"/>-->
+					<!--        </div>-->
+					<!--          {{ card.tem_indicacao }}-->
+					<div>
+						<span><Strong>Treinamentos/NRs</Strong></span>
+						<div
+							v-for="nr in nrs"
+							:key="nr.id">
+							<AppFormCheckbox
+								:label="nr.nr + ' - ' + nr.descricao"
+								:valor="nr.id"
+								:id="nr.id"
+								v-model="card.nrs" />
+						</div>
+					</div>
+          <AppFormRadio
+            simNao
+            titulo="Necessita de Notebook, Computador ou Login ?"
+            obrigatorio
+            id="notebook"
+            v-model="card.equipamento_ti"
+            :invalido="erro.includes('equipamento_ti')"/>
+					<div class="self-end">
+						<BotaoPadrao
+							texto="Adicionar indicação"
+							@click="card.tem_indicacao = true"
+              cor="bg-green-400 hover:bg-green-500"
+							v-if="card.tem_indicacao === false" >
+              <img src="@/assets/icons/add-b.svg" alt="close" class="w-6 h-6"/>
+            </BotaoPadrao>
+						<BotaoPadrao
+							texto="Remover indicação"
+							@click="card.tem_indicacao = false"
+              cor="bg-red-400 hover:bg-red-500"
+							v-if="card.tem_indicacao === true" >
+              <img src="@/assets/icons/minus-b.svg" alt="close" class="w-6 h-6"/>
+            </BotaoPadrao>
+					</div>
 					<div
 						class="bg-gray-300 p-2 rounded-sm border border-gray-400 col-span-2 grid grid-cols-2 gap-y-2 gap-x-3"
 						v-if="card.tem_indicacao">
@@ -139,13 +185,27 @@
 							:invalido="erro.includes('indicacao.nome')" />
 						<AppFormInput
 							placeholder="Ex: (11)99123-4567"
-							label="Telefone"
+							label="Telefone 1"
 							type="text"
 							obrigatorio
 							id="telefoneIndicacao"
-              mask="['(##)####-####','(##)#####-####']"
+							mask="['(##)####-####','(##)#####-####']"
 							v-model="card.indicacao.telefone"
 							:invalido="erro.includes('indicacao.telefone')" />
+						<AppFormInput
+							placeholder="Ex: (11)99123-4567"
+							label="Telefone 2"
+							type="text"
+							id="telefoneIndicacao"
+							mask="['(##)####-####','(##)#####-####']"
+							v-model="card.indicacao.telefone_2" />
+						<AppFormInput
+							placeholder="Ex: (11)99123-4567"
+							label="Telefone 3"
+							type="text"
+							id="telefoneIndicacao"
+							mask="['(##)####-####','(##)#####-####']"
+							v-model="card.indicacao.telefone_3" />
 						<AppFormInput
 							placeholder="Ex: joao.mariano@agnet.com.br"
 							label="E-mail"
@@ -159,31 +219,20 @@
 							obrigatorio
 							id="indicandoIndicacao"
 							v-model="card.indicacao.indicado_por"
+							:invalido="erro.includes('indicacao.indicado_por')"
 							uppercase />
 						<AppFormInput
 							placeholder="Ex: 123.456.789-10"
 							label="CPF"
 							type="text"
 							id="cpfIndicacao"
-              mask="###.###.###-##"
+							mask="###.###.###-##"
 							v-model="card.indicacao.cpf"
-              :invalido="erro.includes('indicacao.cpf')"/>
+							:invalido="erro.includes('indicacao.cpf')" />
 						<AppFormFile
 							label="Currículo em PDF"
 							id="curriculo"
 							@change="card.indicacao.pdf = $event" />
-					</div>
-					<div>
-						<span><Strong>Treinamentos/NRs</Strong></span>
-						<div
-							v-for="nr in nrs"
-							:key="nr.id">
-							<AppFormCheckbox
-								:label="nr.nr + ' - ' + nr.descricao"
-								:valor="nr.id"
-								:id="nr.id"
-								v-model="card.nrs" />
-						</div>
 					</div>
 					<AppFormTextarea
 						label="Comentários"
@@ -217,11 +266,16 @@
 	import AppFormCheckbox from "~/components/Ui/Form/AppFormCheckbox.vue"
 	import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue"
 	import { buscarNrs } from "@/mixins/buscarInformacoes"
+	import money from "vuejs-money"
+	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 
+	// import {VMoney} from 'v-money'
 	export default {
+		// directives: {money: VMoney},
 		name: "DialogCriarCard",
 		mixins: [buscarNrs],
 		components: {
+			BotaoPadrao,
 			BaseDialog,
 			BotaoSalvar,
 			AppFormInput,
@@ -234,7 +288,6 @@
 		props: {
 			card_id: {
 				type: [String, Number],
-        required: true
 			},
 		},
 		data() {
@@ -267,9 +320,12 @@
 					mobilizacao: null,
 					entrevista_gestor: false,
 					tem_indicacao: false,
+					responsavel_id: null,
 					indicacao: {
 						nome: null,
 						telefone: null,
+						telefone_2: null,
+						telefone_3: null,
 						email: null,
 						indicado_por: null,
 						cpf: null,
@@ -288,11 +344,13 @@
 				centrosCusto: [],
 				funcoes: [],
 				disciplinas: [],
+				responsaveis: [],
 				status: [],
 				invalidoDataNecessidade: false,
 				bloquearSalario: true,
 				txtDesabilitadoSalario: "",
 				erro: [],
+        dataNecessidadeOriginal: null
 			}
 		},
 		async fetch() {
@@ -302,23 +360,32 @@
 			await this.buscarFuncao()
 			await this.buscarDisciplina()
 			await this.buscarStatus()
+			await this.buscarResponsaveis()
 
-			this.card.data_necessidade = this.$dayjs().add(30, "day").format("YYYY-MM-DD")
+      if(this.card_id === null )
+			  this.card.data_necessidade = this.$dayjs().add(30, "day").format("YYYY-MM-DD")
 		},
 		computed: {
-			nomeSetor() {
-				this.card.setor_id = this.$auth.user
-					? this.$auth.user.setor_id
-					: ""
+			nomeSetor: {
+				get() {
+					this.card.setor_id = this.$auth.user ? this.$auth.user.setor_id : ""
 
-				return this.$auth.user && this.$auth.user.Setor
-					? this.$auth.user.Setor.nome
-					: ""
+					return this.$auth.user && this.$auth.user.Setor ? this.$auth.user.Setor.nome : ""
+				},
+				set(value) {
+					console.log(value)
+				},
 			},
+      podeEditarTudo(){
+        if(this.card_id !== null){
+           return this.card.etapa_id !== 1
+        }
+        return false
+      }
 		},
 
 		async created() {
-			console.log(this.card_id)
+			// console.log(this.card_id)
 			if (this.card_id !== null) {
 				await this.buscarCard()
 			}
@@ -369,6 +436,23 @@
 				}
 			},
 
+			async buscarResponsaveis() {
+				console.log(this.$store.state.funcionarios)
+
+				let resp = await this.$axios.$get("/efetivo/buscar/nomes")
+
+				if (!resp.falha) {
+					let funcionarios = resp.dados.funcionarios
+
+					let options = funcionarios.map((o) => {
+						return { id: o.id, nome: o.nome }
+					})
+
+					this.responsaveis = options
+					// this.responsaveis = resp.dados.funcionarios.map( o => o.nome )
+				}
+			},
+
 			async buscarStatus() {
 				let resp = await this.$axios.$get("/contratacao/status/buscarTodos")
 
@@ -403,6 +487,7 @@
 					"centro_custo_pep_id",
 					"funcao_id",
 					"disciplina_id",
+					"responsavel_id",
 					"data_necessidade",
 					"turno",
 					"tipo_recrutamento",
@@ -410,12 +495,23 @@
 					"equipamento_ti",
 				]
 
-				if (this.card.tem_indicacao) camposObrigatorio.push("indicacao.nome", "indicacao.telefone", "indicacao.cpf")
+				if (this.card.tem_indicacao)
+					camposObrigatorio.push(
+						"indicacao.nome",
+						"indicacao.telefone",
+						"indicacao.cpf",
+						"indicacao.indicado_por",
+					)
 
 				for (let campo of camposObrigatorio) {
 					if (this.card[`${campo}`] === null || this.card[`${campo}`] === "") this.erro.push(campo)
 
-					if (campo === "indicacao.telefone" || campo === "indicacao.nome" || campo === "indicacao.cpf") {
+					if (
+						campo === "indicacao.telefone" ||
+						campo === "indicacao.nome" ||
+						campo === "indicacao.cpf" ||
+						campo === "indicacao.indicado_por"
+					) {
 						let key = campo.split(".")[1]
 						if (this.card.indicacao[`${key}`] === null || this.card.indicacao[`${key}`] === "")
 							this.erro.push(campo)
@@ -482,55 +578,72 @@
 				}
 			},
 
-      async editarContratacao(){
-        console.log("Aqui")
-        this.validarFormulario()
+			async editarContratacao() {
+				console.log("Aqui")
+				this.validarFormulario()
 
-        let usuario_id = this.$auth.user.id;
+				let usuario_id = this.$auth.user.id
 
-        const config = {headers: {"Content-Type": "multipart/form-data"}};
-        let formData = new FormData();
-        formData.append(`files`, this.card.indicacao.pdf);
+				const config = { headers: { "Content-Type": "multipart/form-data" } }
+				let formData = new FormData()
+				formData.append(`files`, this.card.indicacao.pdf)
 
-        let rawData = {
-          card: this.card,
-          usuario_id: usuario_id,
-        };
+				let rawData = {
+					card: this.card,
+					usuario_id: usuario_id,
+				}
 
-        rawData = JSON.stringify(rawData);
-        formData.append("data", rawData);
+				rawData = JSON.stringify(rawData)
+				formData.append("data", rawData)
 
-        try {
-          let resp = await this.$axios.$put("/contratacao/card/editar_novo_padrao", formData, config);
+				try {
+					let resp = await this.$axios.$put(
+						"/contratacao/card/editar_novo_padrao",
+						formData,
+						config,
+					)
 
-          if(!resp.falha){
-            let comentario = resp.dados.comentario
-            this.$emit("editado", { card_id: this.card_id, comentario})
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      },
+					if (!resp.falha) {
+						let comentario = resp.dados.comentario
+						this.$emit("editado", { card_id: this.card_id, comentario })
+					}
+				} catch (error) {
+					console.log(error)
+				}
+			},
 
 			async buscarCard() {
 				let id = this.card_id
 
 				let { card } = await this.$axios.$get("/contratacao/card/buscar", { params: { id: id } })
-				this.card = Object.assign({},card)
-        let temEquipamentoTi = false
-        if(card.equipamento_card.length > 0){
-          temEquipamentoTi = card.equipamento_card.filter(obj => obj.id === 1).length > 0
-        }
-        this.card.equipamento_ti = temEquipamentoTi
+				// this.card = Object.assign({}, card)
 
-        let temIndicacao = false
-        if(card.Indicacao){
-          temIndicacao = true
-          this.card.indicacao = card.Indicacao
-        }
-        this.card.tem_indicacao = temIndicacao
 
-        if(card.nrs.length > 0){
+        console.log(card)
+        console.log(this.card)
+				let temEquipamentoTi = false
+				if (card.equipamento_card.length > 0) {
+					temEquipamentoTi = card.equipamento_card.filter((obj) => obj.id === 1).length > 0
+				}
+				card.equipamento_ti = temEquipamentoTi
+        //
+				// let temIndicacao = false
+				if (card.Indicacao) {
+					card.tem_indicacao = true
+					card.indicacao = card.Indicacao
+				} else {
+					card.tem_indicacao = false
+				}
+				// console.log(card.Indicacao)
+				// // console.log(temIndicacao)
+        //
+				// this.card.tem_indicacao = temIndicacao
+        //
+
+
+        this.dataNecessidadeOriginal = card.data_necessidade
+        this.card = card
+        if (card.nrs.length > 0) {
           this.card.nrs = []
           for (let nr of card.nrs) {
             this.card.nrs.push(nr.id)
@@ -545,15 +658,20 @@
 				}
 			},
 			"card.tem_indicacao": function (valor) {
+				console.log(valor)
+
 				if (valor === true) {
 					this.card.quantidade = 1
 				}
 			},
-
 			"card.data_necessidade": function (valor) {
 				let hoje = this.$dayjs().format("YYYY-MM-DD")
 
-				this.invalidoDataNecessidade = this.$dayjs(valor).diff(hoje, "day") < 30
+        let temCard = false
+        if(this.card_id !== null)
+          temCard = this.dataNecessidadeOriginal === this.card.data_necessidade
+
+				this.invalidoDataNecessidade = this.$dayjs(valor).diff(hoje, "day") < 30 && !temCard
 			},
 		},
 	}

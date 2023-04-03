@@ -5,12 +5,14 @@
       <span v-if="obrigatorio" class="text-red-700">*</span>
     </label>
     <select name="selectPersonalizado" id="selectPersonalizado"
+            :disabled="disabled"
             v-model="model"
             @change="$emit('change', $event.target.value)"
             class="h-9 border rounded-sm px-2 py-1 focus:outline-none focus:ring focus:ring-gray-300"
             :class="{
                 'bg-red-100 border-red-400 focus:ring-red-300': invalido,
                 'bg-white border-gray-400 focus:ring-gray-300' : !invalido,
+                '!bg-gray-200 cursor-not-allowed': disabled || readonly
               }"
            >
       <option :value="null" disabled selected>Selecione</option>
@@ -52,6 +54,14 @@ export default {
       default: false
     },
     obrigatorio: {
+      type: Boolean,
+      default: false
+    },
+    disabled:{
+      type: Boolean,
+      default: false
+    },
+    readonly: {
       type: Boolean,
       default: false
     }
