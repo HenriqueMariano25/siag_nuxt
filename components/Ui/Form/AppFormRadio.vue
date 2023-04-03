@@ -61,7 +61,6 @@ export default {
     },
     titulo: {
       type: String,
-      required: true
     },
     value: {
       type: [String, Number, Boolean],
