@@ -385,7 +385,6 @@
 		},
 
 		async created() {
-			// console.log(this.card_id)
 			if (this.card_id !== null) {
 				await this.buscarCard()
 			}
@@ -437,8 +436,6 @@
 			},
 
 			async buscarResponsaveis() {
-				console.log(this.$store.state.funcionarios)
-
 				let resp = await this.$axios.$get("/efetivo/buscar/nomes")
 
 				if (!resp.falha) {
@@ -569,8 +566,6 @@
 							confidencial: false,
 							equipamento_ti: null,
 						}
-
-						console.log("Caastrado")
 					} catch (error) {
 						console.log(error)
 						console.log("Aqui")

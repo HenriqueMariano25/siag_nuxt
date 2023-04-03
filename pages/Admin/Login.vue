@@ -64,8 +64,6 @@ export default {
           },
         })
 
-        console.log(resp)
-
         this.$router.push("/admin")
       }catch (e) {
         if (!e.response){

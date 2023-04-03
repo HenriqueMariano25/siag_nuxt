@@ -100,7 +100,6 @@ export default {
 
       let resp = await this.$axios.$delete("/permissao/deletar", { params: { id }})
 
-      console.log(resp)
       if(!resp.falha){
         this.$emit("deletado", id)
       }

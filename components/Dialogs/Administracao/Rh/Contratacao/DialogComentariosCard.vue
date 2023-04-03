@@ -99,7 +99,6 @@
 				this.$emit("cancelar")
 			},
 			async buscarComentarios() {
-				console.log(this.card_id)
 				if (this.card_id !== null) {
 					let { comentarios } = await this.$axios.$get("/contratacao/card/comentarios", {
 						params: { id: this.card_id },
@@ -121,9 +120,6 @@
 
           this.comentarios.unshift(comentarioCriado)
           this.comentario = null
-
-
-          console.log("Aquiii")
           this.mostrarAlerta = true
           this.textoAlerta = "Comentário enviado com sucesso!"
 

@@ -83,8 +83,6 @@ export default {
       this.$emit("cancelar")
     },
     async buscarCentrosCusto() {
-      console.log("Buscando")
-
       let setor_id = this.card.setor_id
 
       let resp = await this.$axios.$get("/contratacao/centro_custo/por_setor", {
