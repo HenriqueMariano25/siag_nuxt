@@ -46,6 +46,9 @@
 				<template v-slot:[`body.acoes`]="{ item }">
 					  <BotaoIconeEditar @click="editarCard(item)" />
 				</template>
+        <template v-slot:[`body.id`]="{ item }">
+					  <span class="whitespace-nowrap">{{ ("000000" + item.id).slice(-6) }}</span>
+				</template>
 				<template v-slot:[`body.Etapa.nome`]="{ item }">
 					<span v-if="item.Etapa && item.Etapa.nome" class="whitespace-nowrap">
 						{{ item.Etapa.nome }}
@@ -137,7 +140,7 @@
 		<RodapePagina class="print:hidden">
 			<template v-slot>
 				<div class="flex items-center w-full">
-					<div class="flex w-full">
+					<div class="flex w-full gap-2">
 						<BotaoPadrao
 							texto="Filtros avançados"
 							@click="mostrarDialogFiltroAvancado = true">
@@ -146,6 +149,12 @@
 								alt="close"
 								class="w-6 h-6" />
 						</BotaoPadrao>
+            <BotaoPadrao :texto="gerandoExcel ? 'Gerando Excel' : 'Excel'" @click="gerarExcel()" :disabled="gerandoExcel">
+              <img
+                src="@/assets/icons/excel-b.svg"
+                alt="excel"
+                class="w-6 h-6"/>
+            </BotaoPadrao>
 					</div>
 					<div class="flex w-full justify-end gap-4">
 						<BotaoPadrao
@@ -242,6 +251,7 @@
 	import DialogDetalhesCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogDetalhesCard.vue"
 	import DialogFiltroAvancado from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogFiltroAvancado.vue"
 	import { prepararFiltro } from "~/mixins/prepararFiltro"
+  import gerarExcel from "~/functions/gerarExcel";
 	export default {
 		mixins: [buscarEtapa, prepararFiltro],
 		name: "Cards",
@@ -277,6 +287,7 @@
 				carregandoTabela: false,
 				mostrarDialogDetalhesCard: false,
 				mostrarDialogFiltroAvancado: false,
+        gerandoExcel: false
 			}
 		},
 
@@ -358,8 +369,6 @@
 
 				let filtros = this.prepararFiltro(filtrosPrPreparar)
 
-
-				console.log(filtros)
         let confidencial
         let listaPermissoes = ['aprovar_card_site_manager', 'aprovar_card_controle', 'rh_contratacoes']
         if(listaPermissoes.some(o => this.$auth.user.permissoes.includes(o))){
@@ -461,6 +470,96 @@
 				this.filtros = Object.assign(this.filtros, filtros)
 				await this.buscarCards()
 			},
+
+      async gerarExcel() {
+        let filtrosPrPreparar = Object.assign({}, this.filtros)
+        let usuario_id = this.$auth.user.id
+
+        let filtros = this.prepararFiltro(filtrosPrPreparar)
+
+        let confidencial
+        let listaPermissoes = ['aprovar_card_site_manager', 'aprovar_card_controle', 'rh_contratacoes']
+        if (listaPermissoes.some(o => this.$auth.user.permissoes.includes(o))) {
+          confidencial = 'todos'
+        } else {
+          confidencial = 'setor'
+        }
+
+        let etapa_id = this.etapa_id
+        if (etapa_id !== 0) {
+          filtros["etapa_id"] = etapa_id
+        }
+
+        let resp = await this.$axios.$get("/contratacao/card/buscarPaginados", {
+          params: {
+            page: this.pagina - 1,
+            size: this.totalItens,
+            filtros,
+            confidencial,
+            usuario_id
+          },
+        })
+
+        if(!resp.falha){
+          this.gerandoExcel = true
+          let dados = resp.dados.cards.rows
+
+          let cabecalho = [
+            "Código",
+            "Etapa",
+            "Situação",
+            "Setor",
+            "Disciplina",
+            "PEP",
+            "Nome",
+            "Telefone",
+            "Email",
+            "Função",
+            "Data de Necessidade",
+            "Previsão de Entrega",
+            "Ultíma movimentação",
+            "Treinamentos",
+            "Data de criação",
+            "Mobilização",
+            "Último Comentário",
+          ]
+          let nomeArquivo
+
+          nomeArquivo = "cards"
+
+          let itens = []
+          for (let item of dados) {
+            let temp = []
+            temp.push(("000000" + item.id).slice(-6))
+            temp.push(item.Etapa ? item.Etapa.nome : "");
+            temp.push(this.$dayjs().diff(item.ultima_data, 'day') <= item.Etapa.leadtime ? "No prazo" : "Atrasado");
+            temp.push(item.Setor ? item.Setor.nome : "");
+            temp.push(item.DisciplinaCard ? item.DisciplinaCard.descricao : "")
+            temp.push(item.CentroCustoPEP ? `${item.CentroCustoPEP.numero_pep}-${item.CentroCustoPEP.descricao}` : "");
+            temp.push(item.Indicacao && item.Indicacao.nome ? item.Indicacao.nome : "")
+            temp.push(item.Indicacao && item.Indicacao.telefone ? item.Indicacao.telefone : "")
+            temp.push(item.Indicacao && item.Indicacao.email ? item.Indicacao.email : "")
+            temp.push(item.FuncaoCard ? item.FuncaoCard.nome.trim() : "");
+            temp.push(this.$dayjs(item.data_necessidade).format("DD/MM/YYYY"));
+            temp.push(item.data_previsao ? this.$dayjs(item.data_previsao).format("DD/MM/YYYY") : "");
+            temp.push(this.$dayjs(item.ultima_data).format("DD/MM/YYYY"));
+            let nrs = ""
+            if (item.nrs && item.nrs.length > 0) {
+              for (let nr of item.nrs) {
+                if (nr.nr !== null) nrs = `${nrs + nr.nr};`
+              }
+            }
+            temp.push(nrs)
+            temp.push(this.$dayjs(item.createdAt).format("DD/MM/YYYY"))
+            temp.push(item.mobilizacao)
+            item.Comentarios.length > 0 ? temp.push(item.Comentarios.at(-1).descricao) : temp.push("")
+            itens.push(temp)
+          }
+
+          gerarExcel(cabecalho, itens, nomeArquivo)
+          this.gerandoExcel = false
+        }
+      },
 		},
 		watch: {
 			etapa_id(valor) {
