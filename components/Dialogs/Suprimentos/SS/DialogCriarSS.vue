@@ -943,13 +943,12 @@
 						</div>
 						<div class="bg-blue-100 p-2 border border-blue-200">
 							<span class="text-md w-full"><strong>9 - REQUISITOS DE ACESSO A OBRA</strong></span>
-							<AppFormInput
-								class="mt-2"
-								label="Exames e requisitos do SMS necessários"
-								placeholder="Exames e requisitos do SMS necessários"
-								type="text"
-								id="exames_necessarios"
-								v-model="ss.exames_necessarios" />
+              <AppFormTextarea
+                id="exames_necessarios"
+                label="Exames e requisitos do SMS necessários"
+                placeholder="Exames e requisitos do SMS necessários"
+                v-model="ss.exames_necessarios"
+                class="mt-2"/>
 							<AppFormInput
 								class="mt-2"
 								label="Prazo para integração(dias)"
