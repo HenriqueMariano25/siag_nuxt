@@ -497,6 +497,8 @@
           },
         })
 
+        console.log(resp)
+
         if(!resp.falha){
           this.gerandoExcel = true
           let dados = resp.dados.cards.rows
@@ -518,6 +520,7 @@
             "Treinamentos",
             "Data de criação",
             "Mobilização",
+            "Responsável",
             "Último Comentário",
           ]
           let nomeArquivo
@@ -549,6 +552,7 @@
             temp.push(nrs)
             temp.push(this.$dayjs(item.createdAt).format("DD/MM/YYYY"))
             temp.push(item.mobilizacao)
+            temp.push(item.responsavel ? item.responsavel.nome : "");
             item.Comentarios.length > 0 ? temp.push(item.Comentarios.at(-1).descricao) : temp.push("")
             itens.push(temp)
           }
