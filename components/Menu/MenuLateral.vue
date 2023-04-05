@@ -57,6 +57,15 @@
                 </button>
               </NuxtLink>
             </template>
+<!--            <template v-if="$auth.user.permissoes.includes('solicitacao_servico')">-->
+            <template>
+              <NuxtLink to="/filas">
+                <button class="items-center flex h-11 hover:bg-white/[.30] w-full p-1 rounded text-sm">
+                  <img src="@/assets/icons/queue-w.svg" alt="close" class="w-8 h-8"/>
+                  <span class="ml-2" v-if="menuAberto">Filas</span>
+                </button>
+              </NuxtLink>
+            </template>
           </div>
 
         </div>
