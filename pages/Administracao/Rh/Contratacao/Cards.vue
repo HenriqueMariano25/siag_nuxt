@@ -391,8 +391,6 @@
           // "$equipamento_card.id$": 1
         // }
 
-				console.log(filtros)
-
 				let resp = await this.$axios.$get("/contratacao/card/buscarPaginados", {
 					params: {
 						page: this.pagina - 1,
@@ -405,7 +403,6 @@
 
 				if (!resp.falha) {
 					let cards = resp.dados.cards.rows
-          console.log(resp.dados.cards.rows)
 
 					this.totalItens = resp.dados.cards.count
 					this.dados = cards
