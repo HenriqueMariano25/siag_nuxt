@@ -109,7 +109,7 @@
 						{{ $dayjs(item.data_previsao).add(30, 'day').format("DD/MM/YYYY") }}
 					</span>
 				</template>
-        <template v-slot:[`body.criado_por`]="{ item }">
+        <template v-slot:[`body.Usuario.nome`]="{ item }">
 					<span>
 						{{ item.Usuario ? item.Usuario.nome : '' }}
 					</span>
@@ -322,9 +322,9 @@
 					{ nome: "Função", valor: "FuncaoCard.nome", filtro: true },
 					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
 					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true, tipoFiltro: "data" },
-					{ nome: "Previsão Entrega", valor: "data_previsao", filtro: true, centralizar: true },
-					{ nome: "Criado por", valor: "criado_por", filtro: true, centralizar: true },
-					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true },
+					{ nome: "Previsão Entrega", valor: "data_previsao", filtro: true, centralizar: true, tipoFiltro: "data" },
+					{ nome: "Criado por", valor: "Usuario.nome", filtro: true, centralizar: true },
+					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true, tipoFiltro: "data" },
 					{ nome: "Comentários", valor: "comentarios" },
 				]
 
@@ -408,7 +408,9 @@
 
 				if (pagina) this.pagina = pagina
 
-				if (filtros) this.filtros = { ...this.filtros, ...filtros }
+        console.log(filtros)
+
+				if (filtros) this.filtros = filtros
 
 				await this.buscarCards()
 			},
@@ -453,7 +455,10 @@
 			async filtrarAvancado(filtros) {
         this.mostrarDialogFiltroAvancado = false
 				this.filtros = { ...this.filtros , ...filtros }
-				await this.buscarCards()
+        let itensPorPagina = this.itensPorPagina
+        let pagina = this.pagina
+
+				await this.atualizarDados(itensPorPagina, pagina, filtros)
 			},
 
       async limparFiltroAvancado(){
@@ -465,14 +470,21 @@
           }
         }
 
-        await this.buscarCards()
+
+        let filtros = this.filtros
+        let itensPorPagina = this.itensPorPagina
+        let pagina = this.pagina
+
+        await this.atualizarDados(itensPorPagina, pagina, filtros)
       },
 
       async gerarExcel() {
-        let filtrosPrPreparar = Object.assign({}, this.filtros)
+        // let filtrosPrPreparar = Object.assign({}, this.filtros)
         let usuario_id = this.$auth.user.id
 
-        let filtros = this.prepararFiltro(filtrosPrPreparar)
+
+        console.log("Usuario")
+        let filtros = this.filtros
 
         let confidencial
         let listaPermissoes = ['aprovar_card_site_manager', 'aprovar_card_controle', 'rh_contratacoes']
@@ -499,7 +511,7 @@
 
         if(!resp.falha){
           this.gerandoExcel = true
-          let dados = resp.dados.cards.rows
+          let dados = resp.dados.cards
 
           let cabecalho = [
             "Código",
