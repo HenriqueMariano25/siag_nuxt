@@ -7,7 +7,7 @@
 				class="flex p-2 hover:bg-gray-300 hover:text-black box-border print:hidden text-white"
 				:class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === 0 }"
 				@click="etapa_id = 0">
-				Todos
+				TodosS
 			</button>
 			<div
 				v-for="etapa in etapas"
@@ -25,8 +25,6 @@
 			<AppTabela
 				:cabecalho="cabecalho"
 				:dados="dados"
-				@filtrar="recebendoFiltro"
-        @filtrarMult="recebendoFiltro"
 				:itensPorPagina="itensPorPagina"
 				:pagina="pagina"
 				:totalItens="totalItens"
@@ -55,7 +53,7 @@
 					</span>
 				</template>
 				<template v-slot:[`body.Setor.nome`]="{ item }">
-					<span v-if="item.Setor && item.Setor.nome">
+					<span v-if="item.Setor && item.Setor.nome" class="whitespace-nowrap">
 						{{ item.Setor.nome }}
 					</span>
 				</template>
@@ -231,8 +229,9 @@
 			"
 			:card_id="card_id" />
 		<DialogFiltroAvancado
-			v-if="mostrarDialogFiltroAvancado"
+			v-show="mostrarDialogFiltroAvancado"
 			@cancelar="mostrarDialogFiltroAvancado = false"
+      @limparFiltro="limparFiltroAvancado"
 			@filtrar="filtrarAvancado" />
 	</div>
 </template>
@@ -247,13 +246,13 @@
 	import DialogProcessarCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogProcessarCard.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import DialogComentariosCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogComentariosCard.vue"
-	import { buscarEtapa } from "~/mixins/buscarInformacoes"
+	import { buscarEtapa, buscarSetores, buscarDisciplinaCard } from "~/mixins/buscarInformacoes"
 	import DialogDetalhesCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogDetalhesCard.vue"
 	import DialogFiltroAvancado from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogFiltroAvancado.vue"
 	import { prepararFiltro } from "~/mixins/prepararFiltro"
   import gerarExcel from "~/functions/gerarExcel";
 	export default {
-		mixins: [buscarEtapa, prepararFiltro],
+		mixins: [buscarEtapa, prepararFiltro, buscarSetores, buscarDisciplinaCard],
 		name: "Cards",
 		components: {
 			RodapePagina,
@@ -272,8 +271,8 @@
 			return {
 				mostrarDialogCriarCard: false,
 				dados: [],
-				filtros: [],
-				itensPorPagina: 20,
+				filtros: {},
+				itensPorPagina: 50,
 				pagina: 1,
 				card_id: null,
 				totalItens: 0,
@@ -287,7 +286,9 @@
 				carregandoTabela: false,
 				mostrarDialogDetalhesCard: false,
 				mostrarDialogFiltroAvancado: false,
-        gerandoExcel: false
+        gerandoExcel: false,
+        setores: [],
+        disciplinas: [],
 			}
 		},
 
@@ -305,22 +306,22 @@
                   .map((item) => `${item.nome}`),
               ),
             )},
-					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
-					{ nome: "Setor", valor: "Setor.nome", filtro: true, opcoes: Array.from(new Set(this.dados
+					{ nome: "Situação", valor: "situacao" },
+					{ nome: "Setor", valor: "Setor.nome", filtro: true, opcoes: Array.from(new Set(this.setores
               .filter((item) => {
-                return item.Setor.nome;
+                return item.nome;
               })
-              .map((item) => `${item.Setor.nome}`))) },
+              .map((item) => `${item.nome}`))) },
 					{ nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true,
-            opcoes: Array.from(new Set(this.dados
+            opcoes: Array.from(new Set(this.disciplinas
               .filter((item) => {
-                return item.DisciplinaCard && item.DisciplinaCard.descricao;
+                return item.descricao;
               })
-              .map((item) => `${item.DisciplinaCard.descricao}`)))},
+              .map((item) => `${item.descricao}`)))},
 					{ nome: "PEP", valor: "CentroCustoPEP.numero_pep", filtro: true },
 					{ nome: "Função", valor: "FuncaoCard.nome", filtro: true },
 					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
-					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true },
+					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true, tipoFiltro: "data" },
 					{ nome: "Previsão Entrega", valor: "data_previsao", filtro: true, centralizar: true },
 					{ nome: "Criado por", valor: "criado_por", filtro: true, centralizar: true },
 					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true },
@@ -345,6 +346,8 @@
 		},
 		async mounted() {
 			this.etapas = await this.buscarEtapa()
+			this.setores = await this.buscarSetores()
+			this.disciplinas = await this.buscarDisciplinaCard()
 			this.etapa_id = 0
 
 			await this.buscarCards()
@@ -359,15 +362,10 @@
 				this.card_id = null
 				this.mostrarDialogCriarCard = false
 			},
-			recebendoFiltro(filtros) {
-				this.filtros = { ...this.filtros ,filtros }
-			},
 			async buscarCards() {
 				this.carregandoTabela = true
-				let filtrosPrPreparar = Object.assign({}, this.filtros)
         let usuario_id = this.$auth.user.id
-
-				let filtros = this.prepararFiltro(filtrosPrPreparar)
+				let filtros = this.filtros
 
         let confidencial
         let listaPermissoes = ['aprovar_card_site_manager', 'aprovar_card_controle', 'rh_contratacoes']
@@ -377,19 +375,12 @@
           confidencial = 'setor'
         }
 
-				// for (let f of Object.keys(filtros)) {
-				//   filtros[f] = {$iLike: `%${filtros[f]}%`}
-				// }
-
 				let etapa_id = this.etapa_id
 				if (etapa_id !== 0) {
 					filtros["etapa_id"] = etapa_id
-				}
-
-
-				// filtros = {
-          // "$equipamento_card.id$": 1
-        // }
+				}else{
+          delete filtros["etapa_id"]
+        }
 
 				let resp = await this.$axios.$get("/contratacao/card/buscarPaginados", {
 					params: {
@@ -402,9 +393,9 @@
 				})
 
 				if (!resp.falha) {
-					let cards = resp.dados.cards.rows
+					let cards = resp.dados.cards
 
-					this.totalItens = resp.dados.cards.count
+					this.totalItens = resp.dados.totalItens
 					this.dados = cards
 					this.carregandoTabela = false
 				}
@@ -417,8 +408,7 @@
 
 				if (pagina) this.pagina = pagina
 
-				if (filtros) this.filtros = filtros
-				console.log(filtros)
+				if (filtros) this.filtros = { ...this.filtros, ...filtros }
 
 				await this.buscarCards()
 			},
@@ -461,12 +451,22 @@
 			},
 
 			async filtrarAvancado(filtros) {
-				// console.log(filtros)
-				// console.log(this.filtros)
         this.mostrarDialogFiltroAvancado = false
-				this.filtros = Object.assign(this.filtros, filtros)
+				this.filtros = { ...this.filtros , ...filtros }
 				await this.buscarCards()
 			},
+
+      async limparFiltroAvancado(){
+        this.mostrarDialogFiltroAvancado = false
+        let keys = Object.keys(this.filtros)
+        for(let i in keys){
+          if(keys[i] === 'mobilizacao' || keys[i] === '$cardTemEquipamentoCard.equipamento_card_id$'){
+            delete this.filtros[keys[i]]
+          }
+        }
+
+        await this.buscarCards()
+      },
 
       async gerarExcel() {
         let filtrosPrPreparar = Object.assign({}, this.filtros)
@@ -496,8 +496,6 @@
             usuario_id
           },
         })
-
-        console.log(resp)
 
         if(!resp.falha){
           this.gerandoExcel = true

@@ -47,9 +47,10 @@
 														: (filtroAberto = null)
 												"
 												:class="{
-													'text-blue-400': Object.keys(filtros).includes(
-														cab.valor.includes('.') ? `$${cab.valor}$` : cab.valor,
-													),
+													// 'text-blue-400': Object.keys(filtros).includes(
+													// 	cab.valor.includes('.') ? `$${cab.valor}$` : cab.valor,
+													// ),
+													'text-blue-400': filtrosAtivos.includes(cab.valor)
 												}">
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
@@ -67,7 +68,7 @@
 								</div>
 								<div
 									style="top: 34px"
-									v-if="filtroAberto === cab.valor && cab.opcoes"
+									v-if="filtroAberto === cab.valor && cab.opcoes && cab.tipoFiltro !== 'data'"
 									class="absolute text-start px-2 py-1 rounded-sm shadow-lg bg-white min-w-[300px] border border-gray-200">
 									<AppFormInput
 										id="filtroMultSelecao"
@@ -75,7 +76,7 @@
 										type="text"
 										:label="'Buscar por ' + cab.nome"
 										:value="textoParaFiltro"
-                    v-model="textoParaFiltro"
+										v-model="textoParaFiltro"
 										placeholder=""
 										@keyup.enter.prevent.stop="adicionarFiltro(cab.valor, $event)" />
 									<div
@@ -89,7 +90,7 @@
 												v-model="checkSelecionarTodos"
 												@click="selecionarTodos(cab.opcoes)"></AppFormCheckbox>
 										</div>
-										<template v-for="o in opcoesFiltradas(cab.opcoes)" >
+										<template v-for="o in opcoesFiltradas(cab.opcoes)">
 											<AppFormCheckbox
 												:key="o"
 												:id="'filtroCheck' + o"
@@ -101,7 +102,7 @@
 									<div class="w-full gap-2 flex justify-between">
 										<BotaoPadrao
 											texto="Limpar"
-                      @click="limparFiltrarMult"
+											@click="limparFiltrarMult(cab.valor)"
 											class=" ">
 										</BotaoPadrao>
 										<BotaoPadrao
@@ -114,7 +115,7 @@
 								</div>
 								<div
 									style="top: 34px"
-									v-if="filtroAberto === cab.valor && !cab.opcoes"
+									v-if="filtroAberto === cab.valor && !cab.opcoes && cab.tipoFiltro !== 'data'"
 									class="absolute text-start px-2 py-1 rounded-sm shadow-lg bg-white min-w-[300px] border border-gray-200">
 									<div
 										class="absolute"
@@ -142,6 +143,36 @@
 											class="bg-primaria-500 w-full py-1 hover:bg-primaria-700">
 											Limpar Filtro
 										</button>
+									</div>
+								</div>
+								<div
+									style="top: 34px"
+									v-if="filtroAberto === cab.valor && cab.tipoFiltro === 'data'"
+									class="absolute text-start px-2 py-1 rounded-sm shadow-lg bg-white min-w-[300px] border border-gray-200 text-black">
+									<div class="flex flex-col gap-y-2">
+                    <span>Filtrar por data - {{ cab.nome }}</span>
+										<AppFormInput
+											:id="'filtroDataInicial' + cab.nome"
+											class="w-full"
+											type="date"
+											label="Data inicial"
+                      v-model="dataFiltros.dataInicial"
+                    />
+										<AppFormInput
+											:id="'filtroDataFinal' + cab.nome"
+											class="w-full"
+											type="date"
+											label="Data final"
+                      v-model="dataFiltros.dataFinal"
+                    />
+										<div class="flex justify-between">
+											<BotaoPadrao texto="Limpar" @click="limparFiltroData(cab.valor)"></BotaoPadrao>
+											<BotaoPadrao
+                        :disabled="desativarBtnSalvarData"
+												texto="Filtrar"
+												cor="bg-primaria-500 text-white hover:bg-primaria-700"
+												@click="filtrarData(cab.valor)"></BotaoPadrao>
+										</div>
 									</div>
 								</div>
 							</slot>
@@ -249,7 +280,10 @@
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import AppFormCheckbox from "~/components/Ui/Form/AppFormCheckbox.vue"
 
+	import { prepararFiltro } from "~/mixins/prepararFiltro"
+
 	export default {
+		mixins: [prepararFiltro],
 		name: "Tabela",
 		props: {
 			cabecalho: {
@@ -296,14 +330,19 @@
 		},
 		data() {
 			return {
-				filtros: {},
+				filtros: [],
 				filtroAberto: null,
 				localItensPorPagina: this.itensPorPagina,
 				localPagina: this.pagina,
 				trAberto: null,
 				multSelecionados: [],
+        dataFiltros: {
+          dataInicial: null,
+          dataFinal: null
+        },
 				checkSelecionarTodos: false,
-        textoParaFiltro: null
+				textoParaFiltro: null,
+        filtrosAtivos: []
 			}
 		},
 		computed: {
@@ -331,35 +370,13 @@
 				}
 				return btns
 			},
+      desativarBtnSalvarData(){
+        let { dataInicial, dataFinal } = this.dataFiltros
+
+        return dataInicial === null || dataInicial === "" || dataFinal === null || dataFinal === ""
+      }
 		},
 		methods: {
-			filtrar(event, item) {
-				let key = item.valor
-				let nome = item.nome
-				let valor = "" + event.target.value
-
-				let idx = this.filtros.findIndex((o) => o.key === key)
-
-				if (idx >= 0) {
-					this.filtros.splice(idx, 1)
-				}
-				let filtro = { key, valor, nome }
-
-				this.filtros.push(filtro)
-				this.$emit("filtrar", this.filtros)
-			},
-
-			limpar(item) {
-				let key = item.valor
-				let idx = this.filtros.findIndex((o) => o.key === key)
-
-				if (idx >= 0) {
-					this.filtros.splice(idx, 1)
-				}
-
-				this.$emit("filtrar", this.filtros)
-			},
-
 			anteriorPagina() {
 				if (this.localPagina - 1 >= 1) {
 					this.localPagina -= 1
@@ -368,6 +385,8 @@
 			},
 
 			proximaPagina() {
+        console.log(this.localPagina)
+
 				if (this.localPagina + 1 <= this.totalPaginas) {
 					this.localPagina += 1
 					this.atualizarDados()
@@ -389,7 +408,11 @@
 				}
 				pagina = this.localPagina
 
-				this.$emit("atualizar", { itensPorPagina, pagina })
+				let filtrosPrPreparar = this.filtros
+
+				let filtros = this.prepararFiltro(filtrosPrPreparar)
+
+				this.$emit("atualizar", { itensPorPagina, pagina, filtros })
 			},
 
 			mostrarDetalhes(item, event) {
@@ -405,30 +428,47 @@
 			},
 
 			adicionarFiltro(item, event) {
-				console.log(item)
-				console.log(item.includes("."))
-				console.log(event)
+        if(!this.filtrosAtivos.includes(item)){
+          this.filtrosAtivos.push(item)
+        }
 
 				if (item.includes(".")) item = `$${item}$`
 
 				let valor = event.target.value
-				this.filtros = Object.assign(this.filtros, { [item]: valor })
-				let pagina = 1
-				this.localPagina = 1
-				this.filtroAberto = null
+				let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
 
-				this.$emit("atualizar", { pagina, filtros: this.filtros })
+				if (idx >= 0 && (valor === null || valor === "")) {
+					this.filtros.splice(idx, 1)
+          if (this.filtrosAtivos.includes(item)) {
+            let idx = this.filtrosAtivos.findIndex(o => o === item)
+            this.filtrosAtivos.splice(idx, 1)
+          }
+				} else {
+					this.filtros.push({ [item]: valor })
+				}
+
+        this.localPagina = 1
+        this.filtroAberto = null
+				this.atualizarDados()
 			},
 
 			removerFiltro(item) {
+        if (this.filtrosAtivos.includes(item)) {
+          let idx = this.filtrosAtivos.findIndex(o => o === item)
+          this.filtrosAtivos.splice(idx, 1)
+        }
+
 				if (item.includes(".")) item = `$${item}$`
 
-				delete this.filtros[item]
-				let pagina = 1
-				this.localPagina = 1
-				this.filtroAberto = null
+				let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
 
-				this.$emit("atualizar", { pagina, filtros: this.filtros })
+				if (idx >= 0) {
+					this.filtros.splice(idx, 1)
+				}
+
+        this.localPagina = 1
+        this.filtroAberto = null
+				this.atualizarDados()
 			},
 
 			selecionarTodos(opcoes) {
@@ -440,41 +480,97 @@
 			},
 
 			filtrarMult(valor) {
-				let filtro = { ["$" + valor + "$"]: { $or: [...this.multSelecionados] } }
-				let pagina = 1
 				this.localPagina = 1
 				this.filtroAberto = null
 
-				this.$emit("atualizar", { pagina, filtros: filtro })
-			},
-
-      limparFiltrarMult(){
-
-        let filtro = {}
-        let pagina = 1
-        this.localPagina = 1
-        this.filtroAberto = null
-        this.multSelecionados = []
-
-        this.$emit("atualizar", {pagina, filtros: filtro})
-      },
-
-      opcoesFiltradas(opcoes){
-        let itensFiltrados = opcoes
-
-        if(this.textoParaFiltro !== null && this.textoParaFiltro !== ''){
-          itensFiltrados = opcoes.filter(o => o.toLowerCase().includes(this.textoParaFiltro.toLowerCase()))
+        if (!this.filtrosAtivos.includes(valor)) {
+          this.filtrosAtivos.push(valor)
         }
 
-        return itensFiltrados
-      }
-		},
-    watch:{
-      textoParaFiltro(valor){
-        console.log(valor)
+				if (this.multSelecionados.length === 0) {
+					let idx = this.filtros.findIndex((o) =>
+						Object.keys(o).some((o) => o === "$" + valor + "$"),
+					)
+					this.filtros.splice(idx, 1)
+          if (this.filtrosAtivos.includes(valor)) {
+            let idx = this.filtrosAtivos.findIndex(o => o === valor)
+            this.filtrosAtivos.splice(idx, 1)
+          }
+				} else {
+					let filtro = { ["$" + valor + "$"]: { $or: [...this.multSelecionados] } }
+					this.filtros.push(filtro)
+				}
 
-      }
-    }
+        this.localPagina = 1
+        this.filtroAberto = null
+				this.atualizarDados()
+			},
+
+			limparFiltrarMult(valor) {
+				this.localPagina = 1
+				this.filtroAberto = null
+				this.multSelecionados = []
+
+        if (this.filtrosAtivos.includes(valor)) {
+          let idx = this.filtrosAtivos.findIndex(o => o === valor)
+          this.filtrosAtivos.splice(idx, 1)
+        }
+
+				let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === "$" + valor + "$"))
+				this.filtros.splice(idx, 1)
+				this.atualizarDados()
+			},
+
+			filtrarData(item) {
+        if (!this.filtrosAtivos.includes(item)) {
+          this.filtrosAtivos.push(item)
+        }
+        let { dataInicial, dataFinal } = this.dataFiltros
+
+        if (item.includes(".")) item = `$${item}$`
+        let filtro = { [item]: { '$bet': [ dataInicial, dataFinal ]} }
+        this.filtros.push(filtro)
+        this.dataFiltros = { dataInicial: null, dataFinal: null}
+
+        this.localPagina = 1
+        this.filtroAberto = null
+        this.atualizarDados()
+			},
+
+      limparFiltroData(item){
+        if (this.filtrosAtivos.includes(item)) {
+          let idx = this.filtrosAtivos.findIndex(o => o === item)
+          this.filtrosAtivos.splice(idx, 1)
+        }
+
+        if (item.includes(".")) item = `$${item}$`
+
+        let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
+
+
+        if(idx >= 0){
+          this.filtros.splice(idx, 1)
+          this.dataFiltros = {dataInicial: null, dataFinal: null}
+
+          this.localPagina = 1
+          this.filtroAberto = null
+          this.atualizarDados()
+        }
+      },
+
+			opcoesFiltradas(opcoes) {
+				let itensFiltrados = opcoes
+
+				if (this.textoParaFiltro !== null && this.textoParaFiltro !== "") {
+					itensFiltrados = opcoes.filter((o) =>
+						o.toLowerCase().includes(this.textoParaFiltro.toLowerCase()),
+					)
+				}
+
+				return itensFiltrados
+			},
+		},
+		watch: {},
 	}
 </script>
 

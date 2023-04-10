@@ -1,18 +1,30 @@
 export const prepararFiltro = {
   methods: {
     prepararFiltro(filtrosRecebidos) {
-      let filtros = Object.assign({}, filtrosRecebidos)
-      let keys = Object.keys(filtros)
+      let filtros = {}
 
-      for (let f of keys) {
-        if(Object.keys(filtros[f]).includes('$in'))
+      for (let filtro of filtrosRecebidos) {
+        let keyPrimaria = Object.keys(filtro)[0]
+        let keySecundaria = Object.keys(filtro[keyPrimaria])[0]
+
+        if(keySecundaria.includes('$in')){
+          filtros = {...filtros, ...filtro}
           continue
+        }
 
-        if (Object.keys(filtros[f]).includes('$or'))
+        if (keySecundaria.includes('$or')){
+          filtros = { ...filtros, ...filtro }
           continue
+        }
 
-        filtros[f] = {$iLike: `%${filtros[f]}%`}
+        if(keyPrimaria.includes('id')){
+          filtros[keyPrimaria] = filtro[keyPrimaria]
+          continue
+        }
+
+        filtros[keyPrimaria] = {$iLike: `%${filtro[keyPrimaria]}%`}
       }
+
       return filtros
     },
   },

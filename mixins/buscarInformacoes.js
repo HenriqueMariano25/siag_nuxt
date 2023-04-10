@@ -1,23 +1,15 @@
 // import api from "@/services/api"
 //
-// export const buscarSetores = {
-// 	methods: {
-// 		async buscarSetores(salvarStore) {
-// 			let setoresBuscados = await api.get("/efetivo/setores").then((resp) => resp.data.setores)
-//
-// 			if (salvarStore) {
-// 				let setores = this.$store.state.setores
-//
-// 				if (setores.length <= 0) {
-// 					await this.$store.commit("DEFINIR_SETORES", setoresBuscados)
-// 				}
-// 			}
-//
-// 			return setoresBuscados
-// 		},
-// 	},
-// }
-//
+export const buscarSetores = {
+	methods: {
+		async buscarSetores() {
+			let setoresBuscados = await this.$axios.$get("/efetivo/setores").then((resp) => resp.setores)
+
+			return setoresBuscados
+		},
+	},
+}
+
 export const buscarNrs = {
 	methods: {
 		async buscarNrs() {
@@ -48,25 +40,19 @@ export const buscarNrs = {
 // 	},
 // }
 //
-// export const buscarDisciplinaCard = {
-// 	methods: {
-// 		async buscarDisciplinaCard(salvarStore) {
-// 			let disciplinasBuscados = await api
-// 				.get("/contratacao/disciplina/buscarTodos")
-// 				.then((resp) => resp.data.disciplinas)
-//
-// 			if (salvarStore) {
-// 				let disciplinas = this.$store.state.disciplinas
-//
-// 				if (disciplinas != null) {
-// 					this.$store.commit("DEFINIR_DISCIPLINAS", disciplinasBuscados)
-// 				}
-// 			}
-//
-// 			return disciplinasBuscados
-// 		},
-// 	},
-// }
+export const buscarDisciplinaCard = {
+	methods: {
+		async buscarDisciplinaCard() {
+			let disciplinasBuscados = await this.$axios
+				.$get("/contratacao/disciplina/buscarTodos")
+				.then((resp) => resp.disciplinas)
+
+      console.log(disciplinasBuscados)
+
+			return disciplinasBuscados
+		},
+	},
+}
 //
 // export const buscarCentroCusto = {
 // 	methods: {

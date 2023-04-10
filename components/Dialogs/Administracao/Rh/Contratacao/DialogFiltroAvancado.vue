@@ -4,11 +4,11 @@
 		@cancelar="cancelar()">
 		<template v-slot:corpo>
 			<div class="px-2">
-<!--				<AppFormCheckbox-->
-<!--					label="Necessita Notebook, Computador ou Login ?"-->
-<!--					id="equipamento_id"-->
-<!--					valor="$CardTemEquipamentoCards.equipamento_card_id$:int:1"-->
-<!--					v-model="filtros" />-->
+				<AppFormCheckbox
+					label="Necessita Notebook, Computador ou Login ?"
+					id="equipamento_id"
+					valor="$cardTemEquipamentoCard.equipamento_card_id$:1"
+					v-model="filtros" />
 				<div>
 					<span class="text-xl">Mobilização</span>
 					<AppFormCheckbox
@@ -35,14 +35,24 @@
 			</div>
 		</template>
 		<template v-slot:rodape-btn-direito>
-			<BotaoPadrao
-				texto="Filtrar"
-				@click="filtrar()">
-				<img
-					src="@/assets/icons/filter-b.svg"
-					alt="close"
-					class="w-6 h-6" />
-			</BotaoPadrao>
+			<div class="flex gap-x-2">
+				<BotaoPadrao
+					texto="Limpar"
+					@click="limparFiltro">
+					<img
+						src="@/assets/icons/eraser-b.svg"
+						alt="close"
+						class="w-6 h-6" />
+				</BotaoPadrao>
+				<BotaoPadrao
+					texto="Filtrar"
+					@click="filtrar()">
+					<img
+						src="@/assets/icons/filter-b.svg"
+						alt="close"
+						class="w-6 h-6" />
+				</BotaoPadrao>
+			</div>
 		</template>
 	</BaseDialog>
 </template>
@@ -61,7 +71,7 @@
 		data() {
 			return {
 				filtros: [],
-        mobilizacao: []
+				mobilizacao: [],
 			}
 		},
 		methods: {
@@ -70,54 +80,27 @@
 			},
 			filtrar() {
 				let filtrosPrPreparar = this.filtros
-        let filtros = {}
 
-        if(this.mobilizacao.length > 0){
-          filtros['mobilizacao'] = {$in: this.mobilizacao}
-        }
+				let filtros = {}
+				if (this.mobilizacao.length > 0) {
+					filtros["mobilizacao"] = { $in: this.mobilizacao }
+				}
 
-        // console.log(filtrosPrPreparar)
-        for(let f of filtrosPrPreparar){
-          console.log(f)
-          let campos = f.split(":")
-          console.log(campos)
-          let novoFiltros
+				for (let f of filtrosPrPreparar) {
+					let campos = f.split(":")
+					let novoFiltros
 
-          if(campos[1] === 'int')
-            // novoFiltros = { [campos[0]]: parseInt(campos[2])}
-            filtros[campos[0]] = {$in: [parseInt(campos[2])]}
-          else
-            filtros[campos[0]] = campos[1]
-            // novoFiltros = { [campos[0]]: campos[1]}
+					if (campos[1] === "int") filtros[campos[0]] = { $in: [parseInt(campos[2])] }
+					else filtros[campos[0]] = campos[1]
+				}
 
-          // console.log(novoFiltros)
-        }
-
-        console.log(filtros)
-        // console.log(this.mobilizacao)
-
-        this.$emit("filtrar", filtros)
-      }
-
-				// console.log(filtros)
-
-      //   for(let f of this.filtros){
-      //     // console.log(f)
-      //     // let key = f.split(":")[0]
-      //     //
-      //     // console.log(key)
-      //
-      //     // if(key === 'mobilizacao'){
-      //     //   console.log('aqui')
-      //     //   filtrosFinais['mobilizacao'] = {$in: `%${filtros[f]}%`}
-      //     //   // filtrosProntos['mobilizacao']['$or'].push(f.split(":")[1])
-      //     // }
-      //     //
-      //     // console.log(filtrosProntos)
-      //   }
-      //
-			// 	// this.$emit("filtrar", filtros)
-			// },
+				this.$emit("filtrar", filtros)
+			},
+			async limparFiltro() {
+				this.filtros = []
+        this.mobilizacao = []
+				this.$emit("limparFiltro")
+			},
 		},
 	}
 </script>
