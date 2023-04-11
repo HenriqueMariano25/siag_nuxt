@@ -14,7 +14,6 @@
 		props: {
 			texto: {
 				type: String,
-				required: true,
 				default: "",
 			},
 			cor: {

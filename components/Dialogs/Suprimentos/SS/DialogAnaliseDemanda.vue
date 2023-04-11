@@ -51,7 +51,7 @@
       <div class="flex items-center gap-5 text-black w-full justify-between">
         <div>
           <BotaoPadrao texto="Negar SS" cor="bg-red-400 hover:bg-red-600" class="ml-5" @click="valNegarSS = true"
-                       v-if="!valNegarSS">
+                       v-if="!valNegarSS" :disabled="bloquearBtnNegar">
             <img src="@/assets/icons/close-b.svg" alt="close" class="w-6 h-6"/>
           </BotaoPadrao>
           <div class="flex items-center text-white ml-5 gap-x-5" v-if="valNegarSS">
@@ -102,6 +102,11 @@ export default {
       },
       compradores: [],
       valNegarSS: false
+    }
+  },
+  computed:{
+    bloquearBtnNegar(){
+      return this.processo.comentario === null || this.processo.comentario === ""
     }
   },
   async created() {

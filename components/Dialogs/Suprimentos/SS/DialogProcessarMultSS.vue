@@ -49,6 +49,7 @@
         <div>
           <div v-if="etapa_id >= 9 && etapa_id <= 18">
             <BotaoPadrao texto="Negar SS" cor="bg-red-400 hover:bg-red-600" class="ml-5" @click="valNegarSS = true"
+                         :disabled="bloquearBtnNegar"
                          v-if="!valNegarSS">
               <img src="@/assets/icons/close-b.svg" alt="close" class="w-6 h-6"/>
             </BotaoPadrao>
@@ -118,6 +119,11 @@ export default {
         comentario: null,
       },
       valNegarSS:false
+    }
+  },
+  computed: {
+    bloquearBtnNegar() {
+      return this.processo.comentario === null || this.processo.comentario === ""
     }
   },
   methods:{

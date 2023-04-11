@@ -39,7 +39,8 @@
         <BotaoPadrao
           texto="Negar SS"
           cor="bg-red-500"
-          @click="aprovarSSs(false)">
+          @click="aprovarSSs(false)"
+          :disabled="bloquearBtnNegar">
           <template v-slot>
             <img src="@/assets/icons/close-b.svg" alt="close" class="w-6 h-6"/>
           </template>
@@ -82,6 +83,11 @@ export default {
   data() {
     return {
       comentario: null
+    }
+  },
+  computed: {
+    bloquearBtnNegar() {
+      return this.processo.comentario === null || this.processo.comentario === ""
     }
   },
   methods: {

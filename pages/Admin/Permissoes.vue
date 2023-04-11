@@ -29,7 +29,7 @@
 								<img
 									src="@/assets/icons/add-b.svg"
 									alt="close"
-									class="w-8 h-8" />
+									class="w-7 h-7" />
 							</template>
 						</BotaoPadrao>
 					</div>

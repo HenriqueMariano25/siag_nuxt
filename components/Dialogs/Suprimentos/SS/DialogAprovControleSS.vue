@@ -41,6 +41,7 @@
 				<BotaoPadrao
 					texto="Negar Card"
 					cor="bg-red-500"
+          :disabled="bloquearBtnNegar"
 					@click="aprovarSSControle(false)">
 					<template v-slot>
 						<img
@@ -92,6 +93,11 @@
 				},
 			}
 		},
+    computed: {
+      bloquearBtnNegar() {
+        return this.processo.comentario === null || this.processo.comentario === ""
+      }
+    },
 		async fetch() {
 			await this.buscarCentrosCusto()
 			this.processo.pep = this.ss.centro_custo_pep_id
