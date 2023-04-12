@@ -408,8 +408,6 @@
 
 				if (pagina) this.pagina = pagina
 
-        console.log(filtros)
-
 				if (filtros) this.filtros = filtros
 
 				await this.buscarCards()

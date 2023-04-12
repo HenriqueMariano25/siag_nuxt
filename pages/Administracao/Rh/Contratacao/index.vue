@@ -20,6 +20,12 @@
 				</svg>
 			</ButtonNavegacao>
 			<ButtonNavegacao
+				v-if="
+					$auth.user.permissoes.includes('aprovar_card_controle') ||
+					$auth.user.permissoes.includes('aprovar_card_gerente_area') ||
+					$auth.user.permissoes.includes('aprovar_card_site_manager') ||
+					$auth.user.permissoes.includes('aprovar_card_administrador')
+				"
 				titulo="Aprovar Card"
 				cor="bg-[#264653]"
 				link="/administracao/rh/contratacao/aprovarCard">
@@ -65,9 +71,11 @@
 					<BotaoPadrao
 						texto="Filtrar"
 						cor="bg-primaria-500"
-            :disabled="nPodeFiltrar"
-            @click="atualizarGraPorSetor(); atualizarGraPorSetorMaoObra();"
-          >
+						:disabled="nPodeFiltrar"
+						@click="
+							atualizarGraPorSetor()
+							atualizarGraPorSetorMaoObra()
+						">
 						<img
 							src="@/assets/icons/filter-b.svg"
 							alt="close"
@@ -82,27 +90,26 @@
 							id="graPorSetor"
 							class="flex"></canvas>
 					</div>
-          <div class="relative h-full w-full">
-            <canvas
-              id="graPorSetorMO"
-              class="flex"></canvas>
-          </div>
+					<div class="relative h-full w-full">
+						<canvas
+							id="graPorSetorMO"
+							class="flex"></canvas>
+					</div>
 				</div>
 			</div>
-      <div
-        v-show="tipoGrafico === 'porEtapa'"
-        class="">
-
-        <div
-          class="w-full h-full bg-white flex relative divide-x divide-gray-500"
-          style="height: calc(100vh - 270px)">
-          <div class="relative h-full w-full">
-            <canvas
-              id="graPorEtapa"
-              class="flex"></canvas>
-          </div>
-        </div>
-      </div>
+			<div
+				v-show="tipoGrafico === 'porEtapa'"
+				class="">
+				<div
+					class="w-full h-full bg-white flex relative divide-x divide-gray-500"
+					style="height: calc(100vh - 270px)">
+					<div class="relative h-full w-full">
+						<canvas
+							id="graPorEtapa"
+							class="flex"></canvas>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -113,9 +120,9 @@
 	import AppFormInput from "~/components/Ui/AppFormInput.vue"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import Chart from "chart.js/auto"
-  import ChartDataLabels from 'chartjs-plugin-datalabels';
+	import ChartDataLabels from "chartjs-plugin-datalabels"
 
-  Chart.register(ChartDataLabels);
+	Chart.register(ChartDataLabels)
 
 	export default {
 		name: "index",
@@ -134,30 +141,29 @@
 				},
 			}
 		},
-    computed:{
-      nPodeFiltrar(){
-
-        let { dataInicio, dataFim} = this.porSetor
-        return dataInicio === null || dataInicio === "" || dataFim === null || dataFim === null
-      }
-    },
+		computed: {
+			nPodeFiltrar() {
+				let { dataInicio, dataFim } = this.porSetor
+				return dataInicio === null || dataInicio === "" || dataFim === null || dataFim === null
+			},
+		},
 		async mounted() {
 			await this.buscarGraficoPorSetor()
 			await this.buscarGraficoPorSetorMaoObra()
-      await this.buscarGraficoPorEtapa()
+			await this.buscarGraficoPorEtapa()
 		},
 		methods: {
 			async buscarGraficoPorSetor() {
-        let { dataInicio, dataFim } = this.porSetor
+				let { dataInicio, dataFim } = this.porSetor
 
 				let cards = await this.$axios
-					.get("/contratacao/card/dashboard/por_setor", {params: { dataInicio, dataFim }})
+					.get("/contratacao/card/dashboard/por_setor", { params: { dataInicio, dataFim } })
 					.then((resp) => resp.data.cards)
 
 				let labels = cards.map((o) => o.Setor.nome)
 				let valores = cards.map((o) => o.quantidade)
 
-				const graPorSetor = document.getElementById("graPorSetor").getContext('2d');
+				const graPorSetor = document.getElementById("graPorSetor").getContext("2d")
 
 				const meuGraPorSetor = new Chart(graPorSetor, {
 					type: "pie",
@@ -185,248 +191,247 @@
 					},
 					options: {
 						plugins: {
-              tooltips: {
-                enabled: false
-              },
-              datalabels: {
-                anchor: 'end',
-                align: 'start',
-                offset: '30',
-                formatter: (value, ctx) => {
-                  let sum = 0;
-                  let dataArr = valores;
-                  dataArr.map(data => {
-                    sum += parseFloat(data);
-                  });
-                  let percentage = (value * 100 / sum).toFixed(0) + "%";
-                  return percentage;
-                },
-                color: '#fff',
-              },
-						  legend: {
-						    position: "top",
-						  },
-						  title: {
-						    display: true,
-						    text: "Cards abertos por Setor",
-						  },
+							tooltips: {
+								enabled: false,
+							},
+							datalabels: {
+								anchor: "end",
+								align: "start",
+								offset: "30",
+								formatter: (value, ctx) => {
+									let sum = 0
+									let dataArr = valores
+									dataArr.map((data) => {
+										sum += parseFloat(data)
+									})
+									let percentage = ((value * 100) / sum).toFixed(0) + "%"
+									return percentage
+								},
+								color: "#fff",
+							},
+							legend: {
+								position: "top",
+							},
+							title: {
+								display: true,
+								text: "Cards abertos por Setor",
+							},
 						},
 						maintainAspectRatio: false,
-						scales: {
-						},
+						scales: {},
 					},
 				})
 
 				meuGraPorSetor
 			},
 
-      async atualizarGraPorSetor(){
-        let chart = Chart.getChart("graPorSetor")
-        let {dataInicio, dataFim} = this.porSetor
+			async atualizarGraPorSetor() {
+				let chart = Chart.getChart("graPorSetor")
+				let { dataInicio, dataFim } = this.porSetor
 
-        let cards = await this.$axios
-          .get("/contratacao/card/dashboard/por_setor", {params: {dataInicio, dataFim}})
-          .then((resp) => resp.data.cards)
+				let cards = await this.$axios
+					.get("/contratacao/card/dashboard/por_setor", { params: { dataInicio, dataFim } })
+					.then((resp) => resp.data.cards)
 
-        let labels = cards.map((o) => o.Setor.nome)
-        let valores = cards.map((o) => o.quantidade)
+				let labels = cards.map((o) => o.Setor.nome)
+				let valores = cards.map((o) => o.quantidade)
 
-        chart.data.datasets[0].data = valores
-        chart.data.labels = labels
+				chart.data.datasets[0].data = valores
+				chart.data.labels = labels
 
-        chart.update()
-      },
-
-			async buscarGraficoPorSetorMaoObra() {
-        let {dataInicio, dataFim} = this.porSetor
-
-				let resp = await this.$axios
-					.$get("/contratacao/card/dashboard/por_mao_obra", {params: {dataInicio, dataFim}})
-
-        if(!resp.falha) {
-          let cards = resp.dados.cards
-
-          let contador = {};
-
-          for (let i = 0; i < cards.length; i++) {
-            if (contador[cards[i].FuncaoCard.tipo_mao_obra]) {
-              contador[cards[i].FuncaoCard.tipo_mao_obra]++; // incrementar o contador se o item já existe
-            } else {
-              contador[cards[i].FuncaoCard.tipo_mao_obra] = 1; // inicializar o contador se o item ainda não existe
-            }
-          }
-
-          let novoArray = [];
-          for (let item in contador) {
-            novoArray.push({item: item, contador: contador[item]});
-          }
-
-          let labels = novoArray.map(o => o.item)
-          let valores = novoArray.map(o => o.contador)
-
-          const graPorSetorMO = document.getElementById("graPorSetorMO").getContext('2d');
-
-          const meuGraPorSetorMO = new Chart(graPorSetorMO, {
-            type: "pie",
-            data: {
-              labels,
-              datasets: [
-                {
-                  label: "Funcionários por dia",
-                  data: valores,
-                  backgroundColor: [
-                    "#22AA99",
-                    "#316395",
-                  ],
-                },
-              ],
-            },
-            options: {
-              plugins: {
-                tooltips: {
-                  enabled: false
-                },
-                datalabels: {
-                  anchor: 'end',
-                  align: 'start',
-                  offset: '30',
-                  formatter: (value, ctx) => {
-                    let sum = 0;
-                    let dataArr = valores;
-                    dataArr.map(data => {
-                      sum += parseFloat(data);
-                    });
-                    let percentage = (value * 100 / sum).toFixed(0) + "%";
-                    return percentage;
-                  },
-                  color: '#fff',
-                },
-                legend: {
-                  position: "top",
-                },
-                title: {
-                  display: true,
-                  text: "Cards abertos Mão de Obra Direto e Indireto",
-                },
-              },
-              maintainAspectRatio: false,
-              scales: {},
-            },
-          })
-				   meuGraPorSetorMO
-        }
-
+				chart.update()
 			},
 
-      async atualizarGraPorSetorMaoObra() {
-        let chart = Chart.getChart("graPorSetorMO")
-        let {dataInicio, dataFim} = this.porSetor
+			async buscarGraficoPorSetorMaoObra() {
+				let { dataInicio, dataFim } = this.porSetor
 
-        let resp = await this.$axios
-          .$get("/contratacao/card/dashboard/por_mao_obra", {params: {dataInicio, dataFim}})
+				let resp = await this.$axios.$get("/contratacao/card/dashboard/por_mao_obra", {
+					params: { dataInicio, dataFim },
+				})
 
-        if (!resp.falha) {
-          let cards = resp.dados.cards
+				if (!resp.falha) {
+					let cards = resp.dados.cards
 
-          let contador = {};
+					let contador = {}
 
-          for (let i = 0; i < cards.length; i++) {
-            if (contador[cards[i].FuncaoCard.tipo_mao_obra]) {
-              contador[cards[i].FuncaoCard.tipo_mao_obra]++; // incrementar o contador se o item já existe
-            } else {
-              contador[cards[i].FuncaoCard.tipo_mao_obra] = 1; // inicializar o contador se o item ainda não existe
-            }
-          }
+					for (let i = 0; i < cards.length; i++) {
+						if (contador[cards[i].FuncaoCard.tipo_mao_obra]) {
+							contador[cards[i].FuncaoCard.tipo_mao_obra]++ // incrementar o contador se o item já existe
+						} else {
+							contador[cards[i].FuncaoCard.tipo_mao_obra] = 1 // inicializar o contador se o item ainda não existe
+						}
+					}
 
-          let novoArray = [];
-          for (let item in contador) {
-            novoArray.push({item: item, contador: contador[item]});
-          }
+					let novoArray = []
+					for (let item in contador) {
+						novoArray.push({ item: item, contador: contador[item] })
+					}
 
-          let labels = novoArray.map(o => o.item)
-          let valores = novoArray.map(o => o.contador)
+					let labels = novoArray.map((o) => o.item)
+					let valores = novoArray.map((o) => o.contador)
 
-          chart.data.datasets[0].data = valores
-          chart.data.labels = labels
+					const graPorSetorMO = document.getElementById("graPorSetorMO").getContext("2d")
 
-          chart.update()
-        }
+					const meuGraPorSetorMO = new Chart(graPorSetorMO, {
+						type: "pie",
+						data: {
+							labels,
+							datasets: [
+								{
+									label: "Funcionários por dia",
+									data: valores,
+									backgroundColor: ["#22AA99", "#316395"],
+								},
+							],
+						},
+						options: {
+							plugins: {
+								tooltips: {
+									enabled: false,
+								},
+								datalabels: {
+									anchor: "end",
+									align: "start",
+									offset: "30",
+									formatter: (value, ctx) => {
+										let sum = 0
+										let dataArr = valores
+										dataArr.map((data) => {
+											sum += parseFloat(data)
+										})
+										let percentage = ((value * 100) / sum).toFixed(0) + "%"
+										return percentage
+									},
+									color: "#fff",
+								},
+								legend: {
+									position: "top",
+								},
+								title: {
+									display: true,
+									text: "Cards abertos Mão de Obra Direto e Indireto",
+								},
+							},
+							maintainAspectRatio: false,
+							scales: {},
+						},
+					})
+					meuGraPorSetorMO
+				}
+			},
 
+			async atualizarGraPorSetorMaoObra() {
+				let chart = Chart.getChart("graPorSetorMO")
+				let { dataInicio, dataFim } = this.porSetor
 
-      },
+				let resp = await this.$axios.$get("/contratacao/card/dashboard/por_mao_obra", {
+					params: { dataInicio, dataFim },
+				})
 
-      async buscarGraficoPorEtapa(){
-        let { etapas } = await this.$axios.$get("/contratacao/card/dashboard/por_etapa")
+				if (!resp.falha) {
+					let cards = resp.dados.cards
 
-        let atrasados = []
-        let noPrazo = []
+					let contador = {}
 
-        for(let etapa of etapas){
-          let cardsNoPrazo = etapa.Cards.filter( o=> this.$dayjs().diff(o.ultima_data, "day") <= etapa.leadtime).length
-          let cardsAtrasados = etapa.Cards.filter( o=> this.$dayjs().diff(o.ultima_data, "day") >  etapa.leadtime).length
+					for (let i = 0; i < cards.length; i++) {
+						if (contador[cards[i].FuncaoCard.tipo_mao_obra]) {
+							contador[cards[i].FuncaoCard.tipo_mao_obra]++ // incrementar o contador se o item já existe
+						} else {
+							contador[cards[i].FuncaoCard.tipo_mao_obra] = 1 // inicializar o contador se o item ainda não existe
+						}
+					}
 
-          atrasados.push(cardsAtrasados);
-          noPrazo.push(cardsNoPrazo);
-        }
+					let novoArray = []
+					for (let item in contador) {
+						novoArray.push({ item: item, contador: contador[item] })
+					}
 
-        let labels = etapas.map(o => o.nome)
-        let datasets = [
-          { label: "No prazo", data: noPrazo, backgroundColor: '#316395', stack: 'Stack 0'  },
-          { label: "Atrasado", data: atrasados, backgroundColor: '#DC3912FF', stack: 'Stack 0'  },
-        ]
+					let labels = novoArray.map((o) => o.item)
+					let valores = novoArray.map((o) => o.contador)
 
-        const graPorEtapa = document.getElementById("graPorEtapa").getContext('2d');
+					chart.data.datasets[0].data = valores
+					chart.data.labels = labels
 
-        const meuGraPorEtapa = new Chart(graPorEtapa, {
-          type: "bar",
-          data: {
-            labels,
-            datasets: datasets
-          },
-          options: {
-            plugins: {
-              tooltips: {
-                enabled: false
-              },
-              datalabels: {
-                anchor: 'end',
-                align: 'start',
-                offset: '10',
-                color: '#fff',
-              },
-              legend: {
-                position: "top",
-                font: {
-                  size: 18,
-                  weight: 'bold'
-                }
-              },
-              title: {
-                display: true,
-                text: "Cards abertos Mão de Obra Direto e Indireto",
-              },
-            },
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                stacked: true,
-              },
-              y: {
-                stacked: true,
-                title: {
-                  display: true,
-                  text: "Total de Cards",
-                  font: {
-                    size: 18,
-                    weight: 'bold'
-                  }
-                },
-              }
-            }
-          },
-        })
-        meuGraPorEtapa
-      }
+					chart.update()
+				}
+			},
+
+			async buscarGraficoPorEtapa() {
+				let { etapas } = await this.$axios.$get("/contratacao/card/dashboard/por_etapa")
+
+				let atrasados = []
+				let noPrazo = []
+
+				for (let etapa of etapas) {
+					let cardsNoPrazo = etapa.Cards.filter(
+						(o) => this.$dayjs().diff(o.ultima_data, "day") <= etapa.leadtime,
+					).length
+					let cardsAtrasados = etapa.Cards.filter(
+						(o) => this.$dayjs().diff(o.ultima_data, "day") > etapa.leadtime,
+					).length
+
+					atrasados.push(cardsAtrasados)
+					noPrazo.push(cardsNoPrazo)
+				}
+
+				let labels = etapas.map((o) => o.nome)
+				let datasets = [
+					{ label: "No prazo", data: noPrazo, backgroundColor: "#316395", stack: "Stack 0" },
+					{ label: "Atrasado", data: atrasados, backgroundColor: "#DC3912FF", stack: "Stack 0" },
+				]
+
+				const graPorEtapa = document.getElementById("graPorEtapa").getContext("2d")
+
+				const meuGraPorEtapa = new Chart(graPorEtapa, {
+					type: "bar",
+					data: {
+						labels,
+						datasets: datasets,
+					},
+					options: {
+						plugins: {
+							tooltips: {
+								enabled: false,
+							},
+							datalabels: {
+								anchor: "end",
+								align: "start",
+								offset: "10",
+								color: "#fff",
+							},
+							legend: {
+								position: "top",
+								font: {
+									size: 18,
+									weight: "bold",
+								},
+							},
+							title: {
+								display: true,
+								text: "Cards abertos Mão de Obra Direto e Indireto",
+							},
+						},
+						maintainAspectRatio: false,
+						scales: {
+							x: {
+								stacked: true,
+							},
+							y: {
+								stacked: true,
+								title: {
+									display: true,
+									text: "Total de Cards",
+									font: {
+										size: 18,
+										weight: "bold",
+									},
+								},
+							},
+						},
+					},
+				})
+				meuGraPorEtapa
+			},
 		},
 	}
 </script>

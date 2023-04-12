@@ -41,6 +41,7 @@
 				:totalItens="totalItens"
 				altura="calc(100vh - 190px)"
 				@atualizar="atualizarDados"
+        @dblclick="verDetalhesSS"
 				:temDetalhes="false">
 				<template v-slot:[`body.selecione`]="{ item }">
 					<div class="flex justify-center">
@@ -63,12 +64,12 @@
 					</BotaoIcone>
 				</template>
 				<template v-slot:[`body.Etapa.nome`]="{ item }">
-					<span v-if="item.Etapa && item.Etapa.nome">
+					<span class="whitespace-nowrap" v-if="item.Etapa && item.Etapa.nome">
 						{{ item.Etapa.nome }}
 					</span>
 				</template>
 				<template v-slot:[`body.Setor.nome`]="{ item }">
-					<span v-if="item.Setor && item.Setor.nome">
+					<span class="whitespace-nowrap" v-if="item.Setor && item.Setor.nome">
 						{{ item.Setor.nome }}
 					</span>
 				</template>
@@ -104,7 +105,7 @@
 				</template>
         <template v-slot:[`body.comentarios`]="{ item }">
           <button
-            class="flex hover:bg-gray-400 w-full p-1"
+            class="flex hover:bg-gray-400 w-full p-1 whitespace-nowrap"
             v-if="item.Comentarios.length > 0"
             @click="
 							card_id = item.id;
@@ -169,6 +170,13 @@
 			@escondeu="mostrarAlerta = false">
 			{{ textoAlerta }}
 		</AppAlerta>
+    <DialogDetalhesCard
+      v-if="mostrarDialogDetalhesCard"
+      @cancelar="
+				mostrarDialogDetalhesCard = false
+				card_id = null
+			"
+      :card_id="card_id"/>
 	</div>
 </template>
 
@@ -182,10 +190,15 @@
 	import BotaoIcone from "~/components/Ui/Buttons/BotaoIcone.vue"
 	import DialogAprovControleCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogAprovControleCard.vue";
   import DialogComentariosCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogComentariosCard.vue";
+  import DialogDetalhesCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogDetalhesCard.vue";
+  import {buscarSetores, buscarDisciplinaCard, buscarEtapa} from "~/mixins/buscarInformacoes"
+  import {prepararFiltro} from "~/mixins/prepararFiltro";
 
 	export default {
+    mixins: [buscarEtapa, prepararFiltro, buscarSetores, buscarDisciplinaCard],
 		name: "AprovarCard",
 		components: {
+      DialogDetalhesCard,
 			AppTabela,
 			AppFormCheckbox,
 			RodapePagina,
@@ -199,7 +212,7 @@
 		data() {
 			return {
 				dados: [],
-				filtros: [],
+				filtros: {},
 				itensPorPagina: 20,
 				pagina: 1,
 				totalItens: 0,
@@ -213,9 +226,12 @@
 				card: null,
         mostrarDialogComentariosCard: false,
         card_id: null,
+        mostrarDialogDetalhesCard: false,
+        setores: [],
+        disciplinas: []
 			}
 		},
-		created() {
+		async created() {
 			if (this.$auth.user) {
 				let todasPermissoes = this.$auth.user.permissoes
 				if (todasPermissoes.includes("aprovar_card_controle")) {
@@ -233,7 +249,9 @@
 					this.tipoAprovacao === null ? (this.tipoAprovacao = "site_manager") : false
 				}
 			}
-			this.buscarCards()
+			await this.buscarCards()
+      this.setores = await this.buscarSetores()
+      this.disciplinas = await this.buscarDisciplinaCard()
 		},
 		computed: {
 			cabecalho() {
@@ -241,13 +259,26 @@
 					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true },
 					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true },
 					{ nome: "Situação", valor: "situacao", centralizar: true },
-					{ nome: "Setor", valor: "Setor.nome", filtro: true },
-					{ nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true },
+          {
+            nome: "Setor", valor: "Setor.nome", filtro: true, opcoes: Array.from(new Set(this.setores
+              .filter((item) => {
+                return item.nome;
+              })
+              .map((item) => `${item.nome}`)))
+          },
+          {
+            nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true,
+            opcoes: Array.from(new Set(this.disciplinas
+              .filter((item) => {
+                return item.descricao;
+              })
+              .map((item) => `${item.descricao}`)))
+          },
 					{ nome: "PEP", valor: "CentroCustoPEP.numero_pep", filtro: true },
 					{ nome: "Função", valor: "FuncaoCard.nome", filtro: true },
 					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
-					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true },
-					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true },
+					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true, tipoFiltro: "data" },
+					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true, tipoFiltro: "data" },
 					{ nome: "Comentários", valor: "comentarios"},
 				]
 
@@ -262,10 +293,14 @@
 		methods: {
 			async buscarCards() {
 				let setor_id = this.$auth.user.setor_id
+        let filtros = this.filtros
 				this.selecionados = []
+
+        console.log(filtros)
 
 				let resp = await this.$axios.$get("/contratacao/card/aprovacao/buscarPaginados", {
 					params: {
+            filtros,
 						tipoAprovacao: this.tipoAprovacao,
 						page: this.pagina - 1,
 						size: this.itensPorPagina,
@@ -310,6 +345,13 @@
 				this.textoAlerta = aprovacao ? "Cards aprovados com sucesso!" : "Cards negados com sucesso!"
 				this.selecionados = []
 			},
+
+      verDetalhesSS(dados) {
+        this.card_id = dados.id
+        this.mostrarDialogDetalhesCard = true
+      },
+
+
 		},
 		watch: {
 			tipoAprovacao() {
