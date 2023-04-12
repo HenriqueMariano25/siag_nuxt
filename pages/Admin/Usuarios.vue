@@ -87,7 +87,7 @@
 					{ nome: "Nome", valor: "nome", filtro: true },
 					{ nome: "Usuário", valor: "usuario", filtro: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true },
-					{ nome: "Status", valor: "StatusUsuario.descricao", filtro: true },
+					{ nome: "Status", valor: "StatusUsuario.descricao" },
 				],
 				dados: [],
 				filtros: {},

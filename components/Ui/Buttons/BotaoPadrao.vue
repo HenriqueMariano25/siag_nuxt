@@ -1,10 +1,10 @@
 <template>
 	<button
 		class="px-3 py-2 flex space-x-2 rounded-sm uppercase hover:bg-gray-400 items-center text-black"
-		:class="{ [cor]: cor, '!bg-gray-400 cursor-default !text-gray-500': disabled }"
+		:class="{ [cor]: cor, '!bg-gray-400 cursor-default !text-gray-500': disabled,  }"
 		@click.stop.prevent="!disabled ? $emit('click'): ''">
 		<slot></slot>
-		<span>{{ texto }}</span>
+		<span v-if="texto">{{ texto }}</span>
 	</button>
 </template>
 
