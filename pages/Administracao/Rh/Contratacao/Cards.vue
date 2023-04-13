@@ -7,7 +7,7 @@
 				class="flex p-2 hover:bg-gray-300 hover:text-black box-border print:hidden text-white"
 				:class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === 0 }"
 				@click="etapa_id = 0">
-				TodosS
+				Todos
 			</button>
 			<div
 				v-for="etapa in etapas"

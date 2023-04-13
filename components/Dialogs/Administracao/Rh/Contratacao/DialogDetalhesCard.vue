@@ -12,8 +12,19 @@
           <span class="pb-1 pl-1"><strong>Nome: </strong>{{ card.Indicacao ? card.Indicacao.nome : "" }}</span>
           <span class="pb-1 pl-1"><strong>Email: </strong>{{ card.Indicacao ? card.Indicacao.email : "" }}</span>
           <span class="pb-1 pl-1"><strong>Telefone: </strong>{{ card.Indicacao ? card.Indicacao.telefone : "" }}</span>
+          <div class="flex ml-1">
+            <a
+              target="_blank"
+              :href="card.Indicacao.url_pdf"
+              v-if="card.Indicacao && card.Indicacao.url_pdf !== null && card.Indicacao.url_pdf !==''"
+              class="border-2 border-gray-800 rounded flex px-2 hover:bg-gray-300"
+            >
+              <img src="@/assets/icons/file-b.svg" alt="" class="w-7 h-7">
+              Currículo
+            </a>
+
+          </div>
           <span class="pb-1 pl-1"><strong>Quem indicou: </strong>{{ card.Indicacao ? card.Indicacao.quem_indicou : "" }}</span>
-          <span class="pb-1 pl-1"><strong>Curriculo: </strong>Curriculo</span>
           <span class="py-1 pl-1 bg-gray-300"><strong>Descrição geral</strong></span>
           <span class="pb-1 pl-1"><strong>Função: </strong>{{ card.FuncaoCard ? card.FuncaoCard.nome : "" }}</span>
           <span class="pb-1 pl-1"><strong>Disciplina: </strong>{{card.DisciplinaCard ? card.DisciplinaCard.descricao : "" }}</span>
@@ -71,7 +82,16 @@ export default {
       let permissoes = ['rh_contratacoes', 'aprovar_card_controle', 'aprovar_card_gerente_area', 'aprovar_card_site_manager']
 
       return permissoes.some(o => this.$auth.user.permissoes.includes(o)) || this.card.usuario_id === this.$auth.user.id
-    }
+    },
+    computed: {
+      urlFile() {
+        if (process.env.NODE_ENV === 'production') {
+          return "http://siag.agnet.com.br:84/files/"
+        } else {
+          return "http://localhost:3000/files/"
+        }
+      }
+    },
   },
   async fetch(){
     await this.buscarCard()
