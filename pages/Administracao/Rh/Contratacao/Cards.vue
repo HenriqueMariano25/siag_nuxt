@@ -202,6 +202,7 @@
 			v-if="mostrarDialogCriarCard"
 			:card_id="card_id"
 			@editado="cardEditado"
+			@cadastrado="cardCadastrado"
 			@cancelar="cancelar" />
 		<DialogProcessarCard
 			:cards="selecionados"
@@ -426,9 +427,16 @@
 
 				this.mostrarDialogCriarCard = false
 				this.mostrarAlerta = true
-				this.textoAlerta = "Card editado com sucesso"
+				this.textoAlerta = "Card editado com sucesso!"
 				this.card_id = null
 			},
+
+      cardCadastrado(){
+        this.mostrarDialogCriarCard = false
+        this.mostrarAlerta = true
+        this.textoAlerta = "Card cadastrado com sucesso!"
+        this.card_id = null
+      },
 
 			async processado(dados) {
 				let { cards, etapa_id } = dados
@@ -480,8 +488,6 @@
         // let filtrosPrPreparar = Object.assign({}, this.filtros)
         let usuario_id = this.$auth.user.id
 
-
-        console.log("Usuario")
         let filtros = this.filtros
 
         let confidencial

@@ -29,7 +29,7 @@
 						:options="status"
 						v-model="card.status_card_id"
 						id="status"
-						:invalido="erro.includes('status')" />
+						:invalido="erro.includes('status_card_id')" />
 					<AppFormSelect
 						label="Centro de Custo"
 						:options="centrosCusto"
@@ -227,12 +227,25 @@
 							type="text"
 							id="cpfIndicacao"
 							mask="###.###.###-##"
+              :textoInvalido="erroCpfDuplicado ?  'CPF DUPLICADO' : ''"
 							v-model="card.indicacao.cpf"
 							:invalido="erro.includes('indicacao.cpf')" />
-						<AppFormFile
-							label="Currículo em PDF"
-							id="curriculo"
-							@change="card.indicacao.pdf = $event" />
+            <div>
+              <AppFormFile
+                label="Currículo em PDF"
+                id="curriculo"
+                @change="card.indicacao.pdf = $event"/>
+              <a
+                target="_blank"
+                :href="`${urlFile}${card.Indicacao.url_pdf}`"
+                v-if="card.indicacao && card.indicacao.url_pdf !== null && card.indicacao.url_pdf !==''"
+                class="border-2 border-gray-800 rounded flex px-2 hover:bg-gray-300 mt-2"
+              >
+                <img src="@/assets/icons/file-b.svg" alt="" class="w-7 h-7">
+                Currículo
+              </a>
+            </div>
+
 					</div>
 					<AppFormTextarea
 						label="Comentários"
@@ -350,7 +363,8 @@
 				bloquearSalario: true,
 				txtDesabilitadoSalario: "",
 				erro: [],
-        dataNecessidadeOriginal: null
+        dataNecessidadeOriginal: null,
+        erroCpfDuplicado: false
 			}
 		},
 		async fetch() {
@@ -381,6 +395,13 @@
            return this.card.etapa_id !== 1
         }
         return false
+      },
+      urlFile() {
+        if (process.env.NODE_ENV === 'production') {
+          return "http://siag.agnet.com.br:84/files/"
+        } else {
+          return "http://localhost:3000/files/"
+        }
       }
 		},
 
@@ -480,7 +501,7 @@
 				this.erro = []
 
 				let camposObrigatorio = [
-					"status",
+					"status_card_id",
 					"centro_custo_pep_id",
 					"funcao_id",
 					"disciplina_id",
@@ -488,6 +509,7 @@
 					"data_necessidade",
 					"turno",
 					"tipo_recrutamento",
+          "status_id",
 					"mobilizacao",
 					"equipamento_ti",
 				]
@@ -516,8 +538,29 @@
 				}
 			},
 
+      async validarCpf(){
+        let cpf = this.card.indicacao.cpf
+        let indicacao_id = this.card.indicacao_id
+
+        let resp = await this.$axios.$get("/contratacao/consultar_cpf", { params: { cpf, indicacao_id }})
+
+        if(!resp.falha){
+          let valido = resp.dados.resposta
+
+          if(!valido){
+            this.erro.push("indicacao.cpf")
+            this.erroCpfDuplicado = true
+          }
+
+        }
+      },
+
 			async adicionarContratacao() {
 				this.validarFormulario()
+
+        let cpfValido = true
+        if (this.card.tem_indicacao === true)
+          cpfValido = await this.validarCpf()
 
 				if (this.erro.length === 0) {
 					let usuario_id = this.$auth.user.id
@@ -536,6 +579,7 @@
 
 					try {
 						await this.$axios.$post("/contratacao/card/criar", formData, config)
+            this.$emit("cadastrado")
 
 						this.card = {
 							quantidade: null,
@@ -568,54 +612,54 @@
 						}
 					} catch (error) {
 						console.log(error)
-						console.log("Aqui")
 					}
 				}
 			},
 
 			async editarContratacao() {
-				console.log("Aqui")
 				this.validarFormulario()
 
-				let usuario_id = this.$auth.user.id
+        let cpfValido = true
+        if (this.card.tem_indicacao === true)
+          cpfValido = await this.validarCpf()
 
-				const config = { headers: { "Content-Type": "multipart/form-data" } }
-				let formData = new FormData()
-				formData.append(`files`, this.card.indicacao.pdf)
+        if (this.erro.length === 0) {
+          let usuario_id = this.$auth.user.id
 
-				let rawData = {
-					card: this.card,
-					usuario_id: usuario_id,
-				}
+          const config = {headers: {"Content-Type": "multipart/form-data"}}
+          let formData = new FormData()
+          formData.append(`files`, this.card.indicacao.pdf)
 
-				rawData = JSON.stringify(rawData)
-				formData.append("data", rawData)
+          let rawData = {
+            card: this.card,
+            usuario_id: usuario_id,
+          }
 
-				try {
-					let resp = await this.$axios.$put(
-						"/contratacao/card/editar_novo_padrao",
-						formData,
-						config,
-					)
+          rawData = JSON.stringify(rawData)
+          formData.append("data", rawData)
 
-					if (!resp.falha) {
-						let comentario = resp.dados.comentario
-						this.$emit("editado", { card_id: this.card_id, comentario })
-					}
-				} catch (error) {
-					console.log(error)
-				}
+          try {
+            let resp = await this.$axios.$put(
+              "/contratacao/card/editar_novo_padrao",
+              formData,
+              config,
+            )
+
+            if (!resp.falha) {
+              let comentario = resp.dados.comentario
+              this.$emit("editado", {card_id: this.card_id, comentario})
+            }
+          } catch (error) {
+            console.log(error)
+          }
+        }
 			},
 
 			async buscarCard() {
 				let id = this.card_id
 
 				let { card } = await this.$axios.$get("/contratacao/card/buscar", { params: { id: id } })
-				// this.card = Object.assign({}, card)
 
-
-        console.log(card)
-        console.log(this.card)
 				let temEquipamentoTi = false
 				if (card.equipamento_card.length > 0) {
 					temEquipamentoTi = card.equipamento_card.filter((obj) => obj.id === 1).length > 0
@@ -626,15 +670,21 @@
 				if (card.Indicacao) {
 					card.tem_indicacao = true
 					card.indicacao = card.Indicacao
+          card.indicacao.url_pdf = card.Indicacao.url_pdf
 				} else {
 					card.tem_indicacao = false
+          card.indicacao = {
+            nome: null,
+            telefone: null,
+            telefone_2: null,
+            telefone_3: null,
+            email: null,
+            indicado_por: null,
+            cpf: null,
+            pdf: null,
+            url_pdf: null,
+          }
 				}
-				// console.log(card.Indicacao)
-				// // console.log(temIndicacao)
-        //
-				// this.card.tem_indicacao = temIndicacao
-        //
-
 
         this.dataNecessidadeOriginal = card.data_necessidade
         this.card = card
@@ -653,8 +703,6 @@
 				}
 			},
 			"card.tem_indicacao": function (valor) {
-				console.log(valor)
-
 				if (valor === true) {
 					this.card.quantidade = 1
 				}

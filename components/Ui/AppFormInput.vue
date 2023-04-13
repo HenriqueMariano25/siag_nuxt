@@ -38,7 +38,7 @@
       </div>
     </div>
     <div class="text-xs text-red-500 ml-2" v-if="invalido" >
-      <span>{{ textoInvalido }}</span>
+      <span><strong>{{ textoInvalido }}</strong></span>
     </div>
   </div>
 </template>
