@@ -10,7 +10,7 @@
 			<div class="space-y-3">
 				<AppFormInput
 					type="text"
-					placeholder="henrique.mariano"
+					placeholder="Ex: henrique.mariano"
 					label="Usuário"
 					v-model="usuario.usuario"
 

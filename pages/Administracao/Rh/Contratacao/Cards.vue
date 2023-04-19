@@ -29,6 +29,7 @@
 				:pagina="pagina"
 				:totalItens="totalItens"
 				altura="calc(100vh - 194px)"
+        :dadosSql="true"
 				@atualizar="atualizarDados"
 				@dblclick="verDetalhesSS"
 				:carregando="carregandoTabela"
@@ -70,12 +71,12 @@
 				<template v-slot:[`body.situacao`]="{ item }">
           <div class="flex justify-center gap-1.5">
             <div
-              v-if="!($dayjs().diff(item.ultima_data, 'day') > item.Etapa.leadtime)"
+              v-if="!($dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime'])"
               class="bg-blue-400 text-black px-2 rounded whitespace-nowrap">
               No prazo
             </div>
             <div
-              v-if="$dayjs().diff(item.ultima_data, 'day') > item.Etapa.leadtime"
+              v-if="$dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime']"
               class="bg-red-400 text-black px-2 rounded whitespace-nowrap">
               Atrasado
             </div>
@@ -110,14 +111,13 @@
 					</span>
 				</template>
         <template v-slot:[`body.Usuario.nome`]="{ item }">
-					<span>
+ 					<span class="whitespace-nowrap">
 						{{ item.Usuario ? item.Usuario.nome : '' }}
 					</span>
         </template>
 				<template v-slot:[`body.comentarios`]="{ item }">
 					<button
 						class="flex hover:bg-gray-400 min-w-[230px] p-1"
-						v-if="item.Comentarios.length > 0"
 						@click="
 							card_id = item.id
 							mostrarDialogComentariosCard = true
@@ -127,9 +127,9 @@
 							alt="close"
 							class="w-7 h-7 mr-1" />
 
-						<span v-if="item.Comentarios.at(-1).descricao" class="whitespace-nowrap">
-							{{ item.Comentarios.at(-1).descricao.substr(0, 25)
-							}}{{ item.Comentarios.at(-1).descricao.length > 25 ? "..." : "" }}
+						<span class="whitespace-nowrap" v-if="item['Comentarios.descricao'] !== null && item['Comentarios.descricao'] !== '' ">
+							{{ item['Comentarios.descricao'].substr(0, 25)
+							}}{{ item['Comentarios.descricao'].length > 25 ? "..." : "" }}
 						</span>
 					</button>
 				</template>
@@ -272,7 +272,7 @@
 			return {
 				mostrarDialogCriarCard: false,
 				dados: [],
-				filtros: {},
+				filtros: null,
 				itensPorPagina: 50,
 				pagina: 1,
 				card_id: null,
@@ -377,11 +377,13 @@
         }
 
 				let etapa_id = this.etapa_id
-				if (etapa_id !== 0) {
-					filtros["etapa_id"] = etapa_id
-				}else{
-          delete filtros["etapa_id"]
-        }
+				// if (etapa_id !== 0) {
+				// 	filtros["etapa_id"] = etapa_id
+				// }else{
+        //   delete filtros["etapa_id"]
+        // }
+
+        console.log(filtros)
 
 				let resp = await this.$axios.$get("/contratacao/card/buscarPaginados", {
 					params: {
@@ -395,10 +397,12 @@
 
 				if (!resp.falha) {
 					let cards = resp.dados.cards
+          console.log(cards)
+
+					this.carregandoTabela = false
 
 					this.totalItens = resp.dados.totalItens
 					this.dados = cards
-					this.carregandoTabela = false
 				}
 			},
 
@@ -410,6 +414,8 @@
 				if (pagina) this.pagina = pagina
 
 				if (filtros) this.filtros = filtros
+
+        console.log(filtros)
 
 				await this.buscarCards()
 			},
@@ -423,7 +429,7 @@
 				let idx = this.dados.findIndex((o) => o.id === dados.card_id)
 
 				if (this.dados[idx].etapa_id !== 1) this.dados.splice(idx, 1)
-				else this.dados[idx].Comentarios.push({ descricao: dados.comentario })
+				else this.dados[idx]['Comentarios.descricao'] = dados.comentario
 
 				this.mostrarDialogCriarCard = false
 				this.mostrarAlerta = true
@@ -546,7 +552,7 @@
             let temp = []
             temp.push(("000000" + item.id).slice(-6))
             temp.push(item.Etapa ? item.Etapa.nome : "");
-            temp.push(this.$dayjs().diff(item.ultima_data, 'day') <= item.Etapa.leadtime ? "No prazo" : "Atrasado");
+            temp.push(this.$dayjs().diff(item.ultima_data, 'day') <= item["Etapa.leadtime"] ? "No prazo" : "Atrasado");
             temp.push(item.Setor ? item.Setor.nome : "");
             temp.push(item.DisciplinaCard ? item.DisciplinaCard.descricao : "")
             temp.push(item.CentroCustoPEP ? `${item.CentroCustoPEP.numero_pep}-${item.CentroCustoPEP.descricao}` : "");
@@ -567,7 +573,7 @@
             temp.push(this.$dayjs(item.createdAt).format("DD/MM/YYYY"))
             temp.push(item.mobilizacao)
             temp.push(item.responsavel ? item.responsavel.nome : "");
-            item.Comentarios.length > 0 ? temp.push(item.Comentarios.at(-1).descricao) : temp.push("")
+            item['Comentarios.descricao'] > 0 ? temp.push(item['Comentarios.descricao']) : temp.push("")
             itens.push(temp)
           }
 

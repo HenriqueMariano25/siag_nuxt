@@ -267,7 +267,7 @@
 					placeholder="50"
 					v-model="localItensPorPagina"
 					id="totalItensPagina"
-					@keyup.enter="atualizarDados" />
+					@keyup.enter="atualizarDados()" />
 			</div>
 		</div>
 	</div>
@@ -320,6 +320,10 @@
 				type: Boolean,
 				default: false,
 			},
+      dadosSql: {
+        type: Boolean,
+        default: false
+      }
 		},
 		components: {
 			AppFormCheckbox,
@@ -385,8 +389,6 @@
 			},
 
 			proximaPagina() {
-        console.log(this.localPagina)
-
 				if (this.localPagina + 1 <= this.totalPaginas) {
 					this.localPagina += 1
 					this.atualizarDados()
@@ -408,9 +410,16 @@
 				}
 				pagina = this.localPagina
 
-				let filtrosPrPreparar = this.filtros
+        console.log(this.filtros)
+        let filtros
+        if(this.dadosSql){
+          filtros = this.filtros
 
-				let filtros = this.prepararFiltro(filtrosPrPreparar)
+        }else{
+          let filtrosPrPreparar = this.filtros
+
+          filtros  = this.prepararFiltro(filtrosPrPreparar)
+        }
 
 				this.$emit("atualizar", { itensPorPagina, pagina, filtros })
 			},
@@ -487,19 +496,42 @@
           this.filtrosAtivos.push(valor)
         }
 
-				if (this.multSelecionados.length === 0) {
-					let idx = this.filtros.findIndex((o) =>
-						Object.keys(o).some((o) => o === "$" + valor + "$"),
-					)
-					this.filtros.splice(idx, 1)
-          if (this.filtrosAtivos.includes(valor)) {
-            let idx = this.filtrosAtivos.findIndex(o => o === valor)
-            this.filtrosAtivos.splice(idx, 1)
+        if(this.dadosSql){
+          console.log(this.multSelecionados)
+          console.log(valor)
+          if (this.multSelecionados.length === 0) {
+            let idx = this.filtros.findIndex((o) =>
+              Object.keys(o).some((o) => o === "$" + valor + "$"),
+            )
+            this.filtros.splice(idx, 1)
+            if (this.filtrosAtivos.includes(valor)) {
+              let idx = this.filtrosAtivos.findIndex(o => o === valor)
+              this.filtrosAtivos.splice(idx, 1)
+            }
+          }else{
+
           }
-				} else {
-					let filtro = { ["$" + valor + "$"]: { $or: [...this.multSelecionados] } }
-					this.filtros.push(filtro)
-				}
+
+          let filtro = ` AND ${valor} IN (${ this.multSelecionados.map( o => "'" + o +"'")})`
+
+          console.log(filtro)
+          this.filtros += filtro
+
+        }else {
+          if (this.multSelecionados.length === 0) {
+            let idx = this.filtros.findIndex((o) =>
+              Object.keys(o).some((o) => o === "$" + valor + "$"),
+            )
+            this.filtros.splice(idx, 1)
+            if (this.filtrosAtivos.includes(valor)) {
+              let idx = this.filtrosAtivos.findIndex(o => o === valor)
+              this.filtrosAtivos.splice(idx, 1)
+            }
+          } else {
+            let filtro = {["$" + valor + "$"]: {$or: [...this.multSelecionados]}}
+            this.filtros.push(filtro)
+          }
+        }
 
         this.localPagina = 1
         this.filtroAberto = null
