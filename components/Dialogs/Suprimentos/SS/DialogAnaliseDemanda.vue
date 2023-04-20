@@ -127,7 +127,6 @@ export default {
         let compradores = resp.dados.compradores
 
         let options = compradores.map((o) => {
-          console.log(o)
           return {id: o.Usuario.id, nome: o.Usuario.nome}
         })
 
@@ -158,17 +157,14 @@ export default {
       let solicitacoes = this.solicitacoes.map((ss) => {
         return ss.id
       })
-      console.log(solicitacoes)
       let usuario_id = this.$auth.user.id
 
-      //
-      //
       let resp = await this.$axios.$post('/suprimentos/ss/negar_analise_demanda_ss', {
         comentario,
         solicitacoes,
         usuario_id
       })
-      //
+
       if (!resp.falha) {
         this.processo = {
           comentario: null,

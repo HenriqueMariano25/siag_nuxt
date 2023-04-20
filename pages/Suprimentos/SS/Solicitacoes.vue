@@ -22,7 +22,7 @@
 			</div>
 		</div>
 		<div class="print:hidden">
-			<div class="flex">
+<!--			<div class="flex">-->
 				<AppTabela
 					:cabecalho="cabecalho"
 					:dados="dados"
@@ -94,8 +94,11 @@
 						</span>
 					</template>
 					<template v-slot:[`body.comentarios`]="{ item }">
+            <div>
+
+            </div>
 						<button
-							class="flex hover:bg-gray-400 w-full p-1"
+							class="flex hover:bg-gray-400 min-w-[235px] p-1 "
 							v-if="item.ComentarioSS.length > 0"
 							@click="
 								ss_id = item.id
@@ -106,14 +109,14 @@
 								src="@/assets/icons/comentarios-b.svg"
 								alt="close"
 								class="w-7 h-7 mr-1" />
-							<span v-if="item.ComentarioSS.at(0).descricao">
+							<span v-if="item.ComentarioSS.at(0).descricao" class="whitespace-nowrap">
 								{{ item.ComentarioSS.at(0).descricao.substr(0, 25)
 								}}{{ item.ComentarioSS.at(0).descricao.length > 25 ? "..." : "" }}
 							</span>
 						</button>
 					</template>
 				</AppTabela>
-			</div>
+<!--			</div>-->
 		</div>
 		<RodapePagina class="print:hidden">
 			<template v-slot>
@@ -318,10 +321,9 @@
 						nome: "Num.",
 						valor: "numero_acompanhamento",
 						filtro: true,
-						ordenar: true,
 						centralizar: true,
 					},
-					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
+					{ nome: "Situação", valor: "situacao", centralizar: true },
 					{ nome: "Natureza Operação", valor: "natureza_operacao", filtro: true },
 					{ nome: "Tipo Solicitação", valor: "tipo_solicitacao", filtro: true },
 					{ nome: "Prazo de Execução", valor: "prazo_execucao" },
