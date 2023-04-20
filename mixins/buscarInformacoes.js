@@ -47,8 +47,6 @@ export const buscarDisciplinaCard = {
 				.$get("/contratacao/disciplina/buscarTodos")
 				.then((resp) => resp.disciplinas)
 
-      console.log(disciplinasBuscados)
-
 			return disciplinasBuscados
 		},
 	},

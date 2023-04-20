@@ -139,14 +139,16 @@
 			<template v-slot>
 				<div class="flex items-center w-full">
 					<div class="flex w-full gap-2">
-						<BotaoPadrao
-							texto="Filtros avançados"
-							@click="mostrarDialogFiltroAvancado = true">
-							<img
-								src="@/assets/icons/filter-b.svg"
-								alt="close"
-								class="w-6 h-6" />
-						</BotaoPadrao>
+
+<!--            Esconder por enquanto, até finalizar todos os testes-->
+<!--						<BotaoPadrao-->
+<!--							texto="Filtros avançados"-->
+<!--							@click="mostrarDialogFiltroAvancado = true">-->
+<!--							<img-->
+<!--								src="@/assets/icons/filter-b.svg"-->
+<!--								alt="close"-->
+<!--								class="w-6 h-6" />-->
+<!--						</BotaoPadrao>-->
             <BotaoPadrao :texto="gerandoExcel ? 'Gerando Excel' : 'Excel'" @click="gerarExcel()" :disabled="gerandoExcel">
               <img
                 src="@/assets/icons/excel-b.svg"
@@ -272,7 +274,7 @@
 			return {
 				mostrarDialogCriarCard: false,
 				dados: [],
-				filtros: null,
+				filtros: [],
 				itensPorPagina: 50,
 				pagina: 1,
 				card_id: null,
@@ -297,7 +299,7 @@
 		computed: {
 			cabecalho() {
 				let cabecalho = [
-					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true },
+					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true, colunaTabela: "card.id" },
 					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true, opcoes: Array.from(
               new Set(
                 this.etapas
@@ -366,41 +368,50 @@
 			async buscarCards() {
 				this.carregandoTabela = true
         let usuario_id = this.$auth.user.id
-				let filtros = this.filtros
+				let filtros = [ ...this.filtros ]
 
         let confidencial
         let listaPermissoes = ['aprovar_card_site_manager', 'aprovar_card_controle', 'rh_contratacoes']
         if(listaPermissoes.some(o => this.$auth.user.permissoes.includes(o))){
           confidencial = 'todos'
+          filtros.push(`AND (card.confidencial IS NULL OR card.confidencial = false OR card.confidencial = true)`)
         }else{
           confidencial = 'setor'
+          filtros.push(` AND (card.confidencial IS NULL OR card.confidencial = false OR ( card.confidencial = true AND usuario.id = ${usuario_id}))`)
         }
 
-				let etapa_id = this.etapa_id
-				// if (etapa_id !== 0) {
-				// 	filtros["etapa_id"] = etapa_id
-				// }else{
-        //   delete filtros["etapa_id"]
-        // }
 
-        console.log(filtros)
+        /*
+        * { confidencial: false },
+					{ confidencial: true, usuario_id: parseInt(usuario_id) },
+					{ confidencial: null },
+        *
+        * */
+
+				let etapa_id = this.etapa_id
+				if (etapa_id !== 0) {
+          filtros.push(` AND etapa.id = ${etapa_id}`)
+				}
+
+        let filtrosFinais
+
+        if(filtros!== null && filtros !== ""){
+          filtrosFinais= filtros.join('')
+        }
 
 				let resp = await this.$axios.$get("/contratacao/card/buscarPaginados", {
 					params: {
 						page: this.pagina - 1,
 						size: this.itensPorPagina,
-						filtros,
-            confidencial,
+            filtros: filtrosFinais,
             usuario_id
 					},
 				})
 
 				if (!resp.falha) {
 					let cards = resp.dados.cards
-          console.log(cards)
 
 					this.carregandoTabela = false
-
 					this.totalItens = resp.dados.totalItens
 					this.dados = cards
 				}
@@ -414,8 +425,6 @@
 				if (pagina) this.pagina = pagina
 
 				if (filtros) this.filtros = filtros
-
-        console.log(filtros)
 
 				await this.buscarCards()
 			},
@@ -491,7 +500,6 @@
       },
 
       async gerarExcel() {
-        // let filtrosPrPreparar = Object.assign({}, this.filtros)
         let usuario_id = this.$auth.user.id
 
         let filtros = this.filtros
@@ -583,8 +591,10 @@
       },
 		},
 		watch: {
-			etapa_id(valor) {
-				this.buscarCards()
+			async etapa_id(valor) {
+        this.pagina = 1
+
+				await this.buscarCards()
 			},
 		},
 	}

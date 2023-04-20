@@ -103,6 +103,23 @@
 						{{ $dayjs(item.ultima_data).format("DD/MM/YYYY") }}
 					</span>
 				</template>
+        <template v-slot:[`body.situacao`]="{ item }">
+          <div class="flex justify-center gap-1.5">
+            <div
+              v-if="!($dayjs().diff(item.ultima_data, 'day') > item.Etapa.leadtime)"
+              class="bg-blue-400 text-black px-2 rounded whitespace-nowrap">
+              No prazo
+            </div>
+            <div
+              v-if="$dayjs().diff(item.ultima_data, 'day') > item.Etapa.leadtime"
+              class="bg-red-400 text-black px-2 rounded whitespace-nowrap">
+              Atrasado
+            </div>
+            <div v-if="item.confidencial === true" class="bg-gray-600 text-white px-2 rounded whitespace-nowrap">
+              Confidencial
+            </div>
+          </div>
+        </template>
         <template v-slot:[`body.comentarios`]="{ item }">
           <button
             class="flex hover:bg-gray-400 w-full p-1 whitespace-nowrap"

@@ -133,9 +133,9 @@
 											class="w-full"
 											type="text"
 											:label="'Buscar por ' + cab.nome"
-											:value="filtros[cab.valor.includes('.') ? `$${cab.valor}$` : cab.valor]"
+											:value="valorFiltro(cab.valor)"
 											placeholder="Pressione ENTER para buscar"
-											@keyup.enter.prevent.stop="adicionarFiltro(cab.valor, $event)" />
+											@keyup.enter.prevent.stop="adicionarFiltro(cab.valor, $event, cab.colunaTabela)" />
 									</div>
 									<div class="w-full mt-1">
 										<button
@@ -378,9 +378,18 @@
         let { dataInicial, dataFinal } = this.dataFiltros
 
         return dataInicial === null || dataInicial === "" || dataFinal === null || dataFinal === ""
-      }
+      },
+
 		},
 		methods: {
+      valorFiltro(valor) {
+        if (this.dadosSql) {
+          return ''
+        } else {
+          return this.filtros[valor.includes('.') ? `$${valor}$` : valor]
+        }
+      },
+
 			anteriorPagina() {
 				if (this.localPagina - 1 >= 1) {
 					this.localPagina -= 1
@@ -436,25 +445,56 @@
 				this.$emit("dblclick", item)
 			},
 
-			adicionarFiltro(item, event) {
+			adicionarFiltro(item, event, colunaTabela) {
         if(!this.filtrosAtivos.includes(item)){
           this.filtrosAtivos.push(item)
         }
 
-				if (item.includes(".")) item = `$${item}$`
+        let valor = event.target.value
 
-				let valor = event.target.value
-				let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
+        if(this.dadosSql){
+          if(this.filtros.includes(item)){
+            let idx = this.filtros.findIndex(o => o.includes(item))
 
-				if (idx >= 0 && (valor === null || valor === "")) {
-					this.filtros.splice(idx, 1)
-          if (this.filtrosAtivos.includes(item)) {
-            let idx = this.filtrosAtivos.findIndex(o => o === item)
+            this.filtros.splice(idx, 1)
             this.filtrosAtivos.splice(idx, 1)
           }
-				} else {
-					this.filtros.push({ [item]: valor })
-				}
+
+          if(valor === null || valor === ""){
+            let idx = this.filtros.findIndex(o => o.includes(item))
+
+            this.filtros.splice(idx, 1)
+            this.filtrosAtivos.splice(idx, 1)
+          }else{
+            let filtro
+
+            console.log(colunaTabela)
+            console.log(item)
+
+            if(colunaTabela !== null && colunaTabela !== '' && colunaTabela !== undefined){
+              filtro = `AND ${colunaTabela} = ${valor}`
+            }else{
+              filtro = `AND LOWER(${item}) LIKE LOWER('%${valor.replace(/[^a-zA-Z]/g, "")}%')`
+            }
+              this.filtros.push(filtro)
+          }
+        }else{
+          if (item.includes(".")) item = `$${item}$`
+          let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
+
+          if (idx >= 0 && (valor === null || valor === "")) {
+            this.filtros.splice(idx, 1)
+            if (this.filtrosAtivos.includes(item)) {
+              let idx = this.filtrosAtivos.findIndex(o => o === item)
+              this.filtrosAtivos.splice(idx, 1)
+            }
+          } else {
+            this.filtros.push({[item]: valor})
+          }
+        }
+
+
+
 
         this.localPagina = 1
         this.filtroAberto = null
@@ -462,18 +502,28 @@
 			},
 
 			removerFiltro(item) {
-        if (this.filtrosAtivos.includes(item)) {
-          let idx = this.filtrosAtivos.findIndex(o => o === item)
+
+        console.log(item)
+
+        if(this.dadosSql){
+          let idx = this.filtros.findIndex( o => o.includes(item))
           this.filtrosAtivos.splice(idx, 1)
+          this.filtros.splice(idx, 1)
+
+        }else{
+          if (this.filtrosAtivos.includes(item)) {
+            let idx = this.filtrosAtivos.findIndex(o => o === item)
+            this.filtrosAtivos.splice(idx, 1)
+          }
+
+          if (item.includes(".")) item = `$${item}$`
+
+          let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
+
+          if (idx >= 0) {
+            this.filtros.splice(idx, 1)
+          }
         }
-
-				if (item.includes(".")) item = `$${item}$`
-
-				let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
-
-				if (idx >= 0) {
-					this.filtros.splice(idx, 1)
-				}
 
         this.localPagina = 1
         this.filtroAberto = null
@@ -497,26 +547,18 @@
         }
 
         if(this.dadosSql){
-          console.log(this.multSelecionados)
-          console.log(valor)
           if (this.multSelecionados.length === 0) {
-            let idx = this.filtros.findIndex((o) =>
-              Object.keys(o).some((o) => o === "$" + valor + "$"),
-            )
+            let idx = this.filtros.findIndex( (o) => o.includes(valor) )
             this.filtros.splice(idx, 1)
             if (this.filtrosAtivos.includes(valor)) {
               let idx = this.filtrosAtivos.findIndex(o => o === valor)
               this.filtrosAtivos.splice(idx, 1)
             }
           }else{
+            let filtro = ` AND ${valor} IN (${this.multSelecionados.map(o => "'" + o + "'")})`
 
+            this.filtros.push(filtro)
           }
-
-          let filtro = ` AND ${valor} IN (${ this.multSelecionados.map( o => "'" + o +"'")})`
-
-          console.log(filtro)
-          this.filtros += filtro
-
         }else {
           if (this.multSelecionados.length === 0) {
             let idx = this.filtros.findIndex((o) =>
@@ -548,8 +590,14 @@
           this.filtrosAtivos.splice(idx, 1)
         }
 
-				let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === "$" + valor + "$"))
-				this.filtros.splice(idx, 1)
+        if(this.dadosSql){
+          let idx = this.filtros.findIndex( o=> o.includes(valor) )
+          this.filtros.splice(idx, 1)
+        }else{
+          let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === "$" + valor + "$"))
+          this.filtros.splice(idx, 1)
+        }
+
 				this.atualizarDados()
 			},
 
@@ -602,7 +650,11 @@
 				return itensFiltrados
 			},
 		},
-		watch: {},
+		watch: {
+      pagina(valor){
+        this.localPagina = valor
+      }
+    },
 	}
 </script>
 
