@@ -300,7 +300,7 @@
 			cabecalho() {
 				let cabecalho = [
 					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true, colunaTabela: "card.id" },
-					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true, opcoes: Array.from(
+					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, opcoes: Array.from(
               new Set(
                 this.etapas
                   .filter((item) => {

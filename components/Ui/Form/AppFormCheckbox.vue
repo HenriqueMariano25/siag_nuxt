@@ -1,7 +1,7 @@
 <template>
   <label class="flex flex-row items-center gap-1" :for="'inputCheckbox' + valor">
     <input class="cursor-pointer mr-2" type="checkbox" :id="'inputCheckbox' + valor" :value="valor" v-model="model"
-           @click.stop>
+           @click.stop="$emit('click')">
     {{ label }}
   </label>
 </template>

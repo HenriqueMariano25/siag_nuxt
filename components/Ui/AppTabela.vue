@@ -531,6 +531,7 @@
 			},
 
 			selecionarTodos(opcoes) {
+
 				if (!this.checkSelecionarTodos) {
 					this.multSelecionados = opcoes
 				} else {
