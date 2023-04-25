@@ -19,7 +19,7 @@
             <tr v-for="card in cards" :key="card.id"
                 class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white">
               <td class="text-center px-1 py-0.5 border border-collapse border-gray-600">{{ card.id }}</td>
-              <td class="px-1 py-0.5 border border-collapse border-gray-600">{{ card.FuncaoCard.nome }}</td>
+              <td class="px-1 py-0.5 border border-collapse border-gray-600">{{ card.FuncaoCard && card.FuncaoCard.nome ? card.FuncaoCard.nome : "" }}</td>
               <td class="px-1 py-0.5 border border-collapse border-gray-600">
                 {{ card.DisciplinaCard ? card.DisciplinaCard.descricao : "" }}
               </td>
