@@ -87,7 +87,7 @@ export default {
   },
   computed: {
     bloquearBtnNegar() {
-      return this.processo.comentario === null || this.processo.comentario === ""
+      return this.comentario === null || this.comentario === ""
     }
   },
   methods: {
