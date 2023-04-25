@@ -1,6 +1,6 @@
 <template>
   <BaseDialog
-    :titulo="card && card.id ? 'Detalhes Card - ' + card.id : ''"
+    :titulo="card && card.id ? 'Detalhes Card - ' + ('000000' + card.id).slice(-6) : ''"
     @cancelar="cancelar()">
     <template v-slot:corpo>
       <div class="flex w-full overflow-auto print:overflow-visible px-2 " id="imprimir" style="">

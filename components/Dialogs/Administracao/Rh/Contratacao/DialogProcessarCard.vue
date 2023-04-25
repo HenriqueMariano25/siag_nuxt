@@ -18,16 +18,16 @@
             <tbody>
             <tr v-for="card in cards" :key="card.id"
                 class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white">
-              <td class="text-center px-1 py-0.5 border border-collapse border-gray-600">{{ card.id }}</td>
-              <td class="px-1 py-0.5 border border-collapse border-gray-600">{{ card.FuncaoCard && card.FuncaoCard.nome ? card.FuncaoCard.nome : "" }}</td>
+              <td class="text-center px-1 py-0.5 border border-collapse border-gray-600">{{ ("000000" + card.id).slice(-6) }}</td>
+              <td class="px-1 py-0.5 border border-collapse border-gray-600">{{ card["FuncaoCard.nome"] ? card["FuncaoCard.nome"] : "" }}</td>
               <td class="px-1 py-0.5 border border-collapse border-gray-600">
-                {{ card.DisciplinaCard ? card.DisciplinaCard.descricao : "" }}
+                {{ card["DisciplinaCard.descricao"] ? card["DisciplinaCard.descricao"] : "" }}
               </td>
               <td class="px-1 py-0.5 border border-collapse border-gray-600">
                 {{ $dayjs(card.data_necessidade).format("DD/MM/YYYY") }}
               </td>
               <td class="px-1 py-0.5 border border-collapse border-gray-600">
-                {{ card.Indicacao ? card.Indicacao.nome : "" }}
+                {{ card["Indicacao.nome"] ? card["Indicacao.nome"] : "" }}
               </td>
             </tr>
             </tbody>
