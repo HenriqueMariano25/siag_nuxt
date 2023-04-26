@@ -445,15 +445,18 @@
 			async buscarDisciplina() {
 				let setor_id = this.$auth.user.setor_id
 
-				let resp = await this.$axios.$get("/efetivo/sub_setor/porSetor", { params: { setor_id } })
-				if (!resp.falha) {
-					let disciplinas = resp.dados.disciplinas
-					let options = disciplinas.map((o) => {
-						return { id: o.id, nome: o.nome }
-					})
+				let resp = await this.$axios.$get("/contratacao/disciplina/buscarTodos", { params: { setor_id } })
 
-					this.disciplinas = options
-				}
+        console.log(resp)
+        console.log(resp.disciplinas)
+        if (!resp.falha) {
+          let disciplinas = resp.disciplinas
+          let options = disciplinas.map((o) => {
+            return {id: o.id, nome: `${o.sigla} - ${o.descricao}`}
+          })
+
+          this.disciplinas = options
+        }
 			},
 
 			async buscarResponsaveis() {
