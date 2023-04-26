@@ -549,22 +549,22 @@
           let cabecalho = [
             "Código",
             "Etapa",
+            "Ultíma movimentação",
             "Situação",
             "Setor",
             "Disciplina",
-            "PEP",
             "Nome",
             "CPF",
+            "Função",
             "Telefone",
             "Email",
-            "Função",
+            "Data de criação",
             "Data de Necessidade",
             "Previsão de Entrega",
-            "Ultíma movimentação",
-            "Treinamentos",
-            "Data de criação",
-            "Mobilização",
             "Responsável",
+            "Treinamentos",
+            "PEP",
+            "Mobilização",
             "Último Comentário",
           ]
           let nomeArquivo
@@ -576,18 +576,19 @@
             let temp = []
             temp.push(("000000" + item.id).slice(-6))
             temp.push(item['Etapa.nome'] ? item['Etapa.nome'] : "");
+            temp.push(this.$dayjs(item.ultima_data).format("DD/MM/YYYY"));
             temp.push(this.$dayjs().diff(item.ultima_data, 'day') <= item["Etapa.leadtime"] ? "No prazo" : "Atrasado");
             temp.push(item['Setor.nome'] ? item['Setor.nome'] : "");
             temp.push(item['DisciplinaCard.descricao'] ? item['DisciplinaCard.descricao'] : "")
-            temp.push(item['CentroCustoPEP.numero_pep'] || item['CentroCustoPEP.descricao'] ? `${item['CentroCustoPEP.numero_pep']} - ${item['CentroCustoPEP.descricao']}` : "");
             temp.push(item['Indicacao.nome'] ? item['Indicacao.nome'] : "")
             temp.push(item['Indicacao.cpf'] ? item['Indicacao.cpf'].replace(/[^\w\s]/gi, '') : "")
+            temp.push(item['FuncaoCard.nome'] ? item['FuncaoCard.nome'].trim() : "");
             temp.push(item['Indicacao.telefone'] ? item['Indicacao.telefone'] : "")
             temp.push(item['Indicacao.email'] ? item['Indicacao.email'] : "")
-            temp.push(item['FuncaoCard.nome'] ? item['FuncaoCard.nome'].trim() : "");
+            temp.push(this.$dayjs(item.created_at).format("DD/MM/YYYY"))
             temp.push(this.$dayjs(item.data_necessidade).format("DD/MM/YYYY"));
             temp.push(item.data_previsao ? this.$dayjs(item.data_previsao).format("DD/MM/YYYY") : "");
-            temp.push(this.$dayjs(item.ultima_data).format("DD/MM/YYYY"));
+            temp.push(item['Responsavel.nome'] ? item['Responsavel.nome'] : "");
             let nrs = ""
             if (item.nrs && item.nrs.length > 0) {
               for (let nr of item.nrs) {
@@ -595,9 +596,8 @@
               }
             }
             temp.push(nrs)
-            temp.push(this.$dayjs(item.created_at).format("DD/MM/YYYY"))
+            temp.push(item['CentroCustoPEP.numero_pep'] || item['CentroCustoPEP.descricao'] ? `${item['CentroCustoPEP.numero_pep']} - ${item['CentroCustoPEP.descricao']}` : "");
             temp.push(item.mobilizacao)
-            temp.push(item['Responsavel.nome'] ? item['Responsavel.nome'] : "");
             item['Comentarios.descricao'] ? temp.push(item['Comentarios.descricao']) : temp.push("")
             itens.push(temp)
           }

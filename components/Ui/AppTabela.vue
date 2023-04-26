@@ -474,7 +474,7 @@
             if(colunaTabela !== null && colunaTabela !== '' && colunaTabela !== undefined){
               filtro = `AND ${colunaTabela} = ${valor}`
             }else{
-              filtro = `AND LOWER(${item}) LIKE LOWER('%${valor.replace(/[^a-zA-Z]/g, "")}%')`
+              filtro = `AND LOWER(${item}) LIKE LOWER('%${valor.replace(/[^a-zA-Z\s]/g, "")}%')`
             }
               this.filtros.push(filtro)
           }
