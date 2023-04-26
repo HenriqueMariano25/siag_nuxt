@@ -43,7 +43,7 @@
 					</div>
 				</template>
 				<template v-slot:[`body.acoes`]="{ item }">
-					  <BotaoIconeEditar @click="editarCard(item)" />
+					  <BotaoIconeEditar @click="editarCard(item)" :disabled="!podeEditarCard(item)" />
 				</template>
         <template v-slot:[`body.id`]="{ item }">
 					  <span class="whitespace-nowrap">{{ ("000000" + item.id).slice(-6) }}</span>
@@ -112,7 +112,7 @@
 				</template>
         <template v-slot:[`body.Usuario.nome`]="{ item }">
  					<span class="whitespace-nowrap">
-						{{ item.Usuario ? item.Usuario.nome : '' }}
+						{{ item["Usuario.nome"] ? item["Usuario.nome"] : '' }}
 					</span>
         </template>
 				<template v-slot:[`body.comentarios`]="{ item }">
@@ -341,11 +341,19 @@
 				}
 
 				let listaNaoSelect = [0, 1, 2, 3]
-				if (!listaNaoSelect.some((o) => this.etapa_id === o)) {
-					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true, largura: "w-10" })
-				}
+
+        if(this.$auth.user.permissoes.includes("rh_contratacoes")){
+          if (!listaNaoSelect.some((o) => this.etapa_id === o)) {
+            cabecalho.unshift({nome: "", valor: "selecione", centralizar: true, largura: "w-10"})
+          }
+        }
+
 				return cabecalho
 			},
+
+      isAdminCardRH() {
+        return this.$auth.user.permissoes.includes("editar_card_adm_contratacao")
+      },
 		},
 		async mounted() {
 			this.etapas = await this.buscarEtapa()
@@ -356,6 +364,11 @@
 			await this.buscarCards()
 		},
 		methods: {
+      podeEditarCard(item) {
+
+        return this.$auth.user.id === item.usuario_id || this.isAdminCardRH
+      },
+
 			verDetalhesSS(dados) {
 				this.card_id = dados.id
 				this.mostrarDialogDetalhesCard = true
