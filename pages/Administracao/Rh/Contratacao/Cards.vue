@@ -393,14 +393,6 @@
           filtros.push(` AND (card.confidencial IS NULL OR card.confidencial = false OR ( card.confidencial = true AND usuario.id = ${usuario_id}))`)
         }
 
-
-        /*
-        * { confidencial: false },
-					{ confidencial: true, usuario_id: parseInt(usuario_id) },
-					{ confidencial: null },
-        *
-        * */
-
 				let etapa_id = this.etapa_id
 				if (etapa_id !== 0) {
           filtros.push(` AND etapa.id = ${etapa_id}`)
@@ -513,32 +505,42 @@
       },
 
       async gerarExcel() {
-        let usuario_id = this.$auth.user.id
+        // let usuario_id = this.$auth.user.id
 
-        let filtros = this.filtros
+        let usuario_id = this.$auth.user.id
+        let filtros = [...this.filtros]
 
         let confidencial
         let listaPermissoes = ['aprovar_card_site_manager', 'aprovar_card_controle', 'rh_contratacoes']
         if (listaPermissoes.some(o => this.$auth.user.permissoes.includes(o))) {
           confidencial = 'todos'
+          filtros.push(`AND (card.confidencial IS NULL OR card.confidencial = false OR card.confidencial = true)`)
         } else {
           confidencial = 'setor'
+          filtros.push(` AND (card.confidencial IS NULL OR card.confidencial = false OR ( card.confidencial = true AND usuario.id = ${usuario_id}))`)
         }
 
         let etapa_id = this.etapa_id
         if (etapa_id !== 0) {
-          filtros["etapa_id"] = etapa_id
+          filtros.push(` AND etapa.id = ${etapa_id}`)
+        }
+
+        let filtrosFinais
+
+        if (filtros !== null && filtros !== "") {
+          filtrosFinais = filtros.join('')
         }
 
         let resp = await this.$axios.$get("/contratacao/card/buscarPaginados", {
           params: {
             page: this.pagina - 1,
             size: this.totalItens,
-            filtros,
-            confidencial,
+            filtros: filtrosFinais,
             usuario_id
           },
         })
+
+        console.log(resp)
 
         if(!resp.falha){
           this.gerandoExcel = true
@@ -552,6 +554,7 @@
             "Disciplina",
             "PEP",
             "Nome",
+            "CPF",
             "Telefone",
             "Email",
             "Função",
@@ -572,15 +575,16 @@
           for (let item of dados) {
             let temp = []
             temp.push(("000000" + item.id).slice(-6))
-            temp.push(item.Etapa ? item.Etapa.nome : "");
+            temp.push(item['Etapa.nome'] ? item['Etapa.nome'] : "");
             temp.push(this.$dayjs().diff(item.ultima_data, 'day') <= item["Etapa.leadtime"] ? "No prazo" : "Atrasado");
-            temp.push(item.Setor ? item.Setor.nome : "");
-            temp.push(item.DisciplinaCard ? item.DisciplinaCard.descricao : "")
-            temp.push(item.CentroCustoPEP ? `${item.CentroCustoPEP.numero_pep}-${item.CentroCustoPEP.descricao}` : "");
-            temp.push(item.Indicacao && item.Indicacao.nome ? item.Indicacao.nome : "")
-            temp.push(item.Indicacao && item.Indicacao.telefone ? item.Indicacao.telefone : "")
-            temp.push(item.Indicacao && item.Indicacao.email ? item.Indicacao.email : "")
-            temp.push(item.FuncaoCard ? item.FuncaoCard.nome.trim() : "");
+            temp.push(item['Setor.nome'] ? item['Setor.nome'] : "");
+            temp.push(item['DisciplinaCard.descricao'] ? item['DisciplinaCard.descricao'] : "")
+            temp.push(item['CentroCustoPEP.numero_pep'] || item['CentroCustoPEP.descricao'] ? `${item['CentroCustoPEP.numero_pep']} - ${item['CentroCustoPEP.descricao']}` : "");
+            temp.push(item['Indicacao.nome'] ? item['Indicacao.nome'] : "")
+            temp.push(item['Indicacao.cpf'] ? item['Indicacao.cpf'].replace(/[^\w\s]/gi, '') : "")
+            temp.push(item['Indicacao.telefone'] ? item['Indicacao.telefone'] : "")
+            temp.push(item['Indicacao.email'] ? item['Indicacao.email'] : "")
+            temp.push(item['FuncaoCard.nome'] ? item['FuncaoCard.nome'].trim() : "");
             temp.push(this.$dayjs(item.data_necessidade).format("DD/MM/YYYY"));
             temp.push(item.data_previsao ? this.$dayjs(item.data_previsao).format("DD/MM/YYYY") : "");
             temp.push(this.$dayjs(item.ultima_data).format("DD/MM/YYYY"));
@@ -591,10 +595,10 @@
               }
             }
             temp.push(nrs)
-            temp.push(this.$dayjs(item.createdAt).format("DD/MM/YYYY"))
+            temp.push(this.$dayjs(item.created_at).format("DD/MM/YYYY"))
             temp.push(item.mobilizacao)
-            temp.push(item.responsavel ? item.responsavel.nome : "");
-            item['Comentarios.descricao'] > 0 ? temp.push(item['Comentarios.descricao']) : temp.push("")
+            temp.push(item['Responsavel.nome'] ? item['Responsavel.nome'] : "");
+            item['Comentarios.descricao'] ? temp.push(item['Comentarios.descricao']) : temp.push("")
             itens.push(temp)
           }
 
