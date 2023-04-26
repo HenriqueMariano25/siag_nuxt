@@ -1,6 +1,6 @@
 <template>
 	<BaseDialog
-		:titulo="card_id === null ? 'Criar card' : `Editando card - ${card_id}`"
+		:titulo="card_id === null ? 'Criar card' : `Editando card - ${('000000' + card.id).slice(-6)}`"
 		@cancelar="cancelar()">
 		<template v-slot:corpo>
 			<div
