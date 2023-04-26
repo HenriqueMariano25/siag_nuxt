@@ -331,7 +331,7 @@
 					{ nome: "Comentários", valor: "comentarios" },
 				]
 
-        let listaEdicao = [1,2,3,4,5,6]
+        let listaEdicao = [0,1,2,3,4,5,6]
 
         if(this.$auth.user.permissoes.includes("editar_card_adm_contratacao"))
           listaEdicao = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
