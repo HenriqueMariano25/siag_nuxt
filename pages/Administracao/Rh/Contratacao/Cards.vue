@@ -59,8 +59,8 @@
 					</span>
 				</template>
 				<template v-slot:[`body.DisciplinaCard.descricao`]="{ item }">
-					<span v-if="item.DisciplinaCard && item.DisciplinaCard.descricao" class="whitespace-nowrap">
-						{{ item.DisciplinaCard.descricao }}
+					<span v-if="item['DisciplinaCard.descricao']" class="whitespace-nowrap">
+						{{ item['DisciplinaCard.sigla'] }} - {{ item['DisciplinaCard.descricao'] }}
 					</span>
 				</template>
 				<template v-slot:[`body.CentroCustoPEP.numero_pep`]="{ item }">
@@ -400,7 +400,7 @@
 
         let filtrosFinais
 
-        if(filtros!== null && filtros !== ""){
+        if(filtros !== ""){
           filtrosFinais= filtros.join('')
         }
 
@@ -527,7 +527,7 @@
 
         let filtrosFinais
 
-        if (filtros !== null && filtros !== "") {
+        if (filtros !== "") {
           filtrosFinais = filtros.join('')
         }
 
@@ -579,7 +579,7 @@
             temp.push(this.$dayjs(item.ultima_data).format("DD/MM/YYYY"));
             temp.push(this.$dayjs().diff(item.ultima_data, 'day') <= item["Etapa.leadtime"] ? "No prazo" : "Atrasado");
             temp.push(item['Setor.nome'] ? item['Setor.nome'] : "");
-            temp.push(item['DisciplinaCard.descricao'] ? item['DisciplinaCard.descricao'] : "")
+            temp.push(item['DisciplinaCard.descricao'] ? `${item['DisciplinaCard.sigla']} - ${item['DisciplinaCard.descricao']}` : "")
             temp.push(item['Indicacao.nome'] ? item['Indicacao.nome'] : "")
             temp.push(item['Indicacao.cpf'] ? item['Indicacao.cpf'].replace(/[^\w\s]/gi, '') : "")
             temp.push(item['FuncaoCard.nome'] ? item['FuncaoCard.nome'].trim() : "");
@@ -608,7 +608,7 @@
       },
 		},
 		watch: {
-			async etapa_id(valor) {
+			async etapa_id() {
         this.pagina = 1
 
 				await this.buscarCards()
