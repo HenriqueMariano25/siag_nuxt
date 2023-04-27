@@ -579,7 +579,7 @@
             temp.push(this.$dayjs(item.ultima_data).format("DD/MM/YYYY"));
             temp.push(this.$dayjs().diff(item.ultima_data, 'day') <= item["Etapa.leadtime"] ? "No prazo" : "Atrasado");
             temp.push(item['Setor.nome'] ? item['Setor.nome'] : "");
-            temp.push(item['DisciplinaCard.descricao'] ? `${item['DisciplinaCard.sigla']} - ${item['DisciplinaCard.descricao']}` : "")
+            temp.push(item['DisciplinaCard.sigla'] ? `${item['DisciplinaCard.sigla']}` : "")
             temp.push(item['Indicacao.nome'] ? item['Indicacao.nome'] : "")
             temp.push(item['Indicacao.cpf'] ? item['Indicacao.cpf'].replace(/[^\w\s]/gi, '') : "")
             temp.push(item['FuncaoCard.nome'] ? item['FuncaoCard.nome'].trim() : "");
