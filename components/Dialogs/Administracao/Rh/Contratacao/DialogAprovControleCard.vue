@@ -110,7 +110,7 @@ export default {
         comentario,
         pep
       })
-      let cards=[this.card]
+      let cards = [id]
 
       this.$emit("aprovado", cards, aprovacao)
       this.processo.comentario = null

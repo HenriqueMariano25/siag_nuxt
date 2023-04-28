@@ -300,9 +300,9 @@
 				]
 
 				if (this.tipoAprovacao === "controle") {
-					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true })
+					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-15" })
 				} else {
-					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true })
+					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true, largura: "w-10" })
 				}
 				return cabecalho
 			},
@@ -312,8 +312,6 @@
 				let setor_id = this.$auth.user.setor_id
         let filtros = this.filtros
 				this.selecionados = []
-
-        console.log(filtros)
 
 				let resp = await this.$axios.$get("/contratacao/card/aprovacao/buscarPaginados", {
 					params: {
@@ -352,6 +350,7 @@
         this.mostrarDialogAprovControleCard = false
 
 				for (let card of cards) {
+
 					let index = this.dados.findIndex((obj) => {
 						return obj.id === card
 					})
