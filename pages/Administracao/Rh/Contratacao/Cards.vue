@@ -334,7 +334,7 @@
         let listaEdicao = [0,1,2,3,4,5,6]
 
         if(this.$auth.user.permissoes.includes("editar_card_adm_contratacao"))
-          listaEdicao = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+          listaEdicao = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 
         if (listaEdicao.some((o) => this.etapa_id === o)) {
 					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-10" })
@@ -365,8 +365,19 @@
 		},
 		methods: {
       podeEditarCard(item) {
+        let listaEdicao = [ 1, 2, 3, 4, 5, 6]
 
-        return this.$auth.user.id === item.usuario_id || this.isAdminCardRH
+        // console.log(item)
+        console.log(listaEdicao.some(o => { return o === item.etapa_id }))
+
+
+        if(this.isAdminCardRH){
+          return this.isAdminCardRH
+        }else if(this.$auth.user.id === item.usuario_id){
+          return listaEdicao.some(o => {
+            return o === item.etapa_id
+          })
+        }
       },
 
 			verDetalhesSS(dados) {
