@@ -34,8 +34,8 @@
 						label="Centro de Custo"
 						:options="centrosCusto"
 						v-model="card.centro_custo_pep_id"
-            :disabled="podeEditarTudo"
-            :readonly="podeEditarTudo"
+						:disabled="podeEditarTudo"
+						:readonly="podeEditarTudo"
 						id="centro_custo"
 						:invalido="erro.includes('centro_custo_pep_id')" />
 					<AppFormSelect
@@ -43,15 +43,15 @@
 						:options="funcoes"
 						v-model="card.funcao_id"
 						@change="funcaoSelecionada"
-            :disabled="podeEditarTudo"
-            :readonly="podeEditarTudo"
+						:disabled="podeEditarTudo"
+						:readonly="podeEditarTudo"
 						id="funcao"
 						:invalido="erro.includes('funcao_id')" />
 					<AppFormSelect
 						label="Disciplina"
 						:options="disciplinas"
-            :disabled="podeEditarTudo"
-            :readonly="podeEditarTudo"
+						:disabled="podeEditarTudo"
+						:readonly="podeEditarTudo"
 						v-model="card.disciplina_id"
 						id="disciplina"
 						:invalido="erro.includes('disciplina_id')" />
@@ -112,12 +112,12 @@
 						obrigatorio
 						id="confidencial"
 						v-model="card.confidencial" />
-<!--					<AppFormRadio-->
-<!--						simNao-->
-<!--						titulo="Aplicar testes específicos ?"-->
-<!--						obrigatorio-->
-<!--						id="testes"-->
-<!--						v-model="card.teste_especificos" />-->
+					<!--					<AppFormRadio-->
+					<!--						simNao-->
+					<!--						titulo="Aplicar testes específicos ?"-->
+					<!--						obrigatorio-->
+					<!--						id="testes"-->
+					<!--						v-model="card.teste_especificos" />-->
 					<AppFormRadio
 						simNao
 						titulo="Avaliar inglês ?"
@@ -147,28 +147,34 @@
 								v-model="card.nrs" />
 						</div>
 					</div>
-          <AppFormRadio
-            simNao
-            titulo="Necessita de Notebook, Computador ou Login ?"
-            obrigatorio
-            id="notebook"
-            v-model="card.equipamento_ti"
-            :invalido="erro.includes('equipamento_ti')"/>
+					<AppFormRadio
+						simNao
+						titulo="Necessita de Notebook, Computador ou Login ?"
+						obrigatorio
+						id="notebook"
+						v-model="card.equipamento_ti"
+						:invalido="erro.includes('equipamento_ti')" />
 					<div class="self-end">
 						<BotaoPadrao
 							texto="Adicionar indicação"
 							@click="card.tem_indicacao = true"
-              cor="bg-green-400 hover:bg-green-500"
-							v-if="card.tem_indicacao === false" >
-              <img src="@/assets/icons/add-b.svg" alt="close" class="w-6 h-6"/>
-            </BotaoPadrao>
+							cor="bg-green-400 hover:bg-green-500"
+							v-if="card.tem_indicacao === false">
+							<img
+								src="@/assets/icons/add-b.svg"
+								alt="close"
+								class="w-6 h-6" />
+						</BotaoPadrao>
 						<BotaoPadrao
 							texto="Remover indicação"
 							@click="card.tem_indicacao = false"
-              cor="bg-red-400 hover:bg-red-500"
-							v-if="card.tem_indicacao === true" >
-              <img src="@/assets/icons/minus-b.svg" alt="close" class="w-6 h-6"/>
-            </BotaoPadrao>
+							cor="bg-red-400 hover:bg-red-500"
+							v-if="card.tem_indicacao === true">
+							<img
+								src="@/assets/icons/minus-b.svg"
+								alt="close"
+								class="w-6 h-6" />
+						</BotaoPadrao>
 					</div>
 					<div
 						class="bg-gray-300 p-2 rounded-sm border border-gray-400 col-span-2 grid grid-cols-2 gap-y-2 gap-x-3"
@@ -227,25 +233,28 @@
 							type="text"
 							id="cpfIndicacao"
 							mask="###.###.###-##"
-              :textoInvalido="erroCpfDuplicado ?  'CPF DUPLICADO' : ''"
+							:textoInvalido="erroCpf ? erroCpf : ''"
 							v-model="card.indicacao.cpf"
 							:invalido="erro.includes('indicacao.cpf')" />
-            <div>
-              <AppFormFile
-                label="Currículo em PDF"
-                id="curriculo"
-                @change="card.indicacao.pdf = $event"/>
-              <a
-                target="_blank"
-                :href="`${urlFile}${card.Indicacao.url_pdf}`"
-                v-if="card.indicacao && card.indicacao.url_pdf !== null && card.indicacao.url_pdf !==''"
-                class="border-2 border-gray-800 rounded flex px-2 hover:bg-gray-300 mt-2"
-              >
-                <img src="@/assets/icons/file-b.svg" alt="" class="w-7 h-7">
-                Currículo
-              </a>
-            </div>
-
+						<div>
+							<AppFormFile
+								label="Currículo em PDF"
+								id="curriculo"
+								@change="card.indicacao.pdf = $event" />
+							<a
+								target="_blank"
+								:href="`${urlFile}${card.Indicacao.url_pdf}`"
+								v-if="
+									card.indicacao && card.indicacao.url_pdf !== null && card.indicacao.url_pdf !== ''
+								"
+								class="border-2 border-gray-800 rounded flex px-2 hover:bg-gray-300 mt-2">
+								<img
+									src="@/assets/icons/file-b.svg"
+									alt=""
+									class="w-7 h-7" />
+								Currículo
+							</a>
+						</div>
 					</div>
 					<AppFormTextarea
 						label="Comentários"
@@ -363,8 +372,8 @@
 				bloquearSalario: true,
 				txtDesabilitadoSalario: "",
 				erro: [],
-        dataNecessidadeOriginal: null,
-        erroCpfDuplicado: false
+				dataNecessidadeOriginal: null,
+				erroCpf: false,
 			}
 		},
 		async fetch() {
@@ -376,8 +385,8 @@
 			await this.buscarStatus()
 			await this.buscarResponsaveis()
 
-      if(this.card_id === null )
-			  this.card.data_necessidade = this.$dayjs().add(30, "day").format("YYYY-MM-DD")
+			if (this.card_id === null)
+				this.card.data_necessidade = this.$dayjs().add(30, "day").format("YYYY-MM-DD")
 		},
 		computed: {
 			nomeSetor: {
@@ -390,19 +399,19 @@
 					console.log(value)
 				},
 			},
-      podeEditarTudo(){
-        if(this.card_id !== null){
-           return this.card.etapa_id !== 1
-        }
-        return false
-      },
-      urlFile() {
-        if (process.env.NODE_ENV === 'production') {
-          return "http://siag.agnet.com.br:84/files/"
-        } else {
-          return "http://localhost:3000/files/"
-        }
-      }
+			podeEditarTudo() {
+				if (this.card_id !== null) {
+					return this.card.etapa_id !== 1
+				}
+				return false
+			},
+			urlFile() {
+				if (process.env.NODE_ENV === "production") {
+					return "http://siag.agnet.com.br:84/files/"
+				} else {
+					return "http://localhost:3000/files/"
+				}
+			},
 		},
 
 		async created() {
@@ -445,18 +454,20 @@
 			async buscarDisciplina() {
 				let setor_id = this.$auth.user.setor_id
 
-				let resp = await this.$axios.$get("/contratacao/disciplina/buscarTodos", { params: { setor_id } })
+				let resp = await this.$axios.$get("/contratacao/disciplina/buscarTodos", {
+					params: { setor_id },
+				})
 
-        console.log(resp)
-        console.log(resp.disciplinas)
-        if (!resp.falha) {
-          let disciplinas = resp.disciplinas
-          let options = disciplinas.map((o) => {
-            return {id: o.id, nome: `${o.sigla} - ${o.descricao}`}
-          })
+				console.log(resp)
+				console.log(resp.disciplinas)
+				if (!resp.falha) {
+					let disciplinas = resp.disciplinas
+					let options = disciplinas.map((o) => {
+						return { id: o.id, nome: `${o.sigla} - ${o.descricao}` }
+					})
 
-          this.disciplinas = options
-        }
+					this.disciplinas = options
+				}
 			},
 
 			async buscarResponsaveis() {
@@ -512,7 +523,7 @@
 					"data_necessidade",
 					"turno",
 					"tipo_recrutamento",
-          "status_id",
+					"status_id",
 					"mobilizacao",
 					"equipamento_ti",
 				]
@@ -529,7 +540,6 @@
 					if (this.card[`${campo}`] === null || this.card[`${campo}`] === "") this.erro.push(campo)
 
 					if (
-						campo === "indicacao.telefone" ||
 						campo === "indicacao.nome" ||
 						campo === "indicacao.cpf" ||
 						campo === "indicacao.indicado_por"
@@ -538,32 +548,52 @@
 						if (this.card.indicacao[`${key}`] === null || this.card.indicacao[`${key}`] === "")
 							this.erro.push(campo)
 					}
+
+					if (campo === "indicacao.telefone") {
+						if (
+							this.card.indicacao.telefone === null ||
+							this.card.indicacao.telefone === "" ||
+							this.card.indicacao.telefone.length < 13
+						)
+							this.erro.push("indicacao.telefone")
+					}
 				}
 			},
 
-      async validarCpf(){
-        let cpf = this.card.indicacao.cpf
-        let indicacao_id = this.card.indicacao_id
+			async validarCpf() {
+				let cpf = this.card.indicacao.cpf
+				let indicacao_id = this.card.indicacao_id
 
-        let resp = await this.$axios.$get("/contratacao/consultar_cpf", { params: { cpf, indicacao_id }})
+				console.log(cpf)
 
-        if(!resp.falha){
-          let valido = resp.dados.resposta
+				if (cpf !== null && cpf !== "") {
+					if (cpf.length === 14) {
+						let resp = await this.$axios.$get("/contratacao/consultar_cpf", {
+							params: { cpf, indicacao_id },
+						})
 
-          if(!valido){
-            this.erro.push("indicacao.cpf")
-            this.erroCpfDuplicado = true
-          }
+						if (!resp.falha) {
+							let valido = resp.dados.resposta
 
-        }
-      },
+							if (!valido) {
+								this.erro.push("indicacao.cpf")
+								this.erroCpf = "CPF DUPLICADO"
+							}
+						}
+					} else {
+						this.erro.push("indicacao.cpf")
+						this.erroCpf = "CPF INVÁLIDO"
+					}
+				} else {
+					this.erro.push("indicacao.cpf")
+					this.erroCpf = "CPF VAZIO"
+				}
+			},
 
 			async adicionarContratacao() {
 				this.validarFormulario()
 
-        let cpfValido = true
-        if (this.card.tem_indicacao === true)
-          cpfValido = await this.validarCpf()
+				if (this.card.tem_indicacao === true) await this.validarCpf()
 
 				if (this.erro.length === 0) {
 					let usuario_id = this.$auth.user.id
@@ -582,7 +612,7 @@
 
 					try {
 						await this.$axios.$post("/contratacao/card/criar", formData, config)
-            this.$emit("cadastrado")
+						this.$emit("cadastrado")
 
 						this.card = {
 							quantidade: null,
@@ -622,40 +652,38 @@
 			async editarContratacao() {
 				this.validarFormulario()
 
-        let cpfValido = true
-        if (this.card.tem_indicacao === true)
-          cpfValido = await this.validarCpf()
+				if (this.card.tem_indicacao === true) await this.validarCpf()
 
-        if (this.erro.length === 0) {
-          let usuario_id = this.$auth.user.id
+				if (this.erro.length === 0) {
+					let usuario_id = this.$auth.user.id
 
-          const config = {headers: {"Content-Type": "multipart/form-data"}}
-          let formData = new FormData()
-          formData.append(`files`, this.card.indicacao.pdf)
+					const config = { headers: { "Content-Type": "multipart/form-data" } }
+					let formData = new FormData()
+					formData.append(`files`, this.card.indicacao.pdf)
 
-          let rawData = {
-            card: this.card,
-            usuario_id: usuario_id,
-          }
+					let rawData = {
+						card: this.card,
+						usuario_id: usuario_id,
+					}
 
-          rawData = JSON.stringify(rawData)
-          formData.append("data", rawData)
+					rawData = JSON.stringify(rawData)
+					formData.append("data", rawData)
 
-          try {
-            let resp = await this.$axios.$put(
-              "/contratacao/card/editar_novo_padrao",
-              formData,
-              config,
-            )
+					try {
+						let resp = await this.$axios.$put(
+							"/contratacao/card/editar_novo_padrao",
+							formData,
+							config,
+						)
 
-            if (!resp.falha) {
-              let comentario = resp.dados.comentario
-              this.$emit("editado", {card_id: this.card_id, comentario})
-            }
-          } catch (error) {
-            console.log(error)
-          }
-        }
+						if (!resp.falha) {
+							let comentario = resp.dados.comentario
+							this.$emit("editado", { card_id: this.card_id, comentario })
+						}
+					} catch (error) {
+						console.log(error)
+					}
+				}
 			},
 
 			async buscarCard() {
@@ -668,35 +696,35 @@
 					temEquipamentoTi = card.equipamento_card.filter((obj) => obj.id === 1).length > 0
 				}
 				card.equipamento_ti = temEquipamentoTi
-        //
+				//
 				// let temIndicacao = false
 				if (card.Indicacao) {
 					card.tem_indicacao = true
 					card.indicacao = card.Indicacao
-          card.indicacao.url_pdf = card.Indicacao.url_pdf
+					card.indicacao.url_pdf = card.Indicacao.url_pdf
 				} else {
 					card.tem_indicacao = false
-          card.indicacao = {
-            nome: null,
-            telefone: null,
-            telefone_2: null,
-            telefone_3: null,
-            email: null,
-            indicado_por: null,
-            cpf: null,
-            pdf: null,
-            url_pdf: null,
-          }
+					card.indicacao = {
+						nome: null,
+						telefone: null,
+						telefone_2: null,
+						telefone_3: null,
+						email: null,
+						indicado_por: null,
+						cpf: null,
+						pdf: null,
+						url_pdf: null,
+					}
 				}
 
-        this.dataNecessidadeOriginal = card.data_necessidade
-        this.card = card
-        if (card.nrs.length > 0) {
-          this.card.nrs = []
-          for (let nr of card.nrs) {
-            this.card.nrs.push(nr.id)
-          }
-        }
+				this.dataNecessidadeOriginal = card.data_necessidade
+				this.card = card
+				if (card.nrs.length > 0) {
+					this.card.nrs = []
+					for (let nr of card.nrs) {
+						this.card.nrs.push(nr.id)
+					}
+				}
 			},
 		},
 		watch: {
@@ -713,9 +741,9 @@
 			"card.data_necessidade": function (valor) {
 				let hoje = this.$dayjs().format("YYYY-MM-DD")
 
-        let temCard = false
-        if(this.card_id !== null)
-          temCard = this.dataNecessidadeOriginal === this.card.data_necessidade
+				let temCard = false
+				if (this.card_id !== null)
+					temCard = this.dataNecessidadeOriginal === this.card.data_necessidade
 
 				this.invalidoDataNecessidade = this.$dayjs(valor).diff(hoje, "day") < 30 && !temCard
 			},
