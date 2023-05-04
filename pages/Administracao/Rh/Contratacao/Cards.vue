@@ -115,6 +115,11 @@
 						{{ item["Usuario.nome"] ? item["Usuario.nome"] : '' }}
 					</span>
         </template>
+        <template v-slot:[`body.responsavel.nome`]="{ item }">
+ 					<span class="whitespace-nowrap">
+						{{ item["Responsavel.nome"] ? item["Responsavel.nome"] : '' }}
+					</span>
+        </template>
 				<template v-slot:[`body.comentarios`]="{ item }">
 					<button
 						class="flex hover:bg-gray-400 min-w-[230px] p-1"
@@ -328,7 +333,8 @@
 					{ nome: "Previsão Entrega", valor: "data_previsao", filtro: true, centralizar: true, tipoFiltro: "data" },
 					{ nome: "Criado por", valor: "Usuario.nome", filtro: true, centralizar: true },
 					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true, tipoFiltro: "data" },
-					{ nome: "Comentários", valor: "comentarios" },
+          {nome: "Responsável", valor: "responsavel.nome" },
+          { nome: "Comentários", valor: "comentarios" },
 				]
 
         let listaEdicao = [0,1,2,3,4,5,6]
@@ -368,7 +374,7 @@
         let listaEdicao = [ 1, 2, 3, 4, 5, 6]
 
         // console.log(item)
-        console.log(listaEdicao.some(o => { return o === item.etapa_id }))
+        // console.log(listaEdicao.some(o => { return o === item.etapa_id }))
 
 
         if(this.isAdminCardRH){
@@ -551,7 +557,7 @@
           },
         })
 
-        console.log(resp)
+        // console.log(resp)
 
         if(!resp.falha){
           this.gerandoExcel = true
@@ -600,13 +606,7 @@
             temp.push(this.$dayjs(item.data_necessidade).format("DD/MM/YYYY"));
             temp.push(item.data_previsao ? this.$dayjs(item.data_previsao).format("DD/MM/YYYY") : "");
             temp.push(item['Responsavel.nome'] ? item['Responsavel.nome'] : "");
-            let nrs = ""
-            if (item.nrs && item.nrs.length > 0) {
-              for (let nr of item.nrs) {
-                if (nr.nr !== null) nrs = `${nrs + nr.nr};`
-              }
-            }
-            temp.push(nrs)
+            temp.push(item.treinamentos.join('; '))
             temp.push(item['CentroCustoPEP.numero_pep'] || item['CentroCustoPEP.descricao'] ? `${item['CentroCustoPEP.numero_pep']} - ${item['CentroCustoPEP.descricao']}` : "");
             temp.push(item.mobilizacao)
             item['Comentarios.descricao'] ? temp.push(item['Comentarios.descricao']) : temp.push("")
