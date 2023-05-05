@@ -331,7 +331,7 @@
 					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
 					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true, tipoFiltro: "data" },
 					{ nome: "Previsão Entrega", valor: "data_previsao", filtro: true, centralizar: true, tipoFiltro: "data" },
-					{ nome: "Criado por", valor: "Usuario.nome", filtro: true, centralizar: true },
+					{ nome: "Criado por", valor: "Usuario.nome", filtro: true },
 					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true, tipoFiltro: "data" },
           {nome: "Responsável", valor: "responsavel.nome" },
           { nome: "Comentários", valor: "comentarios" },
@@ -435,6 +435,7 @@
 
 					this.carregandoTabela = false
 					this.totalItens = resp.dados.totalItens
+          console.log(cards)
 					this.dados = cards
 				}
 			},
@@ -606,7 +607,7 @@
             temp.push(this.$dayjs(item.data_necessidade).format("DD/MM/YYYY"));
             temp.push(item.data_previsao ? this.$dayjs(item.data_previsao).format("DD/MM/YYYY") : "");
             temp.push(item['Responsavel.nome'] ? item['Responsavel.nome'] : "");
-            temp.push(item.treinamentos.join('; '))
+            temp.push(item.treinamentos !== null ? item.treinamentos.join('; ') : "")
             temp.push(item['CentroCustoPEP.numero_pep'] || item['CentroCustoPEP.descricao'] ? `${item['CentroCustoPEP.numero_pep']} - ${item['CentroCustoPEP.descricao']}` : "");
             temp.push(item.mobilizacao)
             item['Comentarios.descricao'] ? temp.push(item['Comentarios.descricao']) : temp.push("")
