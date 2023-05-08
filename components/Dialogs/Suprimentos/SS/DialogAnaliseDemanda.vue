@@ -41,7 +41,7 @@
           <AppFormTextarea
             id="comentario"
             label="Comentário"
-            placeholder="Comentário opicional"
+            placeholder="Comentário opcional"
             v-model="processo.comentario"
             class=""/>
         </div>

@@ -19,7 +19,7 @@
             v-model="processo.pep"
             id="pep"
             />
-          <AppFormTextarea id="comentario" label="Comentário" placeholder="Comentário opicional"
+          <AppFormTextarea id="comentario" label="Comentário" placeholder="Comentário opcional"
                            v-model="processo.comentario" class=""/>
         </div>
       </div>

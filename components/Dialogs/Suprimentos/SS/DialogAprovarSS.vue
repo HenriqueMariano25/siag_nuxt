@@ -30,7 +30,7 @@
           </table>
         </div>
         <div class="mt-2 px-2">
-          <AppFormTextarea id="comentario" label="Comentário" placeholder="Comentário opicional" v-model="comentario"/>
+          <AppFormTextarea id="comentario" label="Comentário" placeholder="Comentário opcional" v-model="comentario"/>
         </div>
       </div>
     </template>

@@ -34,7 +34,7 @@
           </table>
         </div>
         <div class="mt-2 px-2 flex gap-2">
-          <AppFormTextarea id="comentario" label="Comentário" placeholder="Comentário opicional" v-model="processo.comentario" class="shrink w-4/6"/>
+          <AppFormTextarea id="comentario" label="Comentário" placeholder="Comentário opcional" v-model="processo.comentario" class="shrink w-4/6"/>
           <AppFormSelect
             label="Etapa"
             :options="etapas"
