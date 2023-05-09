@@ -2,7 +2,7 @@
 	<NuxtLink :to="link">
 		<div :class="cor" class="rounded p-2 py-6">
 			<div class="flex justify-center">
-				<button class="font-bold text-white text-4xl grid justify-items-center w-100">
+				<button class="botaoNavegacao font-bold text-white grid justify-items-center w-100">
 					<slot />
 					{{ titulo }}
 				</button>
@@ -31,4 +31,9 @@
 	}
 </script>
 
-<style scoped></style>
+<style scoped>
+.botaoNavegacao{
+  font-size: 1.8rem;
+}
+
+</style>
