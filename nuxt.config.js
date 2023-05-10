@@ -85,6 +85,7 @@ export default {
         token: {
           property: 'token',
           global: true,
+          maxAge: 3600
         },
         user: {
           property: false,
