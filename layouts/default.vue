@@ -4,7 +4,7 @@
     <div class="h-[100vh] print:hidden">
       <MenuLateral v-if="$auth.loggedIn"/>
     </div>
-    <div class="flex p-2 w-full bg-gray-200">
+    <div class="flex p-2 bg-gray-200 grow relative" style="max-width: calc(100vw - 48px)">
       <Nuxt />
     </div>
   </div>

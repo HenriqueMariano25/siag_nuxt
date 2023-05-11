@@ -1,0 +1,570 @@
+<template>
+	<div>
+		<BaseDialog
+			titulo="Aprovar HE"
+			@cancelar="cancelar()">
+			<template v-slot:corpo>
+				<div class="px-2">
+					<AppTabs
+						:tabs="tabs"
+						@tab="tab = $event">
+						<template v-slot:[`tab.gestorArea`]="{ item }">
+							<div class="px-2 flex flex-col gap-y-2">
+								<div class="flex justify-between gap-x-2">
+									<div class="flex gap-2">
+										<AppFormInput
+											id="dataGestorArea"
+											type="date"
+											v-model="dataGestorArea"
+											label="Data do agendamento" />
+										<div class="flex items-end">
+											<BotaoPadrao
+                        :disabled="dataGestorArea === null || dataGestorArea === ''"
+												cor="bg-gray-600"
+												@click="buscarAgendamentosGestor()">
+												<img
+													src="@/assets/icons/magnifier-w.svg"
+													alt=""
+													class="w-6 h-6" />
+											</BotaoPadrao>
+										</div>
+									</div>
+									<div class="flex grow">
+										<div class="flex items-end gap-3">
+											<div v-for="key of Object.keys(pendDiasGestorArea)">
+												<AppBadge
+													cor="!bg-red-400"
+													corFonte="bg-white"
+                          v-if="pendDiasGestorArea[key] !== 0"
+													:texto="pendDiasGestorArea[key]">
+													<AppTag
+														@click="buscarPorTagGestor(key)"
+														cor="bg-blue-300 hover:bg-blue-400"
+														:texto="$dayjs(key).format('DD/MM')"
+														fonte="text-2xl"
+														:clicavel="true" />
+												</AppBadge>
+											</div>
+										</div>
+									</div>
+									<div class="flex gap-3">
+										<AppFormSwitch
+											label="Mostrar todos"
+											v-model="mostrarTodosGestor" />
+                    <div class="bg-gray-200 border border-gray-300 flex flex-col px-2 py-1  items-stretch text-end rounded">
+                      <div class="text-green-900">Aprovados: {{ agendAprovados }}</div>
+                      <div class="text-red-900">Negados: {{ agendNegados }}</div>
+                    </div>
+									</div>
+								</div>
+								<div>
+									<TabelaPadrao
+										:cabecalho="cabecalho"
+										:dados="dadosFiltradoGestor"
+                    @filtros="filtrosGestor = $event"
+                    @ordem="ordemGestor = $event"
+										:totalItens="totalItensGestor"
+										altura="calc(100vh - 335px)"
+										@atualizar="buscarAgendamentosGestor()"
+										:carregando="carregandoTabelaGestor"
+										:temRodape="false">
+										<template v-slot:[`body.select`]="{ item }">
+											<div class="flex justify-center">
+												<AppFormCheckbox
+													:id="parseInt(item)"
+													:valor="item"
+													v-model="selecionadosGestor" />
+											</div>
+										</template>
+										<template v-slot:[`body.status`]="{ item }">
+											<div
+												v-if="item.aprovacao_he === null"
+												class="bg-yellow-300 text-black px-2 rounded whitespace-nowrap">
+												Aguardando
+											</div>
+											<div
+												v-if="item.aprovacao_he === true"
+												class="bg-green-400 text-black px-2 rounded whitespace-nowrap">
+												Aprovado
+											</div>
+											<div
+												v-if="item.aprovacao_he === false"
+												class="bg-red-400 text-black px-2 rounded whitespace-nowrap">
+												Negado
+											</div>
+										</template>
+										<template v-slot:[`body.Funcionario.hora_extra`]="{ item }">
+											{{ horaExtra(item.Funcionario.hora_extra) }}
+										</template>
+                    <template v-slot:[`body.heProjetada`]="{ item }">
+                      {{ horaExtra(item.hora_extra_projetada) }}
+                    </template>
+										<template v-slot:[`body.Funcionario.nome`]="{ item }">
+											<span class="whitespace-nowrap">{{ item.Funcionario.nome }}</span>
+										</template>
+										<template v-slot:[`body.Funcionario.cargo`]="{ item }">
+											<span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
+										</template>
+										<template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
+											<span class="whitespace-nowrap">{{ item.Funcionario.encarregado_sapo }}</span>
+										</template>
+										<template v-slot:[`body.Funcionario.gestor`]="{ item }">
+											<span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
+										</template>
+										<template v-slot:[`body.Setor.nome`]="{ item }">
+											<span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
+										</template>
+										<template v-slot:[`body.Funcionario.rota`]="{ item }">
+											<span class="whitespace-nowrap">{{
+												item.Funcionario.rota ? item.Funcionario.rota.numero : ""
+											}}</span>
+										</template>
+										<template v-slot:[`body.Funcionario.ponto_embarque`]="{ item }">
+											<span class="whitespace-nowrap">{{ item.Funcionario.ponto_embarque }}</span>
+										</template>
+										<template v-slot:[`body.Funcionario.direto_indireto`]="{ item }">
+											<span class="whitespace-nowrap">{{ item.Funcionario.direto_indireto }}</span>
+										</template>
+									</TabelaPadrao>
+								</div>
+							</div>
+						</template>
+						<template v-slot:[`tab.siteManager`]="{ item }">
+              <div class="px-2 flex flex-col gap-y-2">
+                <div class="flex justify-between gap-x-2">
+                  <div class="flex gap-2">
+                    <AppFormInput
+                      id="dataGestorArea"
+                      type="date"
+                      v-model="dataSiteManager"
+                      label="Data do agendamento"/>
+                    <div class="flex items-end">
+                      <BotaoPadrao
+                        :disabled="dataSiteManager === null || dataSiteManager === ''"
+                        cor="bg-gray-600"
+                        @click="buscarAgendamentosSiteManager()">
+                        <img
+                          src="@/assets/icons/magnifier-w.svg"
+                          alt=""
+                          class="w-6 h-6"/>
+                      </BotaoPadrao>
+                    </div>
+                  </div>
+                  <div class="flex grow">
+                    <div class="flex items-end gap-3">
+                      <div v-for="key of Object.keys(pendDiasSiteManager)">
+                        <AppBadge
+                          cor="!bg-red-400"
+                          corFonte="bg-white"
+                          v-if="pendDiasSiteManager[key] !== 0"
+                          :texto="pendDiasSiteManager[key]">
+                          <AppTag
+                            @click="buscarPorTagSiteManager(key)"
+                            cor="bg-blue-300 hover:bg-blue-400"
+                            :texto="$dayjs(key).format('DD/MM')"
+                            fonte="text-2xl"
+                            :clicavel="true"/>
+                        </AppBadge>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex gap-3">
+                    <AppFormSwitch
+                      label="Mostrar todos"
+                      v-model="mostrarTodosSiteManager"/>
+                    <div
+                      class="bg-gray-200 border border-gray-300 flex flex-col px-2 py-1  items-stretch text-end rounded">
+                      <div class="text-green-900">Aprovados: {{ agendAprovadosSiteManager }}</div>
+                      <div class="text-red-900">Negados: {{ agendNegadosSiteManager }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <TabelaPadrao
+                    :cabecalho="cabecalho"
+                    :dados="dadosFiltradoSiteManager"
+                    @filtros="filtrosSiteManager = $event"
+                    @ordem="ordemSiteManager = $event"
+                    :totalItens="totalItensSiteManager"
+                    altura="calc(100vh - 335px)"
+                    @atualizar="buscarAgendamentosSiteManager()"
+                    :carregando="carregandoTabelaSiteManager"
+                    :temRodape="false">
+                    <template v-slot:[`body.select`]="{ item }">
+                      <div class="flex justify-center">
+                        <AppFormCheckbox
+                          :id="parseInt(item)"
+                          :valor="item"
+                          v-model="selecionadosSiteManager"/>
+                      </div>
+                    </template>
+                    <template v-slot:[`body.status`]="{ item }">
+                      <div
+                        v-if="item.aprovacao_situacao === null"
+                        class="bg-yellow-300 text-black px-2 rounded whitespace-nowrap">
+                        Aguardando
+                      </div>
+                      <div
+                        v-if="item.aprovacao_situacao === true"
+                        class="bg-green-400 text-black px-2 rounded whitespace-nowrap">
+                        Aprovado
+                      </div>
+                      <div
+                        v-if="item.aprovacao_situacao === false"
+                        class="bg-red-400 text-black px-2 rounded whitespace-nowrap">
+                        Negado
+                      </div>
+                    </template>
+                    <template v-slot:[`body.Funcionario.hora_extra`]="{ item }">
+                      {{ horaExtra(item.Funcionario.hora_extra) }}
+                    </template>
+                    <template v-slot:[`body.heProjetada`]="{ item }">
+                      {{ horaExtra(item.hora_extra_projetada) }}
+                    </template>
+                    <template v-slot:[`body.Funcionario.nome`]="{ item }">
+                      <span class="whitespace-nowrap">{{ item.Funcionario.nome }}</span>
+                    </template>
+                    <template v-slot:[`body.Funcionario.cargo`]="{ item }">
+                      <span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
+                    </template>
+                    <template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
+                      <span class="whitespace-nowrap">{{ item.Funcionario.encarregado_sapo }}</span>
+                    </template>
+                    <template v-slot:[`body.Funcionario.gestor`]="{ item }">
+                      <span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
+                    </template>
+                    <template v-slot:[`body.Setor.nome`]="{ item }">
+                      <span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
+                    </template>
+                    <template v-slot:[`body.Funcionario.rota`]="{ item }">
+											<span class="whitespace-nowrap">{{
+                          item.Funcionario.rota ? item.Funcionario.rota.numero : ""
+                        }}</span>
+                    </template>
+                    <template v-slot:[`body.Funcionario.ponto_embarque`]="{ item }">
+                      <span class="whitespace-nowrap">{{ item.Funcionario.ponto_embarque }}</span>
+                    </template>
+                    <template v-slot:[`body.Funcionario.direto_indireto`]="{ item }">
+                      <span class="whitespace-nowrap">{{ item.Funcionario.direto_indireto }}</span>
+                    </template>
+                  </TabelaPadrao>
+                </div>
+              </div>
+						</template>
+					</AppTabs>
+				</div>
+			</template>
+			<template v-slot:rodape-btn-direito>
+				<BotaoPadrao
+					texto="Aprovar/Negar"
+					class="flex"
+					:disabled="desaBotaoAprovarNegar"
+					cor="bg-blue-500 hover:bg-blue-600"
+					@click="tab === 'gestorArea' ? mostrarDialogConfirmarAprovacao = true : mostrarDialogConfirmarAprovacaoSiteManager = true">
+					<img
+						src="@/assets/icons/check-b.svg"
+						alt=""
+						class="w-7 h-7" />
+				</BotaoPadrao>
+			</template>
+		</BaseDialog>
+		<DialgoConfirmarAprovacao
+			v-if="mostrarDialogConfirmarAprovacao"
+			@cancelar="mostrarDialogConfirmarAprovacao = false"
+			:dados="selecionadosGestor"
+			:data="dataGestorArea"
+			tipoAprovacao="gestorArea"
+			@aprovado="aprovado" />
+    <DialgoConfirmarAprovacao
+      v-if="mostrarDialogConfirmarAprovacaoSiteManager"
+      @cancelar="mostrarDialogConfirmarAprovacaoSiteManager = false"
+      :dados="selecionadosSiteManager"
+      :data="dataSiteManager"
+      tipoAprovacao="siteManager"
+      @aprovado="aprovadoSiteManager"/>
+		<AppAlerta
+			tipo="sucesso"
+			:mostrar="mostrarAlerta"
+			@escondeu="mostrarAlerta = false">
+			{{ textoAlerta }}
+		</AppAlerta>
+	</div>
+</template>
+
+<script>
+	import BaseDialog from "~/components/Shared/BaseDialog.vue"
+	import AppTabs from "~/components/Ui/AppTabs.vue"
+	import AppFormInput from "~/components/Ui/AppFormInput.vue"
+	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
+	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
+	import AppFormCheckbox from "~/components/Ui/Form/AppFormCheckbox.vue"
+	import AppFormSwitch from "~/components/Ui/AppFormSwitch.vue"
+	import DialgoConfirmarAprovacao from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialgoConfirmarAprovacao.vue"
+	import AppAlerta from "~/components/Ui/AppAlerta.vue"
+	import AppTag from "~/components/Ui/AppTag.vue"
+	import AppBadge from "~/components/Ui/AppBadge.vue"
+  import {horaExtra} from "~/mixins/horaExtra";
+
+	export default {
+    mixins: [horaExtra],
+		components: {
+			AppBadge,
+			AppTag,
+			AppAlerta,
+			DialgoConfirmarAprovacao,
+			AppFormSwitch,
+			AppFormCheckbox,
+      TabelaPadrao,
+			BotaoPadrao,
+			AppFormInput,
+			AppTabs,
+			BaseDialog,
+		},
+		data() {
+			return {
+				dataGestorArea: null,
+				dataSiteManager: null,
+				cabecalho: [
+					{ nome: "", valor: "select", centralizar: true },
+					{ nome: "Status", valor: "status", centralizar: true },
+					{ nome: "HE atual", valor: "Funcionario.hora_extra", ordenar: true, centralizar: true },
+					{ nome: "HE projetada", valor: "heProjetada", ordenar: true, centralizar: true },
+					{ nome: "Matricula", valor: "chapa", ordenar: true, filtro: true, centralizar: true },
+					{ nome: "Nome", valor: "Funcionario.nome", filtro: true, ordenar: true },
+					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
+					{ nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
+					{ nome: "Gestor", valor: "Funcionario.gestor", filtro: true },
+					{ nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
+					{ nome: "Motivo", valor: "motivo", filtro: true, centralizar: true },
+					{ nome: "Turno", valor: "turno", filtro: true, centralizar: true },
+					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
+				],
+				dadosGestor: [],
+				filtrosGestor: {},
+				itensPorPaginaGestor: 50,
+				totalItensGestor: 0,
+				paginaGestor: 1,
+				carregandoTabelaGestor: false,
+				selecionadosGestor: [],
+        ordemGestor: null,
+				mostrarDialogConfirmarAprovacao: false,
+				tipoAprovacao: "gestorArea",
+				mostrarAlerta: false,
+				textoAlerta: null,
+				tab: null,
+				mostrarTodosGestor: false,
+				pendDiasGestorArea: [],
+				mostrarTodosSiteManager: false,
+				pendDiasSiteManager: [],
+				dadosSiteManager: [],
+				filtrosSiteManager: [],
+				itensPorPaginaSiteManager: 50,
+				totalItensSiteManager: 0,
+				paginaSiteManager: 1,
+				carregandoTabelaSiteManager: false,
+				selecionadosSiteManager: [],
+        ordemSiteManager: null,
+        mostrarDialogConfirmarAprovacaoSiteManager: false,
+			}
+		},
+		computed: {
+			tabs() {
+				return [
+					{ nome: "Gestor da Área", valor: "gestorArea" },
+					{ nome: "Site Manager", valor: "siteManager" },
+				]
+			},
+			data() {
+				if (this.tipoAprovacao === "gestorArea") return this.dataGestorArea
+				if (this.tipoAprovacao === "siteManager") return this.dataSiteManager
+			},
+
+			dadosFiltradoGestor() {
+				let dados = [...this.dadosGestor]
+
+				if (!this.mostrarTodosGestor) return dados.filter((o) => o.aprovacao_he === null)
+				else return dados
+			},
+
+			desaBotaoAprovarNegar() {
+				let hoje = this.$dayjs().format("YYYY-MM-DD")
+				if (this.tab === "gestorArea"){
+          return (
+            this.selecionadosGestor.length <= 0 ||
+            this.dataGestorArea < hoje ||
+            this.dataGestorArea === null ||
+            this.dataGestorArea === ""
+          )
+        } else if(this.tab === "siteManager"){
+          return this.selecionadosSiteManager.length <= 0 ||
+            this.dataSiteManager < hoje ||
+            this.dataSiteManager === null ||
+            this.dataSiteManager === ""
+        }
+
+			},
+      agendAprovados(){
+        return this.dadosGestor.reduce((contador, item) => {
+          return item.aprovacao_he === true ? contador + 1 : contador;
+        }, 0);
+      },
+      agendNegados() {
+        return this.dadosGestor.reduce((contador, item) => {
+          return item.aprovacao_he === false ? contador + 1 : contador;
+        }, 0);
+      },
+
+      //Site Manager
+
+      dadosFiltradoSiteManager() {
+        let dados = [...this.dadosSiteManager]
+
+        if (!this.mostrarTodosSiteManager) return dados.filter((o) => o.aprovacao_situacao === null)
+        else return dados
+      },
+
+      agendAprovadosSiteManager() {
+        return this.dadosSiteManager.reduce((contador, item) => {
+          return item.aprovacao_situacao === true ? contador + 1 : contador;
+        }, 0);
+      },
+      agendNegadosSiteManager() {
+        return this.dadosSiteManager.reduce((contador, item) => {
+          return item.aprovacao_situacao === false ? contador + 1 : contador;
+        }, 0);
+      },
+
+		},
+		created() {
+			this.buscarDiasAgendamentosPendentes()
+			this.buscarDiasAgendamentosPendentesSiteManager()
+		},
+		methods: {
+			cancelar() {
+				this.$emit("cancelar")
+			},
+
+			async buscarDiasAgendamentosPendentes() {
+				let data = this.$dayjs().format("YYYY-MM-DD")
+				let setor_id = this.$auth.user.setor_id
+
+				let resp = await this.$axios.$get(
+					"/hora_extra/aprovacao/gestor_area/todas_pendencias_dias",
+					{
+						params: { data, setor_id },
+					},
+				)
+
+				if (!resp.falha) {
+					let dias = resp.dados.dias
+					this.pendDiasGestorArea = dias
+				}
+			},
+
+			async buscarAgendamentosGestor() {
+				let data = this.dataGestorArea
+				let setor_id = this.$auth.user.setor_id
+        let ordem = this.ordemGestor
+
+				let resp = await this.$axios.$get("/hora_extra/aprovacao/gestor_area", {
+					params: { data, setor_id, ordem: ordem, filtros: this.filtrosGestor },
+				})
+
+				if (!resp.falha) {
+					this.dadosGestor = resp.dados.aprovacoes
+					this.selecionadosGestor = []
+				}
+			},
+
+			async buscarPorTagGestor(data) {
+				this.dataGestorArea = data
+				this.buscarAgendamentosGestor()
+			},
+
+			async aprovado(aprovacao, agendamentos) {
+				this.mostrarDialogConfirmarAprovacao = false
+
+				if (aprovacao) this.textoAlerta = "Agendamentos aprovados com sucesso!"
+				else if (!aprovacao) this.textoAlerta = "Agendamentos negados com sucesso!"
+
+				if (this.tab === "gestorArea") {
+					for (let agen of agendamentos) {
+						let idx = this.dadosGestor.findIndex((o) => o.id === agen)
+            if(this.dadosGestor[idx].aprovacao_he === null){
+              this.pendDiasGestorArea[this.data] -= 1
+            }
+						this.dadosGestor[idx].aprovacao_he = aprovacao
+					}
+				}
+
+				this.mostrarAlerta = true
+				this.selecionadosGestor = []
+			},
+
+
+      // Site manager
+
+      async buscarDiasAgendamentosPendentesSiteManager() {
+
+        let resp = await this.$axios.$get(
+          "/hora_extra/aprovacao/site_manager/todas_pendencias_dias",
+        )
+
+        if (!resp.falha) {
+          let dias = resp.dados.dias
+
+          console.log(dias)
+          this.pendDiasSiteManager = dias
+        }
+      },
+
+      async buscarAgendamentosSiteManager() {
+        let data = this.dataSiteManager
+        let setor_id = this.$auth.user.setor_id
+        let ordem = this.ordemSiteManager
+
+        let resp = await this.$axios.$get("/hora_extra/aprovacao/site_manager", {
+          params: {data, setor_id, ordem: ordem, filtros: this.filtrosGestor},
+        })
+
+        if (!resp.falha) {
+          this.dadosSiteManager = resp.dados.aprovacoes
+
+          this.selecionadosGestor = []
+        }
+      },
+
+      async buscarPorTagSiteManager(data) {
+        console.log(data)
+
+        this.dataSiteManager = data
+        this.buscarAgendamentosSiteManager()
+      },
+
+      async aprovadoSiteManager(aprovacao, agendamentos) {
+        console.log("Aquiiiiii")
+
+        this.mostrarDialogConfirmarAprovacaoSiteManager = false
+
+        if (aprovacao) this.textoAlerta = "Agendamentos aprovados com sucesso!"
+        else if (!aprovacao) this.textoAlerta = "Agendamentos negados com sucesso!"
+
+          for (let agen of agendamentos) {
+            console.log(agen)
+
+            let idx = this.dadosSiteManager.findIndex((o) => o.id === agen)
+            if (this.dadosSiteManager[idx].aprovacao_situacao === null) {
+              this.pendDiasSiteManager[this.dataSiteManager] -= 1
+            }
+            this.dadosSiteManager[idx].aprovacao_situacao = aprovacao
+          }
+
+
+        this.mostrarAlerta = true
+        this.selecionadosSiteManager = []
+      },
+		},
+	}
+</script>
+
+<style scoped></style>

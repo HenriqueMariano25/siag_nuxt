@@ -55,7 +55,6 @@
 import AppTabela from "~/components/Ui/AppTabela.vue";
 import RodapePagina from "~/components/Shared/RodapePagina.vue";
 import BotaoExcel from "~/components/Ui/Buttons/BotaoExcel.vue";
-// import AppFormSwitch from "~/components/Ui/AppFormSwitch.vue";
 
 import gerarExcel from "~/functions/gerarExcel";
 import {horaExtra} from "@/mixins/horaExtra";

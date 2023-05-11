@@ -1,130 +1,81 @@
 <template>
-  <div>
-    <div class="toggle-button-cover">
-      <div class="button-cover">
-        <div class="button r" id="button-1">
-          <input type="checkbox" class="checkbox">
-          <div class="knobs"></div>
-          <div class="layer"></div>
-        </div>
-      </div>
-    </div>
+  <div class="flex items-center gap-2">
+    <label class="switch" >
+      <input type="checkbox" v-model="model">
+      <span class="slider"></span>
+    </label>
+    <span>{{ label }}</span>
   </div>
 </template>
 
 <script>
 export default {
-  name: "AppFormSwitch"
+  name: "AppFormSwitch",
+  props:{
+    label: {
+      type: String,
+      default: null
+    }
+  },
+  computed: {
+    model: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        this.$emit("input", value);
+      },
+    },
+  },
 }
 </script>
 
 <style scoped>
 
-toggle-button-cover {
-  display: table-cell;
+.switch {
   position: relative;
-  width: 200px;
-  height: 140px;
-  box-sizing: border-box;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
 }
 
-.button-cover {
-  height: 100px;
-  margin: 20px;
-  background-color: #fff;
-  box-shadow: 0 10px 20px -8px #c5d6d6;
-  border-radius: 4px;
+.switch input {
+  display: none;
 }
 
-.button-cover:before {
-  counter-increment: button-counter;
-  content: counter(button-counter);
+.slider {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  color: #d7e3e3;
-  font-size: 12px;
-  line-height: 1;
-  padding: 5px;
-}
-
-.button-cover, .knobs, .layer {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-
-.button {
-  position: relative;
-  top: 50%;
-  width: 74px;
-  height: 36px;
-  margin: -20px auto 0 auto;
-  overflow: hidden;
-}
-
-.button.r, .button.r .layer {
-  border-radius: 100px;
-}
-
-.button.b2 {
-  border-radius: 2px;
-}
-
-.checkbox {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  margin: 0;
-  opacity: 0;
   cursor: pointer;
-  z-index: 3;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .3s;
+  border-radius: 34px;
 }
 
-.knobs {
-  z-index: 2;
-}
-
-.layer {
-  width: 100%;
-  background-color: #ebf7fc;
-  transition: 0.3s ease all;
-  z-index: 1;
-}
-
-#button-1 .knobs:before {
-  content: 'YES';
+.slider:before {
   position: absolute;
-  top: 4px;
+  content: "";
+  height: 22px;
+  width: 22px;
   left: 4px;
-  width: 20px;
-  height: 10px;
-  color: #fff;
-  font-size: 10px;
-  font-weight: bold;
-  text-align: center;
-  line-height: 1;
-  padding: 9px 4px;
-  background-color: #03A9F4;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
   border-radius: 50%;
-  transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
 }
 
-#button-1 .checkbox:checked + .knobs:before {
-  content: 'NO';
-  left: 42px;
-  background-color: #f44336;
+input:checked + .slider {
+  background-color: #2196F3;
 }
 
-#button-1 .checkbox:checked ~ .layer {
-  background-color: #fcebeb;
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
 }
 
-#button-1 .knobs, #button-1 .knobs:before, #button-1 .layer {
-  transition: 0.3s ease all;
+input:checked + .slider:before {
+  transform: translateX(30px);
 }
-
 </style>

@@ -1,9 +1,9 @@
 <template>
-	<div>
+	<div class="flex flex-col w-full">
 		<div
-			class="grow w-full"
+			class=""
 			:style="'height:' + altura"
-			style="overflow-y: auto; overflow-x: auto; width: calc(100vw - 66px)">
+			style="overflow-y: auto; overflow-x: auto; max-width: 100%">
 			<table
 				class="table table-auto"
 				style="width: 100%">
@@ -27,15 +27,31 @@
 									<div class="flex justify-between items-center">
 										<span class="whitespace-nowrap">{{ cab.nome }}</span>
 										<div class="space-x-1 items-center flex ml-1">
-											<button v-if="cab.ordenar === true">
-												<svg
+											<button
+												v-if="cab.ordenar === true"
+												@click="ordenar(cab.valor)">
+												<svg v-if="tipoOrdenacao !== 'DESC'"
 													xmlns="http://www.w3.org/2000/svg"
 													viewBox="0 0 24 24"
 													fill="currentColor"
-													class="w-5 h-5 hover:fill-blue-400 cursor-pointer">
+													class="w-5 h-5 hover:fill-blue-400 cursor-pointer"
+                             :class="{'fill-blue-400' : tipoOrdenacao === 'ASC'}">
 													<path
 														fill-rule="evenodd"
 														d="M12 2.25a.75.75 0 01.75.75v16.19l6.22-6.22a.75.75 0 111.06 1.06l-7.5 7.5a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 111.06-1.06l6.22 6.22V3a.75.75 0 01.75-.75z"
+														clip-rule="evenodd" />
+												</svg>
+												<svg
+                          v-if="tipoOrdenacao === 'DESC'"
+													xmlns="http://www.w3.org/2000/svg"
+													viewBox="0 0 24 24"
+													fill="currentColor"
+													class="w-5 h-5 hover:fill-blue-600 cursor-pointer"
+                          :class="{'fill-blue-400' : tipoOrdenacao === 'DESC'}"
+                        >
+													<path
+														fill-rule="evenodd"
+														d="M12 20.25a.75.75 0 01-.75-.75V6.31l-5.47 5.47a.75.75 0 01-1.06-1.06l6.75-6.75a.75.75 0 011.06 0l6.75 6.75a.75.75 0 11-1.06 1.06l-5.47-5.47V19.5a.75.75 0 01-.75.75z"
 														clip-rule="evenodd" />
 												</svg>
 											</button>
@@ -50,7 +66,7 @@
 													// 'text-blue-400': Object.keys(filtros).includes(
 													// 	cab.valor.includes('.') ? `$${cab.valor}$` : cab.valor,
 													// ),
-													'text-blue-400': filtrosAtivos.includes(cab.valor)
+													'text-blue-400': filtrosAtivos.includes(cab.valor),
 												}">
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
@@ -135,7 +151,9 @@
 											:label="'Buscar por ' + cab.nome"
 											:value="valorFiltro(cab.valor)"
 											placeholder="Pressione ENTER para buscar"
-											@keyup.enter.prevent.stop="adicionarFiltro(cab.valor, $event, cab.colunaTabela)" />
+											@keyup.enter.prevent.stop="
+												adicionarFiltro(cab.valor, $event, cab.colunaTabela)
+											" />
 									</div>
 									<div class="w-full mt-1">
 										<button
@@ -150,25 +168,25 @@
 									v-if="filtroAberto === cab.valor && cab.tipoFiltro === 'data'"
 									class="absolute text-start px-2 py-1 rounded-sm shadow-lg bg-white min-w-[300px] border border-gray-200 text-black">
 									<div class="flex flex-col gap-y-2">
-                    <span>Filtrar por data - {{ cab.nome }}</span>
+										<span>Filtrar por data - {{ cab.nome }}</span>
 										<AppFormInput
 											:id="'filtroDataInicial' + cab.nome"
 											class="w-full"
 											type="date"
 											label="Data inicial"
-                      v-model="dataFiltros.dataInicial"
-                    />
+											v-model="dataFiltros.dataInicial" />
 										<AppFormInput
 											:id="'filtroDataFinal' + cab.nome"
 											class="w-full"
 											type="date"
 											label="Data final"
-                      v-model="dataFiltros.dataFinal"
-                    />
+											v-model="dataFiltros.dataFinal" />
 										<div class="flex justify-between">
-											<BotaoPadrao texto="Limpar" @click="limparFiltroData(cab.valor)"></BotaoPadrao>
 											<BotaoPadrao
-                        :disabled="desativarBtnSalvarData"
+												texto="Limpar"
+												@click="limparFiltroData(cab.valor)"></BotaoPadrao>
+											<BotaoPadrao
+												:disabled="desativarBtnSalvarData"
 												texto="Filtrar"
 												cor="bg-primaria-500 text-white hover:bg-primaria-700"
 												@click="filtrarData(cab.valor)"></BotaoPadrao>
@@ -180,13 +198,22 @@
 					</tr>
 				</thead>
 				<tbody
-					class="pt-10 overflow-auto !h-10"
+					class="pt-10 overflow-auto !h-2 fonteTabela"
 					:style="'height:' + altura">
 					<tr v-if="carregando">
 						<td :colspan="cabecalho.length">
-							<div class="text-center bg-gray-400 text-4xl py-2">
+							<div class="text-center bg-gray-400 text-3xl py-2">
 								<span>
 									<strong>CARREGANDO DADOS...</strong>
+								</span>
+							</div>
+						</td>
+					</tr>
+					<tr v-if="dados.length === 0 && !carregando">
+						<td :colspan="cabecalho.length">
+							<div class="text-center bg-gray-300 text-3xl py-2 text-gray-500">
+								<span>
+									<strong>SEM DADOS ENCONTRADOS!</strong>
 								</span>
 							</div>
 						</td>
@@ -196,7 +223,7 @@
 						v-if="!carregando">
 						<tr
 							:class="{ '!bg-gray-500 !text-white': trAberto === dado.id }"
-							class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white h-10"
+							class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white h-7"
 							:key="dado.id"
 							@dblclick.prevent.stop="mostrarDbl(dado, $event)"
 							@click.prevent.stop="mostrarDetalhes(dado, $event)">
@@ -226,7 +253,9 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="p-1 border h-16 border-gray-600 flex justify-between items-center bg-white">
+		<div
+			class="p-1 border h-16 border-gray-600 flex justify-between items-center bg-white"
+			v-if="temRodape">
 			<slot name="rodape" />
 			<div class="w-full flex justify-center space-x-1 items-center">
 				<div>
@@ -320,10 +349,14 @@
 				type: Boolean,
 				default: false,
 			},
-      dadosSql: {
-        type: Boolean,
-        default: false
-      }
+			dadosSql: {
+				type: Boolean,
+				default: false,
+			},
+			temRodape: {
+				type: Boolean,
+				default: true,
+			},
 		},
 		components: {
 			AppFormCheckbox,
@@ -340,13 +373,16 @@
 				localPagina: this.pagina,
 				trAberto: null,
 				multSelecionados: [],
-        dataFiltros: {
-          dataInicial: null,
-          dataFinal: null
-        },
+				dataFiltros: {
+					dataInicial: null,
+					dataFinal: null,
+				},
 				checkSelecionarTodos: false,
 				textoParaFiltro: null,
-        filtrosAtivos: []
+				filtrosAtivos: [],
+				ordem: null,
+				colunaOrdenada: null,
+				tipoOrdenacao: null,
 			}
 		},
 		computed: {
@@ -374,21 +410,20 @@
 				}
 				return btns
 			},
-      desativarBtnSalvarData(){
-        let { dataInicial, dataFinal } = this.dataFiltros
+			desativarBtnSalvarData() {
+				let { dataInicial, dataFinal } = this.dataFiltros
 
-        return dataInicial === null || dataInicial === "" || dataFinal === null || dataFinal === ""
-      },
-
+				return dataInicial === null || dataInicial === "" || dataFinal === null || dataFinal === ""
+			},
 		},
 		methods: {
-      valorFiltro(valor) {
-        if (this.dadosSql) {
-          return ''
-        } else {
-          return this.filtros[valor.includes('.') ? `$${valor}$` : valor]
-        }
-      },
+			valorFiltro(valor) {
+				if (this.dadosSql) {
+					return ""
+				} else {
+					return this.filtros[valor.includes(".") ? `$${valor}$` : valor]
+				}
+			},
 
 			anteriorPagina() {
 				if (this.localPagina - 1 >= 1) {
@@ -410,27 +445,28 @@
 			},
 
 			atualizarDados() {
+				console.log("Entrei aquiiiiii")
+
 				this.localItensPorPagina = parseInt(this.localItensPorPagina)
 				let itensPorPagina = parseInt(this.localItensPorPagina)
 				let pagina
+				let ordem = this.ordem
 
 				if (this.itensPorPagina !== this.localItensPorPagina) {
 					this.localPagina = 1
 				}
 				pagina = this.localPagina
 
-        console.log(this.filtros)
-        let filtros
-        if(this.dadosSql){
-          filtros = this.filtros
+				let filtros
+				if (this.dadosSql) {
+					filtros = this.filtros
+				} else {
+					let filtrosPrPreparar = this.filtros
 
-        }else{
-          let filtrosPrPreparar = this.filtros
+					filtros = this.prepararFiltro(filtrosPrPreparar)
+				}
 
-          filtros  = this.prepararFiltro(filtrosPrPreparar)
-        }
-
-				this.$emit("atualizar", { itensPorPagina, pagina, filtros })
+				this.$emit("atualizar", { itensPorPagina, pagina, filtros, ordem })
 			},
 
 			mostrarDetalhes(item, event) {
@@ -446,92 +482,86 @@
 			},
 
 			adicionarFiltro(item, event, colunaTabela) {
-        if(!this.filtrosAtivos.includes(item)){
-          this.filtrosAtivos.push(item)
-        }
+				if (!this.filtrosAtivos.includes(item)) {
+					this.filtrosAtivos.push(item)
+				}
 
-        let valor = event.target.value
+				let valor = event.target.value
 
-        if(this.dadosSql){
-          if(this.filtros.includes(item)){
-            let idx = this.filtros.findIndex(o => o.includes(item))
+				if (this.dadosSql) {
+					if (this.filtros.includes(item)) {
+						let idx = this.filtros.findIndex((o) => o.includes(item))
 
-            this.filtros.splice(idx, 1)
-            this.filtrosAtivos.splice(idx, 1)
-          }
+						this.filtros.splice(idx, 1)
+						this.filtrosAtivos.splice(idx, 1)
+					}
 
-          if(valor === null || valor === ""){
-            let idx = this.filtros.findIndex(o => o.includes(item))
+					if (valor === null || valor === "") {
+						let idx = this.filtros.findIndex((o) => o.includes(item))
 
-            this.filtros.splice(idx, 1)
-            this.filtrosAtivos.splice(idx, 1)
-          }else{
-            let filtro
+						this.filtros.splice(idx, 1)
+						this.filtrosAtivos.splice(idx, 1)
+					} else {
+						let filtro
 
-            console.log(colunaTabela)
-            console.log(item)
+						console.log(colunaTabela)
+						console.log(item)
 
-            if(colunaTabela !== null && colunaTabela !== '' && colunaTabela !== undefined){
-              filtro = `AND ${colunaTabela} = ${valor}`
-            }else{
-              filtro = `AND LOWER(${item}) LIKE LOWER('%${valor.replace(/[^a-zA-Z\s]/g, "")}%')`
-            }
-              this.filtros.push(filtro)
-          }
-        }else{
-          if (item.includes(".")) item = `$${item}$`
-          let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
+						if (colunaTabela !== null && colunaTabela !== "" && colunaTabela !== undefined) {
+							filtro = `AND ${colunaTabela} = ${valor}`
+						} else {
+							filtro = `AND LOWER(${item}) LIKE LOWER('%${valor.replace(/[^a-zA-Z\s]/g, "")}%')`
+						}
+						this.filtros.push(filtro)
+					}
+				} else {
+					if (item.includes(".")) item = `$${item}$`
+					let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
 
-          if (idx >= 0 && (valor === null || valor === "")) {
-            this.filtros.splice(idx, 1)
-            if (this.filtrosAtivos.includes(item)) {
-              let idx = this.filtrosAtivos.findIndex(o => o === item)
-              this.filtrosAtivos.splice(idx, 1)
-            }
-          } else {
-            this.filtros.push({[item]: valor})
-          }
-        }
+					if (idx >= 0 && (valor === null || valor === "")) {
+						this.filtros.splice(idx, 1)
+						if (this.filtrosAtivos.includes(item)) {
+							let idx = this.filtrosAtivos.findIndex((o) => o === item)
+							this.filtrosAtivos.splice(idx, 1)
+						}
+					} else {
+						this.filtros.push({ [item]: valor })
+					}
+				}
 
-
-
-
-        this.localPagina = 1
-        this.filtroAberto = null
+				this.localPagina = 1
+				this.filtroAberto = null
 				this.atualizarDados()
 			},
 
 			removerFiltro(item) {
+				console.log(item)
 
-        console.log(item)
+				if (this.dadosSql) {
+					let idx = this.filtros.findIndex((o) => o.includes(item))
+					this.filtrosAtivos.splice(idx, 1)
+					this.filtros.splice(idx, 1)
+				} else {
+					if (this.filtrosAtivos.includes(item)) {
+						let idx = this.filtrosAtivos.findIndex((o) => o === item)
+						this.filtrosAtivos.splice(idx, 1)
+					}
 
-        if(this.dadosSql){
-          let idx = this.filtros.findIndex( o => o.includes(item))
-          this.filtrosAtivos.splice(idx, 1)
-          this.filtros.splice(idx, 1)
+					if (item.includes(".")) item = `$${item}$`
 
-        }else{
-          if (this.filtrosAtivos.includes(item)) {
-            let idx = this.filtrosAtivos.findIndex(o => o === item)
-            this.filtrosAtivos.splice(idx, 1)
-          }
+					let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
 
-          if (item.includes(".")) item = `$${item}$`
+					if (idx >= 0) {
+						this.filtros.splice(idx, 1)
+					}
+				}
 
-          let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
-
-          if (idx >= 0) {
-            this.filtros.splice(idx, 1)
-          }
-        }
-
-        this.localPagina = 1
-        this.filtroAberto = null
+				this.localPagina = 1
+				this.filtroAberto = null
 				this.atualizarDados()
 			},
 
 			selecionarTodos(opcoes) {
-
 				if (!this.checkSelecionarTodos) {
 					this.multSelecionados = opcoes
 				} else {
@@ -543,41 +573,41 @@
 				this.localPagina = 1
 				this.filtroAberto = null
 
-        if (!this.filtrosAtivos.includes(valor)) {
-          this.filtrosAtivos.push(valor)
-        }
+				if (!this.filtrosAtivos.includes(valor)) {
+					this.filtrosAtivos.push(valor)
+				}
 
-        if(this.dadosSql){
-          if (this.multSelecionados.length === 0) {
-            let idx = this.filtros.findIndex( (o) => o.includes(valor) )
-            this.filtros.splice(idx, 1)
-            if (this.filtrosAtivos.includes(valor)) {
-              let idx = this.filtrosAtivos.findIndex(o => o === valor)
-              this.filtrosAtivos.splice(idx, 1)
-            }
-          }else{
-            let filtro = ` AND ${valor} IN (${this.multSelecionados.map(o => "'" + o + "'")})`
+				if (this.dadosSql) {
+					if (this.multSelecionados.length === 0) {
+						let idx = this.filtros.findIndex((o) => o.includes(valor))
+						this.filtros.splice(idx, 1)
+						if (this.filtrosAtivos.includes(valor)) {
+							let idx = this.filtrosAtivos.findIndex((o) => o === valor)
+							this.filtrosAtivos.splice(idx, 1)
+						}
+					} else {
+						let filtro = ` AND ${valor} IN (${this.multSelecionados.map((o) => "'" + o + "'")})`
 
-            this.filtros.push(filtro)
-          }
-        }else {
-          if (this.multSelecionados.length === 0) {
-            let idx = this.filtros.findIndex((o) =>
-              Object.keys(o).some((o) => o === "$" + valor + "$"),
-            )
-            this.filtros.splice(idx, 1)
-            if (this.filtrosAtivos.includes(valor)) {
-              let idx = this.filtrosAtivos.findIndex(o => o === valor)
-              this.filtrosAtivos.splice(idx, 1)
-            }
-          } else {
-            let filtro = {["$" + valor + "$"]: {$or: [...this.multSelecionados]}}
-            this.filtros.push(filtro)
-          }
-        }
+						this.filtros.push(filtro)
+					}
+				} else {
+					if (this.multSelecionados.length === 0) {
+						let idx = this.filtros.findIndex((o) =>
+							Object.keys(o).some((o) => o === "$" + valor + "$"),
+						)
+						this.filtros.splice(idx, 1)
+						if (this.filtrosAtivos.includes(valor)) {
+							let idx = this.filtrosAtivos.findIndex((o) => o === valor)
+							this.filtrosAtivos.splice(idx, 1)
+						}
+					} else {
+						let filtro = { ["$" + valor + "$"]: { $or: [...this.multSelecionados] } }
+						this.filtros.push(filtro)
+					}
+				}
 
-        this.localPagina = 1
-        this.filtroAberto = null
+				this.localPagina = 1
+				this.filtroAberto = null
 				this.atualizarDados()
 			},
 
@@ -586,58 +616,59 @@
 				this.filtroAberto = null
 				this.multSelecionados = []
 
-        if (this.filtrosAtivos.includes(valor)) {
-          let idx = this.filtrosAtivos.findIndex(o => o === valor)
-          this.filtrosAtivos.splice(idx, 1)
-        }
+				if (this.filtrosAtivos.includes(valor)) {
+					let idx = this.filtrosAtivos.findIndex((o) => o === valor)
+					this.filtrosAtivos.splice(idx, 1)
+				}
 
-        if(this.dadosSql){
-          let idx = this.filtros.findIndex( o=> o.includes(valor) )
-          this.filtros.splice(idx, 1)
-        }else{
-          let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === "$" + valor + "$"))
-          this.filtros.splice(idx, 1)
-        }
+				if (this.dadosSql) {
+					let idx = this.filtros.findIndex((o) => o.includes(valor))
+					this.filtros.splice(idx, 1)
+				} else {
+					let idx = this.filtros.findIndex((o) =>
+						Object.keys(o).some((o) => o === "$" + valor + "$"),
+					)
+					this.filtros.splice(idx, 1)
+				}
 
 				this.atualizarDados()
 			},
 
 			filtrarData(item) {
-        if (!this.filtrosAtivos.includes(item)) {
-          this.filtrosAtivos.push(item)
-        }
-        let { dataInicial, dataFinal } = this.dataFiltros
+				if (!this.filtrosAtivos.includes(item)) {
+					this.filtrosAtivos.push(item)
+				}
+				let { dataInicial, dataFinal } = this.dataFiltros
 
-        if (item.includes(".")) item = `$${item}$`
-        let filtro = { [item]: { '$bet': [ dataInicial, dataFinal ]} }
-        this.filtros.push(filtro)
-        this.dataFiltros = { dataInicial: null, dataFinal: null}
+				if (item.includes(".")) item = `$${item}$`
+				let filtro = { [item]: { $bet: [dataInicial, dataFinal] } }
+				this.filtros.push(filtro)
+				this.dataFiltros = { dataInicial: null, dataFinal: null }
 
-        this.localPagina = 1
-        this.filtroAberto = null
-        this.atualizarDados()
+				this.localPagina = 1
+				this.filtroAberto = null
+				this.atualizarDados()
 			},
 
-      limparFiltroData(item){
-        if (this.filtrosAtivos.includes(item)) {
-          let idx = this.filtrosAtivos.findIndex(o => o === item)
-          this.filtrosAtivos.splice(idx, 1)
-        }
+			limparFiltroData(item) {
+				if (this.filtrosAtivos.includes(item)) {
+					let idx = this.filtrosAtivos.findIndex((o) => o === item)
+					this.filtrosAtivos.splice(idx, 1)
+				}
 
-        if (item.includes(".")) item = `$${item}$`
+				if (item.includes(".")) item = `$${item}$`
 
-        let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
+				let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
 
+				if (idx >= 0) {
+					this.filtros.splice(idx, 1)
+					this.dataFiltros = { dataInicial: null, dataFinal: null }
 
-        if(idx >= 0){
-          this.filtros.splice(idx, 1)
-          this.dataFiltros = {dataInicial: null, dataFinal: null}
-
-          this.localPagina = 1
-          this.filtroAberto = null
-          this.atualizarDados()
-        }
-      },
+					this.localPagina = 1
+					this.filtroAberto = null
+					this.atualizarDados()
+				}
+			},
 
 			opcoesFiltradas(opcoes) {
 				let itensFiltrados = opcoes
@@ -650,12 +681,55 @@
 
 				return itensFiltrados
 			},
+
+			ordenar(tituloColuna) {
+        console.log("-----------------")
+        console.log(tituloColuna)
+        console.log(this.colunaOrdenada)
+
+				if (this.colunaOrdenada !== tituloColuna) {
+					this.tipoOrdenacao = null
+					this.ordem = null
+          this.colunaOrdenada = tituloColuna
+				}
+
+        console.log(this.tipoOrdenacao)
+        console.log(this.ordem)
+
+				if (this.tipoOrdenacao === null){
+          this.tipoOrdenacao = "ASC"
+        }else if (this.tipoOrdenacao === "ASC") {
+          this.tipoOrdenacao = "DESC"
+        } else if (this.tipoOrdenacao === "DESC") {
+					this.tipoOrdenacao = null
+					this.ordem = null
+				}
+
+        console.log(this.tipoOrdenacao)
+        console.log()
+
+				if (this.tipoOrdenacao !== null) {
+					if (this.dadosSql) {
+						this.ordem = tituloColuna
+					} else {
+						console.log(tituloColuna)
+						if (tituloColuna.includes(".")) {
+							console.log(tituloColuna.split("."))
+							let tituloDivido = tituloColuna.split(".")
+							this.ordem = [tituloDivido[0], tituloDivido[1], this.tipoOrdenacao]
+						}
+						// this.ordem = "$" + valor + "$"
+					}
+				}
+
+				this.atualizarDados()
+			},
 		},
 		watch: {
-      pagina(valor){
-        this.localPagina = valor
-      }
-    },
+			pagina(valor) {
+				this.localPagina = valor
+			},
+		},
 	}
 </script>
 
@@ -673,5 +747,9 @@
 		z-index: 100;
 		border-left: 1px solid rgb(75, 85, 99) !important;
 		border-right: 1px solid rgb(75, 85, 99);
+	}
+
+	.fonteTabela {
+		font-size: 0.8rem;
 	}
 </style>

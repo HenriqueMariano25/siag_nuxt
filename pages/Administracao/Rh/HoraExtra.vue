@@ -1,5 +1,5 @@
 <template>
-	<div class="w-full gap-y-2 flex flex-col">
+	<div class="w-full grow gap-y-2 flex flex-col">
 		<div class="flex p-1 bg-white gap-2 border border-gray-300 shadow">
 			<AppFormInput
 				id="data"
@@ -23,7 +23,7 @@
 			<BotaoPadrao
 				texto="Agendar"
 				cor="!hover:bg-blue-900 bg-blue-800"
-        @click="agendar()"
+				@click="agendar()"
 				class="text-white">
 				<img
 					src="@/assets/icons/save-w.svg"
@@ -31,40 +31,63 @@
 					class="w-8 h-8" />
 			</BotaoPadrao>
 		</div>
-		<div>
-			<AppTabela
-				:cabecalho="cabecalho"
-				:dados="dados"
-				:itensPorPagina="itensPorPagina"
-				:pagina="pagina"
-				:totalItens="totalItens"
-				altura="calc(100vh - 194px)"
-				:dadosSql="true"
-				@atualizar="atualizarDados"
-				:carregando="carregandoTabela"
-				:temDetalhes="false">
-				<template v-slot:[`body.checkbox`]="{ item }">
-					<AppFormCheckbox
-						:id="'checkbox' + item.id"
-						:valor="item.id"
-            v-model="funcionariosSelecionados"/>
-				</template>
-				<template v-slot:[`body.rota`]="{ item }">
-					<span
-						v-if="item.numero || item.local"
-						class="whitespace-nowrap">
-						{{ item.numero }} - {{ item.local }}
-					</span>
-				</template>
-			</AppTabela>
+		<AppTabela
+			:cabecalho="cabecalho"
+			:dados="dados"
+			:itensPorPagina="itensPorPagina"
+			:pagina="pagina"
+			:totalItens="totalItens"
+			altura="calc(100vh - 210px)"
+			:dadosSql="true"
+			@atualizar="atualizarDados"
+			:carregando="carregandoTabela"
+			:temDetalhes="false">
+			<template v-slot:[`body.checkbox`]="{ item }">
+				<AppFormCheckbox
+					:id="'checkbox' + item.chapa"
+					:valor="item.chapa"
+					v-model="funcionariosSelecionados" />
+			</template>
+			<template v-slot:[`body.rota`]="{ item }">
+				<span
+					v-if="item.numero || item.local"
+					class="whitespace-nowrap">
+					{{ item.numero }} - {{ item.local }}
+				</span>
+			</template>
+		</AppTabela>
+		<div class="bg-red-500 flex">
+			<RodapePagina class="print:hidden">
+				<div class="flex w-full justify-between">
+					<div></div>
+					<div class="flex gap-2">
+            <BotaoPadrao texto="Aprovar HE" @click="mostrarDialogAprovarHe = true">
+              <img src="@/assets/icons/check-b.svg" alt="" class="w-7 h-7">
+            </BotaoPadrao>
+						<BotaoPadrao
+							texto="Agendamentos"
+							@click="mostrarDialogAgendamentos = true">
+							<img
+								src="@/assets/icons/list-check-b.svg"
+								alt=""
+								class="w-7 h-7" />
+						</BotaoPadrao>
+					</div>
+				</div>
+			</RodapePagina>
 		</div>
-    <AppAlerta
-      tipo="sucesso"
-      :mostrar="mostrarAlerta"
-      :tipo="tipoAlerta"
-      @escondeu="mostrarAlerta = false">
-      {{ textoAlerta }}
-    </AppAlerta>
+
+		<AppAlerta
+			tipo="sucesso"
+			:mostrar="mostrarAlerta"
+			:tipo="tipoAlerta"
+			@escondeu="mostrarAlerta = false">
+			{{ textoAlerta }}
+		</AppAlerta>
+		<DialogAgendamentos
+			v-if="mostrarDialogAgendamentos"
+			@cancelar="mostrarDialogAgendamentos = false" />
+    <DialogAprovarHE v-if="mostrarDialogAprovarHe" @cancelar="mostrarDialogAprovarHe = false" />
 	</div>
 </template>
 
@@ -73,18 +96,24 @@
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import AppTabela from "~/components/Ui/AppTabela.vue"
 	import AppFormCheckbox from "~/components/Ui/Form/AppFormCheckbox.vue"
-  import AppFormSelect from "~/components/Ui/AppFormSelect.vue";
-  import AppAlerta from "~/components/Ui/AppAlerta.vue";
+	import AppFormSelect from "~/components/Ui/AppFormSelect.vue"
+	import AppAlerta from "~/components/Ui/AppAlerta.vue"
+	import RodapePagina from "~/components/Shared/RodapePagina.vue"
+	import DialogAgendamentos from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogAgendamentos.vue"
+  import DialogAprovarHE from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogAprovarHE.vue";
 
 	export default {
 		name: "HoraExtra",
 		components: {
-      AppAlerta,
+      DialogAprovarHE,
+			DialogAgendamentos,
+			AppAlerta,
 			AppFormCheckbox,
 			AppTabela,
 			BotaoPadrao,
 			AppFormInput,
-      AppFormSelect
+			AppFormSelect,
+			RodapePagina,
 		},
 		data() {
 			return {
@@ -112,13 +141,15 @@
 				dados: [],
 				filtros: [],
 				itensPorPagina: 50,
-        totalItens: 0,
+				totalItens: 0,
 				pagina: 1,
 				funcionariosSelecionados: [],
 				carregandoTabela: false,
-        mostrarAlerta: false,
-        textoAlerta: null,
-        tipoAlerta: "sucesso"
+				mostrarAlerta: false,
+				textoAlerta: null,
+				tipoAlerta: "sucesso",
+				mostrarDialogAgendamentos: false,
+        mostrarDialogAprovarHe: false,
 			}
 		},
 		created() {
@@ -142,7 +173,7 @@
 			},
 
 			async atualizarDados(parametros) {
-				let { itensPorPagina, pagina, filtros } = parametros
+				let { itensPorPagina, pagina, filtros, ordem } = parametros
 
 				if (itensPorPagina) this.itensPorPagina = itensPorPagina
 
@@ -153,42 +184,44 @@
 				await this.buscarFuncionarios()
 			},
 
-      async agendar(){
-        let {data, turno, motivo} = this.agendamento;
+			async agendar() {
+				let { data, turno, motivo } = this.agendamento
 
-        if (this.$dayjs().isAfter(data, "day")) {
-          this.mostrarAlerta = true;
-          this.tipoAlerta = "erro";
-          this.textoAlerta = "Não é possivel agendar para dias anteriores !";
-        }else{
-          console.log(this.funcionariosSelecionados)
+				if (this.$dayjs().isAfter(data, "day")) {
+					this.mostrarAlerta = true
+					this.tipoAlerta = "erro"
+					this.textoAlerta = "Não é possivel agendar para dias anteriores !"
+				} else {
+					console.log("---------------------------")
+					console.log(this.funcionariosSelecionados)
 
-          let funcionarios = this.funcionariosSelecionados
-          let agendado_por_id = this.$auth.user.id;
+					let funcionarios = this.funcionariosSelecionados
+					let agendado_por_id = this.$auth.user.id
 
-          let cont = 0
-          let funcPrEnviar = []
-          let total = 0
+					let cont = 0
+					let funcPrEnviar = []
+					let total = 0
 
-          for(let chapa of funcionarios){
-            console.log(chapa)
-            funcPrEnviar.push(chapa)
-            cont += 1
-            total += 1
+					for (let chapa of funcionarios) {
+						funcPrEnviar.push(chapa)
+						cont += 1
+						total += 1
 
-            if(cont === 5 || total === funcionarios.length){
-              console.log("Enviar")
-            }
-
-          }
-
-
-
-          // await this.$axios.$post("/hora_extra/agendar/novo_padrao", { funcionarios, data, turno, motivo, agendado_por_id })
-
-
-        }
-      },
+						if (cont === 5 || total === funcionarios.length) {
+							let resp = await this.$axios.$post("/hora_extra/agendar/novo_padrao", {
+								chapas: funcPrEnviar,
+								data,
+								turno,
+								motivo,
+								agendado_por_id,
+							})
+              console.log(resp)
+							cont = 0
+							funcPrEnviar = []
+						}
+					}
+				}
+			},
 		},
 	}
 </script>

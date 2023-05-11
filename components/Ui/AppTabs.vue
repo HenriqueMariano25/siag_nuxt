@@ -1,16 +1,25 @@
 <template>
   <div class="w-full flex-col">
-    <div class="bg-primaria-700 h-14 w-full flex text-white">
-      {{ tabs }}
-
-      <button v-for="tab in tabs" :key="tab.nome" class="px-4 border-b-4 border-b-white hover:bg-blue-500" @click="$emit('teste', tab.click)">
-        Controle
-      </button>
+    <div class="h-14 w-full flex flex-col text-black">
+      <div class="w-full flex divide-x divide-gray-700 bg-blue-100">
+        <template v-for="tab of tabs">
+          <button
+            :key="tab.valor"
+            class="hover:bg-blue-200 py-2 w-full text-center"
+            :class="{
+							'!bg-blue-300 border-b-4 !border-blue-700': tabAtual === tab.valor,
+							'!bg-gray-300 text-gray-600 !cursor-not-allowed': tab.disabled === true,
+						}"
+            @click="tab.disabled !== true ? (tabAtual = tab.valor) : null; $emit('tab', tabAtual)">
+            <span class="text-center">{{ tab.nome.toUpperCase() }}</span>
+          </button>
+        </template>
+      </div>
     </div>
-    <div class="">
-      <slot name="conteudo">
-
-      </slot>
+    <div
+      class=""
+      v-for="tab of tabs">
+      <slot :name="'tab.' + tab.valor" v-if="tabAtual === tab.valor"></slot>
     </div>
   </div>
 </template>
@@ -18,15 +27,22 @@
 <script>
 export default {
   name: "AppTabs",
-  props:{
-    tabs:{
+  props: {
+    tabs: {
       type: [Array],
-      required: true
+      required: true,
+    },
+  },
+  mounted() {
+    this.tabAtual = this.tabs[0].valor
+    this.$emit("tab", this.tabAtual)
+  },
+  data() {
+    return {
+      tabAtual: null,
     }
-  }
+  },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

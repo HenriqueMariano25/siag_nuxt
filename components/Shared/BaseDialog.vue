@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="w-full h-full absolute top-0 left-0 bg-black/30 justify-center items-center flex print:bg-black/0"
+		class="w-full h-full absolute top-0 left-0 bg-black/50 justify-center items-center flex print:bg-black/0"
 		style="z-index: 100">
 		<div
 			class="bg-white w-3/4 flex flex-col rounded print:w-full"
