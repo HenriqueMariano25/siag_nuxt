@@ -3,7 +3,7 @@
 		<div
 			class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white">
 			<ButtonNavegacao
-        v-if="$auth.user.permissoes.includes('solicitacao_servico')"
+				v-if="$auth.user.permissoes.includes('solicitacao_servico')"
 				titulo="Visualizar SSs"
 				cor="bg-[#0077B6]"
 				link="/suprimentos/ss/solicitacoes">
@@ -16,7 +16,11 @@
 				titulo="Aprovar SSs"
 				cor="bg-[#0077B6]"
 				link="/suprimentos/ss/aprovarSSs"
-				v-if="$auth.user.permissoes.includes('aprovar_ss_controle','aprovar_ss_gerente_area','aprovar_ss_site_manager')">
+				v-if="
+					$auth.user.permissoes.includes('aprovar_ss_controle') ||
+					$auth.user.permissoes.includes('aprovar_ss_gerente_area') ||
+					$auth.user.permissoes.includes('aprovar_ss_site_manager')
+				">
 				<img
 					src="@/assets/icons/check-circle-w.svg"
 					alt="close"
