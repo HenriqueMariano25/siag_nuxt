@@ -1,5 +1,12 @@
 <template>
-	<div class="flex flex-col w-full">
+	<div class="flex flex-col w-full relative">
+		<div
+      v-if="overlay"
+			class="absolute top-0 left-0 w-full h-full"
+			:class="{ [corOverlay]: corOverlay }"
+			style="z-index: 101">
+			<slot name="overlay"> </slot>
+		</div>
 		<div
 			class=""
 			:style="'height:' + altura"
@@ -30,25 +37,25 @@
 											<button
 												v-if="cab.ordenar === true"
 												@click="ordenar(cab.valor)">
-												<svg v-if="tipoOrdenacao !== 'DESC'"
+												<svg
+													v-if="tipoOrdenacao !== 'DESC'"
 													xmlns="http://www.w3.org/2000/svg"
 													viewBox="0 0 24 24"
 													fill="currentColor"
 													class="w-5 h-5 hover:fill-blue-400 cursor-pointer"
-                             :class="{'fill-blue-400' : tipoOrdenacao === 'ASC'}">
+													:class="{ 'fill-blue-400': tipoOrdenacao === 'ASC' }">
 													<path
 														fill-rule="evenodd"
 														d="M12 2.25a.75.75 0 01.75.75v16.19l6.22-6.22a.75.75 0 111.06 1.06l-7.5 7.5a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 111.06-1.06l6.22 6.22V3a.75.75 0 01.75-.75z"
 														clip-rule="evenodd" />
 												</svg>
 												<svg
-                          v-if="tipoOrdenacao === 'DESC'"
+													v-if="tipoOrdenacao === 'DESC'"
 													xmlns="http://www.w3.org/2000/svg"
 													viewBox="0 0 24 24"
 													fill="currentColor"
 													class="w-5 h-5 hover:fill-blue-600 cursor-pointer"
-                          :class="{'fill-blue-400' : tipoOrdenacao === 'DESC'}"
-                        >
+													:class="{ 'fill-blue-400': tipoOrdenacao === 'DESC' }">
 													<path
 														fill-rule="evenodd"
 														d="M12 20.25a.75.75 0 01-.75-.75V6.31l-5.47 5.47a.75.75 0 01-1.06-1.06l6.75-6.75a.75.75 0 011.06 0l6.75 6.75a.75.75 0 11-1.06 1.06l-5.47-5.47V19.5a.75.75 0 01-.75.75z"
@@ -222,7 +229,10 @@
 						v-for="dado in dados"
 						v-if="!carregando">
 						<tr
-							:class="{ '!bg-gray-500 !text-white': trAberto === dado.id }"
+							:class="{
+								[classPersonalizada]: dado.ativo && dado.ativo === true,
+								'!bg-gray-500 !text-white': trAberto === dado.id,
+							}"
 							class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white h-7"
 							:key="dado.id"
 							@dblclick.prevent.stop="mostrarDbl(dado, $event)"
@@ -357,6 +367,15 @@
 				type: Boolean,
 				default: true,
 			},
+			classPersonalizada: {
+				type: [String, Boolean],
+			},
+			corOverlay: {
+				type: [String],
+			},
+      overlay:{
+        type: [Boolean]
+      }
 		},
 		components: {
 			AppFormCheckbox,
@@ -683,30 +702,30 @@
 			},
 
 			ordenar(tituloColuna) {
-        console.log("-----------------")
-        console.log(tituloColuna)
-        console.log(this.colunaOrdenada)
+				console.log("-----------------")
+				console.log(tituloColuna)
+				console.log(this.colunaOrdenada)
 
 				if (this.colunaOrdenada !== tituloColuna) {
 					this.tipoOrdenacao = null
 					this.ordem = null
-          this.colunaOrdenada = tituloColuna
+					this.colunaOrdenada = tituloColuna
 				}
 
-        console.log(this.tipoOrdenacao)
-        console.log(this.ordem)
+				console.log(this.tipoOrdenacao)
+				console.log(this.ordem)
 
-				if (this.tipoOrdenacao === null){
-          this.tipoOrdenacao = "ASC"
-        }else if (this.tipoOrdenacao === "ASC") {
-          this.tipoOrdenacao = "DESC"
-        } else if (this.tipoOrdenacao === "DESC") {
+				if (this.tipoOrdenacao === null) {
+					this.tipoOrdenacao = "ASC"
+				} else if (this.tipoOrdenacao === "ASC") {
+					this.tipoOrdenacao = "DESC"
+				} else if (this.tipoOrdenacao === "DESC") {
 					this.tipoOrdenacao = null
 					this.ordem = null
 				}
 
-        console.log(this.tipoOrdenacao)
-        console.log()
+				console.log(this.tipoOrdenacao)
+				console.log()
 
 				if (this.tipoOrdenacao !== null) {
 					if (this.dadosSql) {

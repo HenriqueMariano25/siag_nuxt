@@ -1,8 +1,9 @@
 <template>
 	<div
-    @click="$emit('click')"
+    @click.prevent.stop="$emit('click')"
 		class="whitespace-nowrap px-1 rounded flex"
 		:class="{ [cor]: cor, [fonte]: fonte, 'cursor-pointer': clicavel }">
+    <slot name="preTexto"></slot>
 		<span>{{ texto }}</span>
 	</div>
 </template>

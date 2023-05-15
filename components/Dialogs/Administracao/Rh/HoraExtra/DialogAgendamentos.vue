@@ -1,293 +1,348 @@
 <template>
-	<BaseDialog
-		titulo="Agendamentos"
-		@cancelar="cancelar()">
-		<template v-slot:corpo>
-			<div>
+	<div>
+		<BaseDialog
+			titulo="Agendamentos"
+			@cancelar="cancelar()">
+			<template v-slot:corpo>
 				<div>
-					<AppTabs
-						:tabs="tabs"
-						@tab="tab = $event">
-						<template v-slot:[`tab.aprovados`]="{ item }">
-							<div class="px-2 flex flex-col gap-y-2">
-								<div
-									class="gap-2 justify-between flex w-full border border-gray-300 bg-gray-200 p-1">
-									<div class="flex items-end gap-2">
-										<div v-for="key of Object.keys(diasAprovados)">
-											<AppBadge
-												cor="!bg-red-400"
-												corFonte="bg-white"
-												v-if="diasAprovados[key] !== 0"
-												:texto="diasAprovados[key]">
-												<AppTag
-													@click="buscarPorTagAprovados(key)"
-													cor="bg-blue-300 hover:bg-blue-400"
-													:texto="$dayjs(key).format('DD/MM')"
-													fonte="text-2xl"
-													:clicavel="true" />
-											</AppBadge>
+					<div>
+						<AppTabs
+							:tabs="tabs"
+							@tab="tab = $event">
+							<template v-slot:[`tab.aprovados`]="{ item }">
+								<div class="px-2 flex flex-col gap-y-2">
+									<div
+										class="gap-2 justify-between flex w-full border border-gray-300 bg-gray-200 p-1">
+										<div class="flex items-end gap-2">
+											<div v-for="key of Object.keys(diasAprovados)">
+												<AppBadge
+													cor="!bg-red-400"
+													corFonte="bg-white"
+													v-if="diasAprovados[key] !== 0"
+													:texto="diasAprovados[key]">
+													<AppTag
+														@click="buscarPorTagAprovados(key)"
+														cor="bg-blue-300 hover:bg-blue-400"
+														:texto="$dayjs(key).format('DD/MM')"
+														fonte="text-2xl"
+														:clicavel="true" />
+												</AppBadge>
+											</div>
+										</div>
+										<div class="flex gap-2">
+											<AppFormInput
+												id="data_aprovados"
+												type="date"
+												v-model="dataAprovados"
+												label="Data" />
+											<div class="flex items-end">
+												<BotaoPadrao
+													cor="bg-gray-700 hover:bg-gray-800"
+													:disabled="dataAprovados === null || dataAprovados === ''"
+													@click="buscarAprovados">
+													<img
+														src="@/assets/icons/magnifier-w.svg"
+														alt=""
+														class="w-6 h-6" />
+												</BotaoPadrao>
+											</div>
 										</div>
 									</div>
-									<div class="flex gap-2">
-										<AppFormInput
-											id="data_aprovados"
-											type="date"
-											v-model="dataAprovados"
-											label="Data" />
-										<div class="flex items-end">
-											<BotaoPadrao
-												cor="bg-gray-700 hover:bg-gray-800"
-												:disabled="dataAprovados === null || dataAprovados === ''"
-												@click="buscarAprovados">
-												<img
-													src="@/assets/icons/magnifier-w.svg"
-													alt=""
-													class="w-6 h-6" />
-											</BotaoPadrao>
-										</div>
+									<div>
+										<TabelaPadrao
+											:cabecalho="cabecalhoAprovados"
+											:dados="dadosAprovados"
+											:itensPorPagina="itensPorPaginaAprovados"
+											:pagina="paginaAprovados"
+											@filtros="filtrosAprovados = $event"
+											@ordem="ordemAprovados = $event"
+											:totalItens="totalItensAprovados"
+											altura="calc(100vh - 335px)"
+											@atualizar="buscarAprovados()"
+											:carregando="carregandoTabelaAprovados">
+											<template v-slot:[`body.Funcionario.nome`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Funcionario.nome }}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.cargo`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
+												<span class="whitespace-nowrap">{{
+													item.Funcionario.encarregado_sapo
+												}}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.encarregado_producao`]="{ item }">
+												<span class="whitespace-nowrap">{{
+													item.Funcionario.encarregado_producao
+												}}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.gestor`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
+											</template>
+											<template v-slot:[`body.Setor.nome`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.hora_extra`]="{ item }">
+												{{ horaExtra(item.Funcionario.hora_extra) }}
+											</template>
+											<template v-slot:[`body.aprovador_he.nome`]="{ item }">
+												<span class="whitespace-nowrap">{{
+													item.aprovador_he ? item.aprovador_he.nome : ""
+												}}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.rota.numero`]="{ item }">
+												<span class="whitespace-nowrap">{{
+													item.Funcionario.rota ? item.Funcionario.rota.numero : ""
+												}}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.ponto_embarque`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Funcionario.ponto_embarque }}</span>
+											</template>
+										</TabelaPadrao>
 									</div>
 								</div>
-								<div>
-									<TabelaPadrao
-										:cabecalho="cabecalhoAprovados"
-										:dados="dadosAprovados"
-										:itensPorPagina="itensPorPaginaAprovados"
-										:pagina="paginaAprovados"
-										@filtros="filtrosAprovados = $event"
-										@ordem="ordemAprovados = $event"
-										:totalItens="totalItensAprovados"
-										altura="calc(100vh - 335px)"
-										@atualizar="buscarAprovados()"
-										:carregando="carregandoTabelaAprovados">
-										<template v-slot:[`body.Funcionario.nome`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.nome }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.cargo`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.encarregado_sapo }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.encarregado_producao`]="{ item }">
-											<span class="whitespace-nowrap">{{
-												item.Funcionario.encarregado_producao
-											}}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.gestor`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
-										</template>
-										<template v-slot:[`body.Setor.nome`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.hora_extra`]="{ item }">
-											{{ horaExtra(item.Funcionario.hora_extra) }}
-										</template>
-										<template v-slot:[`body.aprovador_he.nome`]="{ item }">
-											<span class="whitespace-nowrap">{{
-												item.aprovador_he ? item.aprovador_he.nome : ""
-											}}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.rota.numero`]="{ item }">
-											<span class="whitespace-nowrap">{{
-												item.Funcionario.rota ? item.Funcionario.rota.numero : ""
-											}}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.ponto_embarque`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.ponto_embarque }}</span>
-										</template>
-									</TabelaPadrao>
-								</div>
-							</div>
-						</template>
-						<template v-slot:[`tab.pendentes`]="{ item }">
-							<div class="px-2 flex flex-col gap-y-2">
-								<div
-									class="gap-2 justify-between flex w-full border border-gray-300 bg-gray-200 p-1">
-									<div class="flex items-end gap-2">
-										<div v-for="key of Object.keys(diasPendentes)">
-											<AppBadge
-												cor="!bg-red-400"
-												corFonte="bg-white"
-												v-if="diasPendentes[key] !== 0"
-												:texto="diasPendentes[key]">
-												<AppTag
-													@click="buscarPorTagPendentes(key)"
-													cor="bg-blue-300 hover:bg-blue-400"
-													:texto="$dayjs(key).format('DD/MM')"
-													fonte="text-2xl"
-													:clicavel="true" />
-											</AppBadge>
+							</template>
+							<template v-slot:[`tab.pendentes`]="{ item }">
+								<div class="px-2 flex flex-col gap-y-2">
+									<div
+										class="gap-2 justify-between flex w-full border border-gray-300 bg-gray-200 p-1">
+										<div class="flex items-end gap-2">
+											<div v-for="key of Object.keys(diasPendentes)">
+												<AppBadge
+													cor="!bg-red-400"
+													corFonte="bg-white"
+													v-if="diasPendentes[key] !== 0"
+													:texto="diasPendentes[key]">
+													<AppTag
+														@click="buscarPorTagPendentes(key)"
+														cor="bg-blue-300 hover:bg-blue-400"
+														:texto="$dayjs(key).format('DD/MM')"
+														fonte="text-2xl"
+														:clicavel="true" />
+												</AppBadge>
+											</div>
+										</div>
+										<div class="flex gap-2">
+											<AppFormInput
+												id="data_pendentes"
+												type="date"
+												v-model="dataPendentes"
+												label="Data" />
+											<div class="flex items-end">
+												<BotaoPadrao
+													cor="bg-gray-700 hover:bg-gray-800"
+													:disabled="dataPendentes === null || dataPendentes === ''"
+													@click="buscarPendentes">
+													<img
+														src="@/assets/icons/magnifier-w.svg"
+														alt=""
+														class="w-6 h-6" />
+												</BotaoPadrao>
+											</div>
 										</div>
 									</div>
-									<div class="flex gap-2">
-										<AppFormInput
-											id="data_pendentes"
-											type="date"
-											v-model="dataPendentes"
-											label="Data" />
-										<div class="flex items-end">
-											<BotaoPadrao
-												cor="bg-gray-700 hover:bg-gray-800"
-												:disabled="dataPendentes === null || dataPendentes === ''"
-												@click="buscarPendentes">
-												<img
-													src="@/assets/icons/magnifier-w.svg"
-													alt=""
-													class="w-6 h-6" />
-											</BotaoPadrao>
-										</div>
+									<div>
+										<TabelaPadrao
+											:cabecalho="cabecalhoPendentes"
+											:dados="dadosPendentes"
+											:itensPorPagina="itensPorPaginaPendentes"
+											:pagina="paginaPendentes"
+											:totalItens="totalItensPendentes"
+											altura="calc(100vh - 335px)"
+											:dadosSql="true"
+											@atualizar="buscarPendentes"
+											:carregando="carregandoTabelaPendentes">
+											<template v-slot:[`body.Funcionario.nome`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Funcionario.nome }}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.cargo`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
+												<span class="whitespace-nowrap">{{
+													item.Funcionario.encarregado_sapo
+												}}</span>
+											</template>
+                      <template v-slot:[`body.Funcionario.encarregado_producao`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.encarregado_producao
+                          }}</span>
+                      </template>
+											<template v-slot:[`body.Funcionario.gestor`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
+											</template>
+											<template v-slot:[`body.Setor.nome`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.rota`]="{ item }">
+												<span class="whitespace-nowrap">{{
+													item.Funcionario.rota ? item.Funcionario.rota.numero : ""
+												}}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.ponto_embarque`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Funcionario.ponto_embarque }}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.direto_indireto`]="{ item }">
+												<span class="whitespace-nowrap">{{
+													item.Funcionario.direto_indireto
+												}}</span>
+											</template>
+										</TabelaPadrao>
 									</div>
 								</div>
-								<div>
-									<TabelaPadrao
-										:cabecalho="cabecalhoPendentes"
-										:dados="dadosPendentes"
-										:itensPorPagina="itensPorPaginaPendentes"
-										:pagina="paginaPendentes"
-										:totalItens="totalItensPendentes"
-										altura="calc(100vh - 335px)"
-										:dadosSql="true"
-										@atualizar="buscarPendentes"
-										:carregando="carregandoTabelaPendentes">
-										<template v-slot:[`body.Funcionario.nome`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.nome }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.cargo`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.encarregado_sapo }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.gestor`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
-										</template>
-										<template v-slot:[`body.Setor.nome`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.rota`]="{ item }">
-											<span class="whitespace-nowrap">{{
-												item.Funcionario.rota ? item.Funcionario.rota.numero : ""
-											}}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.ponto_embarque`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.ponto_embarque }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.direto_indireto`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.direto_indireto }}</span>
-										</template>
-									</TabelaPadrao>
-								</div>
-							</div>
-						</template>
-						<template v-slot:[`tab.meusAgendamentos`]="{ item }">
-							<div class="px-2 flex flex-col gap-y-2">
-								<div
-									class="gap-2 justify-between flex w-full border border-gray-300 bg-gray-200 p-1">
-									<div class="flex items-end gap-2">
-										<div v-for="key of Object.keys(diasMeusAgendamentos)">
-											<AppBadge
-												cor="!bg-red-400"
-												corFonte="bg-white"
-												v-if="diasMeusAgendamentos[key] !== 0"
-												:texto="diasMeusAgendamentos[key]">
-												<AppTag
-													@click="buscarPorTagMeusAgendamentos(key)"
-													cor="bg-blue-300 hover:bg-blue-400"
-													:texto="$dayjs(key).format('DD/MM')"
-													fonte="text-2xl"
-													:clicavel="true" />
-											</AppBadge>
+							</template>
+							<template v-slot:[`tab.meusAgendamentos`]="{ item }">
+								<div class="px-2 flex flex-col gap-y-2">
+									<div
+										class="gap-2 justify-between flex w-full border border-gray-300 bg-gray-200 p-1">
+										<div class="flex items-end gap-2">
+											<div v-for="key of Object.keys(diasMeusAgendamentos)">
+												<AppBadge
+													cor="!bg-red-400"
+													corFonte="bg-white"
+													v-if="diasMeusAgendamentos[key] !== 0"
+													:texto="diasMeusAgendamentos[key]">
+													<AppTag
+														@click="buscarPorTagMeusAgendamentos(key)"
+														cor="bg-blue-300 hover:bg-blue-400"
+														:texto="$dayjs(key).format('DD/MM')"
+														fonte="text-2xl"
+														:clicavel="true" />
+												</AppBadge>
+											</div>
+										</div>
+										<div class="flex gap-2">
+											<AppFormInput
+												id="data_meus_agendamentos"
+												type="date"
+												v-model="dataMeusAgendamentos"
+												label="Data" />
+											<div class="flex items-end">
+												<BotaoPadrao
+													cor="bg-gray-700 hover:bg-gray-800"
+													:disabled="dataMeusAgendamentos === null || dataMeusAgendamentos === ''"
+													@click="buscarMeusAgendamentos">
+													<img
+														src="@/assets/icons/magnifier-w.svg"
+														alt=""
+														class="w-6 h-6" />
+												</BotaoPadrao>
+											</div>
 										</div>
 									</div>
-									<div class="flex gap-2">
-										<AppFormInput
-											id="data_meus_agendamentos"
-											type="date"
-											v-model="dataMeusAgendamentos"
-											label="Data" />
-										<div class="flex items-end">
-											<BotaoPadrao
-												cor="bg-gray-700 hover:bg-gray-800"
-												:disabled="dataMeusAgendamentos === null || dataMeusAgendamentos === ''"
-												@click="buscarMeusAgendamentos">
-												<img
-													src="@/assets/icons/magnifier-w.svg"
-													alt=""
-													class="w-6 h-6" />
-											</BotaoPadrao>
-										</div>
+									<div>
+										<TabelaPadrao
+											:cabecalho="cabecalhoMeusAgendamentos"
+											:dados="dadosMeusAgendamentos"
+											:itensPorPagina="itensPorPaginaMeusAgendamentos"
+											:pagina="paginaMeusAgendamentos"
+											:totalItens="totalItensMeusAgendamentos"
+											altura="calc(100vh - 335px)"
+											:dadosSql="true"
+											@atualizar="buscarMeusAgendamentos"
+											:carregando="carregandoTabelaMeusAgendamentos">
+											<template v-slot:[`body.selecione`]="{ item }">
+												<div class="flex justify-center items-center">
+													<AppFormCheckbox
+														:id="parseInt(item.id)"
+														:valor="item"
+														v-model="selecionadosMeusAgendamentos" />
+												</div>
+											</template>
+											<template v-slot:[`body.Funcionario.nome`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Funcionario.nome }}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.cargo`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
+												<span class="whitespace-nowrap">{{
+													item.Funcionario.encarregado_sapo
+												}}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.encarregado_producao`]="{ item }">
+												<span class="whitespace-nowrap">{{
+													item.Funcionario.encarregado_producao
+												}}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.gestor`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
+											</template>
+											<template v-slot:[`body.Setor.nome`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.rota`]="{ item }">
+												<span class="whitespace-nowrap">{{
+													item.Funcionario.rota ? item.Funcionario.rota.numero : ""
+												}}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.ponto_embarque`]="{ item }">
+												<span class="whitespace-nowrap">{{ item.Funcionario.ponto_embarque }}</span>
+											</template>
+											<template v-slot:[`body.Funcionario.direto_indireto`]="{ item }">
+												<span class="whitespace-nowrap">{{
+													item.Funcionario.direto_indireto
+												}}</span>
+											</template>
+											<template v-slot:[`body.status`]="{ item }">
+												<span class="whitespace-nowrap">
+													{{ item.StatusAgendamento ? item.StatusAgendamento.descricao : "" }}
+												</span>
+											</template>
+											<template v-slot:[`body.hora_extra`]="{ item }">
+												<span class="whitespace-nowrap">
+													{{ horaExtra(item.hora_extra) }}
+												</span>
+											</template>
+											<template v-slot:[`body.hora_extra_projetada`]="{ item }">
+												<span class="whitespace-nowrap">
+													{{ horaExtra(item.hora_extra_projetada) }}
+												</span>
+											</template>
+										</TabelaPadrao>
 									</div>
 								</div>
-								<div>
-									<TabelaPadrao
-										:cabecalho="cabecalhoMeusAgendamentos"
-										:dados="dadosMeusAgendamentos"
-										:itensPorPagina="itensPorPaginaMeusAgendamentos"
-										:pagina="paginaMeusAgendamentos"
-										:totalItens="totalItensMeusAgendamentos"
-										altura="calc(100vh - 335px)"
-										:dadosSql="true"
-										@atualizar="buscarMeusAgendamentos"
-										:carregando="carregandoTabelaMeusAgendamentos">
-                    <template v-slot:[`body.selecione`]="{ item }">
-                      <div class="flex justify-center items-center">
-                        <AppFormCheckbox
-                          :id="parseInt(item.id)"
-                          :valor="item"
-                          v-model="selecionadosMeusAgendamentos"/>
-                      </div>
-                    </template>
-										<template v-slot:[`body.Funcionario.nome`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.nome }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.cargo`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.encarregado_sapo }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.gestor`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
-										</template>
-										<template v-slot:[`body.Setor.nome`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.rota`]="{ item }">
-											<span class="whitespace-nowrap">{{
-												item.Funcionario.rota ? item.Funcionario.rota.numero : ""
-											}}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.ponto_embarque`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.ponto_embarque }}</span>
-										</template>
-										<template v-slot:[`body.Funcionario.direto_indireto`]="{ item }">
-											<span class="whitespace-nowrap">{{ item.Funcionario.direto_indireto }}</span>
-										</template>
-									</TabelaPadrao>
-								</div>
-							</div>
-						</template>
-					</AppTabs>
+							</template>
+						</AppTabs>
+					</div>
 				</div>
-			</div>
-		</template>
-		<template v-slot:rodape-btn-direito>
-			<div class="flex gap-2">
-				<!--        <BotaoPadrao texto="Relátorio" >-->
-				<!--          <img src="@/assets/icons/printer-b.svg" alt="" class="w-6 h-6">-->
-				<!--        </BotaoPadrao>-->
-        <BotaoPadrao texto="Desagendar" v-if="tab === 'meusAgendamentos'">
-          <img src="@/assets/icons/delete-b.svg" alt="" class="w-6 h-6">
-        </BotaoPadrao>
-				<BotaoPadrao texto="Excel">
-					<img
-						src="@/assets/icons/excel-b.svg"
-						alt=""
-						class="w-6 h-6" />
-				</BotaoPadrao>
-			</div>
-		</template>
-	</BaseDialog>
+			</template>
+			<template v-slot:rodape-btn-direito>
+				<div class="flex gap-2">
+					<!--        <BotaoPadrao texto="Relátorio" >-->
+					<!--          <img src="@/assets/icons/printer-b.svg" alt="" class="w-6 h-6">-->
+					<!--        </BotaoPadrao>-->
+					<BotaoPadrao
+						texto="Desagendar"
+						v-if="tab === 'meusAgendamentos'"
+						:disabled="selecionadosMeusAgendamentos.length <= 0"
+						@click="mostrarDialogDesagendar = true">
+						<img
+							src="@/assets/icons/delete-b.svg"
+							alt=""
+							class="w-6 h-6" />
+					</BotaoPadrao>
+					<BotaoPadrao texto="Excel">
+						<img
+							src="@/assets/icons/excel-b.svg"
+							alt=""
+							class="w-6 h-6" />
+					</BotaoPadrao>
+				</div>
+			</template>
+		</BaseDialog>
+		<DialogDesagendar
+			v-if="mostrarDialogDesagendar"
+			@cancelar="mostrarDialogDesagendar = false"
+			@desagendado="desagendado"
+			:dados="selecionadosMeusAgendamentos" />
+		<AppAlerta
+			tipo="sucesso"
+			:mostrar="mostrarAlerta"
+			@escondeu="mostrarAlerta = false">
+			{{ textoAlerta }}
+		</AppAlerta>
+	</div>
 </template>
 
 <script>
@@ -300,11 +355,14 @@
 	import { horaExtra } from "~/mixins/horaExtra"
 	import AppTag from "~/components/Ui/AppTag.vue"
 	import AppBadge from "~/components/Ui/AppBadge.vue"
+	import DialogDesagendar from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogDesagendar.vue"
+	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 
 	export default {
 		mixins: [horaExtra],
 		name: "DialogAgendamentos",
 		components: {
+			AppAlerta,
 			AppBadge,
 			AppTag,
 			TabelaPadrao,
@@ -313,6 +371,7 @@
 			AppFormInput,
 			AppTabs,
 			BaseDialog,
+			DialogDesagendar,
 		},
 		data() {
 			return {
@@ -320,6 +379,8 @@
 				dataAprovados: null,
 				dataMeusAgendamentos: null,
 				dataPendentes: null,
+				mostrarAlerta: false,
+				textoAlerta: "",
 
 				// Aprovados
 				cabecalhoAprovados: [
@@ -363,11 +424,11 @@
 					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
 					{ nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
-					{
-						nome: "Encarregado/Lider Produção",
-						valor: "Funcionario.encarregado_producao",
-						filtro: true,
-					},
+          {
+            nome: "Encarregado/Lider Produção",
+            valor: "Funcionario.encarregado_producao",
+            filtro: true,
+          },
 					{ nome: "Gestor", valor: "Funcionario.gestor", filtro: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
 					{ nome: "HE atual", valor: "Funcionario.hora_extra", filtro: true, centralizar: true },
@@ -396,6 +457,7 @@
 				//Meus agendamentos
 				cabecalhoMeusAgendamentos: [
 					{ nome: "", valor: "selecione", centralizar: true },
+					{ nome: "Status", valor: "status" },
 					{ nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
 					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
@@ -405,8 +467,6 @@
 						valor: "Funcionario.encarregado_producao",
 						filtro: true,
 					},
-					{ nome: "Gestor", valor: "Funcionario.gestor", filtro: true },
-					{ nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
 					{ nome: "HE atual", valor: "Funcionario.hora_extra", filtro: true, centralizar: true },
 					{
 						nome: "HE projetada",
@@ -429,7 +489,8 @@
 				carregandoTabelaMeusAgendamentos: false,
 				diasMeusAgendamentos: [],
 				ordemMeusAgendamentos: null,
-        selecionadosMeusAgendamentos: []
+				selecionadosMeusAgendamentos: [],
+				mostrarDialogDesagendar: false,
 			}
 		},
 		computed: {
@@ -510,7 +571,7 @@
 				if (!resp.falha) {
 					this.carregandoTabelaPendentes = false
 					this.dadosPendentes = resp.dados.agendamentos
-          this.totalItensPendentes = resp.dados.totalItens
+					this.totalItensPendentes = resp.dados.totalItens
 				}
 			},
 
@@ -539,7 +600,7 @@
 				this.carregandoTabelaMeusAgendamentos = true
 
 				let data = this.dataMeusAgendamentos
-        let usuario_id = this.$auth.user.id
+				let usuario_id = this.$auth.user.id
 
 				let resp = await this.$axios.$get("/hora_extra/buscar/meus_agendamentos", {
 					params: { data, usuario_id },
@@ -548,13 +609,28 @@
 				if (!resp.falha) {
 					this.carregandoTabelaMeusAgendamentos = false
 					this.dadosMeusAgendamentos = resp.dados.agendamentos
-          this.totalItensMeusAgendamentos = resp.dados.totalItens
+					this.totalItensMeusAgendamentos = resp.dados.totalItens
 				}
 			},
 
 			async buscarPorTagMeusAgendamentos(data) {
 				this.dataMeusAgendamentos = data
+				this.selecionadosMeusAgendamentos = []
 				await this.buscarMeusAgendamentos()
+			},
+
+			async desagendado(agendamentos) {
+				for (let ag of agendamentos) {
+					let idx = this.dadosMeusAgendamentos.findIndex((o) => o.id === ag)
+					if (idx >= 0) this.dadosMeusAgendamentos.splice(idx, 1)
+					this.diasMeusAgendamentos[this.dataMeusAgendamentos] =
+						parseInt(this.diasMeusAgendamentos[this.dataMeusAgendamentos]) - 1
+				}
+
+				this.mostrarDialogDesagendar = false
+				this.textoAlerta = "Desagendamento realizado com sucesso!"
+				this.mostrarAlerta = true
+				this.selecionadosMeusAgendamentos = []
 			},
 		},
 		watch: {
