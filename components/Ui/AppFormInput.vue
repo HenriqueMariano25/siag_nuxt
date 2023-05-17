@@ -13,6 +13,8 @@
         :placeholder="placeholder"
         :type="type"
         :value="value"
+        :min="min"
+        :max="max"
         v-on="inputListeners"
         :required="obrigatorio"
         :class="{
@@ -100,6 +102,12 @@ export default {
     mask:{
       type: [String,Array, Boolean],
       default: null
+    },
+    min:{
+      type: Number,
+    },
+    max: {
+      type: Number,
     }
   },
   data() {

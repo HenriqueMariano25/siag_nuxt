@@ -1,38 +1,21 @@
 <template>
   <BaseDialog
-    titulo="Processar SS"
+    :titulo="'Processar SS - ' + solicitacao.numero_acompanhamento "
     @cancelar="cancelar()">
     <template v-slot:corpo>
       <div class="grid w-full">
-        <div class="flex w-full">
-          <table class="flex-col w-full">
-            <thead class="bg-red-500">
-            <tr class="uppercase px-2 py-1 text-sm text-white relative">
-              <th>Num. Acompanhamento</th>
-              <th>Natureza Operação</th>
-              <th>Tipo de solicitação</th>
-              <th>Elemento PEP:</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="ss in solicitacoes" :key="ss.id"
-                class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white">
-              <td class="text-center px-1 py-0.5 border border-collapse border-gray-600">{{
-                  ss.numero_acompanhamento
-                }}
-              </td>
-              <td class="px-1 py-0.5 border border-collapse border-gray-600">{{ ss.natureza_operacao ? ss.natureza_operacao : "" }}</td>
-              <td class="px-1 py-0.5 border border-collapse border-gray-600">
-                {{ ss.tipo_solicitacao }}
-              </td>
-              <td class="px-1 py-0.5 border border-collapse border-gray-600">
-                {{ ss.CentroCustoPEP && ss.CentroCustoPEP.descricao ? ss.CentroCustoPEP.descricao : "" }}
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="pt-2 px-2 space-y-2">
+        <div class="px-2 space-y-2">
+          <AppFormSelect
+            class="col-span-2"
+            label="Escopo do serviço"
+            :options="escopos"
+            v-model="processo.escoposs_id"
+            id="escoposs_id"/>
+          <AppFormTextarea
+            type="text"
+            label="Abragência do escopo"
+            v-model="processo.abrangencia_escopo"
+            id="escopo_servico"/>
           <AppFormSelect
             label="Comprador"
             :options="compradores"
@@ -81,16 +64,18 @@ import BaseDialog from "~/components/Shared/BaseDialog.vue"
 import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue"
 import AppFormSelect from "~/components/Ui/AppFormSelect.vue"
+import AppFormInput from "~/components/Ui/AppFormInput.vue";
 export default {
   name: "DialogAnaliseDemanda",
   components: {
+    AppFormInput,
     BaseDialog,
     BotaoPadrao,
     AppFormTextarea,
     AppFormSelect,
   },
   props: {
-    solicitacoes: {
+    solicitacao: {
       type: [String, Number, Object, Array],
     },
   },
@@ -99,8 +84,11 @@ export default {
       processo: {
         comentario: null,
         comprador: null,
+        escoposs_id: null,
+        abrangencia_escopo: null
       },
       compradores: [],
+      escopos: [],
       valNegarSS: false
     }
   },
@@ -111,6 +99,11 @@ export default {
   },
   async created() {
     await this.buscarCompradores()
+    await this.buscarEscopoSS()
+  },
+  async mounted(){
+    this.processo.abrangencia_escopo = this.solicitacao.abrangencia_escopo
+    this.processo.escoposs_id = this.solicitacao.escoposs_id
   },
   methods:{
     cancelar(){
@@ -133,25 +126,40 @@ export default {
         this.compradores = options
       }
     },
+
+    async buscarEscopoSS() {
+      let resp = await this.$axios.$get("/suprimentos/ss/escopos_ss")
+
+      if (!resp.falha) {
+        let escoposs = resp.dados.escopos
+        let options = escoposs.map((o) => {
+          return {
+            id: o.id,
+            nome: `${o.codigo_tarifa_fiscal} - ${o.numero_servico} - ${o.denominacao}`,
+          }
+        })
+
+        this.escopos = options
+      }
+    },
+
     async processarSS(){
       let definir = this.processo
-      let SSs = this.solicitacoes.map((ss) => {
-        return ss.id
-      })
+      let { id} = this.solicitacao
       let usuario_id = this.$auth.user.id
-      //
-      //
+
       let resp = await this.$axios
         .$post("/suprimentos/ss/definir_comprador", {
           definir,
-          SSs,
+          id,
           usuario_id,
         })
       if (!resp.falha) {
 
-        this.$emit("definido", SSs)
+        this.$emit("definido", id)
       }
     },
+
     async negarSS() {
       let {comentario} = this.processo
       let solicitacoes = this.solicitacoes.map((ss) => {

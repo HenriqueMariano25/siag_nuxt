@@ -1,7 +1,7 @@
 <template>
 	<div class="w-full">
 		<div
-			class="flex bg-primaria-500 w-[96.5vw] print:hidden menuEtapas"
+			class="flex bg-primaria-500 w-full print:hidden menuEtapas"
 			style="overflow-x: scroll">
 			<button
 				class="flex p-2 hover:bg-gray-300 hover:text-black box-border print:hidden text-white"
@@ -59,7 +59,7 @@
 					</template>
 					<template v-slot:[`body.acoes`]="{ item }">
 						<BotaoIconeEditar
-							v-if="etapa_id !== 1"
+							v-if="etapa_id !== 1 && etapa_id !== 7"
 							@click="
 								mostrarDialogProcessarSS = true
 								ss = item
@@ -70,6 +70,12 @@
 								mostrarDialogCriarSolicitacao = true
 								ss_id = item.id
 							" />
+            <BotaoIconeEditar
+              v-if="etapa_id === 7 && $auth.user.permissoes.includes('ss_gerenciamento')"
+              @click="
+								mostrarDialogAnaliseDemanda = true
+								ss = item
+							"/>
 					</template>
 					<template v-slot:[`body.prazo_execucao`]="{ item }">
 						<span v-if="item">
@@ -94,11 +100,8 @@
 						</span>
 					</template>
 					<template v-slot:[`body.comentarios`]="{ item }">
-            <div>
-
-            </div>
 						<button
-							class="flex hover:bg-gray-400 min-w-[235px] p-1 "
+							class="flex hover:bg-gray-400 min-w-[235px] p-1"
 							v-if="item.ComentarioSS.length > 0"
 							@click="
 								ss_id = item.id
@@ -108,7 +111,7 @@
 							<img
 								src="@/assets/icons/comentarios-b.svg"
 								alt="close"
-								class="w-7 h-7 mr-1" />
+								class="w-6 h-6 mr-2" />
 							<span v-if="item.ComentarioSS.at(0).descricao" class="whitespace-nowrap">
 								{{ item.ComentarioSS.at(0).descricao.substr(0, 25)
 								}}{{ item.ComentarioSS.at(0).descricao.length > 25 ? "..." : "" }}
@@ -173,7 +176,7 @@
 			{{ textoAlerta }}
 		</AppAlerta>
 		<DialogAnaliseDemanda
-			:solicitacoes="selecionados"
+			:solicitacao="ss"
 			v-if="mostrarDialogAnaliseDemanda"
       @negado="negadoSS"
 			@cancelar="
@@ -281,7 +284,7 @@
 				let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
 
 				if (permissoes.includes("ss_gerenciamento")) {
-					return [8, 10, 13, 14, 15, 16, 18, 24, 25]
+					return [7, 8, 10, 13, 14, 15, 16, 18, 24, 25]
 				}
 
 				if (permissoes.includes("ss_sap")) {
@@ -302,7 +305,7 @@
         let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
 
 				if (permissoes.includes("ss_gerenciamento")) {
-					return [7, 9, 11, 12, 19, 20, 21, 22, 23]
+					return [9, 11, 12, 19, 20, 21, 22, 23]
 				}
 
 				if (permissoes.includes("ss_comprador")) {
@@ -334,13 +337,16 @@
 				]
 
 				if (this.listaAcao.includes(this.etapa_id)) {
-					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-10" })
-				} else if (this.listaSelect.includes(this.etapa_id)) {
+          console.log(this.etapa_id)
+					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-9" })
+				}
+
+        if (this.listaSelect.includes(this.etapa_id)) {
 					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true, largura: "w-10" })
 				}
 
 				if (this.etapa_id === 1) {
-					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-10" })
+					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-9" })
 				}
 				return cabecalho
 			},
@@ -448,13 +454,13 @@
 					this.carregandoTabela = false
 				}
 			},
-			async definidoComprador(SSs) {
-				for (let ss of SSs) {
+			async definidoComprador(ss) {
+				// for (let ss of SSs) {
 					let index = this.dados.findIndex((obj) => {
 						return (obj.id = ss)
 					})
 					this.dados.splice(index, 1)
-				}
+				// }
 
 				this.mostrarDialogAnaliseDemanda = false
 				this.mostrarAlerta = true

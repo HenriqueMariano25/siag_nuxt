@@ -1,7 +1,7 @@
 <template>
 	<BaseDialog
 		:titulo="
-			ss_id === null ? 'Criar Solicitação de Serviço' : `Editando Solicitação de Serviço - ${ss_id}`
+			ss_id === null ? 'Criar Solicitação de Serviço' : `Editando Solicitação de Serviço - ${ss.numero_acompanhamento_original}`
 		"
 		:carregando="carregando"
 		@cancelar="cancelar()">
@@ -20,7 +20,8 @@
 								id="cod_acompanhamento"
 								mask="@@@@@"
 								:invalido="erro.includes('numero_acompanhamento')"
-								v-model="ss.numero_acompanhamento" />
+								v-model="ss.numero_acompanhamento"
+              />
 							<AppFormInput
 								label="Data de Emissão"
 								type="date"
@@ -1376,7 +1377,7 @@
 						<span>Campos obrigatórios necessários</span>
 					</div>
 
-					<BotaoSalvar @click="ss_id !== null ? editarSS() : adicionarSS()" />
+					<BotaoPadrao texto="salvar" :disabled="bloquearBotaoSalvar" @click="ss_id !== null ? editarSS() : adicionarSS()" />
 				</div>
 			</div>
 		</template>
@@ -1475,6 +1476,7 @@
 					edital: null,
 					cronograma: null,
 					histograma: null,
+          numero_acompanhamento_original: null
 				},
 				matriz: {
 					alojamento: "fornecedor",
@@ -1511,6 +1513,7 @@
 				centrosCusto: [],
 				escopos: [],
 				carregando: false,
+        bloquearBotaoSalvar: false
 			}
 		},
 		computed: {
@@ -1569,6 +1572,7 @@
 
 				if (!resp.falha) {
 					this.ss = Object.assign({}, resp.dados.ss)
+          this.ss.numero_acompanhamento_original = resp.dados.ss.numero_acompanhamento
 
 					this.fornecedores = this.ss.FornecedorSSes ? this.ss.FornecedorSSes : []
 					this.matriz = this.ss.MatrizResponsabilidadeSS ? this.ss.MatrizResponsabilidadeSS : []
@@ -1632,6 +1636,7 @@
 			},
 
 			async adicionarSS() {
+        this.bloquearBotaoSalvar = true
 				this.validarFormulario()
 
 				if (this.erro.length === 0) {
@@ -1647,11 +1652,13 @@
 					let resp = await this.$axios.$post("/ss/cadastrar", { ...dados })
 
 					if (!resp.falha) {
+            this.bloquearBotaoSalvar = false
 						this.$emit("adicionado")
 					}
 				}
 			},
 			async editarSS() {
+        this.bloquearBotaoSalvar = true
 				this.validarFormulario()
 
 				if (this.erro.length === 0) {
@@ -1666,6 +1673,7 @@
 					let resp = await this.$axios.$put("/suprimentos/ss/editar", { ...dados })
 
 					if (!resp.falha) {
+            this.bloquearBotaoSalvar = false
 						this.$emit("editado", this.ss.id)
 					}
 				}
@@ -1748,7 +1756,7 @@
 				}
 			},
 			"ss.numero_acompanhamento": function (valor) {
-				this.ss.numero_acompanhamento = valor.toUpperCase()
+				// this.ss.numero_acompanhamento = valor.toUpperCase()
 			},
 		},
 	}

@@ -170,7 +170,7 @@ export default {
 
 @media print{
   #imprimir {
-    max-height: 100vh;
+    min-height: 100%;
   }
 }
 </style>
