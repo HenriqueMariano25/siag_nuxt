@@ -39,7 +39,7 @@
           <span class="py-1 pl-1"><strong>Certificações, licenças ou alvarás exigidos:</strong>{{ ss.certificacaoes_licencas }}</span>
           <span class="py-1 pl-1"><strong>Outros: </strong>{{ ss.outros }}</span>
           <span class="py-1 pl-1 bg-gray-300"><strong>7 - Matriz de responsabilidade</strong></span>
-          <div class="py-1 pl-1 grid grid-cols-2 divide-y divide-gray-300">
+          <div class="py-1 pl-1 grid grid-cols-2 divide-y divide-gray-300 print:hidden">
             <span class="py-1 pl-1"><strong>Alojamento: </strong>{{ ss.MatrizResponsabilidadeSS.alojamento == "na" ? "N/A" : primeiraMaiuscula(ss.MatrizResponsabilidadeSS.alojamento) }}</span>
             <span class="py-1 pl-1 !border-t-0"><strong>Alimentação Interna: </strong>{{ ss.MatrizResponsabilidadeSS.alimentacao_interna == "na" ? "N/A" : primeiraMaiuscula(ss.MatrizResponsabilidadeSS.alimentacao_interna) }}</span>
             <span class="py-1 pl-1"><strong>Alimentação Externa: </strong>
@@ -88,7 +88,7 @@
           <span class="py-1 pl-1"><strong>Anexo V: </strong>{{ ss.anexo_v}}</span>
           <span class="py-1 pl-1 bg-gray-300"><strong>Observações</strong></span>
           <span class="py-1 pl-1">{{ ss.observacoes_geral }}</span>
-          <div class="w-full grid grid-cols-1 divide-y divide-gray-300">
+          <div class="w-full grid grid-cols-1 divide-y divide-gray-300" >
             <div class="bg-gray-300 py-1 pl-1">
               <span ><strong>Aprovadores</strong></span>
             </div>
@@ -170,7 +170,11 @@ export default {
 
 @media print{
   #imprimir {
-    min-height: 100%;
+    page-break-before: always;
+  }
+
+  #imprimir > * {
+    page-break-inside: avoid;
   }
 }
 </style>

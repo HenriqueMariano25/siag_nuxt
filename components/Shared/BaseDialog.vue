@@ -17,13 +17,13 @@
 						class="w-7 h-7" />
 				</button>
 			</div>
-			<div class=" flex w-full print:py-0 relative">
+			<div class=" flex w-full print:py-0 relative print:absolute print:top-0">
         <div class="absolute z-50 bg-gray-700/70 flex w-full h-full justify-center" v-if="carregando">
           <div class="flex items-center justify-center">
             <span class="flex text-4xl bg-white p-2 rounded">Carregando... Favor aguarde!</span>
           </div>
         </div>
-        <div class="py-2 w-full">
+        <div class="py-2 w-full h-full">
 				  <slot name="corpo"></slot>
         </div>
 			</div>
