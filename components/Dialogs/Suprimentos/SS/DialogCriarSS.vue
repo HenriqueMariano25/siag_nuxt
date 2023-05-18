@@ -324,7 +324,7 @@
 									<td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="alojamento_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.alojamento"
@@ -335,7 +335,7 @@
 									<td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="alojamento_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.alojamento"
@@ -360,7 +360,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="alimentacao_interna_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.alimentacao_interna"
@@ -371,7 +371,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="alimentacao_interna_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.alimentacao_interna"
@@ -382,7 +382,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="alimentacao_interna_na"
                         titulo=""
                         value="na"
                         v-model="matriz.alimentacao_interna"
@@ -396,7 +396,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="alimentacao_externa_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.alimentacao_externa"
@@ -407,7 +407,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="alimentacao_externa_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.alimentacao_externa"
@@ -418,7 +418,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="alimentacao_externa_na"
                         titulo=""
                         value="na"
                         v-model="matriz.alimentacao_externa"
@@ -432,7 +432,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="transporte_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.transporte"
@@ -443,7 +443,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="transporte_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.transporte"
@@ -454,7 +454,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="transporte_na"
                         titulo=""
                         value="na"
                         v-model="matriz.transporte"
@@ -468,7 +468,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="cesta_basica_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.cesta_basica"
@@ -479,7 +479,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="cesta_basica_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.cesta_basica"
@@ -490,7 +490,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="cesta_basica_na"
                         titulo=""
                         value="na"
                         v-model="matriz.cesta_basica"
@@ -504,7 +504,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="plano_odontologico_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.plano_odontologico"
@@ -515,7 +515,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="plano_odontologico_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.plano_odontologico"
@@ -526,7 +526,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="plano_odontologico_na"
                         titulo=""
                         value="na"
                         v-model="matriz.plano_odontologico"
@@ -540,7 +540,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="epi_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.epi"
@@ -551,7 +551,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="epi_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.epi"
@@ -562,7 +562,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="epi_na"
                         titulo=""
                         value="na"
                         v-model="matriz.epi"
@@ -576,7 +576,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="epc_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.epc"
@@ -587,7 +587,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="epc_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.epc"
@@ -598,7 +598,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="epc_na"
                         titulo=""
                         value="na"
                         v-model="matriz.epc"
@@ -612,7 +612,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="despesas_viagem_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.despesas_viagem"
@@ -623,7 +623,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="despesas_viagem_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.despesas_viagem"
@@ -634,7 +634,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="despesas_viagem_na"
                         titulo=""
                         value="na"
                         v-model="matriz.despesas_viagem"
@@ -648,7 +648,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="banheiro_bebedouro_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.banheiro_bebedouro"
@@ -659,7 +659,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="banheiro_bebedouro_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.banheiro_bebedouro"
@@ -670,7 +670,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="banheiro_bebedouro_na"
                         titulo=""
                         value="na"
                         v-model="matriz.banheiro_bebedouro"
@@ -684,7 +684,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="vestiario_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.vestiario"
@@ -695,7 +695,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="vestiario_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.vestiario"
@@ -706,7 +706,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="vestiario_na"
                         titulo=""
                         value="na"
                         v-model="matriz.vestiario"
@@ -720,7 +720,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="energia_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.energia"
@@ -731,7 +731,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="energia_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.energia"
@@ -742,7 +742,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="energia_na"
                         titulo=""
                         value="na"
                         v-model="matriz.energia"
@@ -756,7 +756,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="agua_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.agua"
@@ -767,7 +767,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="agua_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.agua"
@@ -778,7 +778,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="agua_na"
                         titulo=""
                         value="na"
                         v-model="matriz.agua"
@@ -792,7 +792,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="exames_admissionais_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.exames_admissionais"
@@ -803,7 +803,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="exames_admissionais_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.exames_admissionais"
@@ -814,7 +814,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="exames_admissionais_na"
                         titulo=""
                         value="na"
                         v-model="matriz.exames_admissionais"
@@ -828,7 +828,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="cracha_uniforme_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.cracha_uniforme"
@@ -839,7 +839,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="cracha_uniforme_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.cracha_uniforme"
@@ -850,7 +850,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="cracha_uniforme_na"
                         titulo=""
                         value="na"
                         v-model="matriz.cracha_uniforme"
@@ -864,7 +864,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="guindaste_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.guindaste"
@@ -875,7 +875,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="guindaste_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.guindaste"
@@ -886,7 +886,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="guindaste_na"
                         titulo=""
                         value="na"
                         v-model="matriz.guindaste"
@@ -900,7 +900,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="andaime_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.andaime"
@@ -911,7 +911,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="andaime_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.andaime"
@@ -922,7 +922,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="andaime_na"
                         titulo=""
                         value="na"
                         v-model="matriz.andaime"
@@ -936,7 +936,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="equip_pequeno_porte_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.equip_pequeno_porte"
@@ -947,7 +947,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="equip_pequeno_porte_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.equip_pequeno_porte"
@@ -958,7 +958,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="equip_pequeno_porte_na"
                         titulo=""
                         value="na"
                         v-model="matriz.equip_pequeno_porte"
@@ -972,7 +972,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="escritorio_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.escritorio"
@@ -983,7 +983,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="escritorio_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.escritorio"
@@ -994,7 +994,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="escritorio_na"
                         titulo=""
                         value="na"
                         v-model="matriz.escritorio"
@@ -1008,7 +1008,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="mobiliario_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.mobiliario"
@@ -1019,7 +1019,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="mobiliario_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.mobiliario"
@@ -1030,7 +1030,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="mobiliario_na"
                         titulo=""
                         value="na"
                         v-model="matriz.mobiliario"
@@ -1044,7 +1044,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="seguro_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.seguro"
@@ -1055,7 +1055,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="seguro_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.seguro"
@@ -1066,7 +1066,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="seguro_na"
                         titulo=""
                         value="na"
                         v-model="matriz.seguro"
@@ -1080,7 +1080,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="garantias_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.garantias"
@@ -1091,7 +1091,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="garantias_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.garantias"
@@ -1102,7 +1102,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="garantias_na"
                         titulo=""
                         value="na"
                         v-model="matriz.garantias"
@@ -1116,7 +1116,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="veiculos_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.veiculos"
@@ -1127,7 +1127,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="veiculos_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.veiculos"
@@ -1138,7 +1138,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="veiculos_na"
                         titulo=""
                         value="na"
                         v-model="matriz.veiculos"
@@ -1152,7 +1152,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="tributos_ag"
                         titulo=""
                         value="ag"
                         v-model="matriz.tributos"
@@ -1163,7 +1163,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="tributos_fornecedor"
                         titulo=""
                         value="fornecedor"
                         v-model="matriz.tributos"
@@ -1174,7 +1174,7 @@
                   <td>
                     <div class="w-full justify-center flex">
                       <AppFormRadio
-                        id="alojamento_na"
+                        id="tributos_na"
                         titulo=""
                         value="na"
                         v-model="matriz.tributos"
@@ -1636,10 +1636,11 @@
 			},
 
 			async adicionarSS() {
-        this.bloquearBotaoSalvar = true
+
 				this.validarFormulario()
 
 				if (this.erro.length === 0) {
+          this.bloquearBotaoSalvar = true
 					let setor_id = this.$auth.user.setor_id
 					let usuario_id = this.$auth.user.id
 
@@ -1658,10 +1659,10 @@
 				}
 			},
 			async editarSS() {
-        this.bloquearBotaoSalvar = true
 				this.validarFormulario()
 
 				if (this.erro.length === 0) {
+          this.bloquearBotaoSalvar = true
 					let usuario_id = this.$auth.user.id
 
 					let dados = {
