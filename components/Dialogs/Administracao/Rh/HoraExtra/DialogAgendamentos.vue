@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div style="z-index: 102">
 		<BaseDialog
 			titulo="Agendamentos"
 			@cancelar="cancelar()">

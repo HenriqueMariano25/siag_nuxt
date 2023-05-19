@@ -1,11 +1,11 @@
 <template>
   <div class="w-full flex-col">
-    <div class="h-14 w-full flex flex-col text-black">
-      <div class="w-full flex divide-x divide-gray-700 bg-blue-100">
+    <div class="h-10 w-full flex flex-col text-black print:hidden">
+      <div class="w-full flex divide-x divide-gray-700 bg-blue-100 ">
         <template v-for="tab of tabs">
           <button
             :key="tab.valor"
-            class="hover:bg-blue-200 py-2 w-full text-center"
+            class="hover:bg-blue-200 py-1.5 w-full text-center text-[0.9rem] "
             :class="{
 							'!bg-blue-300 border-b-4 !border-blue-700': tabAtual === tab.valor,
 							'!bg-gray-300 text-gray-600 !cursor-not-allowed': tab.disabled === true,

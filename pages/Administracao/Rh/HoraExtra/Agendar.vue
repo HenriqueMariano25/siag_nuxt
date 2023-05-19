@@ -11,7 +11,7 @@
 					<AppTooltip>
 						<template v-slot:corpo>
 							<img
-								src="@/assets/icons/information-circle-g.svg"
+								src="../../../../assets/icons/information-circle-g.svg"
 								alt=""
 								class="w-7 h-7" />
 						</template>
@@ -108,7 +108,7 @@
 						:disabled="desabilitarBotoes"
 						class="text-white">
 						<img
-							src="@/assets/icons/save-w.svg"
+							src="../../../../assets/icons/save-w.svg"
 							alt=""
 							class="w-7 h-7" />
 					</BotaoPadrao>
@@ -181,7 +181,7 @@
 							texto="Aprovar HE"
 							@click="mostrarDialogAprovarHe = true">
 							<img
-								src="@/assets/icons/check-b.svg"
+								src="../../../../assets/icons/check-b.svg"
 								alt=""
 								class="w-7 h-7" />
 						</BotaoPadrao>
@@ -189,7 +189,7 @@
 							texto="Agendamentos"
 							@click="mostrarDialogAgendamentos = true">
 							<img
-								src="@/assets/icons/list-check-b.svg"
+								src="../../../../assets/icons/list-check-b.svg"
 								alt=""
 								class="w-7 h-7" />
 						</BotaoPadrao>
@@ -310,8 +310,16 @@
 
 				if (!resp.falha) {
 					let feriados = resp.dados.feriados
+
+          const hoje = this.$dayjs();
+          const diaSemana = hoje.day();
+          let diasAteProximoDomingo = (7 - diaSemana) % 7;
+          if(diasAteProximoDomingo > 5)
+            diasAteProximoDomingo = 5
+
 					let data = this.$dayjs().format("YYYY-MM-DD")
-					let diaFinal = this.$dayjs().add(5, "day").format("YYYY-MM-DD")
+          const diaFinal = hoje.add(diasAteProximoDomingo, 'day').format("YYYY-MM-DD")
+
 					let dias = []
 					let tipoDia = null
 
@@ -442,6 +450,8 @@
 
 					let funcionarios = this.funcionariosSelecionados
 					let agendado_por_id = this.$auth.user.id
+          let novosDados = new Array(...this.dados)
+
 
 					let cont = 0
 					let funcPrEnviar = []
@@ -461,10 +471,24 @@
 								agendado_por_id,
 							})
 							console.log(resp)
+              let novosAgendados = resp.novosAgendados
+              for(let novo of novosAgendados){
+                let idx = novosDados.findIndex( o => o.chapa === novo.chapa)
+                console.log(idx)
+
+                if(idx >= 0 )
+                  novosDados[idx]["ativo"] = true
+              }
+
+
 							cont = 0
 							funcPrEnviar = []
 						}
 					}
+          this.mostrarAlerta = true
+          this.textoAlerta = "Agendamento realizado com sucesso!"
+          this.funcionariosSelecionados = []
+          this.dados = novosDados
 				}
 			},
 		},
