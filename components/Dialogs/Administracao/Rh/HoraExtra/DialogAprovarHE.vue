@@ -71,7 +71,8 @@
 										<template v-slot:[`body.select`]="{ item }">
 											<div class="flex justify-center">
 												<AppFormCheckbox
-													:id="parseInt(item)"
+                          :disabled="ehAnteriorHoje"
+													:id="'checkox'+parseInt(item.id)"
 													:valor="item"
 													v-model="selecionadosGestor" />
 											</div>
@@ -193,6 +194,7 @@
                     <template v-slot:[`body.select`]="{ item }">
                       <div class="flex justify-center">
                         <AppFormCheckbox
+                          :disabled="ehAnteriorHoje"
                           :id="parseInt(item)"
                           :valor="item"
                           v-model="selecionadosSiteManager"/>
@@ -255,17 +257,23 @@
 				</div>
 			</template>
 			<template v-slot:rodape-btn-direito>
-				<BotaoPadrao
-					texto="Aprovar/Negar"
-					class="flex"
-					:disabled="desaBotaoAprovarNegar"
-					cor="bg-blue-500 hover:bg-blue-600"
-					@click="tab === 'gestorArea' ? mostrarDialogConfirmarAprovacao = true : mostrarDialogConfirmarAprovacaoSiteManager = true">
-					<img
-						src="@/assets/icons/check-b.svg"
-						alt=""
-						class="w-7 h-7" />
-				</BotaoPadrao>
+        <div class="flex gap-2 items-center">
+          <div class="flex flex-col">
+            <span class="text-lg text-red-400" v-if="ehAnteriorHoje"><strong>Não é permitido aprovar HE para dias anteriores a hoje.</strong></span>
+            <span class="text-lg text-red-400" v-if="!liberado"><strong>Fora do horário permitido para aprovação.</strong></span>
+          </div>
+          <BotaoPadrao
+            texto="Aprovar/Negar"
+            class="flex"
+            :disabled="desaBotaoAprovarNegar"
+            cor="bg-blue-500 hover:bg-blue-600"
+            @click="tab === 'gestorArea' ? mostrarDialogConfirmarAprovacao = true : mostrarDialogConfirmarAprovacaoSiteManager = true">
+            <img
+              src="@/assets/icons/check-b.svg"
+              alt=""
+              class="w-7 h-7"/>
+          </BotaoPadrao>
+        </div>
 			</template>
 		</BaseDialog>
 		<DialgoConfirmarAprovacao
@@ -365,8 +373,14 @@
 				selecionadosSiteManager: [],
         ordemSiteManager: null,
         mostrarDialogConfirmarAprovacaoSiteManager: false,
+        textoErro: ""
 			}
 		},
+    props: {
+      liberado: {
+        type: [String, Boolean]
+      }
+    },
 		computed: {
 			tabs() {
 				return [
@@ -388,6 +402,10 @@
 
 			desaBotaoAprovarNegar() {
 				let hoje = this.$dayjs().format("YYYY-MM-DD")
+
+        if(!this.liberado)
+          return !this.liberado
+
 				if (this.tab === "gestorArea"){
           return (
             this.selecionadosGestor.length <= 0 ||
@@ -434,6 +452,11 @@
         }, 0);
       },
 
+      ehAnteriorHoje(){
+        let hoje = this.$dayjs().format("YYYY-MM-DD")
+
+        return this.dataGestorArea < hoje || this.dataSiteManager < hoje
+      }
 		},
 		created() {
 			this.buscarDiasAgendamentosPendentes()

@@ -102,6 +102,7 @@
 					placeholder="Ex: Desenvolvimento do novo módulo no SIAG" />
 				<div class="flex items-end">
 					<BotaoPadrao
+            v-if="noIntervalo"
 						texto="Agendar"
 						cor="!hover:bg-blue-900 bg-blue-800"
 						@click="agendar()"
@@ -112,6 +113,21 @@
 							alt=""
 							class="w-7 h-7" />
 					</BotaoPadrao>
+          <AppTooltip posicao="right-0" v-if="!noIntervalo">
+            <template v-slot:corpo>
+              <BotaoPadrao texto="Bloqueado" cor="bg-gray-900 hover:bg-gray-900" class="text-white">
+                <img src="@/assets/icons/lock-w.svg" alt="" class="w-7 h-7">
+              </BotaoPadrao>
+            </template>
+            <template v-slot:tooltip>
+              <div class="w-[400px]">
+                <p class="text-red-500 text-2xl">Fora do horário de agendamento</p>
+                <p>Hórario de agendamento:</p>
+                <p> <strong>{{ horarioAgendamento }}</strong></p>
+              </div>
+            </template>
+          </AppTooltip>
+
 				</div>
 			</div>
 		</div>
@@ -209,6 +225,7 @@
 			v-if="mostrarDialogAgendamentos"
 			@cancelar="mostrarDialogAgendamentos = false" />
 		<DialogAprovarHE
+      :liberado="estaNoIntevaloAprovacao"
 			v-if="mostrarDialogAprovarHe"
 			@cancelar="mostrarDialogAprovarHe = false" />
 	</div>
@@ -282,6 +299,9 @@
 				mostrarDialogAgendamentos: false,
 				mostrarDialogAprovarHe: false,
 				diasPrAgendamento: [],
+        configuracaoHE: {},
+        noIntervalo: false,
+        horaFechamentoAgendamento: null
 			}
 		},
 		computed: {
@@ -296,15 +316,96 @@
 					this.funcionariosSelecionados.length <= 0
 				)
 			},
-			// dataInvalida(){
-			//   return !this.$dayjs(this.agendamento.data).isValid() && (this.agendamento.data !== null && this.agendamento.data !== '')
-			// }
+
+      estaNoIntevaloAprovacao() {
+        let hoje = this.$dayjs()
+        let diaInicio = this.configuracaoHE.data_inicio_inter_aprov
+        let horaInicio = this.configuracaoHE.hora_inicio_inter_aprov
+        let diaFim = this.configuracaoHE.data_fim_inter_aprov
+        let horaFim = this.configuracaoHE.hora_fim_inter_aprov
+
+        let diaHoraInicio = hoje.day(diaInicio).hour(horaInicio.split(':')[0]).minute(horaInicio.split(':')[1])
+        let diaHoraFim = hoje.day(diaFim).hour(horaFim.split(':')[0]).minute(horaFim.split(':')[1])
+        let estaEntre = hoje.isBetween(diaHoraInicio , diaHoraFim, null,'[]')
+
+        return estaEntre
+      },
+
+      horarioAgendamento() {
+
+        if(Object.keys(this.configuracaoHE).length > 0){
+          let diaInicioAgend = this.configuracaoHE.data_inicio_inter_agend
+          let horaInicioAgend = this.configuracaoHE.hora_inicio_inter_agend
+          let diaFimAgend = this.configuracaoHE.data_fim_inter_agend
+          let horaFimAgend = this.configuracaoHE.hora_fim_inter_agend
+
+
+          let diaInicio = this.$dayjs().day(diaInicioAgend)
+          let diaFim = this.$dayjs().day(diaFimAgend)
+
+
+          return `${diaInicio.locale("pt-br").format("dddd")} ${horaInicioAgend} até ${diaFim.locale("pt-br").format("dddd")} ${horaFimAgend}`
+        }else{
+          return ""
+        }
+
+      },
+
+
 		},
-		created() {
-			this.buscarFuncionarios()
-			this.buscarDiasPrAgendamento()
-		},
-		methods: {
+    async fetch() {
+      await this.buscarDiasPrAgendamento()
+      await this.buscarConfiguracao()
+			await this.buscarFuncionarios()
+    },
+    async mounted(){
+      // await this.verificaSeAberto()
+    },
+
+    methods: {
+      verificaSeAberto() {
+        if(this.verificaDentroIntervalo()){
+          this.noIntervalo = true
+          setTimeout(this.verificaSeAberto, 300000);
+        }else{
+          this.noIntervalo = false
+        }
+      },
+
+      verificaDentroIntervalo() {
+        let hoje = this.$dayjs()
+        let diaLiberacaoUsuario = this.$auth.user.data_liberacao
+
+        if (Object.keys(this.configuracaoHE).length > 0) {
+          let diaInicio = this.configuracaoHE.data_inicio_inter_agend
+          let horaInicio = this.configuracaoHE.hora_inicio_inter_agend
+          let diaFim = this.configuracaoHE.data_fim_inter_agend
+          let horaFim = this.configuracaoHE.hora_fim_inter_agend
+
+          let diaHoraInicio = hoje.day(diaInicio).hour(horaInicio.split(':')[0]).minute(horaInicio.split(':')[1])
+          let diaHoraFim = hoje.day(diaFim).hour(horaFim.split(':')[0]).minute(horaFim.split(':')[1])
+          let estaEntre = hoje.isBetween(diaHoraInicio, diaHoraFim, null, '[]')
+
+          if (!estaEntre) {
+            if (diaLiberacaoUsuario === hoje.format("YYYY-MM-DD")) {
+              let horaInicioLiberacao = this.$auth.user.hora_inicio_liberacao
+              horaFim = this.$auth.user.hora_fim_liberacao
+
+              let comecoLiberacao = this.$dayjs(diaLiberacaoUsuario).hour(horaInicioLiberacao.split(":")[0]).minute(horaInicioLiberacao.split(':')[1])
+              let fimLiberacao = this.$dayjs(diaLiberacaoUsuario).hour(horaFim.split(":")[0]).minute(horaFim.split(':')[1])
+
+              estaEntre = hoje.isBetween(comecoLiberacao, fimLiberacao, null, '[]')
+            }
+          }
+
+          this.horaFechamentoAgendamento = horaFim
+
+          return estaEntre
+        }else{
+          return false
+        }
+      },
+
 			async buscarDiasPrAgendamento() {
 				let resp = await this.$axios.$get("/hora_extra/dias/feriados")
 
@@ -356,6 +457,16 @@
 					this.carregandoTabela = false
 				}
 			},
+
+      async buscarConfiguracao(){
+        let resp = await this.$axios.$get("/hora_extra/configuracao")
+
+        console.log(resp)
+        if(!resp.falha){
+          this.configuracaoHE = resp.dados.configuracao
+          this.verificaSeAberto()
+        }
+      },
 
 			async atualizarDados(parametros) {
 				let { itensPorPagina, pagina, filtros, ordem } = parametros

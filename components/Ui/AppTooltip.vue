@@ -5,7 +5,7 @@
 
       </slot>
     </div>
-    <div class="bg-gray-900/90 absolute flex p-2 rounded text-white tooltip" :class="{ [largura]: largura }">
+    <div class="bg-gray-900/90 absolute flex p-2 rounded text-white tooltip " :class="{ [largura]: largura, [posicao]: posicao }">
       <slot name="tooltip">
 
       </slot>
@@ -18,7 +18,10 @@ export default {
   props:{
     largura: {
       type: [String],
-
+    },
+    posicao:{
+      type: [String],
+      default: 'left-0'
     }
   }
 }

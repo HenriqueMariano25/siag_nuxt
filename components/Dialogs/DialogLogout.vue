@@ -1,5 +1,6 @@
 <template>
   <BaseDialog
+    style="z-index: 110"
     titulo=""
     @cancelar="cancelar()">
     <template v-slot:corpo>
