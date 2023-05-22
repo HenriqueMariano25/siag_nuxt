@@ -605,7 +605,7 @@
             temp.push(item['Indicacao.email'] ? item['Indicacao.email'] : "")
             temp.push(this.$dayjs(item.created_at).format("DD/MM/YYYY"))
             temp.push(this.$dayjs(item.data_necessidade).format("DD/MM/YYYY"));
-            temp.push(item.data_previsao ? this.$dayjs(item.data_previsao).format("DD/MM/YYYY") : "");
+            temp.push(item.data_previsao ? this.$dayjs(item.data_previsao).add(30, 'day').format("DD/MM/YYYY") : "");
             temp.push(item['Responsavel.nome'] ? item['Responsavel.nome'] : "");
             temp.push(item.treinamentos !== null ? item.treinamentos.join('; ') : "")
             temp.push(item['CentroCustoPEP.numero_pep'] || item['CentroCustoPEP.descricao'] ? `${item['CentroCustoPEP.numero_pep']} - ${item['CentroCustoPEP.descricao']}` : "");
