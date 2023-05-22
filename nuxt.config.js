@@ -32,6 +32,7 @@ export default {
     '@/plugins/dayjs',
     '@/plugins/maska',
     '@/plugins/money',
+    {src: '~/plugins/vue-apexcharts', ssr: false}
   ],
 
   components: true,

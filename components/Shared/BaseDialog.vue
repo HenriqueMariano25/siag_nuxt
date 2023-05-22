@@ -1,9 +1,10 @@
 <template>
 	<div
-		class="w-full h-full absolute top-0 left-0 bg-black/50 justify-center items-center flex print:bg-black/0"
+		class="w-full h-full absolute top-0 left-0 bg-black/50 justify-center items-center flex print:bg-black/0 print:relative"
 		style="z-index: 100">
 		<div
-			class="bg-white w-3/4 flex flex-col rounded print:w-full"
+			class="bg-white flex flex-col rounded print:w-full print:absolute print:bg-red-500"
+      :class="{ [largura]: largura }"
 			style="z-index: 101">
 			<div
 				class="rounded-t bg-primaria-700 text-white px-2 py-1 flex items-center justify-between print:hidden">
@@ -73,6 +74,10 @@
       btnDeletar:{
         type: Boolean,
         default: false
+      },
+      largura:{
+        type: String,
+        default: 'w-3/4'
       }
 		},
 		components: {
