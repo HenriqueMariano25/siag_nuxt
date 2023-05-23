@@ -1,5 +1,5 @@
 <template>
-	<div class="w-full flex flex-col gap-y-1 print:-m-3 print:-mt-4">
+	<div class="w-full flex flex-col gap-y-1 print:-m-3 print:-mt-4 bg-white">
 		<div class="flex bg-white p-1 gap-2 justify-between border border-gray-300 shadow print:hidden">
 			<div class="flex">
 				<div class="flex items-end gap-2">
@@ -121,6 +121,52 @@
 					<!--						:class="{ flex: buscouDados === true, hidden: buscouDados === false }">-->
 					<!--					</div>-->
 				</template>
+        <template v-slot:[`tab.pres_s_agendamento`]="{ item }">
+          <div class="flex divide-x divide-gray-800" v-show="buscouDados">
+            <div class="w-5/12 flex flex-col items-center">
+              <div class="flex w-full gap-2 p-2 justify-center">
+                <div
+                  class="text-center flex flex-col text-xl divide-y divide-gray-800 border border-gray-500 px-2 w-32">
+                  <span class="p-2">Presentes</span>
+                  <span class="p-2"
+                  ><strong>{{ agendSPresenca.totalAgend }}</strong></span
+                  >
+                </div>
+                <div
+                  class="text-center flex flex-col text-md divide-y divide-gray-800 border border-gray-500 h-auto px-2 w-32">
+                  <span class="p-2">Sem Agend.</span>
+                  <span class="p-2"
+                  ><strong>{{ agendSPresenca.totalAusente }}</strong></span
+                  >
+                </div>
+                <div
+                  class="text-center flex flex-col text-xl divide-y divide-gray-800 border border-gray-500 h-auto px-2 w-32">
+                  <span class="p-2">MOD</span>
+                  <span class="p-2"
+                  ><strong>{{ agendSPresenca.direto }}</strong></span
+                  >
+                </div>
+                <div
+                  class="text-center flex flex-col text-xl divide-y divide-gray-800 border border-gray-500 h-auto px-2 w-32">
+                  <span class="p-2">MOI</span>
+                  <span class="p-2"
+                  ><strong>{{ agendSPresenca.indireto }}</strong></span
+                  >
+                </div>
+              </div>
+              <div class="w-full h-full flex justify-center items-center">
+                <div class="w-[580px] h-[480px]">
+                  <ApexChart
+                    class=""
+                    type="pie"
+                    :options="opcoesGraSemPresencaPorSetor"
+                    :series="valoresGraSemPresencaPorSetor"
+                    id="graSemPresencaPorSetor"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
 			</AppTabs>
 		</div>
 		<DialogImprimirAgendadoSPresenca

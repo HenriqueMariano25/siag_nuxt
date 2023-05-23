@@ -540,7 +540,7 @@
 				} else if (valor === 16) {
 					this.labelDialog = "Nº Pedido de Compra"
 					this.campoDialog = "numero_pedido_compra"
-				} else if (valor === 18) {
+				} else if (valor === 17) {
 					this.labelDialog = "Handover"
 					this.campoDialog = "data_envio_handover"
 					this.typeInputDialog = "date"
