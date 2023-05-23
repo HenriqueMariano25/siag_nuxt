@@ -42,7 +42,7 @@
 		<template v-slot:rodape-btn-direito>
 			<div class="flex items-center gap-5 text-black justify-between w-full">
 				<div>
-					<div v-if="etapa_id >= 9 && etapa_id <= 18">
+					<div v-if="etapa_id >= 9 && etapa_id <= 17">
 						<BotaoPadrao
 							texto="Negar SS"
 							cor="bg-red-400 hover:bg-red-600"
@@ -72,7 +72,7 @@
 				</div>
 				<div class="flex gap-x-2">
 					<BotaoPadrao
-						v-if="etapa_id === 18 || etapa_id === 27"
+						v-if="etapa_id === 17 || etapa_id === 27"
 						:disabled="processo.input === null || processo.input === ''"
 						texto="Finalizar SS"
 						@click="finalizarSS()">
