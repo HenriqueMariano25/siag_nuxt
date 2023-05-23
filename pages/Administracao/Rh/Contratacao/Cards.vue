@@ -1,7 +1,7 @@
 <template>
 	<div class="w-full">
 		<div
-			class="flex bg-primaria-500 w-[96.5vw] print:hidden menuEtapas"
+			class="flex bg-primaria-500 w-full print:hidden menuEtapas"
 			style="overflow-x: scroll">
 			<button
 				class="flex p-2 hover:bg-gray-300 hover:text-black box-border print:hidden text-white"
@@ -130,7 +130,7 @@
 						<img
 							src="@/assets/icons/comentarios-b.svg"
 							alt="close"
-							class="w-7 h-7 mr-1" />
+							class="w-6 h-6 mr-1" />
 
 						<span class="whitespace-nowrap" v-if="item['Comentarios.descricao'] !== null && item['Comentarios.descricao'] !== '' ">
 							{{ item['Comentarios.descricao'].substr(0, 25)
@@ -579,6 +579,7 @@
             "Data de criação",
             "Data de Necessidade",
             "Previsão de Entrega",
+            "Tipo recrutamente",
             "Responsável",
             "Treinamentos",
             "PEP",
@@ -606,6 +607,7 @@
             temp.push(this.$dayjs(item.created_at).format("DD/MM/YYYY"))
             temp.push(this.$dayjs(item.data_necessidade).format("DD/MM/YYYY"));
             temp.push(item.data_previsao ? this.$dayjs(item.data_previsao).add(30, 'day').format("DD/MM/YYYY") : "")
+            temp.push(item.tipo_recrutamento)
             temp.push(item['Responsavel.nome'] ? item['Responsavel.nome'] : "");
             temp.push(item.treinamentos !== null ? item.treinamentos.join('; ') : "")
             temp.push(item['CentroCustoPEP.numero_pep'] || item['CentroCustoPEP.descricao'] ? `${item['CentroCustoPEP.numero_pep']} - ${item['CentroCustoPEP.descricao']}` : "");
