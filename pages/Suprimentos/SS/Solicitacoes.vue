@@ -284,7 +284,7 @@
 				let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
 
 				if (permissoes.includes("ss_gerenciamento")) {
-					return [7, 8, 10, 13, 14, 15, 16, 18, 24, 25]
+					return [7, 8, 10, 13, 14, 15, 16, 17, 23, 24]
 				}
 
 				if (permissoes.includes("ss_sap")) {
@@ -296,7 +296,7 @@
 				}
 
 				if (permissoes.includes("ss_juridico")) {
-					return [10, 13, 14, 15, 16, 24, 25]
+					return [10, 13, 14, 15, 16, 23, 24]
 				}
 
 				return []
@@ -305,7 +305,7 @@
         let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
 
 				if (permissoes.includes("ss_gerenciamento")) {
-					return [9, 11, 12, 19, 20, 21, 22, 23]
+					return [9, 11, 12, 18, 19, 20, 21, 22]
 				}
 
 				if (permissoes.includes("ss_comprador")) {
@@ -313,7 +313,7 @@
 				}
 
 				if (permissoes.includes("ss_juridico")) {
-					return [19, 20, 21, 22, 23]
+					return [18, 19, 20, 21, 22]
 				}
 
 				return []
