@@ -1,7 +1,7 @@
 <template>
 	<button
 		class="px-3 py-2 flex space-x-2 rounded-sm uppercase hover:bg-gray-400 items-center text-black"
-		:class="{ [cor]: cor, '!bg-gray-400 cursor-default !text-gray-500': disabled,  }"
+		:class="{ [cor]: cor, '!bg-gray-400 cursor-default !text-gray-500': disabled, 'bg-transparent hover:!bg-gray-100 !rounded-full': icone }"
 		@click.stop.prevent="!disabled ? $emit('click'): ''">
 		<slot></slot>
 		<span v-if="texto">{{ texto }}</span>
@@ -24,6 +24,10 @@
 				type: Boolean,
 				default: false,
 			},
+      icone:{
+        type: Boolean,
+        default: false
+      }
 		},
 	}
 </script>

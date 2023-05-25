@@ -34,6 +34,18 @@
 					alt="close"
 					class="w-8 h-8" />
 			</ButtonNavegacao>
+      <ButtonNavegacao
+        v-if="
+					$auth.user.permissoes.includes('configuracao_contratacao')
+				"
+        titulo="Configuração"
+        cor="bg-[#264653]"
+        link="/administracao/rh/contratacao/configuracao">
+        <img
+          src="@/assets/icons/cog-w.svg"
+          alt="close"
+          class="w-8 h-8"/>
+      </ButtonNavegacao>
 		</div>
 		<div class="border border-gray-500 h-full">
 			<div
