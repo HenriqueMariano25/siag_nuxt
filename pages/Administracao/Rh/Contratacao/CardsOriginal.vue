@@ -6,7 +6,7 @@
 			<button
 				class="flex p-2 hover:bg-gray-300 hover:text-black box-border print:hidden text-white"
 				:class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === 0 }"
-				@click="etapa_id = 0; etapaAtual = null; proximaEtapa = null">
+				@click="etapa_id = 0">
 				Todos
 			</button>
 			<div
@@ -16,13 +16,13 @@
 				<button
 					class="flex py-2 px-3 hover:bg-gray-400 box-border text-white hover:text-black"
 					:class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === etapa.id }"
-					@click="etapa_id = etapa.id; etapaAtual = etapa; buscarProximaEtapa(etapa.ordem)">
+					@click="etapa_id = etapa.id">
 					<span class="whitespace-nowrap">{{ etapa.nome }}</span>
 				</button>
 			</div>
 		</div>
 		<div class="print:hidden">
-			<TabelaPadrao
+			<AppTabela
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
@@ -32,10 +32,16 @@
         :dadosSql="true"
 				@atualizar="atualizarDados"
 				@dblclick="verDetalhesSS"
-        :selecionar="!this.etapasAprovacao.includes(etapa_id) && etapa_id !== null && etapa_id !== 0 "
-        @selecionados="selecionados = $event"
 				:carregando="carregandoTabela"
 				:temDetalhes="false">
+				<template v-slot:[`body.selecione`]="{ item }">
+					<div class="flex justify-center">
+						<AppFormCheckbox
+							:id="parseInt(item.id)"
+							:valor="item"
+							v-model="selecionados" />
+					</div>
+				</template>
 				<template v-slot:[`body.acoes`]="{ item }">
 					  <BotaoIconeEditar @click="editarCard(item)" :disabled="!podeEditarCard(item)" />
 				</template>
@@ -132,7 +138,7 @@
 						</span>
 					</button>
 				</template>
-			</TabelaPadrao>
+			</AppTabela>
 		</div>
 		<RodapePagina class="print:hidden">
 			<template v-slot>
@@ -209,8 +215,6 @@
 			:cards="selecionados"
 			v-if="mostrarDialogProcessarCard"
 			@cancelar="mostrarDialogProcessarCard = false"
-      :etapa="etapaAtual"
-      :proximaEtapa="proximaEtapa"
 			@processado="processado" />
 		<AppAlerta
 			tipo="sucesso"
@@ -254,7 +258,6 @@
 	import DialogDetalhesCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogDetalhesCard.vue"
 	import DialogFiltroAvancado from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogFiltroAvancado.vue"
 	import { prepararFiltro } from "~/mixins/prepararFiltro"
-  import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
   import gerarExcel from "~/functions/gerarExcel";
 	export default {
 		mixins: [buscarEtapa, prepararFiltro, buscarSetores, buscarDisciplinaCard],
@@ -271,7 +274,6 @@
 			DialogComentariosCard,
 			DialogDetalhesCard,
 			DialogFiltroAvancado,
-      TabelaPadrao
 		},
 		data() {
 			return {
@@ -295,21 +297,11 @@
         gerandoExcel: false,
         setores: [],
         disciplinas: [],
-        etapaAtual: null,
-        proximaEtapa: null,
-        etapasAprovacao: []
 			}
 		},
 
 
 		computed: {
-      etapasSemProcessamento(){
-        let etapasAprovacao = this.etapas.filter( o => o.precisa_aprovacao === true).map( o => o.id)
-
-        return
-
-      },
-
 			cabecalho() {
 				let cabecalho = [
 					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true, colunaTabela: "card.id" },
@@ -357,9 +349,9 @@
 				let listaNaoSelect = [0, 1, 2, 3]
 
         if(this.$auth.user.permissoes.includes("rh_contratacoes")){
-          // if (!listaNaoSelect.some((o) => this.etapa_id === o)) {
-          //   cabecalho.unshift({nome: "", valor: "selecione", centralizar: true, largura: "w-10"})
-          // }
+          if (!listaNaoSelect.some((o) => this.etapa_id === o)) {
+            cabecalho.unshift({nome: "", valor: "selecione", centralizar: true, largura: "w-10"})
+          }
         }
 
 				return cabecalho
@@ -370,7 +362,7 @@
       },
 		},
 		async mounted() {
-      await this.buscarEtapas()
+			this.etapas = await this.buscarEtapa()
 			this.setores = await this.buscarSetores()
 			this.disciplinas = await this.buscarDisciplinaCard()
 			this.etapa_id = 0
@@ -378,18 +370,6 @@
 			await this.buscarCards()
 		},
 		methods: {
-      async buscarEtapas(){
-        this.etapas = await this.buscarEtapa()
-        this.etapasAprovacao = this.etapas.filter(o => o.precisa_aprovacao === true).map(o => o.id)
-      },
-
-      buscarProximaEtapa(ordemAtual){
-        let proximaEtapa = this.etapas.filter( o => parseInt(o.ordem) === parseInt(ordemAtual)+1)
-
-        this.proximaEtapa = proximaEtapa[0]
-
-      },
-
       podeEditarCard(item) {
         let listaEdicao = [ 1, 2, 3, 4, 5, 6]
 
@@ -415,7 +395,6 @@
 				this.card_id = null
 				this.mostrarDialogCriarCard = false
 			},
-
 			async buscarCards() {
 				this.carregandoTabela = true
         let usuario_id = this.$auth.user.id
@@ -456,7 +435,7 @@
 
 					this.carregandoTabela = false
 					this.totalItens = resp.dados.totalItens
-          // console.log(cards)
+          console.log(cards)
 					this.dados = cards
 				}
 			},
@@ -502,14 +481,12 @@
 
 				this.mostrarDialogProcessarCard = false
 				for (let card of cards) {
-
-          console.log(card)
 					let index = this.dados.findIndex((obj) => {
 						return obj.id === card
 					})
 
-					// this.dados[index].etapa_id = etapa_id.id
-					// this.dados[index].Etapa = etapa_id
+					this.dados[index].etapa_id = etapa_id.id
+					this.dados[index].Etapa = etapa_id
 
 					this.dados.splice(index, 1)
 					this.totalItens -= 1

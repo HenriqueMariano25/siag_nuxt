@@ -5,7 +5,7 @@
 
       </slot>
     </div>
-    <div class="bg-gray-900/90 absolute flex p-2 rounded text-white tooltip " :class="{ [largura]: largura, [posicao]: posicao }">
+    <div class="bg-gray-900/90 absolute flex p-2 rounded text-white tooltip " :class="{ [largura]: largura, [posicao]: posicao }" style="z-index: 105">
       <slot name="tooltip">
 
       </slot>
@@ -29,7 +29,7 @@ export default {
 
 <style scoped>
 .geral{
-  z-index: 105;
+  //z-index: 105;
 }
 
 .tooltip{

@@ -9,8 +9,7 @@
 					@tab="tab = $event">
 					<template v-slot:[`tab.informacoes`]="{ item }">
 						<div class="px-2 py-1">
-							<div class="grid grid-cols-2 gap-2">
-
+							<div class="grid grid-cols-2 gap-2 h-[500px] overflow-y-auto ">
 								<AppFormInput
 									id="nome"
 									type="text"
@@ -44,6 +43,7 @@
 								<AppFormRadio
 									id="solicitanteEditar"
 									simNao
+                  dicaPosicao="right-0"
 									v-model="etapa.editar_psp"
                   :invalido="erros.includes('editar_psp')"
                   dica="Caso o card já tenha alguma aprovação e for editado em qualquer campo que não seja a INDICAÇÃO, o mesmo irá retornar para a 1° etapa de aprovação e necessitará novamente das aprovações."
@@ -59,6 +59,7 @@
 									simNao
 									titulo="Pode alterar o candidato ?"
 									v-model="etapa.alterar_candidato"
+                  dicaPosicao="right-0"
                   :invalido="erros.includes('alterar_candidato')"
 									dica="Quando alterar o candidato o Card irá retornar para etapa de RETORNO." />
 								<AppFormRadio
@@ -71,16 +72,24 @@
                 <AppFormRadio
                   id="aprovacao"
                   simNao
+                  dicaPosicao="right-0"
                   titulo="É etapa de aprovação ?"
                   dica="Cards nas etapas de APROVAÇÃO não podem ser movidos/processados pelo RH"
                   :invalido="erros.includes('precisa_aprovacao')"
                   v-model="etapa.precisa_aprovacao"/>
+                <AppFormRadio
+                  id="obrigatorioIndicacao"
+                  simNao
+                  titulo="Obrigatório indicação ?"
+                  dica="Se SIM,é obrigatório ter indicação para processar dessa etapa."
+                  :invalido="erros.includes('obrigatorio_indicacao')"
+                  v-model="etapa.obrigatorio_indicacao"/>
                 <div class="col-span-2 grid grid-cols-2 bg-blue-100 border border-blue-200 pb-1">
                   <div class="col-span-2 flex bg-blue-200 px-2 items-center ">
                     <span class="   text-xl"><strong>Configurações únicas em todo o processo</strong></span>
                     <AppTooltip>
                       <template v-slot:corpo>
-                        <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-6 h-6">
+                        <img src="../../../../../../assets/icons/information-circle-g.svg" alt="" class="w-6 h-6">
                       </template>
                       <template v-slot:tooltip>
                         <div class="min-w-[300px] max-w-full">
@@ -133,7 +142,7 @@
 										cor="bg-blue-400 hover:!bg-blue-500"
 										@click="adicionarProximaEtapa()">
 										<img
-											src="@/assets/icons/add-b.svg"
+											src="../../../../../../assets/icons/add-b.svg"
 											alt=""
 											class="w-7 h-7" />
 									</BotaoPadrao>
@@ -150,7 +159,7 @@
                           <BotaoPadrao texto="Não" cor="bg-red-400 hover:!bg-red-500 !p-1" @click="deletandoProximaEtapa = false; proximaEtapaId = null" />
                         </div>
                       <BotaoPadrao class="!p-1" icone @click="deletandoProximaEtapa = true; proximaEtapaId = proxima.id" v-if="proximaEtapaId !== proxima.id" >
-                        <img src="@/assets/icons/delete-b.svg" alt="" class="w-6 h-6">
+                        <img src="../../../../../../assets/icons/delete-b.svg" alt="" class="w-6 h-6">
                       </BotaoPadrao>
                     </div>
 									</div>
@@ -171,7 +180,7 @@
 						texto="salvar"
 						@click="etapa_id === null ? cadastrarEtapa() : editarEtapa()">
 						<img
-							src="@/assets/icons/save-b.svg"
+							src="../../../../../../assets/icons/save-b.svg"
 							alt="salvar"
 							class="w-8 h-8" />
 					</BotaoPadrao>
@@ -232,7 +241,8 @@
 					concluir_card: null,
           iniciar_rh: null,
           editar_indicacao: null,
-          precisa_aprovacao: null
+          precisa_aprovacao: null,
+          obrigatorio_indicacao: null,
 				},
 				proxima_etapa_id: null,
 				proximasEtapas: [],
@@ -321,7 +331,8 @@
           "alterar_candidato",
           "concluir_card",
           "iniciar_rh",
-          "precisa_aprovacao"
+          "precisa_aprovacao",
+          "obrigatorio_indicacao"
         ]
 
         for (let campo of camposObrigatorio) {

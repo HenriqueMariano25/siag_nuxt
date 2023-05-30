@@ -7,7 +7,7 @@
 				<div class="grid w-full">
 					<div
 						class="flex-col w-full px-2 overflow-auto space-y-3"
-						style="max-height: calc(70vh)">
+						style="max-height: calc(65vh)">
 						<div
 							class="w-full flex-col bg-blue-100 px-1 py-1 border border-blue-200 font-xl"
 							v-for="c in comentarios"

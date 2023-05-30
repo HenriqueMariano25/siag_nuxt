@@ -19,7 +19,6 @@
             <img src="@/assets/icons/arrow-down-b.svg" alt="" class="w-7 h-7">
           </BotaoPadrao>
         </div>
-
       </div>
     </div>
     <RodapePagina class="">
@@ -49,7 +48,7 @@
 import {buscarEtapa} from "@/mixins/buscarInformacoes";
 import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
 import RodapePagina from "~/components/Shared/RodapePagina.vue";
-import DialogCriarEtapa from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogCriarEtapa.vue";
+import DialogCriarEtapa from "~/components/Dialogs/Administracao/Rh/Contratacao/Configuracao/DialogCriarEtapa.vue";
 import AppAlerta from "~/components/Ui/AppAlerta.vue";
 
 

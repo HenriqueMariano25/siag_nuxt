@@ -11,9 +11,9 @@
 					>
 				</strong>
 			</span>
-      <AppTooltip v-if="dica">
+      <AppTooltip v-if="dica" :posicao="dicaPosicao">
         <template v-slot:corpo>
-          <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-6 h-6">
+          <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-6 h-6 !z-10" style="z-index: 100 !important;">
         </template>
         <template v-slot:tooltip>
           <div class="min-w-[300px] max-w-full">
@@ -126,6 +126,10 @@
       dica:{
         type: String,
         default: null
+      },
+      dicaPosicao: {
+        type: String,
+        default: 'left-0'
       }
 		},
 		computed: {
