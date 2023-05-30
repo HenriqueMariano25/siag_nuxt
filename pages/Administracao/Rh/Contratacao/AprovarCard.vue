@@ -309,7 +309,7 @@
 				]
 
 				if (this.tipoAprovacao === "controle") {
-					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-15" })
+					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-16" })
 				} else {
 					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true, largura: "w-10" })
 				}
