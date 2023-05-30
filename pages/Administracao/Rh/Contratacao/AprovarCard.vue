@@ -1,5 +1,5 @@
 <template>
-	<div class="">
+	<div class="w-full">
 		<div class="flex w-full bg-primaria-900 h-14 flex text-white">
 			<button
 				@click="tipoAprovacao = 'controle'"
@@ -32,7 +32,7 @@
 			</button>
 		</div>
 		<div class="">
-			<AppTabela
+			<TabelaPadrao
 				:cabecalho="cabecalho"
 				:dados="dados"
 				@filtrar="recebendoFiltro"
@@ -42,6 +42,7 @@
 				altura="calc(100vh - 190px)"
 				@atualizar="atualizarDados"
         @dblclick="verDetalhesSS"
+        @selecionados="selecionados = $event"
 				:temDetalhes="false">
 				<template v-slot:[`body.selecione`]="{ item }">
 					<div class="flex justify-center">
@@ -120,6 +121,11 @@
             </div>
           </div>
         </template>
+        <template v-slot:[`body.criado_por`]="{ item }">
+					<span v-if="item">
+						{{ item.Usuario ? item.Usuario.nome : "" }}
+					</span>
+        </template>
         <template v-slot:[`body.comentarios`]="{ item }">
           <button
             class="flex hover:bg-gray-400 w-full p-1 whitespace-nowrap"
@@ -139,7 +145,7 @@
 						</span>
           </button>
         </template>
-			</AppTabela>
+			</TabelaPadrao>
 		</div>
 		<RodapePagina>
 			<template v-slot>
@@ -210,6 +216,7 @@
   import DialogDetalhesCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogDetalhesCard.vue";
   import {buscarSetores, buscarDisciplinaCard, buscarEtapa} from "~/mixins/buscarInformacoes"
   import {prepararFiltro} from "~/mixins/prepararFiltro";
+  import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
 
 	export default {
     mixins: [buscarEtapa, prepararFiltro, buscarSetores, buscarDisciplinaCard],
@@ -224,7 +231,8 @@
 			AppAlerta,
 			BotaoIcone,
       DialogAprovControleCard,
-      DialogComentariosCard
+      DialogComentariosCard,
+      TabelaPadrao
 		},
 		data() {
 			return {
@@ -295,6 +303,7 @@
 					{ nome: "Função", valor: "FuncaoCard.nome", filtro: true },
 					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
 					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true, tipoFiltro: "data" },
+					{ nome: "Criado por", valor: "criado_por", filtro: true },
 					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true, tipoFiltro: "data" },
 					{ nome: "Comentários", valor: "comentarios"},
 				]

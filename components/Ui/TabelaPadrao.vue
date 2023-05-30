@@ -9,17 +9,26 @@
         style="width: 100%">
         <colgroup>
           <col
-            v-for="cab in cabecalho"
+            v-for="cab in cabecalhoLocal"
             :key="cab.valor"
             :class="{ [cab.tamanho]: cab.tamanho }"/>
         </colgroup>
         <thead>
         <tr class="">
           <th
-            v-for="cab in cabecalho"
+            v-for="cab in cabecalhoLocal"
             :key="cab.valor"
             :class="cab.largura"
             class="uppercase px-3 py-1 text-sm text-white relative">
+            <template v-if="cab.valor === 'selecione'">
+              <div class="flex items-center">
+                <AppFormCheckbox
+                  id="checkTabelaSelecionandoTodos"
+                  :valor="true"
+                  v-model="selecionandoTodos"
+                  @click="selecionarTodosDados"/>
+              </div>
+            </template>
             <slot
               :name="'header.' + cab.valor"
               v-bind:item="cab">
@@ -63,9 +72,6 @@
 														: (filtroAberto = null)
 												"
                       :class="{
-													// 'text-blue-400': Object.keys(filtros).includes(
-													// 	cab.valor.includes('.') ? `$${cab.valor}$` : cab.valor,
-													// ),
 													'text-blue-400': filtrosAtivos.includes(cab.valor),
 												}">
                       <svg
@@ -201,7 +207,7 @@
           class="pt-10 overflow-auto !h-2 fonteTabela"
           :style="'height:' + altura">
         <tr v-if="carregando">
-          <td :colspan="cabecalho.length">
+          <td :colspan="cabecalhoLocal.length">
             <div class="text-center bg-gray-400 text-3xl py-2">
 								<span>
 									<strong>CARREGANDO DADOS...</strong>
@@ -210,7 +216,7 @@
           </td>
         </tr>
         <tr v-if="dados.length === 0 && !carregando">
-          <td :colspan="cabecalho.length">
+          <td :colspan="cabecalhoLocal.length">
             <div class="text-center bg-gray-300 text-3xl py-2 text-gray-500">
 								<span>
 									<strong>SEM DADOS ENCONTRADOS!</strong>
@@ -218,6 +224,14 @@
             </div>
           </td>
         </tr>
+<!--        <template>-->
+<!--          <div class="flex justify-center">-->
+<!--            <AppFormCheckbox-->
+<!--              :id="parseInt(item.id)"-->
+<!--              :valor="item"-->
+<!--              v-model="selecionados"/>-->
+<!--          </div>-->
+<!--        </template>-->
         <template
           v-for="dado in dados"
           v-if="!carregando">
@@ -228,20 +242,34 @@
             @dblclick.prevent.stop="mostrarDbl(dado, $event)"
             @click.prevent.stop="mostrarDetalhes(dado, $event)">
             <td
-              v-for="(c, index) in cabecalho"
+              v-for="(c, index) in cabecalhoLocal"
               :key="index"
               class="px-3 py-0.5 border border-collapse border-gray-600"
               :class="{ 'text-center': c.centralizar }">
-              <slot
-                :name="'body.' + c.valor"
-                v-bind:item="dado">
-                <span class="whitespace-nowrap">{{ dado[c.valor] }}</span>
-              </slot>
+              <template v-if="c.valor !== 'selecione'">
+                <slot
+                  :name="'body.' + c.valor"
+                  v-bind:item="dado">
+                  <span class="whitespace-nowrap">{{ dado[c.valor] }}</span>
+                </slot>
+              </template>
+              <template v-if="c.valor === 'selecione'">
+                <slot
+                  :name="'body.selecione'"
+                  v-bind:item="dado">
+                  <div class="flex justify-center" v-if="c.valor === 'selecione'">
+                    <AppFormCheckbox
+                      :id="'checkTabela' + parseInt(dado.id)"
+                      :valor="dado"
+                      v-model="selecionados"/>
+                  </div>
+                </slot>
+              </template>
             </td>
           </tr>
 
           <td
-            :colspan="cabecalho.length"
+            :colspan="cabecalhoLocal.length"
             :id="`detalhes-${dado.id}`"
             v-if="trAberto === dado.id && temDetalhes"
             class="bg-blue-200 px-2 py-1 border border-gray-600">
@@ -325,6 +353,10 @@ export default {
       default: () => [],
       required: true,
     },
+    selecionar: {
+      type: [ Boolean],
+      default: false
+    },
     altura: {
       type: String,
       default: "calc(100vh - 136px)",
@@ -380,9 +412,24 @@ export default {
       ordem: null,
       colunaOrdenada: null,
       tipoOrdenacao: null,
+      selecionados: [],
+      selecionandoTodos: false
     }
   },
   computed: {
+    cabecalhoLocal(){
+      // console.log(this.cabecalho)
+
+      let cabecalho = new Array(...this.cabecalho)
+
+      if(this.selecionar)
+        cabecalho.unshift({nome: "", valor: "selecione", centralizar: true, largura: "w-10"})
+
+      // console.log(cabecalho)
+
+      return cabecalho
+    },
+
     totalPaginas() {
       return Math.ceil(this.totalItens / this.itensPorPagina)
     },
@@ -716,11 +763,26 @@ export default {
         this.atualizarDados()
       }
     },
+    selecionarTodosDados() {
+      if (!this.selecionandoTodos) {
+        this.selecionados = this.dados
+      } else {
+        this.selecionados = []
+      }
+    }
   },
   watch: {
     pagina(valor) {
       this.localPagina = valor
     },
+    selecionados(valor){
+      this.$emit("selecionados", this.selecionados)
+    },
+    dados(valor){
+      this.selecionados = []
+      if(this.selecionandoTodos === true)
+        this.selecionandoTodos = false
+    }
   },
 }
 </script>

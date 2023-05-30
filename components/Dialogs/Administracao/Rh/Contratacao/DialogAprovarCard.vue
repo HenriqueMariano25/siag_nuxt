@@ -4,8 +4,8 @@
     @cancelar="cancelar()">
     <template v-slot:corpo>
       <div class="grid w-full">
-        <div class="flex w-full">
-          <table class="flex-col w-full">
+        <div class="flex w-full max-h-[420px] overflow-y-auto">
+          <table class="w-full">
             <thead class="bg-red-500">
             <tr class="uppercase px-2 py-1 text-sm text-white relative">
               <th>Cod.</th>
@@ -98,23 +98,39 @@ export default {
 
       let tipo_aprovacao = this.tipoAprovacao
 
-      if (tipo_aprovacao === "gestor_area") {
-        await this.$axios.$post("/contratacao/card/aprovacao/gestor_area", {
-          cards: cards,
-          aprovacao: aprovacao,
-          usuario_id,
-          comentario: this.comentario,
-        })
+      let cont = 0
+      let cardPrEnviar = []
+      let total = 0
+
+      for (let card of cards) {
+        cont += 1
+        total += 1
+        cardPrEnviar.push(card)
+
+        if (cont === 5 || total === cards.length) {
+
+          if (tipo_aprovacao === "gestor_area") {
+            await this.$axios.$post("/contratacao/card/aprovacao/gestor_area", {
+              cards: cardPrEnviar,
+              aprovacao: aprovacao,
+              usuario_id,
+              comentario: this.comentario,
+            })
+          }else if (tipo_aprovacao === "site_manager") {
+            await this.$axios.$post("/contratacao/card/aprovacao/site_manager", {
+              cards: cardPrEnviar,
+              aprovacao: aprovacao,
+              usuario_id,
+              comentario: this.comentario,
+            })
+          }
+
+          cont = 0
+          cardPrEnviar = []
+        }
       }
 
-      if (tipo_aprovacao === "site_manager") {
-        await this.$axios.$post("/contratacao/card/aprovacao/site_manager", {
-          cards: cards,
-          aprovacao: aprovacao,
-          usuario_id,
-          comentario: this.comentario,
-        })
-      }
+
 
       this.$emit("aprovado", cards, aprovacao)
       this.comentario = null

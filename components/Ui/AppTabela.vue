@@ -341,15 +341,12 @@
 			},
 			itensPorPagina: {
 				type: Number,
-				required: true,
 			},
 			pagina: {
 				type: Number,
-				required: true,
 			},
 			totalItens: {
 				type: Number,
-				required: true,
 			},
 			temDetalhes: {
 				type: Boolean,
