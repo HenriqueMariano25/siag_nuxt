@@ -53,16 +53,18 @@
 					</div>
 				</template>
 				<template v-slot:[`body.acoes`]="{ item }">
-					<BotaoIcone
-						@click="
+          <div class="w-10 h-8">
+            <BotaoIcone
+              @click="
 							card = item
 							mostrarDialogAprovControleCard = true
 						">
-						<img
-							src="@/assets/icons/check-circle-b.svg"
-							alt="close"
-							class="w-6 h-6" />
-					</BotaoIcone>
+              <img
+                src="@/assets/icons/check-circle-b.svg"
+                alt="close"
+                class="w-6 h-6" />
+            </BotaoIcone>
+          </div>
 				</template>
 				<template v-slot:[`body.Etapa.nome`]="{ item }">
 					<span class="whitespace-nowrap" v-if="item.Etapa && item.Etapa.nome">
@@ -122,7 +124,7 @@
           </div>
         </template>
         <template v-slot:[`body.criado_por`]="{ item }">
-					<span v-if="item">
+					<span v-if="item" class="whitespace-nowrap">
 						{{ item.Usuario ? item.Usuario.nome : "" }}
 					</span>
         </template>
