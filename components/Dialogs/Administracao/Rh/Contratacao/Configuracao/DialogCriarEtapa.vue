@@ -367,8 +367,6 @@
 				let etapa_id_destino = this.proxima_etapa_id
 				let etapa_id_origem = this.etapa_id
 
-				console.log(etapa_id_destino)
-				console.log(etapa_id_origem)
 
 				let resp = await this.$axios.$post("/contratacao/etapa/adicionar_proxima_etapa", {
 					etapa_id_origem,
@@ -383,6 +381,7 @@
             this.proximasEtapas.push(dados.etapa)
             this.textoAlerta = "Próxima etapa adicionada com sucesso!"
             this.mostrarAlerta = true
+            this.proxima_etapa_id = null
           }
 				}
 			},

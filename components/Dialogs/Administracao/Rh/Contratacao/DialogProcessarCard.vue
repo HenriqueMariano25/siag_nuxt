@@ -82,28 +82,32 @@
 						<!--            class="w-2/6"-->
 						<!--            id="status"/>-->
 					</div>
-					<div class="px-1 bg-gray-200 border border-gray-300 flex flex-col pb-1">
+					<div class="px-1 bg-gray-200 border border-gray-300 flex flex-col pb-1" v-if="!etapa.concluir_card">
 						<div>
-							<span class="text-red-600 text-xl" v-if="etapa.obrigatorio_indicacao && !todosTemIndicacao">
-                <strong>Só é possivel processar se todos os cards tiver indicação.</strong>
-              </span>
+							<span
+								class="text-red-600 text-xl"
+								v-if="etapa.obrigatorio_indicacao && !todosTemIndicacao">
+								<strong>Só é possivel processar se todos os cards tiver indicação.</strong>
+							</span>
 						</div>
 						<div>
 							<span>Clique na etapa que deseja mover os Cards acima</span>
 						</div>
 						<div class="flex gap-2">
 							<BotaoPadrao
-                :disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
+								:disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
 								:texto="proximaEtapa.ordem + ' - ' + proximaEtapa.nome"
 								cor="bg-primaria-500 hover:bg-primaria-700"
-								class="text-white" @click="processarCards(proximaEtapa.id)"/>
+								class="text-white"
+								@click="processarCards(proximaEtapa.id)" />
 							<div v-for="proxima of etapa.ProximasEtapas">
 								<!--              {{ proxima }}-->
 								<BotaoPadrao
-                  :disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
+									:disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
 									:texto="proxima.ordem + ' - ' + proxima.nome"
 									cor="bg-primaria-500 hover:!bg-primaria-700"
-									class="text-white" @click="processarCards(proxima.id)" />
+									class="text-white"
+									@click="processarCards(proxima.id)" />
 							</div>
 						</div>
 					</div>
@@ -113,19 +117,36 @@
 				<div class="flex items-center gap-5 text-black">
 					<BotaoPadrao
 						v-if="etapa.alterar_candidato === true"
-            @click="mostrarDialogAlterarCandidado = true"
+						@click="mostrarDialogAlterarCandidado = true"
 						texto="Alterar candidato">
+						<img
+							src="@/assets/icons/back-b.svg"
+							alt=""
+							class="w-7 h-7" />
 					</BotaoPadrao>
-<!--          Lembrar que tem que selecionar motivo da desistencia da indicação-->
+          <BotaoPadrao texto="Finalizar cards" @click="finalizarCard()" v-if="etapa.concluir_card">
+            <img src="@/assets/icons/check-b.svg" alt="" class="w-7 h-7">
+          </BotaoPadrao>
+					<!--          Lembrar que tem que selecionar motivo da desistencia da indicação-->
 				</div>
 			</template>
 		</BaseDialog>
 		<DialogAdicionarIndicacao
-      @indicacaoAdicionada="indicacaoAdicionada"
+			@indicacaoAdicionada="indicacaoAdicionada"
 			v-if="mostraDialogAdicionarIndicacao"
 			@cancelar="mostraDialogAdicionarIndicacao = false"
 			:card="cardAddIndicacao" />
-    <DialogAlterarCandidato v-if="mostrarDialogAlterarCandidado" @cancelar="mostrarDialogAlterarCandidado = false" :cards="cards"/>
+		<DialogAlterarCandidato
+			v-if="mostrarDialogAlterarCandidado"
+			@cancelar="mostrarDialogAlterarCandidado = false"
+			:cards="cards"
+			@alterouCandidato="$emit('alterouCandidato', $event)" />
+    <AppAlerta
+      tipo="sucesso"
+      :mostrar="mostrarAlerta"
+      @escondeu="mostrarAlerta = false">
+      {{ textoAlerta }}
+    </AppAlerta>
 	</div>
 </template>
 
@@ -137,13 +158,15 @@
 	import { buscarEtapa } from "@/mixins/buscarInformacoes"
 	import AppTooltip from "~/components/Ui/AppTooltip.vue"
 	import DialogAdicionarIndicacao from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogAdicionarIndicacao.vue"
-  import DialogAlterarCandidato from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogAlterarCandidato.vue";
+	import DialogAlterarCandidato from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogAlterarCandidato.vue"
+  import AppAlerta from "~/components/Ui/AppAlerta.vue";
 
 	export default {
 		name: "DialogProcessarCard",
 		mixins: [buscarEtapa],
 		components: {
-      DialogAlterarCandidato,
+      AppAlerta,
+			DialogAlterarCandidato,
 			AppTooltip,
 			BaseDialog,
 			BotaoPadrao,
@@ -171,8 +194,10 @@
 				},
 				etapas: [],
 				mostraDialogAdicionarIndicacao: false,
-        mostrarDialogAlterarCandidado: false,
+				mostrarDialogAlterarCandidado: false,
 				cardAddIndicacao: null,
+        mostrarAlerta: false,
+        textoAlerta: ""
 			}
 		},
 		async fetch() {
@@ -180,83 +205,67 @@
 
 			this.etapas = etapas.slice(3)
 		},
-    computed: {
-      todosTemIndicacao() {
-        let indicacoes = this.cards.map(o => o['Indicacao.nome'])
+		computed: {
+			todosTemIndicacao() {
+				let indicacoes = this.cards.map((o) => o["Indicacao.nome"])
 
-        return indicacoes.every( o=> o !== null && o !== "")
-      }
-    },
+				return indicacoes.every((o) => o !== null && o !== "")
+			},
+		},
 		methods: {
 			cancelar() {
 				this.$emit("cancelar")
 			},
-			// async processarCards() {
-			// 	let cards = this.cards.map((card) => card.id)
-			// 	let usuario_id = this.$auth.user ? this.$auth.user.id : null
-      //
-			// 	let { comentario } = this.processo
-      //
-			// 	let { id: etapa_id, ordem } = this.processo.etapa_id
-      //
-			// 	await this.$axios
-			// 		.$post("/contratacao/card/processar", {
-			// 			cards,
-			// 			usuario_id,
-			// 			comentario,
-			// 			etapa_id,
-			// 			ordem,
-			// 		})
-			// 		.then(() => {
-			// 			this.$emit("processado", { cards, etapa_id: this.processo.etapa_id })
-			// 			this.processo = {
-			// 				etapa_id: null,
-			// 				comentario: null,
-			// 			}
-			// 		})
-			// },
-      async indicacaoAdicionada({ indicacao, card_id }){
-        console.log(indicacao)
-        console.log(card_id)
+			async indicacaoAdicionada({ indicacao, card_id }) {
+				let idx = this.cards.findIndex((o) => o.id === card_id)
 
-        let idx = this.cards.findIndex( o => o.id = card_id)
+				this.cards[idx]["Indicacao.nome"] = indicacao.nome
+				this.mostraDialogAdicionarIndicacao = false
+        this.textoAlerta = 'Indicação adicionada com sucesso!'
+        this.mostrarAlerta = true
+			},
 
-        console.log(idx)
-        console.log(this.cards[idx])
+			async processarCards(etapa_id_destino) {
+				let cards = this.cards.map((card) => card.id)
+				let usuario_id = this.$auth.user ? this.$auth.user.id : null
 
-        this.cards[idx]['Indicacao.nome'] = indicacao.nome
-        this.mostraDialogAdicionarIndicacao = false
-      },
+				let { comentario } = this.processo
 
-      async processarCards(etapa_id_destino) {
+				let { id: etapa_id_origem } = this.etapa
+
+				console.log(cards)
+				console.log(usuario_id)
+				console.log(comentario)
+				// console.log(etapa_id)
+				console.log(this.etapa)
+				// console.log(etapa_id)
+
+				await this.$axios
+					.$post("/contratacao/card/processar/novo_padrao", {
+						cards,
+						usuario_id,
+						comentario,
+						etapa_id_destino,
+					})
+					.then(() => {
+						this.$emit("processado", { cards, etapa_id: this.processo.etapa_id })
+						this.processo = {
+							comentario: null,
+						}
+					})
+			},
+
+      async finalizarCard(){
         let cards = this.cards.map((card) => card.id)
         let usuario_id = this.$auth.user ? this.$auth.user.id : null
+        let { comentario } = this.processo
 
-        let {comentario} = this.processo
+        let resp = await this.$axios.$post("/contratacao/card/finalizar_cards", { cards, usuario_id, comentario })
 
-        let {id: etapa_id_origem} = this.etapa
-
-        console.log(cards)
-        console.log(usuario_id)
-        console.log(comentario)
-        // console.log(etapa_id)
-        console.log(this.etapa)
-        // console.log(etapa_id)
-
-        await this.$axios
-          .$post("/contratacao/card/processar/novo_padrao", {
-            cards,
-            usuario_id,
-            comentario,
-            etapa_id_destino,
-          })
-          .then(() => {
-            this.$emit("processado", {cards, etapa_id: this.processo.etapa_id})
-            this.processo = {
-              comentario: null,
-            }
-          })
-      },
+        if(!resp.falha){
+          this.$emit("concluido", cards)
+        }
+      }
 		},
 	}
 </script>

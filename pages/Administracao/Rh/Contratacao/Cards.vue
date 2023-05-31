@@ -6,7 +6,11 @@
 			<button
 				class="flex p-2 hover:bg-gray-300 hover:text-black box-border print:hidden text-white"
 				:class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === 0 }"
-				@click="etapa_id = 0; etapaAtual = null; proximaEtapa = null">
+				@click="
+					etapa_id = 0
+					etapaAtual = null
+					proximaEtapa = null
+				">
 				Todos
 			</button>
 			<div
@@ -16,7 +20,11 @@
 				<button
 					class="flex py-2 px-3 hover:bg-gray-400 box-border text-white hover:text-black"
 					:class="{ 'border-t-4 border-black bg-gray-200 !text-black': etapa_id === etapa.id }"
-					@click="etapa_id = etapa.id; etapaAtual = etapa; buscarProximaEtapa(etapa.ordem)">
+					@click="
+						etapa_id = etapa.id
+						etapaAtual = etapa
+						buscarProximaEtapa(etapa.ordem)
+					">
 					<span class="whitespace-nowrap">{{ etapa.nome }}</span>
 				</button>
 			</div>
@@ -29,91 +37,130 @@
 				:pagina="pagina"
 				:totalItens="totalItens"
 				altura="calc(100vh - 194px)"
-        :dadosSql="true"
+				:dadosSql="true"
 				@atualizar="atualizarDados"
 				@dblclick="verDetalhesSS"
-        :selecionar="!this.etapasAprovacao.includes(etapa_id) && etapa_id !== null && etapa_id !== 0 "
-        @selecionados="selecionados = $event"
+				:selecionar="
+					!this.etapasAprovacao.includes(etapa_id) &&
+					etapa_id !== null &&
+					etapa_id !== 0 &&
+					!this.etapasFinalização.includes(etapa_id)
+				"
+				@selecionados="selecionados = $event"
 				:carregando="carregandoTabela"
 				:temDetalhes="false">
 				<template v-slot:[`body.acoes`]="{ item }">
-					  <BotaoIconeEditar @click="editarCard(item)" :disabled="!podeEditarCard(item)" />
+					<BotaoIconeEditar
+						@click="editarCard(item)"
+						:disabled="!podeEditarCard(item)" />
 				</template>
-        <template v-slot:[`body.id`]="{ item }">
-					  <span class="whitespace-nowrap">{{ ("000000" + item.id).slice(-6) }}</span>
+				<template v-slot:[`body.id`]="{ item }">
+					<span class="whitespace-nowrap">{{ ("000000" + item.id).slice(-6) }}</span>
 				</template>
 				<template v-slot:[`body.Etapa.nome`]="{ item }">
-					<span v-if="item.Etapa && item.Etapa.nome" class="whitespace-nowrap">
+					<span
+						v-if="item.Etapa && item.Etapa.nome"
+						class="whitespace-nowrap">
 						{{ item.Etapa.nome }}
 					</span>
 				</template>
 				<template v-slot:[`body.Setor.nome`]="{ item }">
-					<span v-if="item.Setor && item.Setor.nome" class="whitespace-nowrap">
+					<span
+						v-if="item.Setor && item.Setor.nome"
+						class="whitespace-nowrap">
 						{{ item.Setor.nome }}
 					</span>
 				</template>
 				<template v-slot:[`body.DisciplinaCard.descricao`]="{ item }">
-					<span v-if="item['DisciplinaCard.descricao']" class="whitespace-nowrap">
-						{{ item['DisciplinaCard.sigla'] }} - {{ item['DisciplinaCard.descricao'] }}
+					<span
+						v-if="item['DisciplinaCard.descricao']"
+						class="whitespace-nowrap">
+						{{ item["DisciplinaCard.sigla"] }} - {{ item["DisciplinaCard.descricao"] }}
 					</span>
 				</template>
 				<template v-slot:[`body.CentroCustoPEP.numero_pep`]="{ item }">
-					<span v-if="item.CentroCustoPEP && item.CentroCustoPEP.numero_pep" class="whitespace-nowrap">
+					<span
+						v-if="item.CentroCustoPEP && item.CentroCustoPEP.numero_pep"
+						class="whitespace-nowrap">
 						{{ item.CentroCustoPEP.numero_pep }}
 					</span>
 				</template>
 				<template v-slot:[`body.situacao`]="{ item }">
-          <div class="flex justify-center gap-1.5">
-            <div
-              v-if="!($dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime'])"
-              class="bg-blue-400 text-black px-2 rounded whitespace-nowrap">
-              No prazo
-            </div>
-            <div
-              v-if="$dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime']"
-              class="bg-red-400 text-black px-2 rounded whitespace-nowrap">
-              Atrasado
-            </div>
-            <div v-if="item.confidencial === true" class="bg-gray-600 text-white px-2 rounded whitespace-nowrap">
-              Confidencial
-            </div>
-          </div>
+					<div class="flex justify-center gap-1.5">
+						<template v-if="item['Etapa.conclui_processo'] === false">
+							<div
+								v-if="!($dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime'])"
+								class="bg-blue-400 text-black px-2 rounded whitespace-nowrap">
+								No prazo
+							</div>
+							<div
+								v-if="$dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime']"
+								class="bg-red-400 text-black px-2 rounded whitespace-nowrap">
+								Atrasado
+							</div>
+						</template>
+						<div
+							v-if="item.confidencial === true"
+							class="bg-gray-600 text-white px-2 rounded whitespace-nowrap">
+							Confidencial
+						</div>
+						<div
+							v-if="item['Etapa.conclui_processo'] === true"
+							class="text-black bg-green-400 px-2 rounded whitespace-nowrap">
+							Finalizado
+						</div>
+						<div
+							v-if="item['Etapa.rejeita_processo'] === true"
+							class="text-black bg-red-700 px-2 rounded whitespace-nowrap">
+							Rejeitado
+						</div>
+					</div>
 				</template>
 				<template v-slot:[`body.FuncaoCard.nome`]="{ item }">
-					<span v-if="item.FuncaoCard && item.FuncaoCard.nome" class="whitespace-nowrap">
+					<span
+						v-if="item.FuncaoCard && item.FuncaoCard.nome"
+						class="whitespace-nowrap">
 						{{ item.FuncaoCard.nome }}
 					</span>
 				</template>
 				<template v-slot:[`body.Indicacao.nome`]="{ item }">
-					<span v-if="item.Indicacao && item.Indicacao.nome" class="whitespace-nowrap">
+					<span
+						v-if="item.Indicacao && item.Indicacao.nome"
+						class="whitespace-nowrap">
 						{{ item.Indicacao.nome }}
 					</span>
 				</template>
 				<template v-slot:[`body.data_necessidade`]="{ item }">
-					<span v-if="item.data_necessidade" class="whitespace-nowrap">
+					<span
+						v-if="item.data_necessidade"
+						class="whitespace-nowrap">
 						{{ $dayjs(item.data_necessidade).format("DD/MM/YYYY") }}
 					</span>
 				</template>
 				<template v-slot:[`body.ultima_data`]="{ item }">
-					<span v-if="item.ultima_data" class="whitespace-nowrap">
+					<span
+						v-if="item.ultima_data"
+						class="whitespace-nowrap">
 						{{ $dayjs(item.ultima_data).format("DD/MM/YYYY") }}
 					</span>
 				</template>
-        <template v-slot:[`body.data_previsao`]="{ item }">
-					<span v-if="item.data_previsao" class="whitespace-nowrap">
-						{{ $dayjs(item.data_previsao).add(30, 'day').format("DD/MM/YYYY") }}
+				<template v-slot:[`body.data_previsao`]="{ item }">
+					<span
+						v-if="item.data_previsao"
+						class="whitespace-nowrap">
+						{{ $dayjs(item.data_previsao).add(30, "day").format("DD/MM/YYYY") }}
 					</span>
 				</template>
-        <template v-slot:[`body.Usuario.nome`]="{ item }">
- 					<span class="whitespace-nowrap">
-						{{ item["Usuario.nome"] ? item["Usuario.nome"] : '' }}
+				<template v-slot:[`body.Usuario.nome`]="{ item }">
+					<span class="whitespace-nowrap">
+						{{ item["Usuario.nome"] ? item["Usuario.nome"] : "" }}
 					</span>
-        </template>
-        <template v-slot:[`body.responsavel.nome`]="{ item }">
- 					<span class="whitespace-nowrap">
-						{{ item["Responsavel.nome"] ? item["Responsavel.nome"] : '' }}
+				</template>
+				<template v-slot:[`body.responsavel.nome`]="{ item }">
+					<span class="whitespace-nowrap">
+						{{ item["Responsavel.nome"] ? item["Responsavel.nome"] : "" }}
 					</span>
-        </template>
+				</template>
 				<template v-slot:[`body.comentarios`]="{ item }">
 					<button
 						class="flex hover:bg-gray-400 min-w-[230px] p-1"
@@ -126,9 +173,11 @@
 							alt="close"
 							class="w-6 h-6 mr-1" />
 
-						<span class="whitespace-nowrap" v-if="item['Comentarios.descricao'] !== null && item['Comentarios.descricao'] !== '' ">
-							{{ item['Comentarios.descricao'].substr(0, 25)
-							}}{{ item['Comentarios.descricao'].length > 25 ? "..." : "" }}
+						<span
+							class="whitespace-nowrap"
+							v-if="item['Comentarios.descricao'] !== null && item['Comentarios.descricao'] !== ''">
+							{{ item["Comentarios.descricao"].substr(0, 25)
+							}}{{ item["Comentarios.descricao"].length > 25 ? "..." : "" }}
 						</span>
 					</button>
 				</template>
@@ -138,22 +187,24 @@
 			<template v-slot>
 				<div class="flex items-center w-full">
 					<div class="flex w-full gap-2">
-
-<!--            Esconder por enquanto, até finalizar todos os testes-->
-<!--						<BotaoPadrao-->
-<!--							texto="Filtros avançados"-->
-<!--							@click="mostrarDialogFiltroAvancado = true">-->
-<!--							<img-->
-<!--								src="@/assets/icons/filter-b.svg"-->
-<!--								alt="close"-->
-<!--								class="w-6 h-6" />-->
-<!--						</BotaoPadrao>-->
-            <BotaoPadrao :texto="gerandoExcel ? 'Gerando Excel' : 'Excel'" @click="gerarExcel()" :disabled="gerandoExcel">
-              <img
-                src="@/assets/icons/excel-b.svg"
-                alt="excel"
-                class="w-6 h-6"/>
-            </BotaoPadrao>
+						<!--            Esconder por enquanto, até finalizar todos os testes-->
+						<!--						<BotaoPadrao-->
+						<!--							texto="Filtros avançados"-->
+						<!--							@click="mostrarDialogFiltroAvancado = true">-->
+						<!--							<img-->
+						<!--								src="@/assets/icons/filter-b.svg"-->
+						<!--								alt="close"-->
+						<!--								class="w-6 h-6" />-->
+						<!--						</BotaoPadrao>-->
+						<BotaoPadrao
+							:texto="gerandoExcel ? 'Gerando Excel' : 'Excel'"
+							@click="gerarExcel()"
+							:disabled="gerandoExcel">
+							<img
+								src="@/assets/icons/excel-b.svg"
+								alt="excel"
+								class="w-6 h-6" />
+						</BotaoPadrao>
 					</div>
 					<div class="flex w-full justify-end gap-4">
 						<BotaoPadrao
@@ -209,8 +260,10 @@
 			:cards="selecionados"
 			v-if="mostrarDialogProcessarCard"
 			@cancelar="mostrarDialogProcessarCard = false"
-      :etapa="etapaAtual"
-      :proximaEtapa="proximaEtapa"
+			:etapa="etapaAtual"
+			:proximaEtapa="proximaEtapa"
+			@alterouCandidato="alterouCandidato"
+			@concluido="concluido"
 			@processado="processado" />
 		<AppAlerta
 			tipo="sucesso"
@@ -235,7 +288,7 @@
 		<DialogFiltroAvancado
 			v-show="mostrarDialogFiltroAvancado"
 			@cancelar="mostrarDialogFiltroAvancado = false"
-      @limparFiltro="limparFiltroAvancado"
+			@limparFiltro="limparFiltroAvancado"
 			@filtrar="filtrarAvancado" />
 	</div>
 </template>
@@ -254,8 +307,8 @@
 	import DialogDetalhesCard from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogDetalhesCard.vue"
 	import DialogFiltroAvancado from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogFiltroAvancado.vue"
 	import { prepararFiltro } from "~/mixins/prepararFiltro"
-  import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
-  import gerarExcel from "~/functions/gerarExcel";
+	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
+	import gerarExcel from "~/functions/gerarExcel"
 	export default {
 		mixins: [buscarEtapa, prepararFiltro, buscarSetores, buscarDisciplinaCard],
 		name: "Cards",
@@ -271,7 +324,7 @@
 			DialogComentariosCard,
 			DialogDetalhesCard,
 			DialogFiltroAvancado,
-      TabelaPadrao
+			TabelaPadrao,
 		},
 		data() {
 			return {
@@ -292,85 +345,118 @@
 				carregandoTabela: false,
 				mostrarDialogDetalhesCard: false,
 				mostrarDialogFiltroAvancado: false,
-        gerandoExcel: false,
-        setores: [],
-        disciplinas: [],
-        etapaAtual: null,
-        proximaEtapa: null,
-        etapasAprovacao: []
+				gerandoExcel: false,
+				setores: [],
+				disciplinas: [],
+				etapaAtual: null,
+				proximaEtapa: null,
+				etapasAprovacao: [],
+				etapasFinalização: [],
 			}
 		},
 
-
 		computed: {
-      etapasSemProcessamento(){
-        let etapasAprovacao = this.etapas.filter( o => o.precisa_aprovacao === true).map( o => o.id)
-
-        return
-
-      },
-
 			cabecalho() {
 				let cabecalho = [
 					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true, colunaTabela: "card.id" },
-					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, opcoes: Array.from(
-              new Set(
-                this.etapas
-                  .filter((item) => {
-                    return item.nome
-                  })
-                  .map((item) => `${item.nome}`),
-              ),
-            )},
+					{
+						nome: "Etapa",
+						valor: "Etapa.nome",
+						filtro: true,
+						opcoes: Array.from(
+							new Set(
+								this.etapas
+									.filter((item) => {
+										return item.nome
+									})
+									.map((item) => `${item.nome}`),
+							),
+						),
+					},
 					{ nome: "Situação", valor: "situacao" },
-					{ nome: "Setor", valor: "Setor.nome", filtro: true, opcoes: Array.from(new Set(this.setores
-              .filter((item) => {
-                return item.nome;
-              })
-              .map((item) => `${item.nome}`))) },
-					{ nome: "Disciplina", valor: "DisciplinaCard.descricao", filtro: true,
-            opcoes: Array.from(new Set(this.disciplinas
-              .filter((item) => {
-                return item.descricao;
-              })
-              .map((item) => `${item.descricao}`)))},
+					{
+						nome: "Setor",
+						valor: "Setor.nome",
+						filtro: true,
+						opcoes: Array.from(
+							new Set(
+								this.setores
+									.filter((item) => {
+										return item.nome
+									})
+									.map((item) => `${item.nome}`),
+							),
+						),
+					},
+					{
+						nome: "Disciplina",
+						valor: "DisciplinaCard.descricao",
+						filtro: true,
+						opcoes: Array.from(
+							new Set(
+								this.disciplinas
+									.filter((item) => {
+										return item.descricao
+									})
+									.map((item) => `${item.descricao}`),
+							),
+						),
+					},
 					{ nome: "PEP", valor: "CentroCustoPEP.numero_pep", filtro: true },
 					{ nome: "Função", valor: "FuncaoCard.nome", filtro: true },
 					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
-					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true, tipoFiltro: "data" },
-					{ nome: "Previsão Entrega", valor: "data_previsao", filtro: true, centralizar: true, tipoFiltro: "data" },
+					{
+						nome: "Necessidade",
+						valor: "data_necessidade",
+						filtro: true,
+						centralizar: true,
+						tipoFiltro: "data",
+					},
+					{
+						nome: "Previsão Entrega",
+						valor: "data_previsao",
+						filtro: true,
+						centralizar: true,
+						tipoFiltro: "data",
+					},
 					{ nome: "Criado por", valor: "Usuario.nome", filtro: true },
-					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true, tipoFiltro: "data" },
-          {nome: "Responsável", valor: "responsavel.nome" },
-          { nome: "Comentários", valor: "comentarios" },
+					{
+						nome: "Última data",
+						valor: "ultima_data",
+						filtro: true,
+						centralizar: true,
+						tipoFiltro: "data",
+					},
+					{ nome: "Responsável", valor: "responsavel.nome" },
+					{ nome: "Comentários", valor: "comentarios" },
 				]
 
-        let listaEdicao = [0,1,2,3,4,5,6]
+				let listaEdicao = [0, 1, 2, 3, 4, 5, 6]
 
-        if(this.$auth.user.permissoes.includes("editar_card_adm_contratacao"))
-          listaEdicao = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+				if (this.$auth.user.permissoes.includes("editar_card_adm_contratacao"))
+					listaEdicao = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 
-        if (listaEdicao.some((o) => this.etapa_id === o)) {
+				if (listaEdicao.some((o) => this.etapa_id === o)) {
 					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-10" })
 				}
 
 				let listaNaoSelect = [0, 1, 2, 3]
 
-        if(this.$auth.user.permissoes.includes("rh_contratacoes")){
-          // if (!listaNaoSelect.some((o) => this.etapa_id === o)) {
-          //   cabecalho.unshift({nome: "", valor: "selecione", centralizar: true, largura: "w-10"})
-          // }
-        }
+				if (this.$auth.user.permissoes.includes("rh_contratacoes")) {
+					// if (!listaNaoSelect.some((o) => this.etapa_id === o)) {
+					//   cabecalho.unshift({nome: "", valor: "selecione", centralizar: true, largura: "w-10"})
+					// }
+				}
 
 				return cabecalho
 			},
 
-      isAdminCardRH() {
-        return this.$auth.user.permissoes.includes("editar_card_adm_contratacao")
-      },
+			isAdminCardRH() {
+				return this.$auth.user.permissoes.includes("editar_card_adm_contratacao")
+			},
 		},
 		async mounted() {
-      await this.buscarEtapas()
+			await this.buscarEtapas()
 			this.setores = await this.buscarSetores()
 			this.disciplinas = await this.buscarDisciplinaCard()
 			this.etapa_id = 0
@@ -378,33 +464,36 @@
 			await this.buscarCards()
 		},
 		methods: {
-      async buscarEtapas(){
-        this.etapas = await this.buscarEtapa()
-        this.etapasAprovacao = this.etapas.filter(o => o.precisa_aprovacao === true).map(o => o.id)
-      },
+			async buscarEtapas() {
+				this.etapas = await this.buscarEtapa()
+				this.etapasAprovacao = this.etapas
+					.filter((o) => o.precisa_aprovacao === true)
+					.map((o) => o.id)
+				this.etapasFinalização = this.etapas
+					.filter((o) => o.conclui_processo === true || o.rejeita_processo === true)
+					.map((o) => o.id)
+			},
 
-      buscarProximaEtapa(ordemAtual){
-        let proximaEtapa = this.etapas.filter( o => parseInt(o.ordem) === parseInt(ordemAtual)+1)
+			buscarProximaEtapa(ordemAtual) {
+				let proximaEtapa = this.etapas.filter((o) => parseInt(o.ordem) === parseInt(ordemAtual) + 1)
 
-        this.proximaEtapa = proximaEtapa[0]
+				this.proximaEtapa = proximaEtapa[0]
+			},
 
-      },
+			podeEditarCard(item) {
+				let listaEdicao = [1, 2, 3, 4, 5, 6]
 
-      podeEditarCard(item) {
-        let listaEdicao = [ 1, 2, 3, 4, 5, 6]
+				// console.log(item)
+				// console.log(listaEdicao.some(o => { return o === item.etapa_id }))
 
-        // console.log(item)
-        // console.log(listaEdicao.some(o => { return o === item.etapa_id }))
-
-
-        if(this.isAdminCardRH){
-          return this.isAdminCardRH
-        }else if(this.$auth.user.id === item.usuario_id){
-          return listaEdicao.some(o => {
-            return o === item.etapa_id
-          })
-        }
-      },
+				if (this.isAdminCardRH) {
+					return this.isAdminCardRH
+				} else if (this.$auth.user.id === item.usuario_id) {
+					return listaEdicao.some((o) => {
+						return o === item.etapa_id
+					})
+				}
+			},
 
 			verDetalhesSS(dados) {
 				this.card_id = dados.id
@@ -418,36 +507,44 @@
 
 			async buscarCards() {
 				this.carregandoTabela = true
-        let usuario_id = this.$auth.user.id
-				let filtros = [ ...this.filtros ]
+				let usuario_id = this.$auth.user.id
+				let filtros = [...this.filtros]
 
-        let confidencial
-        let listaPermissoes = ['aprovar_card_site_manager', 'aprovar_card_controle', 'rh_contratacoes']
-        if(listaPermissoes.some(o => this.$auth.user.permissoes.includes(o))){
-          confidencial = 'todos'
-          filtros.push(`AND (card.confidencial IS NULL OR card.confidencial = false OR card.confidencial = true)`)
-        }else{
-          confidencial = 'setor'
-          filtros.push(` AND (card.confidencial IS NULL OR card.confidencial = false OR ( card.confidencial = true AND usuario.id = ${usuario_id}))`)
-        }
+				let confidencial
+				let listaPermissoes = [
+					"aprovar_card_site_manager",
+					"aprovar_card_controle",
+					"rh_contratacoes",
+				]
+				if (listaPermissoes.some((o) => this.$auth.user.permissoes.includes(o))) {
+					confidencial = "todos"
+					filtros.push(
+						`AND (card.confidencial IS NULL OR card.confidencial = false OR card.confidencial = true)`,
+					)
+				} else {
+					confidencial = "setor"
+					filtros.push(
+						` AND (card.confidencial IS NULL OR card.confidencial = false OR ( card.confidencial = true AND usuario.id = ${usuario_id}))`,
+					)
+				}
 
 				let etapa_id = this.etapa_id
 				if (etapa_id !== 0) {
-          filtros.push(` AND etapa.id = ${etapa_id}`)
+					filtros.push(` AND etapa.id = ${etapa_id}`)
 				}
 
-        let filtrosFinais
+				let filtrosFinais
 
-        if(filtros !== ""){
-          filtrosFinais= filtros.join('')
-        }
+				if (filtros !== "") {
+					filtrosFinais = filtros.join("")
+				}
 
 				let resp = await this.$axios.$get("/contratacao/card/buscarPaginados", {
 					params: {
 						page: this.pagina - 1,
 						size: this.itensPorPagina,
-            filtros: filtrosFinais,
-            usuario_id
+						filtros: filtrosFinais,
+						usuario_id,
 					},
 				})
 
@@ -456,7 +553,7 @@
 
 					this.carregandoTabela = false
 					this.totalItens = resp.dados.totalItens
-          // console.log(cards)
+					// console.log(cards)
 					this.dados = cards
 				}
 			},
@@ -482,7 +579,7 @@
 				let idx = this.dados.findIndex((o) => o.id === dados.card_id)
 
 				if (this.dados[idx].etapa_id !== 1) this.dados.splice(idx, 1)
-				else this.dados[idx]['Comentarios.descricao'] = dados.comentario
+				else this.dados[idx]["Comentarios.descricao"] = dados.comentario
 
 				this.mostrarDialogCriarCard = false
 				this.mostrarAlerta = true
@@ -490,26 +587,21 @@
 				this.card_id = null
 			},
 
-      cardCadastrado(){
-        this.mostrarDialogCriarCard = false
-        this.mostrarAlerta = true
-        this.textoAlerta = "Card cadastrado com sucesso!"
-        this.card_id = null
-      },
+			cardCadastrado() {
+				this.mostrarDialogCriarCard = false
+				this.mostrarAlerta = true
+				this.textoAlerta = "Card cadastrado com sucesso!"
+				this.card_id = null
+			},
 
 			async processado(dados) {
 				let { cards, etapa_id } = dados
 
 				this.mostrarDialogProcessarCard = false
 				for (let card of cards) {
-
-          console.log(card)
 					let index = this.dados.findIndex((obj) => {
 						return obj.id === card
 					})
-
-					// this.dados[index].etapa_id = etapa_id.id
-					// this.dados[index].Etapa = etapa_id
 
 					this.dados.splice(index, 1)
 					this.totalItens -= 1
@@ -519,134 +611,186 @@
 				this.selecionados = []
 			},
 
+			async concluido(cards) {
+				console.log(cards)
+				this.mostrarDialogProcessarCard = false
+				for (let card of cards) {
+					let index = this.dados.findIndex((obj) => {
+						return obj.id === card
+					})
+
+					this.dados.splice(index, 1)
+					this.totalItens -= 1
+				}
+				this.mostrarAlerta = true
+				this.textoAlerta = "Cards finalizados com sucesso!"
+				this.selecionados = []
+			},
+
+			async alterouCandidato(cards) {
+				this.mostrarDialogProcessarCard = false
+				this.textoAlerta = "Alteração de candidato realizado com sucesso!"
+				this.mostrarAlerta = true
+
+				for (let card of cards) {
+					let idx = this.dados.findIndex((o) => o.id === card)
+
+					if (idx >= 0) {
+						this.dados.splice(idx, 1)
+					}
+				}
+			},
+
 			async filtrarAvancado(filtros) {
-        this.mostrarDialogFiltroAvancado = false
-				this.filtros = { ...this.filtros , ...filtros }
-        let itensPorPagina = this.itensPorPagina
-        let pagina = this.pagina
+				this.mostrarDialogFiltroAvancado = false
+				this.filtros = { ...this.filtros, ...filtros }
+				let itensPorPagina = this.itensPorPagina
+				let pagina = this.pagina
 
 				await this.atualizarDados(itensPorPagina, pagina, filtros)
 			},
 
-      async limparFiltroAvancado(){
-        this.mostrarDialogFiltroAvancado = false
-        let keys = Object.keys(this.filtros)
-        for(let i in keys){
-          if(keys[i] === 'mobilizacao' || keys[i] === '$cardTemEquipamentoCard.equipamento_card_id$'){
-            delete this.filtros[keys[i]]
-          }
-        }
+			async limparFiltroAvancado() {
+				this.mostrarDialogFiltroAvancado = false
+				let keys = Object.keys(this.filtros)
+				for (let i in keys) {
+					if (
+						keys[i] === "mobilizacao" ||
+						keys[i] === "$cardTemEquipamentoCard.equipamento_card_id$"
+					) {
+						delete this.filtros[keys[i]]
+					}
+				}
 
+				let filtros = this.filtros
+				let itensPorPagina = this.itensPorPagina
+				let pagina = this.pagina
 
-        let filtros = this.filtros
-        let itensPorPagina = this.itensPorPagina
-        let pagina = this.pagina
+				await this.atualizarDados(itensPorPagina, pagina, filtros)
+			},
 
-        await this.atualizarDados(itensPorPagina, pagina, filtros)
-      },
+			async gerarExcel() {
+				// let usuario_id = this.$auth.user.id
 
-      async gerarExcel() {
-        // let usuario_id = this.$auth.user.id
+				let usuario_id = this.$auth.user.id
+				let filtros = [...this.filtros]
 
-        let usuario_id = this.$auth.user.id
-        let filtros = [...this.filtros]
+				let confidencial
+				let listaPermissoes = [
+					"aprovar_card_site_manager",
+					"aprovar_card_controle",
+					"rh_contratacoes",
+				]
+				if (listaPermissoes.some((o) => this.$auth.user.permissoes.includes(o))) {
+					confidencial = "todos"
+					filtros.push(
+						`AND (card.confidencial IS NULL OR card.confidencial = false OR card.confidencial = true)`,
+					)
+				} else {
+					confidencial = "setor"
+					filtros.push(
+						` AND (card.confidencial IS NULL OR card.confidencial = false OR ( card.confidencial = true AND usuario.id = ${usuario_id}))`,
+					)
+				}
 
-        let confidencial
-        let listaPermissoes = ['aprovar_card_site_manager', 'aprovar_card_controle', 'rh_contratacoes']
-        if (listaPermissoes.some(o => this.$auth.user.permissoes.includes(o))) {
-          confidencial = 'todos'
-          filtros.push(`AND (card.confidencial IS NULL OR card.confidencial = false OR card.confidencial = true)`)
-        } else {
-          confidencial = 'setor'
-          filtros.push(` AND (card.confidencial IS NULL OR card.confidencial = false OR ( card.confidencial = true AND usuario.id = ${usuario_id}))`)
-        }
+				let etapa_id = this.etapa_id
+				if (etapa_id !== 0) {
+					filtros.push(` AND etapa.id = ${etapa_id}`)
+				}
 
-        let etapa_id = this.etapa_id
-        if (etapa_id !== 0) {
-          filtros.push(` AND etapa.id = ${etapa_id}`)
-        }
+				let filtrosFinais
 
-        let filtrosFinais
+				if (filtros !== "") {
+					filtrosFinais = filtros.join("")
+				}
 
-        if (filtros !== "") {
-          filtrosFinais = filtros.join('')
-        }
+				let resp = await this.$axios.$get("/contratacao/card/buscarPaginados", {
+					params: {
+						page: this.pagina - 1,
+						size: this.totalItens,
+						filtros: filtrosFinais,
+						usuario_id,
+					},
+				})
 
-        let resp = await this.$axios.$get("/contratacao/card/buscarPaginados", {
-          params: {
-            page: this.pagina - 1,
-            size: this.totalItens,
-            filtros: filtrosFinais,
-            usuario_id
-          },
-        })
+				// console.log(resp)
 
-        // console.log(resp)
+				if (!resp.falha) {
+					this.gerandoExcel = true
+					let dados = resp.dados.cards
 
-        if(!resp.falha){
-          this.gerandoExcel = true
-          let dados = resp.dados.cards
+					let cabecalho = [
+						"Código",
+						"Etapa",
+						"Ultíma movimentação",
+						"Situação",
+						"Setor",
+						"Disciplina",
+						"Nome",
+						"CPF",
+						"Função",
+						"Telefone",
+						"Email",
+						"Data de criação",
+						"Data de Necessidade",
+						"Previsão de Entrega",
+						"Tipo recrutamente",
+						"Responsável",
+						"Treinamentos",
+						"PEP",
+						"Mobilização",
+						"Último Comentário",
+					]
+					let nomeArquivo
 
-          let cabecalho = [
-            "Código",
-            "Etapa",
-            "Ultíma movimentação",
-            "Situação",
-            "Setor",
-            "Disciplina",
-            "Nome",
-            "CPF",
-            "Função",
-            "Telefone",
-            "Email",
-            "Data de criação",
-            "Data de Necessidade",
-            "Previsão de Entrega",
-            "Tipo recrutamente",
-            "Responsável",
-            "Treinamentos",
-            "PEP",
-            "Mobilização",
-            "Último Comentário",
-          ]
-          let nomeArquivo
+					nomeArquivo = "cards"
 
-          nomeArquivo = "cards"
+					let itens = []
+					for (let item of dados) {
+						let temp = []
+						temp.push(("000000" + item.id).slice(-6))
+						temp.push(item["Etapa.nome"] ? item["Etapa.nome"] : "")
+						temp.push(this.$dayjs(item.ultima_data).format("DD/MM/YYYY"))
+						temp.push(
+							this.$dayjs().diff(item.ultima_data, "day") <= item["Etapa.leadtime"]
+								? "No prazo"
+								: "Atrasado",
+						)
+						temp.push(item["Setor.nome"] ? item["Setor.nome"] : "")
+						temp.push(item["DisciplinaCard.sigla"] ? `${item["DisciplinaCard.sigla"]}` : "")
+						temp.push(item["Indicacao.nome"] ? item["Indicacao.nome"] : "")
+						temp.push(item["Indicacao.cpf"] ? item["Indicacao.cpf"].replace(/[^\w\s]/gi, "") : "")
+						temp.push(item["FuncaoCard.nome"] ? item["FuncaoCard.nome"].trim() : "")
+						temp.push(item["Indicacao.telefone"] ? item["Indicacao.telefone"] : "")
+						temp.push(item["Indicacao.email"] ? item["Indicacao.email"] : "")
+						temp.push(this.$dayjs(item.created_at).format("DD/MM/YYYY"))
+						temp.push(this.$dayjs(item.data_necessidade).format("DD/MM/YYYY"))
+						temp.push(
+							item.data_previsao
+								? this.$dayjs(item.data_previsao).add(30, "day").format("DD/MM/YYYY")
+								: "",
+						)
+						temp.push(item.tipo_recrutamento)
+						temp.push(item["Responsavel.nome"] ? item["Responsavel.nome"] : "")
+						temp.push(item.treinamentos !== null ? item.treinamentos.join("; ") : "")
+						temp.push(
+							item["CentroCustoPEP.numero_pep"] || item["CentroCustoPEP.descricao"]
+								? `${item["CentroCustoPEP.numero_pep"]} - ${item["CentroCustoPEP.descricao"]}`
+								: "",
+						)
+						temp.push(item.mobilizacao)
+						item["Comentarios.descricao"] ? temp.push(item["Comentarios.descricao"]) : temp.push("")
+						itens.push(temp)
+					}
 
-          let itens = []
-          for (let item of dados) {
-            let temp = []
-            temp.push(("000000" + item.id).slice(-6))
-            temp.push(item['Etapa.nome'] ? item['Etapa.nome'] : "");
-            temp.push(this.$dayjs(item.ultima_data).format("DD/MM/YYYY"));
-            temp.push(this.$dayjs().diff(item.ultima_data, 'day') <= item["Etapa.leadtime"] ? "No prazo" : "Atrasado");
-            temp.push(item['Setor.nome'] ? item['Setor.nome'] : "");
-            temp.push(item['DisciplinaCard.sigla'] ? `${item['DisciplinaCard.sigla']}` : "")
-            temp.push(item['Indicacao.nome'] ? item['Indicacao.nome'] : "")
-            temp.push(item['Indicacao.cpf'] ? item['Indicacao.cpf'].replace(/[^\w\s]/gi, '') : "")
-            temp.push(item['FuncaoCard.nome'] ? item['FuncaoCard.nome'].trim() : "");
-            temp.push(item['Indicacao.telefone'] ? item['Indicacao.telefone'] : "")
-            temp.push(item['Indicacao.email'] ? item['Indicacao.email'] : "")
-            temp.push(this.$dayjs(item.created_at).format("DD/MM/YYYY"))
-            temp.push(this.$dayjs(item.data_necessidade).format("DD/MM/YYYY"));
-            temp.push(item.data_previsao ? this.$dayjs(item.data_previsao).add(30, 'day').format("DD/MM/YYYY") : "")
-            temp.push(item.tipo_recrutamento)
-            temp.push(item['Responsavel.nome'] ? item['Responsavel.nome'] : "");
-            temp.push(item.treinamentos !== null ? item.treinamentos.join('; ') : "")
-            temp.push(item['CentroCustoPEP.numero_pep'] || item['CentroCustoPEP.descricao'] ? `${item['CentroCustoPEP.numero_pep']} - ${item['CentroCustoPEP.descricao']}` : "");
-            temp.push(item.mobilizacao)
-            item['Comentarios.descricao'] ? temp.push(item['Comentarios.descricao']) : temp.push("")
-            itens.push(temp)
-          }
-
-          gerarExcel(cabecalho, itens, nomeArquivo)
-          this.gerandoExcel = false
-        }
-      },
+					gerarExcel(cabecalho, itens, nomeArquivo)
+					this.gerandoExcel = false
+				}
+			},
 		},
 		watch: {
 			async etapa_id() {
-        this.pagina = 1
+				this.pagina = 1
 
 				await this.buscarCards()
 			},

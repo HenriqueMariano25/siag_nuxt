@@ -109,13 +109,23 @@
 			cadastrado(motivo) {
 				this.dados.push(motivo)
 				this.mostrarDialogCriarMotivo = false
+        this.textoAlerta = 'Motivo cadastrado com sucesso!'
+        this.mostrarAlerta = true
 			},
 
       editado({ id, descricao }){
+        let idx = this.dados.findIndex(o => o.id === id)
+
+        if(idx >= 0){
+          this.dados[idx].descricao = descricao
+          this.mostrarDialogCriarMotivo = false
+          this.textoAlerta = 'Motivo editado com sucesso!'
+          this.mostrarAlerta = true
+        }
 
       },
       deletado(id) {
-        console.log(id, descricao)
+        console.log(id)
 
         let idx = this.dados.findIndex( o => o.id === id )
 
@@ -123,6 +133,8 @@
 
         this.dados.push(motivo)
         this.mostrarDialogCriarMotivo = false
+        this.textoAlerta = 'Motivo deletado com sucesso!'
+        this.mostrarAlerta = true
       },
 		},
 	}
