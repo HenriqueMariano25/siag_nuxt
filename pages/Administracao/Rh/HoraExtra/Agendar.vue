@@ -131,18 +131,24 @@
 				</div>
 			</div>
 		</div>
-		<AppTabela
+		<TabelaPadrao
 			:cabecalho="cabecalho"
 			:dados="dados"
 			:itensPorPagina="itensPorPagina"
 			:pagina="pagina"
+      @pagina="pagina = $event"
+      @itensPorPagina="itensPorPagina = $event"
 			:totalItens="totalItens"
+      @filtros="filtros = $event"
+      @ordem="ordem = $event"
 			classPersonalizada="!bg-gray-400"
 			altura="calc(100vh - 277px)"
 			:dadosSql="true"
-			@atualizar="atualizarDados"
+			@atualizar="buscarFuncionarios()"
 			:carregando="carregandoTabela"
 			corOverlay="!bg-gray-600/70"
+      selecionar
+      @selecionados="funcionariosSelecionados = $event"
 			:overlay="agendamento.data === null || agendamento.data === ''"
 			:temDetalhes="false">
 			<template v-slot:[`overlay`]="{ item }">
@@ -151,14 +157,6 @@
 						<h1><strong>Selecione uma data para desbloquear a tabela</strong></h1>
 					</div>
 				</div>
-			</template>
-			<template v-slot:[`body.checkbox`]="{ item }">
-				<AppFormCheckbox
-					:cor="situacaoAgendCheckbox(item)"
-					:disabled="item.ativo"
-					:id="'checkbox' + item.chapa"
-					:valor="item.chapa"
-					v-model="funcionariosSelecionados" />
 			</template>
 			<template v-slot:[`body.rota`]="{ item }">
 				<span
@@ -187,7 +185,7 @@
 					{{ horaExtra(item.hora_extra_projetada) }}
 				</span>
 			</template>
-		</AppTabela>
+		</TabelaPadrao>
 		<div class="bg-red-500 flex">
 			<RodapePagina class="print:hidden">
 				<div class="flex w-full justify-between">
@@ -234,7 +232,7 @@
 <script>
 	import AppFormInput from "~/components/Ui/AppFormInput.vue"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
-	import AppTabela from "~/components/Ui/AppTabela.vue"
+  import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
 	import AppFormCheckbox from "~/components/Ui/Form/AppFormCheckbox.vue"
 	import AppFormSelect from "~/components/Ui/AppFormSelect.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
@@ -257,7 +255,7 @@
 			DialogAgendamentos,
 			AppAlerta,
 			AppFormCheckbox,
-			AppTabela,
+      TabelaPadrao,
 			BotaoPadrao,
 			AppFormInput,
 			AppFormSelect,
@@ -276,7 +274,6 @@
 					{ id: "3° turno", nome: "3° turno" },
 				],
 				cabecalho: [
-					{ nome: "", valor: "checkbox", centralizar: true },
 					{ nome: "HE atual", valor: "hora_extra", filtro: true, centralizar: true },
 					{ nome: "HE projetada", valor: "hora_extra_projetada", filtro: true, centralizar: true },
 					{ nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
@@ -288,6 +285,7 @@
 				],
 				dados: [],
 				filtros: [],
+        ordem: null,
 				itensPorPagina: 50,
 				totalItens: 0,
 				pagina: 1,

@@ -247,17 +247,11 @@
 											:pagina="paginaMeusAgendamentos"
 											:totalItens="totalItensMeusAgendamentos"
 											altura="calc(100vh - 335px)"
+                      selecionar
+                      @selecionados="selecionadosMeusAgendamentos = $event"
 											:dadosSql="true"
 											@atualizar="buscarMeusAgendamentos"
 											:carregando="carregandoTabelaMeusAgendamentos">
-											<template v-slot:[`body.selecione`]="{ item }">
-												<div class="flex justify-center items-center">
-													<AppFormCheckbox
-														:id="parseInt(item.id)"
-														:valor="item"
-														v-model="selecionadosMeusAgendamentos" />
-												</div>
-											</template>
 											<template v-slot:[`body.Funcionario.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Funcionario.nome }}</span>
 											</template>
@@ -325,6 +319,7 @@
 					<!--        </BotaoPadrao>-->
 					<BotaoPadrao
 						texto="Desagendar"
+            cor="bg-red-400 hover:!bg-red-500"
 						v-if="tab === 'meusAgendamentos'"
 						:disabled="selecionadosMeusAgendamentos.length <= 0"
 						@click="mostrarDialogDesagendar = true">
@@ -465,7 +460,6 @@
 
 				//Meus agendamentos
 				cabecalhoMeusAgendamentos: [
-					{ nome: "", valor: "selecione", centralizar: true },
 					{ nome: "Status", valor: "status" },
 					{ nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
 					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
