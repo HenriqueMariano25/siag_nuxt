@@ -85,6 +85,9 @@
 											<template v-slot:[`body.Funcionario.hora_extra`]="{ item }">
 												{{ horaExtra(item.Funcionario.hora_extra) }}
 											</template>
+                      <template v-slot:[`body.Funcionario.hora_extra_projetada`]="{ item }">
+                        {{ horaExtra(item.hora_extra_projetada) }}
+                      </template>
 											<template v-slot:[`body.aprovador_he.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.aprovador_he ? item.aprovador_he.nome : ""
@@ -174,11 +177,17 @@
 											<template v-slot:[`body.Setor.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.rota`]="{ item }">
+                      <template v-slot:[`body.Funcionario.rota.numero`]="{ item }">
 												<span class="whitespace-nowrap">{{
-													item.Funcionario.rota ? item.Funcionario.rota.numero : ""
-												}}</span>
-											</template>
+                            item.Funcionario.rota ? item.Funcionario.rota.numero : ""
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.hora_extra`]="{ item }">
+                        {{ horaExtra(item.Funcionario.hora_extra) }}
+                      </template>
+                      <template v-slot:[`body.Funcionario.hora_extra_projetada`]="{ item }">
+                        {{ horaExtra(item.hora_extra_projetada) }}
+                      </template>
 											<template v-slot:[`body.Funcionario.ponto_embarque`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Funcionario.ponto_embarque }}</span>
 											</template>
@@ -265,17 +274,22 @@
 													item.Funcionario.encarregado_producao
 												}}</span>
 											</template>
+                      <template v-slot:[`body.aprovador_he.nome`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.aprovador_he ? item.aprovador_he.nome : ""
+                          }}</span>
+                      </template>
 											<template v-slot:[`body.Funcionario.gestor`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
 											</template>
 											<template v-slot:[`body.Setor.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.rota`]="{ item }">
+                      <template v-slot:[`body.Funcionario.rota.numero`]="{ item }">
 												<span class="whitespace-nowrap">{{
-													item.Funcionario.rota ? item.Funcionario.rota.numero : ""
-												}}</span>
-											</template>
+                            item.Funcionario.rota ? item.Funcionario.rota.numero : ""
+                          }}</span>
+                      </template>
 											<template v-slot:[`body.Funcionario.ponto_embarque`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Funcionario.ponto_embarque }}</span>
 											</template>
@@ -289,16 +303,13 @@
 													{{ item.StatusAgendamento ? item.StatusAgendamento.descricao : "" }}
 												</span>
 											</template>
-											<template v-slot:[`body.hora_extra`]="{ item }">
-												<span class="whitespace-nowrap">
-													{{ horaExtra(item.hora_extra) }}
-												</span>
-											</template>
-											<template v-slot:[`body.hora_extra_projetada`]="{ item }">
-												<span class="whitespace-nowrap">
-													{{ horaExtra(item.hora_extra_projetada) }}
-												</span>
-											</template>
+                      <template v-slot:[`body.Funcionario.hora_extra`]="{ item }">
+                        {{ horaExtra(item.Funcionario.hora_extra) }}
+                      </template>
+                      <template v-slot:[`body.Funcionario.hora_extra_projetada`]="{ item }">
+                        {{ horaExtra(item.hora_extra_projetada) }}
+                      </template>
+
 										</TabelaPadrao>
 									</div>
 								</div>
@@ -404,7 +415,6 @@
 					},
 					{ nome: "Turno", valor: "turno", filtro: true, centralizar: true },
 					{ nome: "Motivo", valor: "motivo", filtro: true, centralizar: true },
-					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
 					{ nome: "Aprovado por", valor: "aprovador_he.nome", filtro: true },
 					{ nome: "Rota", valor: "Funcionario.rota.numero", filtro: true },
 					{ nome: "Ponto Embarque", valor: "Funcionario.ponto_embarque", filtro: true },
@@ -440,13 +450,12 @@
 					},
 					{ nome: "Turno", valor: "turno", filtro: true, centralizar: true },
 					{ nome: "Motivo", valor: "motivo", filtro: true, centralizar: true },
-					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
-					{ nome: "Aprovado por", valor: "aprovador_he.nome", filtro: true },
+					{ nome: "Situação", valor: "situacao", filtro: true },
 					{ nome: "Rota", valor: "Funcionario.rota.numero", filtro: true },
 					{ nome: "Ponto Embarque", valor: "Funcionario.ponto_embarque", filtro: true },
 				],
 				dadosPendentes: [],
-				filtrosPendentes: [],
+				filtrosPendentes: {},
 				itensPorPaginaPendentes: 50,
 				totalItensPendentes: 0,
 				paginaPendentes: 1,
@@ -482,7 +491,7 @@
 					{ nome: "Ponto Embarque", valor: "Funcionario.ponto_embarque", filtro: true },
 				],
 				dadosMeusAgendamentos: [],
-				filtrosMeusAgendamentos: [],
+				filtrosMeusAgendamentos: {},
 				itensPorPaginaMeusAgendamentos: 50,
 				totalItensMeusAgendamentos: 0,
 				paginaMeusAgendamentos: 1,
@@ -565,8 +574,10 @@
 				this.carregandoTabelaPendentes = true
 
 				let data = this.dataPendentes
+        let ordem = this.ordemPendentes
+        let filtros = this.filtrosPendentes
 
-				let resp = await this.$axios.$get("/hora_extra/buscar/pendentes", { params: { data } })
+				let resp = await this.$axios.$get("/hora_extra/buscar/pendentes", { params: { data, ordem, filtros } })
 
 				if (!resp.falha) {
 					this.carregandoTabelaPendentes = false
@@ -601,14 +612,17 @@
 
 				let data = this.dataMeusAgendamentos
 				let usuario_id = this.$auth.user.id
+        let ordem = this.ordemMeusAgendamentos
+        let filtros = this.filtrosMeusAgendamentos
 
 				let resp = await this.$axios.$get("/hora_extra/buscar/meus_agendamentos", {
-					params: { data, usuario_id },
+					params: { data, usuario_id, ordem, filtros },
 				})
 
 				if (!resp.falha) {
 					this.carregandoTabelaMeusAgendamentos = false
 					this.dadosMeusAgendamentos = resp.dados.agendamentos
+          console.log(resp.dados.agendamentos)
 					this.totalItensMeusAgendamentos = resp.dados.totalItens
 				}
 			},

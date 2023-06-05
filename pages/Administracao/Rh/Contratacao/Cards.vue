@@ -30,15 +30,18 @@
 			</div>
 		</div>
 		<div class="print:hidden">
+      {{ pagina }}
 			<TabelaPadrao
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
 				:pagina="pagina"
+        @pagina="pagina = $event"
+        @filtros="filtros = $event"
 				:totalItens="totalItens"
 				altura="calc(100vh - 194px)"
 				:dadosSql="true"
-				@atualizar="atualizarDados"
+				@atualizar="buscarCards"
 				@dblclick="verDetalhesSS"
 				:selecionar="
 					!this.etapasAprovacao.includes(etapa_id) &&
@@ -205,6 +208,15 @@
 								alt="excel"
 								class="w-6 h-6" />
 						</BotaoPadrao>
+            <BotaoPadrao
+              :texto="gerandoExcel ? 'Gerando Excel' : 'Excel por etapa'"
+              @click="gerarExcelEtapa()"
+              :disabled="gerandoExcel">
+              <img
+                src="@/assets/icons/excel-b.svg"
+                alt="excel"
+                class="w-6 h-6" />
+            </BotaoPadrao>
 					</div>
 					<div class="flex w-full justify-end gap-4">
 						<BotaoPadrao
@@ -358,7 +370,7 @@
 		computed: {
 			cabecalho() {
 				let cabecalho = [
-					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true, colunaTabela: "card.id" },
+					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true, colunaTabela: "card.id", ordenar: true },
 					{
 						nome: "Etapa",
 						valor: "Etapa.nome",
@@ -559,7 +571,9 @@
 			},
 
 			async atualizarDados(parametros) {
+        console.log(parametros)
 				let { itensPorPagina, pagina, filtros } = parametros
+
 
 				if (itensPorPagina) this.itensPorPagina = itensPorPagina
 
@@ -787,6 +801,79 @@
 					this.gerandoExcel = false
 				}
 			},
+
+      async gerarExcelEtapa(){
+        let resp = await this.$axios.$get("/contratacao/cards/relatorio_tempo_etapa")
+
+        console.log(resp)
+
+        if(!resp.falha){
+          let cards = resp.dados.cards
+          let etapas = resp.dados.etapas
+
+          let cabecalho = [
+            "Card",
+          ]
+
+          cabecalho.push( ...Object.values(etapas) )
+          let nomeArquivo
+
+          nomeArquivo = "cards"
+
+          let itens = []
+          for (let item of cards) {
+            let temp = []
+            temp.push(("000000" + item.id).slice(-6))
+            for(let etapa of Object.keys(etapas)){
+              if(item.etapas[etapa]){
+                console.log("Card", item.id)
+                console.log(item.etapas[etapa] )
+                console.log(item.etapas[etapa] === 0 )
+                temp.push((parseFloat(item.etapas[etapa]) / 24).toFixed(2))
+              }else if(item.etapas[etapa] === 0){
+                temp.push("0.04")
+              }else{
+                temp.push("")
+              }
+            }
+            // temp.push(item["Etapa.nome"] ? item["Etapa.nome"] : "")
+            // temp.push(this.$dayjs(item.ultima_data).format("DD/MM/YYYY"))
+            // temp.push(
+            //   this.$dayjs().diff(item.ultima_data, "day") <= item["Etapa.leadtime"]
+            //     ? "No prazo"
+            //     : "Atrasado",
+            // )
+            // temp.push(item["Setor.nome"] ? item["Setor.nome"] : "")
+            // temp.push(item["DisciplinaCard.sigla"] ? `${item["DisciplinaCard.sigla"]}` : "")
+            // temp.push(item["Indicacao.nome"] ? item["Indicacao.nome"] : "")
+            // temp.push(item["Indicacao.cpf"] ? item["Indicacao.cpf"].replace(/[^\w\s]/gi, "") : "")
+            // temp.push(item["FuncaoCard.nome"] ? item["FuncaoCard.nome"].trim() : "")
+            // temp.push(item["Indicacao.telefone"] ? item["Indicacao.telefone"] : "")
+            // temp.push(item["Indicacao.email"] ? item["Indicacao.email"] : "")
+            // temp.push(this.$dayjs(item.created_at).format("DD/MM/YYYY"))
+            // temp.push(this.$dayjs(item.data_necessidade).format("DD/MM/YYYY"))
+            // temp.push(
+            //   item.data_previsao
+            //     ? this.$dayjs(item.data_previsao).add(30, "day").format("DD/MM/YYYY")
+            //     : "",
+            // )
+            // temp.push(item.tipo_recrutamento)
+            // temp.push(item["Responsavel.nome"] ? item["Responsavel.nome"] : "")
+            // temp.push(item.treinamentos !== null ? item.treinamentos.join("; ") : "")
+            // temp.push(
+            //   item["CentroCustoPEP.numero_pep"] || item["CentroCustoPEP.descricao"]
+            //     ? `${item["CentroCustoPEP.numero_pep"]} - ${item["CentroCustoPEP.descricao"]}`
+            //     : "",
+            // )
+            // temp.push(item.mobilizacao)
+            // item["Comentarios.descricao"] ? temp.push(item["Comentarios.descricao"]) : temp.push("")
+            itens.push(temp)
+          }
+
+          gerarExcel(cabecalho, itens, nomeArquivo)
+          this.gerandoExcel = false
+        }
+      }
 		},
 		watch: {
 			async etapa_id() {
