@@ -7,7 +7,7 @@
       <textarea
         :id="'inputPersonalizado'+id"
         :name="'inputPersonalizado'+id"
-        rows="3"
+        :rows="linhas"
         :placeholder="placeholder"
         class="w-full border rounded-sm px-2 py-1 focus:border-grey-800 focus:outline-none bg-white border-gray-400 focus:ring-gray-300'"
         :class="{'!bg-red-100 !border-red-400 !focus:ring-red-300': invalido,}"
@@ -54,6 +54,10 @@ export default {
     invalido: {
       type: Boolean,
       default: false
+    },
+    linhas: {
+      type: [Number, String],
+      default: 3
     }
   },
   data() {

@@ -108,6 +108,10 @@ export default {
     },
     max: {
       type: Number,
+    },
+    semEspeciais: {
+      type: [Boolean],
+      default: false
     }
   },
   data() {
@@ -121,8 +125,17 @@ export default {
       return {
         ...this.$listeners,
         input(event) {
+          let valor
 
-          vm.$emit('input', vm.uppercase ? event.target.value.toUpperCase() : event.target.value);
+          if (vm.semEspeciais) {
+            const regex = /[^\w\s]/gi;
+            valor = event.target.value.replace(regex, '')
+          } else {
+           valor = event.target.value
+
+          }
+
+          vm.$emit('input', vm.uppercase ? valor.toUpperCase() : valor);
         },
       };
     },
@@ -134,7 +147,12 @@ export default {
   },
   watch: {
     value(value) {
-      this.localValue = value;
+      if(this.semEspeciais){
+        const regex = /[^\w\s]/gi;
+        this.localValue = value.replace(regex, '')
+      }else{
+        this.localValue = value;
+      }
     },
   },
 };

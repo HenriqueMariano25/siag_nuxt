@@ -7,7 +7,14 @@
         cor="bg-[#264653]"
         link="/administracao/rh/contratacao/configuracao/etapa">
         <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
-      </ButtonNavegacao></div>
+      </ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="Motivos alteração"
+        cor="bg-[#264653]"
+        link="/administracao/rh/contratacao/configuracao/motivoAlteracao">
+        <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
+      </ButtonNavegacao>
+    </div>
   </div>
 </template>
 

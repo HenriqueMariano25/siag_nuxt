@@ -65,18 +65,11 @@
                     @ordem="ordemGestor = $event"
 										:totalItens="totalItensGestor"
 										altura="calc(100vh - 335px)"
+                    selecionar
+                    @selecionados="selecionadosGestor = $event"
 										@atualizar="buscarAgendamentosGestor()"
 										:carregando="carregandoTabelaGestor"
 										:temRodape="false">
-										<template v-slot:[`body.select`]="{ item }">
-											<div class="flex justify-center">
-												<AppFormCheckbox
-                          :disabled="ehAnteriorHoje"
-													:id="'checkox'+parseInt(item.id)"
-													:valor="item"
-													v-model="selecionadosGestor" />
-											</div>
-										</template>
 										<template v-slot:[`body.status`]="{ item }">
 											<div
 												v-if="item.aprovacao_he === null"
@@ -190,16 +183,9 @@
                     altura="calc(100vh - 335px)"
                     @atualizar="buscarAgendamentosSiteManager()"
                     :carregando="carregandoTabelaSiteManager"
+                    selecionar
+                    @selecionados="selecionadosSiteManager = $event"
                     :temRodape="false">
-                    <template v-slot:[`body.select`]="{ item }">
-                      <div class="flex justify-center">
-                        <AppFormCheckbox
-                          :disabled="ehAnteriorHoje"
-                          :id="parseInt(item)"
-                          :valor="item"
-                          v-model="selecionadosSiteManager"/>
-                      </div>
-                    </template>
                     <template v-slot:[`body.status`]="{ item }">
                       <div
                         v-if="item.aprovacao_situacao === null"
@@ -332,21 +318,6 @@
 			return {
 				dataGestorArea: null,
 				dataSiteManager: null,
-				cabecalho: [
-					{ nome: "", valor: "select", centralizar: true },
-					{ nome: "Status", valor: "status", centralizar: true },
-					{ nome: "HE atual", valor: "Funcionario.hora_extra", ordenar: true, centralizar: true },
-					{ nome: "HE projetada", valor: "heProjetada", ordenar: true, centralizar: true },
-					{ nome: "Matricula", valor: "chapa", ordenar: true, filtro: true, centralizar: true },
-					{ nome: "Nome", valor: "Funcionario.nome", filtro: true, ordenar: true },
-					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
-					{ nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
-					{ nome: "Gestor", valor: "Funcionario.gestor", filtro: true },
-					{ nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
-					{ nome: "Motivo", valor: "motivo", filtro: true, centralizar: true },
-					{ nome: "Turno", valor: "turno", filtro: true, centralizar: true },
-					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
-				],
 				dadosGestor: [],
 				filtrosGestor: {},
 				itensPorPaginaGestor: 50,
@@ -382,6 +353,28 @@
       }
     },
 		computed: {
+      cabecalho(){
+        let cabecalho =  [
+          { nome: "Status", valor: "status", centralizar: true },
+          { nome: "HE atual", valor: "Funcionario.hora_extra", ordenar: true, centralizar: true },
+          { nome: "HE projetada", valor: "heProjetada", ordenar: true, centralizar: true },
+          { nome: "Matricula", valor: "chapa", ordenar: true, filtro: true, centralizar: true },
+          { nome: "Nome", valor: "Funcionario.nome", filtro: true, ordenar: true },
+          { nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
+          { nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
+          { nome: "Gestor", valor: "Funcionario.gestor", filtro: true },
+          { nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
+          { nome: "Motivo", valor: "motivo", filtro: true, centralizar: true },
+          { nome: "Turno", valor: "turno", filtro: true, centralizar: true },
+        ]
+
+        if(this.tab === 'siteManager'){
+          cabecalho.push({ nome: "Situação", valor: "situacao", filtro: true, centralizar: true })
+        }
+
+        return cabecalho
+      },
+
 			tabs() {
 				return [
 					{ nome: "Gestor da Área", valor: "gestorArea" },
