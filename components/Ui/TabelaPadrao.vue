@@ -158,7 +158,7 @@
                     :value="valorFiltro(cab.valor)"
                     placeholder="Pressione ENTER para buscar"
                     @keyup.enter.prevent.stop="
-												adicionarFiltro(cab.valor, $event, cab.colunaTabela)
+												adicionarFiltro(cab.valor, $event, cab.colunaTabela, cab.tipoFiltro)
 											"/>
                 </div>
                 <div class="w-full mt-1">
@@ -505,6 +505,8 @@ export default {
       } else {
         let filtrosPrPreparar = this.filtros
 
+        console.log(filtrosPrPreparar)
+
         filtros = this.prepararFiltro(filtrosPrPreparar)
       }
 
@@ -527,7 +529,7 @@ export default {
       this.$emit("dblclick", item)
     },
 
-    adicionarFiltro(item, event, colunaTabela) {
+    adicionarFiltro(item, event, colunaTabela, tipoFiltro) {
       if (!this.filtrosAtivos.includes(item)) {
         this.filtrosAtivos.push(item)
       }
@@ -535,11 +537,13 @@ export default {
       let valor = event.target.value
 
       if (this.dadosSql) {
-        if (this.filtros.includes(item)) {
-          let idx = this.filtros.findIndex((o) => o.includes(item))
+        if (this.filtros.some(o => o.includes(`LOWER(${item})`))) {
+
+          let idx = this.filtros.findIndex((o) => o.includes(`LOWER(${item})`))
+          console.log(idx)
 
           this.filtros.splice(idx, 1)
-          this.filtrosAtivos.splice(idx, 1)
+          // this.filtrosAtivos.splice(idx, 1)
         }
 
         if (valor === null || valor === "") {
@@ -550,17 +554,23 @@ export default {
         } else {
           let filtro
 
-          console.log(colunaTabela)
-          console.log(item)
-
           if (colunaTabela !== null && colunaTabela !== "" && colunaTabela !== undefined) {
-            filtro = `AND ${colunaTabela} = ${valor}`
+            if(tipoFiltro === 'inteiro')
+              filtro = `AND ${colunaTabela} = ${valor}`
+            else
+              filtro = `AND LOWER(${colunaTabela}) LIKE LOWER('%${valor.replace(/[^a-zA-Z0-9\s]/g, "")}%')`
           } else {
-            filtro = `AND LOWER(${item}) LIKE LOWER('%${valor.replace(/[^a-zA-Z\s]/g, "")}%')`
+            filtro = `AND LOWER(${item}) LIKE LOWER('%${valor.replace(/[^a-zA-Z0-9\s]/g, "")}%')`
           }
+
+          console.log(filtro)
           this.filtros.push(filtro)
         }
       } else {
+        console.log('aqui')
+        console.log('item', item)
+
+
         if (item.includes(".")) item = `$${item}$`
         let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
 
@@ -575,6 +585,7 @@ export default {
         }
       }
 
+      console.log(this.filtros)
       this.localPagina = 1
       this.filtroAberto = null
       this.atualizarDados()
