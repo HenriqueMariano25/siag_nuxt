@@ -149,8 +149,7 @@
 			corOverlay="!bg-gray-600/70"
       selecionar
       @selecionados="funcionariosSelecionados = $event"
-			:overlay="agendamento.data === null || agendamento.data === ''"
-			:temDetalhes="false">
+			:overlay="agendamento.data === null || agendamento.data === ''">
 			<template v-slot:[`overlay`]="{ item }">
 				<div class="text-white flex items-center justify-center h-full w-full text-3xl">
 					<div class="bg-gray-800 p-2 rounded bg-">
@@ -274,13 +273,13 @@
 					{ id: "3° turno", nome: "3° turno" },
 				],
 				cabecalho: [
-					{ nome: "HE atual", valor: "hora_extra", filtro: true, centralizar: true },
-					{ nome: "HE projetada", valor: "hora_extra_projetada", filtro: true, centralizar: true },
+					{ nome: "HE atual", valor: "hora_extra", centralizar: true },
+					{ nome: "HE projetada", valor: "hora_extra_projetada", centralizar: true },
 					{ nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
-					{ nome: "Nome", valor: "nome", filtro: true },
+					{ nome: "Nome", valor: "nome", filtro: true , colunaTabela: 'fun.nome'},
 					{ nome: "Cargo", valor: "cargo", filtro: true },
 					{ nome: "Encarregado/Lider SAPO", valor: "encarregado_lider_sapo", filtro: true },
-					{ nome: "Rota", valor: "rota", filtro: true },
+					{ nome: "Rota", valor: "rota" },
 					{ nome: "Ponto de embarque", valor: "ponto_embarque", filtro: true },
 				],
 				dados: [],
@@ -444,8 +443,17 @@
 				this.carregandoTabela = true
 				let setorId = this.$auth.user.setor_id
 
+        let filtros = [...this.filtros]
+
+        let filtrosFinais
+
+        if (filtros !== "") {
+          filtrosFinais = filtros.join("")
+        }
+
+        // console.log(filtrosFinais)
 				let resp = await this.$axios.$get("/hora_extra/buscar/funcionarios", {
-					params: { setorId, page: this.pagina - 1, size: this.itensPorPagina },
+					params: { setorId, page: this.pagina - 1, size: this.itensPorPagina, filtros: filtrosFinais, },
 				})
 
 				if (!resp.falha) {

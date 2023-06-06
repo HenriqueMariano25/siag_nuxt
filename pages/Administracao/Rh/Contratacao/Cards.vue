@@ -30,7 +30,6 @@
 			</div>
 		</div>
 		<div class="print:hidden">
-      {{ pagina }}
 			<TabelaPadrao
 				:cabecalho="cabecalho"
 				:dados="dados"
@@ -370,7 +369,7 @@
 		computed: {
 			cabecalho() {
 				let cabecalho = [
-					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true, colunaTabela: "card.id", ordenar: true },
+					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true, colunaTabela: "card.id", ordenar: true, tipoFiltro: 'inteiro' },
 					{
 						nome: "Etapa",
 						valor: "Etapa.nome",

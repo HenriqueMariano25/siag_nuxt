@@ -152,7 +152,7 @@
 											:pagina="paginaPendentes"
 											:totalItens="totalItensPendentes"
 											altura="calc(100vh - 335px)"
-											:dadosSql="true"
+                      @filtros="filtrosPendentes = $event"
 											@atualizar="buscarPendentes"
 											:carregando="carregandoTabelaPendentes">
                       <template v-slot:[`body.status`]="{ item }">
@@ -253,8 +253,8 @@
 											:totalItens="totalItensMeusAgendamentos"
 											altura="calc(100vh - 335px)"
                       selecionar
+                      @filtros="filtrosMeusAgendamentos = $event"
                       @selecionados="selecionadosMeusAgendamentos = $event"
-											:dadosSql="true"
 											@atualizar="buscarMeusAgendamentos"
 											:carregando="carregandoTabelaMeusAgendamentos">
                       <template v-slot:[`body.status`]="{ item }">
@@ -408,17 +408,16 @@
 					},
 					{ nome: "Gestor", valor: "Funcionario.gestor", filtro: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
-					{ nome: "HE atual", valor: "Funcionario.hora_extra", filtro: true, centralizar: true },
+					{ nome: "HE atual", valor: "Funcionario.hora_extra", centralizar: true },
 					{
 						nome: "HE projetada",
 						valor: "Funcionario.hora_extra_projetada",
-						filtro: true,
 						centralizar: true,
 					},
 					{ nome: "Turno", valor: "turno", filtro: true, centralizar: true },
-					{ nome: "Motivo", valor: "motivo", filtro: true, centralizar: true },
+					{ nome: "Motivo", valor: "motivo", filtro: true, },
 					{ nome: "Aprovado por", valor: "aprovador_he.nome", filtro: true },
-					{ nome: "Rota", valor: "Funcionario.rota.numero", filtro: true },
+					{ nome: "Rota", valor: "Funcionario.rota.numero" },
 					{ nome: "Ponto Embarque", valor: "Funcionario.ponto_embarque", filtro: true },
 				],
 				dadosAprovados: [],
@@ -445,17 +444,16 @@
           },
 					{ nome: "Gestor", valor: "Funcionario.gestor", filtro: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
-					{ nome: "HE atual", valor: "Funcionario.hora_extra", filtro: true, centralizar: true },
+					{ nome: "HE atual", valor: "Funcionario.hora_extra", centralizar: true },
 					{
 						nome: "HE projetada",
 						valor: "Funcionario.hora_extra_projetada",
-						filtro: true,
 						centralizar: true,
 					},
 					{ nome: "Turno", valor: "turno", filtro: true, centralizar: true },
-					{ nome: "Motivo", valor: "motivo", filtro: true, centralizar: true },
+					{ nome: "Motivo", valor: "motivo", filtro: true, },
 					{ nome: "Situação", valor: "situacao", filtro: true },
-					{ nome: "Rota", valor: "Funcionario.rota.numero", filtro: true },
+					{ nome: "Rota", valor: "Funcionario.rota.numero" },
 					{ nome: "Ponto Embarque", valor: "Funcionario.ponto_embarque", filtro: true },
 				],
 				dadosPendentes: [],
@@ -480,18 +478,17 @@
 						valor: "Funcionario.encarregado_producao",
 						filtro: true,
 					},
-					{ nome: "HE atual", valor: "Funcionario.hora_extra", filtro: true, centralizar: true },
+					{ nome: "HE atual", valor: "Funcionario.hora_extra", centralizar: true },
 					{
 						nome: "HE projetada",
 						valor: "Funcionario.hora_extra_projetada",
-						filtro: true,
 						centralizar: true,
 					},
 					{ nome: "Turno", valor: "turno", filtro: true, centralizar: true },
-					{ nome: "Motivo", valor: "motivo", filtro: true, centralizar: true },
+					{ nome: "Motivo", valor: "motivo", filtro: true },
 					{ nome: "Situação", valor: "situacao", filtro: true, centralizar: true },
 					{ nome: "Aprovado por", valor: "aprovador_he.nome", filtro: true },
-					{ nome: "Rota", valor: "Funcionario.rota.numero", filtro: true },
+					{ nome: "Rota", valor: "Funcionario.rota.numero" },
 					{ nome: "Ponto Embarque", valor: "Funcionario.ponto_embarque", filtro: true },
 				],
 				dadosMeusAgendamentos: [],
@@ -628,7 +625,6 @@
 				if (!resp.falha) {
 					let dados = resp.dados.dias
 					this.diasPendentes = dados
-					console.log(dados)
 				}
 			},
 
@@ -727,6 +723,8 @@
 				let usuario_id = this.$auth.user.id
         let ordem = this.ordemMeusAgendamentos
         let filtros = this.filtrosMeusAgendamentos
+
+        console.log(filtros)
 
 				let resp = await this.$axios.$get("/hora_extra/buscar/meus_agendamentos", {
 					params: { data, usuario_id, ordem, filtros },
