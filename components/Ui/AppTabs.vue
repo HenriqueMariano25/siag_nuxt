@@ -19,7 +19,7 @@
     <div
       class=""
       v-for="tab of tabs">
-      <slot :name="'tab.' + tab.valor" v-if="tabAtual === tab.valor"></slot>
+      <slot :name="'tab.' + tab.valor" v-if="tabAtual === tab.valor" ></slot>
     </div>
   </div>
 </template>

@@ -33,71 +33,74 @@
 					label="Data" />
 				<div class="flex items-end">
 					<BotaoPadrao
+            :disabled="data === null || data === ''"
 						texto="Gerar kpi"
 						@click="gerarKpi()"
 						cor="bg-gray-900 text-white"></BotaoPadrao>
 				</div>
 			</div>
 		</div>
-		<div class="border border-gray-300 shadow relative h-full print:hidden">
-			<AppTabs
-				:tabs="tabs"
-				@tab="tab = $event">
-				<template v-slot:[`tab.agend_s_presenca`]="{ item }">
-					<div class="flex divide-x divide-gray-800" v-show="buscouDados">
-						<div class="w-5/12 flex flex-col items-center">
-							<div class="flex w-full gap-2 p-2 justify-center">
-								<div
-									class="text-center flex flex-col text-xl divide-y divide-gray-800 border border-gray-500 px-2 w-32">
-									<span class="p-2">Agendados</span>
-									<span class="p-2"
-										><strong>{{ agendSPresenca.totalAgend }}</strong></span
-									>
-								</div>
-								<div
-									class="text-center flex flex-col text-xl divide-y divide-gray-800 border border-gray-500 h-auto px-2 w-32">
-									<span class="p-2">Ausentes</span>
-									<span class="p-2"
-										><strong>{{ agendSPresenca.totalAusente }}</strong></span
-									>
-								</div>
-								<div
-									class="text-center flex flex-col text-xl divide-y divide-gray-800 border border-gray-500 h-auto px-2 w-32">
-									<span class="p-2">MOD</span>
-									<span class="p-2"
-										><strong>{{ agendSPresenca.direto }}</strong></span
-									>
-								</div>
-								<div
-									class="text-center flex flex-col text-xl divide-y divide-gray-800 border border-gray-500 h-auto px-2 w-32">
-									<span class="p-2">MOI</span>
-									<span class="p-2"
-										><strong>{{ agendSPresenca.indireto }}</strong></span
-									>
-								</div>
-							</div>
-							<div class="w-full h-full flex justify-center items-center">
-								<div class="w-[580px] h-[480px]">
-									<ApexChart
-										class=""
-										type="pie"
-										:options="opcoesGraSemPresencaPorSetor"
-										:series="valoresGraSemPresencaPorSetor"
-										id="graSemPresencaPorSetor" />
-								</div>
-							</div>
-						</div>
-						<div class="flex w-7/12" style="height: calc(100vh - 130px) ">
-							<div class="w-full grid grid-cols-1 divide-y divide-gray-800" >
-								<div class="flex w-full grow">
-                  <div ref="graSemPresencaQuantSetor" class="flex  w-full !h-[200px]"></div>
-								</div>
-								<div class="flex h-[300px] w-full ">
-                  <div ref="graSemPresencaCargosQuant" class="flex  w-full !h-[200px]"></div>
-								</div>
-							</div>
-						</div>
+		<div class="border border-gray-300 relative print:hidden h-[635px] overflow-y-auto">
+					<div class="flex flex-col " v-show="buscouDados">
+            <div class="bg-blue-500 text-center">
+              <span class="text-xl">FUNCIONÁRIOS AGENDADOS COM E SEM PRESENÇA</span>
+            </div>
+            <div class="flex divide-x divide-gray-800">
+              <div class="w-5/12 flex flex-col items-center">
+                <div class="w-full h-full flex justify-center items-center">
+                  <div class="w-[580px] h-[480px]">
+                    <ApexChart
+                      class=""
+                      type="pie"
+                      :options="opcoesGraSemPresencaPorSetor"
+                      :series="valoresGraSemPresencaPorSetor"
+                      id="graSemPresencaPorSetor" />
+                  </div>
+                </div>
+              </div>
+              <div class="flex w-7/12" style="height: calc(100vh - 130px) ">
+                <div class="w-full grid grid-cols-1 divide-y divide-gray-800">
+                  <div class="flex w-full grow">
+                    <div ref="graSemPresencaQuantSetor" class="flex  w-full !h-[200px]"></div>
+                  </div>
+                  <div class="flex h-[300px] w-full ">
+                    <div ref="graSemPresencaCargosQuant" class="flex  w-full !h-[200px]"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
 					</div>
+
+
+
+
+          <div class="flex flex-col divide-y divide-gray-800" v-show="buscouDados">
+            <div class="bg-blue-500 text-center">
+              <span class="text-xl">FUNCIONÁRIOS PRESENTES COM E SEM AGENDAMENTO</span>
+            </div>
+            <div class="flex divide-x divide-gray-800">
+              <div class="flex flex-col w-4/12">
+                <div class="w-full">
+                  <div ref="graSemAgendamentoGeral" class="flex  w-full !h-[300px]"></div>
+                </div>
+              </div>
+              <div class="flex flex-col w-8/12">
+                <div class="w-full">
+                  <div ref="graSemAgendamento" class="flex  w-full !h-[300px]"></div>
+                </div>
+              </div>
+
+            </div>
+            <div class="flex" style="">
+              <div class="w-full grid grid-cols-1 divide-y divide-gray-800">
+
+                <div class="flex h-[300px] w-full">
+                  <div ref="graSemAgendamentoSetor" class="flex  w-full !h-[300px]"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
 					<div
 						class="flex w-full h-full absolute top-0 items-center justify-center bg-gray-700/70 gerandoKpi"
 						v-if="gerandoKpi">
@@ -105,72 +108,10 @@
 							<h1 class="text-4xl text-white">Gerando KPI, favor aguarde...</h1>
 						</div>
 					</div>
-					<!--					<div-->
-					<!--						class="bg-primaria-700 text-white flex w-full justify-between p-1 items-center hidden print:flex">-->
-					<!--						<span class="text-sm self-start">Gerado em: {{ $dayjs().format("DD/MM/YYYY") }}</span>-->
-					<!--						<span class="text-xl"-->
-					<!--							>Agendados Sem Presença - {{ $dayjs(data).format("DD/MM/YYYY") }}-->
-					<!--						</span>-->
-					<!--						<img-->
-					<!--							src="../../../../../assets/img/logoagcnovo.png"-->
-					<!--							height="52"-->
-					<!--							width="250" />-->
-					<!--					</div>-->
-					<!--					<div-->
-					<!--						class="agend_s_presenca flex-col w-full bg-white divide-y divide-gray-700"-->
-					<!--						:class="{ flex: buscouDados === true, hidden: buscouDados === false }">-->
-					<!--					</div>-->
-				</template>
-        <template v-slot:[`tab.pres_s_agendamento`]="{ item }">
-          <div class="flex divide-x divide-gray-800" v-show="buscouDados">
-            <div class="w-5/12 flex flex-col items-center">
-              <div class="flex w-full gap-2 p-2 justify-center">
-                <div
-                  class="text-center flex flex-col text-xl divide-y divide-gray-800 border border-gray-500 px-2 w-32">
-                  <span class="p-2">Presentes</span>
-                  <span class="p-2"
-                  ><strong>{{ agendSPresenca.totalAgend }}</strong></span
-                  >
-                </div>
-                <div
-                  class="text-center flex flex-col text-md divide-y divide-gray-800 border border-gray-500 h-auto px-2 w-32">
-                  <span class="p-2">Sem Agend.</span>
-                  <span class="p-2"
-                  ><strong>{{ agendSPresenca.totalAusente }}</strong></span
-                  >
-                </div>
-                <div
-                  class="text-center flex flex-col text-xl divide-y divide-gray-800 border border-gray-500 h-auto px-2 w-32">
-                  <span class="p-2">MOD</span>
-                  <span class="p-2"
-                  ><strong>{{ agendSPresenca.direto }}</strong></span
-                  >
-                </div>
-                <div
-                  class="text-center flex flex-col text-xl divide-y divide-gray-800 border border-gray-500 h-auto px-2 w-32">
-                  <span class="p-2">MOI</span>
-                  <span class="p-2"
-                  ><strong>{{ agendSPresenca.indireto }}</strong></span
-                  >
-                </div>
-              </div>
-              <div class="w-full h-full flex justify-center items-center">
-                <div class="w-[580px] h-[480px]">
-                  <ApexChart
-                    class=""
-                    type="pie"
-                    :options="opcoesGraSemPresencaPorSetor"
-                    :series="valoresGraSemPresencaPorSetor"
-                    id="graSemPresencaPorSetor"/>
-                </div>
-              </div>
-            </div>
-          </div>
-        </template>
-			</AppTabs>
 		</div>
 		<DialogImprimirAgendadoSPresenca
 			v-if="mostrarDialogAgendadosSPresenca"
+      :data="data"
 			@cancelar="mostrarDialogAgendadosSPresenca = false"
 			:dados="dadosGraAgendadoSPresenca" />
 	</div>
@@ -180,9 +121,10 @@
 	import AppFormInput from "~/components/Ui/AppFormInput.vue"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import AppTabs from "~/components/Ui/AppTabs.vue"
-	import Chart from "chart.js/auto"
-	import gerarExcel from "~/functions/gerarExcel"
 	import DialogImprimirAgendadoSPresenca from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogImprimirAgendadoSPresenca.vue"
+  import { Workbook } from "exceljs";
+  import dayjs from "dayjs";
+  import * as fs from "file-saver";
 
 	export default {
 		components: { DialogImprimirAgendadoSPresenca, AppTabs, BotaoPadrao, AppFormInput },
@@ -190,7 +132,7 @@
 			return {
 				mostrarDialogAgendadosSPresenca: false,
 
-				valoresGraSemPresencaPorSetor: [3],
+				valoresGraSemPresencaPorSetor: [],
 				opcoesGraSemPresencaPorSetor: {
 					chart: {
 						type: "pie",
@@ -207,8 +149,10 @@
             enabled: true,
             style: {
               fontSize: '14px',
-              colors: ["#304758"]
             }
+          },
+          exporting: {
+            enabled: false,
           },
 					responsive: [
 						{
@@ -294,11 +238,12 @@
 					],
 				},
 
-				data: null,
+				data: '2023-06-05',
 				tabs: [
 					{ nome: "Agendados s/ Presença", valor: "agend_s_presenca" },
 					{ nome: "Presentes s/ Agendamento", valor: "pres_s_agendamento" },
 				],
+        tab: null,
 				agendSPresenca: {
 					totalAgend: 0,
 					totalAusente: 0,
@@ -309,10 +254,138 @@
 				gerandoKpi: false,
 				buscouDados: false,
 				funcionariosAgendados: [],
+				funcPresenteSemAgend: [],
+
+
+        //PRESENTES S/ AGENDAMENTOS
+
+        // -> Presentes com e sem agendamentos
+        valoresGraSemAgendamentoGeral: [3],
+        opcoesGraSemAgendamentoGeral: {
+          chart: {
+            type: "donut",
+          },
+          title: {
+            text: "Presentes com e sem agendamento",
+            offsetY: 0,
+            align: 'top',
+            style: {
+              color: '#444',
+              fontSize: '18px',
+              fontWeight: 'bold',
+            }
+          },
+          labels: [],
+          legend: {
+            position: "right",
+          },
+          dataLabels: {
+            enabled: true,
+            style: {
+              fontSize: '14px',
+            }
+          },
+          exporting: {
+            enabled: false,
+          },
+          responsive: [
+            {
+              breakpoint: 480,
+              options: {
+                legend: {
+                  position: "bottom",
+                },
+              },
+            },
+          ],
+        },
+
+        // -> Sem agendamento por setor
+        valoresGraSemAgendamentoSetor: [],
+        opcoesGraSemAgendamentoSetor: {
+          chart: {
+            type: "bar",
+            stacked: true,
+            toolbar: {
+              show: false,
+              offsetX: 0,
+              offsetY: 0,
+            },
+            height: "100%",
+            width: "100%",
+          },
+
+          title: {
+            text: "Sem agendamentos por setor",
+            offsetY: 0,
+            align: 'top',
+            style: {
+              color: '#444',
+              fontSize: '18px',
+              fontWeight: 'bold',
+            }
+          },
+          plotOptions: {
+            bar: {
+              dataLabels: {
+                // hideOverflowingLabels: false,
+                position: "top", // Define a posição dos data labels como "top"
+              },
+              minHeight: 1
+            },
+          },
+          dataLabels: {
+            enabled: true,
+            offsetY: -20,
+            // offsetY: 10,
+            style: {
+              fontSize: '14px',
+              colors: ["#304758"]
+            }
+          },
+          exporting: {
+            enabled: false,
+          },
+
+        },
+
+        // -> Sem agendamento
+        valoresGraSemAgendamento: [],
+        opcoesGraSemAgendamento: {
+          chart: {
+            id: "presentesSemAgendamento",
+            toolbar: {
+              show: false,
+              offsetX: 0,
+              offsetY: 0,
+            },
+            height: "100%",
+            width: "100%",
+            type: 'bar',
+          },
+          title: {
+            text: 'Sem Agendamento, Sem Aprovação e Sem Aprovação Site Manager',
+            offsetY: 0,
+            align: 'top',
+            style: {
+              color: '#444',
+              fontSize: '18px',
+              fontWeight: 'bold',
+            }
+          },
+          dataLabels: {
+            enabled: true,
+            offsetY: 30,
+            style: {
+              colors: ["#222"],
+              fontSize: "17px",
+            },
+          },
+        },
 			}
 		},
 
-		computed: {
+    computed: {
 			dadosGraAgendadoSPresenca() {
 				let agendSPresenca = this.agendSPresenca
 
@@ -325,6 +398,15 @@
 				let valoresGraSemPresencaCargosQuant = this.valoresGraSemPresencaCargosQuant
 				let opcoesGraSemPresencaCargosQuant = this.opcoesGraSemPresencaCargosQuant
 
+        let valoresGraSemAgendamento = this.valoresGraSemAgendamento
+        let opcoesGraSemAgendamento = this.opcoesGraSemAgendamento
+
+        let valoresGraSemAgendamentoSetor = this.valoresGraSemAgendamentoSetor
+        let opcoesGraSemAgendamentoSetor = this.opcoesGraSemAgendamentoSetor
+
+        let valoresGraSemAgendamentoGeral = this.valoresGraSemAgendamentoGeral
+        let opcoesGraSemAgendamentoGeral = this.opcoesGraSemAgendamentoGeral
+
 				return {
 					valoresGraSemPresencaPorSetor,
 					opcoesGraSemPresencaPorSetor,
@@ -333,6 +415,12 @@
 					valoresGraSemPresencaCargosQuant,
 					opcoesGraSemPresencaCargosQuant,
 					agendSPresenca,
+          valoresGraSemAgendamento,
+          opcoesGraSemAgendamento,
+          valoresGraSemAgendamentoSetor,
+          opcoesGraSemAgendamentoSetor,
+          valoresGraSemAgendamentoGeral,
+          opcoesGraSemAgendamentoGeral
 				}
 			},
 		},
@@ -370,52 +458,9 @@
         await chart.render();
       },
 
-
-			async imprimir() {
-				// let graSemPresencaPorSetor = document.getElementById('graSemPresencaPorSetor')
-
-				// console.log(graSemPresencaPorSetor)
-				// graSemPresencaPorSetor.classList.add('graSemPresencaPorSetorImprimir')
-				//
-				// divs[0].classList.add("!w-[200px]")
-				// divs[1].classList.add("!w-[300px]")
-
-				// for (let div of divs) {
-				//   div.classList.add("tamanhoImpressao")
-				// }
-				setTimeout(function () {
-					window.print()
-
-					// for (let div of divs) {
-					//   div.classList.remove("tamanhoImpressao")
-					// }
-				}, 500)
-			},
-
-			async listaFuncionarios() {
-				let funcionarios = this.funcionariosAgendados
-
-				console.log(this.funcionariosAgendados)
-
-				let cabecalho = ["Nome", "Chapa", "Cargo", "Hora do agendamento"]
-				let nomeArquivo
-
-				nomeArquivo = "funcionarios"
-
-				let itens = []
-				for (let item of funcionarios) {
-					let temp = []
-					temp.push(item.Funcionario.nome)
-					temp.push(item.chapa)
-					temp.push(item.Funcionario.cargo)
-					temp.push(this.$dayjs(item.createdAt).format("DD/MM/YYYY HH:mm"))
-					itens.push(temp)
-				}
-
-				gerarExcel(cabecalho, itens, nomeArquivo)
-			},
 			async gerarKpi() {
 				this.gerandoKpi = true
+        this.buscouDados = false
 				let data = this.data
 
 				let resp = await this.$axios.$get("/hora_extra/kpi/presentes_nao_presente", {
@@ -425,16 +470,13 @@
 				if (!resp.falha) {
 					this.buscouDados = true
 					let dados = resp.dados
-					console.log(dados)
+          await this.gerarGraficosSemAgendamento(dados)
 
 					this.agendSPresenca.totalAgend = dados.agendamentos.length
-					let chapasAgend = dados.agendamentos.map((o) => o.chapa)
 					let chapasPresentes = dados.presentes.map((o) => o.chapa)
 
 					// Separa os agendamento sem presença
 					let semPresenca = dados.agendamentos.filter((o) => !chapasPresentes.includes(o.chapa))
-					console.log("semPresenca")
-					console.log(semPresenca)
 					this.funcionariosAgendados = semPresenca
 
 					this.agendSPresenca.totalAusente = semPresenca.length
@@ -457,14 +499,11 @@
 						return array
 					}, {})
 
-					// console.log(semPresSetor)
 					this.opcoesGraSemPresencaPorSetor = {
 						...this.opcoesGraSemPresencaPorSetor,
 						labels: [Object.keys(semPresSetor)],
 					}
 					this.valoresGraSemPresencaPorSetor = [...Object.values(semPresSetor)]
-
-					// await this.grafSemPresencaPorSetor(semPresSetor)
 
 					// Separa quantidade de sem presença com quantidade de funcionario por setor
 					let semPresQuantiFunci = [
@@ -472,12 +511,10 @@
 						{ data: [], label: "Funcionários ausentes", backgroundColor: "#22AA99" },
 					]
 					for (let sem of Object.keys(semPresSetor)) {
-						// console.log(sem)
 						semPresQuantiFunci[0].data.push(dados.funciPorSetor[sem])
 						semPresQuantiFunci[1].data.push(semPresSetor[sem])
 					}
 
-					// console.log(semPresQuanti)
 					this.opcoesGraSemPresencaQuantSetor = {
 						...this.opcoesGraSemPresencaQuantSetor,
 						xaxis: {
@@ -495,8 +532,6 @@
 					]
 
 					let todosCargos = semPresenca.map((o) => o.Funcionario.cargo)
-					// console.log("todosCargos")
-					// console.log(todosCargos)
 
 					let cargosContados = todosCargos.reduce((array, valor) => {
 						if (array[valor]) {
@@ -531,10 +566,6 @@
 						},
 					}
 
-
-
-					// console.log(Object.values(cargosContados))
-
 					this.valoresGraSemPresencaCargosQuant = [
 						{
 							name: "Quant. por cargos",
@@ -546,187 +577,303 @@
           await this.renderizarGraSemPresencaCargosQuant()
           await this.renderizarGraSemPresencaQuantSetor()
 
-					// Gerar ou atualiza grafico de Quantidade de Funcionarios / ausentes por setor
-					// await this.grafSemPresencaQuantSetor(semPresSetor, semPresQuantiFunci)
-
-					// if (this.graficosCriados === false) this.graficosCriados = true
+          await this.renderizarGraSemAgendamento()
 
 					this.gerandoKpi = false
 				}
 			},
 
-			async grafSemPresencaPorSetor(itens) {
-				let labels = Object.keys(itens)
-				let valores = Object.values(itens)
+      async gerarGraficosSemAgendamento(dados){
+        let { presentes, agendamentos } = dados
 
-				if (this.graficosCriados === false) {
-					const grafSemPresencaPorSetor = document
-						.getElementById("grafSemPresencaPorSetor")
-						.getContext("2d")
+        let semAgendamento = []
+        let semAprovGestor = []
+        let semAprovSite = []
+        let agendados = []
 
-					const meuGrafSemPresencaPorSetor = new Chart(grafSemPresencaPorSetor, {
-						type: "pie",
-						data: {
-							labels,
-							datasets: [
-								{
-									label: "Funcionários por dia",
-									data: valores,
-									backgroundColor: [
-										"#22AA99",
-										"#316395",
-										"#014461",
-										"#DC3912",
-										"#AAAA11",
-										"#DD4477",
-										"#994499",
-										"#0099C6",
-										"#FFD700",
-										"#5C6185",
-										"#66AA00",
-									],
-								},
-							],
-						},
-						options: {
-							plugins: {
-								tooltips: {
-									enabled: false,
-								},
-								datalabels: {
-									anchor: "end",
-									align: "start",
-									offset: "30",
-									formatter: (value, ctx) => {
-										let sum = 0
-										let dataArr = valores
-										dataArr.map((data) => {
-											sum += parseFloat(data)
-										})
-										let percentage = ((value * 100) / sum).toFixed(0) + "%"
-										return percentage
-									},
-									color: "#fff",
-								},
-								legend: {
-									position: "top",
-								},
-								title: {
-									display: true,
-									text: "Funcionários ausentes por setor",
-								},
-							},
-							maintainAspectRatio: false,
-							scales: {},
-							responsive: true,
-						},
-					})
+        for(let presente of presentes){
+          let idx = agendamentos.findIndex( o => o.chapa === presente.chapa)
 
-					meuGrafSemPresencaPorSetor
-				} else {
-					let chart = Chart.getChart("grafSemPresencaQuantSetor")
+          if(idx < 0){
+            semAgendamento.push(presente)
+            this.funcPresenteSemAgend.push({ ...presente, motivo: 'Sem agendamento'})
+          }else{
+            let agend = agendamentos[idx]
+            if(agend.aprovacao_he === true){
+              agendados.push(presente)
+            }else if(agend.aprovacao_he === null) {
+              semAprovGestor.push(presente)
+              this.funcPresenteSemAgend.push({ ...presente, motivo: 'Sem aprovação Gestor' })
+            }else if(agend.aprovacao_he === true && (agend.precisa_aprovacao_situacao === true && agend.aprovacao_situacao === null )){
+              semAprovSite.push(presente)
+              this.funcPresenteSemAgend.push({ ...presente, motivo: 'Sem aprovação Site Manager' })
+            }
+          }
+        }
 
-					chart.data.datasets[0].data = valores
-					chart.data.labels = labels
+        //Grafico de Pizza
+        this.opcoesGraSemAgendamentoGeral = {
+          ...this.opcoesGraSemAgendamentoGeral,
+          labels: ['Agendados', 'Sem Agendamento', 'Sem Aprov. Gestor', 'Sem Aprov. Site Manager'],
+        }
 
-					chart.update()
-				}
-			},
+        this.valoresGraSemAgendamentoGeral = [agendados.length, semAgendamento.length, semAprovGestor.length, semAprovSite.length ]
 
-			async grafSemPresencaQuantSetor(itens, valores) {
-				let labels = Object.keys(itens)
+        let semAgendamentoSetor = semAgendamento.reduce((array, valor) => {
+          if (valor.setor) {
+            if (array[valor.setor]) {
+              array[valor.setor] += 1
+            } else {
+              array[valor.setor] = 1
+            }
+          }
+          return array
+        }, {})
 
-				if (this.graficosCriados === false) {
-					const grafSemPresencaQuantSetor = document
-						.getElementById("grafSemPresencaQuantSetor")
-						.getContext("2d")
+        let semAprovGestorSetor = semAprovGestor.reduce((array, valor) => {
+          if (valor.setor) {
+            if (array[valor.setor]) {
+              array[valor.setor] += 1
+            } else {
+              array[valor.setor] = 1
+            }
+          }
+          return array
+        }, {})
 
-					const meuGrafSemPresencaQuantSetor = new Chart(grafSemPresencaQuantSetor, {
-						type: "bar",
-						data: {
-							labels,
-							datasets: valores,
-						},
-						options: {
-							plugins: {
-								tooltip: {
-									callbacks: {
-										label: function (context) {
-											let titulo = context.dataset.label
-											let valor = context.raw
-											let idx = context.dataIndex
+        let semAprovSiteSetor = semAprovSite.reduce((array, valor) => {
+          if (valor.setor) {
+            if (array[valor.setor]) {
+              array[valor.setor] += 1
+            } else {
+              array[valor.setor] = 1
+            }
+          }
+          return array
+        }, {})
 
-											if (context.datasetIndex === 1) {
-												return `${titulo}: ${valor} - ${
-													((valor * 100) / valores[0].data[idx]).toFixed(2) + "%"
-												}`
-											} else {
-												return `${titulo}: ${valor}`
-											}
-										},
-									},
-								},
-								datalabels: {
-									anchor: "end",
-									align: "start",
-									offset: "-20",
-									color: "#000000",
-								},
-								legend: {
-									position: "top",
-								},
-								title: {
-									display: true,
-									text: "Quantidade de funcionários / ausentes por setor ",
-								},
-							},
-							maintainAspectRatio: false,
-							scales: {},
-						},
-					})
+        let cabecalhoSetor = [ ...Object.keys(semAgendamentoSetor), ...Object.keys(semAprovGestorSetor), ...Object.keys(semAprovSiteSetor)]
 
-					meuGrafSemPresencaQuantSetor
-				} else {
-					let chart = Chart.getChart("meuGrafSemPresencaQuantSetor")
+        let cabecalhoSetorUnicos = cabecalhoSetor.filter((item, index) => {
+          return cabecalhoSetor.indexOf(item) === index;
+        }).sort()
 
-					chart.data.datasets = valores
-					chart.data.labels = labels
+        let quantSemAgendamento = { name: "Sem agendamento", data: []}
+        let quantSemAprovGestor = { name: "Sem aprov. Gestor", data: [] }
+        let quantSemAprovSite = { name: "Sem apro. Site Manager", data: [] }
 
-					chart.update()
-				}
-			},
+        for(let cab of cabecalhoSetorUnicos){
+          quantSemAgendamento.data.push( semAgendamentoSetor[cab] ? semAgendamentoSetor[cab] : 0)
+          quantSemAprovGestor.data.push(semAprovGestorSetor[cab] ? semAprovGestorSetor[cab] : 0)
+          quantSemAprovSite.data.push(semAprovSiteSetor[cab] ? semAprovSiteSetor[cab] : 0)
+        }
+
+        //Grafico de Coluna
+        this.opcoesGraSemAgendamentoSetor = {
+          ...this.opcoesGraSemAgendamentoSetor,
+          xaxis: {
+            categories: cabecalhoSetorUnicos,
+          },
+        }
+
+        this.valoresGraSemAgendamentoSetor = [
+          quantSemAgendamento,
+          quantSemAprovGestor,
+          quantSemAprovSite
+        ]
+
+        //Grafico de Coluna Sem Agendamento
+        this.valoresGraSemAgendamento = [
+          { name: "Funcionários", data: [semAgendamento.length, semAprovGestor.length, semAprovSite.length]},
+        ]
+
+        this.opcoesGraSemAgendamento = {
+          ...this.opcoesGraSemAgendamento,
+          xaxis: {
+            labels: {
+              rotate: -45
+            },
+            categories: ['Sem agendamento', 'Sem aprov. Gestor', 'Sem aprov. Site Manager'],
+            tickPlacement: 'on'
+          },
+        }
+
+      },
+
+      async renderizarGraSemAgendamento(){
+        let opcoesGraSemAgendamentoSetor = Object.assign({}, this.opcoesGraSemAgendamentoSetor)
+
+        let valoresGraSemAgendamentoSetor = this.valoresGraSemAgendamentoSetor
+
+        const chartContainer = this.$refs.graSemAgendamentoSetor;
+
+        const chart = new ApexCharts(chartContainer, {
+          ...opcoesGraSemAgendamentoSetor,
+          series: valoresGraSemAgendamentoSetor,
+        });
+
+        await chart.render();
+
+
+        let opcoesGraSemAgendamento = Object.assign({}, this.opcoesGraSemAgendamento)
+
+        let valoresGraSemAgendamento = this.valoresGraSemAgendamento
+
+        const chartContainerSem = this.$refs.graSemAgendamento;
+
+        const chartSem = new ApexCharts(chartContainerSem, {
+          ...opcoesGraSemAgendamento,
+          series: valoresGraSemAgendamento,
+        });
+
+        await chartSem.render();
+
+        let opcoesGraSemAgendamentoGeral = Object.assign({}, this.opcoesGraSemAgendamentoGeral)
+
+        let valoresGraSemAgendamentoGeral = this.valoresGraSemAgendamentoGeral
+
+        const chartContainerGeral = this.$refs.graSemAgendamentoGeral;
+
+        const chartGeral = new ApexCharts(chartContainerGeral, {
+          ...opcoesGraSemAgendamentoGeral,
+          series: valoresGraSemAgendamentoGeral,
+        });
+
+        await chartGeral.render();
+      },
+
+      async listaFuncionarios() {
+        let funcionarios = this.funcionariosAgendados
+        let presentes = this.funcPresenteSemAgend
+
+        let cabecalhoAgendamento = ["Nome", "Chapa", "Cargo", "Hora do agendamento"]
+        let nomeArquivo
+
+        nomeArquivo = "funcionarios"
+
+        let cabecalhoPresentes = ["Nome", "Chapa", "Setor", "Motivo"]
+
+        let fname = nomeArquivo;
+
+
+        let workbook = new Workbook();
+        let worksheet = workbook.addWorksheet('Agendamento sem presença', {
+          views: [{ state: "frozen", ySplit: 1 }],
+        });
+        worksheet.addRow(cabecalhoAgendamento);
+        worksheet.autoFilter = "A1:I1";
+
+        worksheet.eachRow(function(row, rowNumber) {
+          row.eachCell((cell) => {
+            if (rowNumber == 1) {
+              cell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "f5b914" },
+              };
+              cell.style = { font: { bold: true, size: 14 } };
+            }
+            cell.border = {
+              top: { style: "thin" },
+              left: { style: "thin" },
+              bottom: { style: "thin" },
+              right: { style: "thin" },
+            };
+          });
+          row.commit();
+        });
+
+        let itens = []
+        for (let item of funcionarios) {
+          let temp = []
+          temp.push(item.Funcionario.nome)
+          temp.push(item.chapa)
+          temp.push(item.Funcionario.cargo)
+          temp.push(this.$dayjs(item.createdAt).format("DD/MM/YYYY HH:mm"))
+          itens.push(temp)
+        }
+
+        for (let item of itens) {
+          worksheet.addRow(item);
+        }
+
+        worksheet.columns.forEach(function(column) {
+          var dataMax = 0;
+          column.eachCell({ includeEmpty: true }, function(cell) {
+            if (cell.value) var columnLength = cell.value.length;
+            if (columnLength > dataMax) {
+              dataMax = columnLength;
+            }
+          });
+          column.width = dataMax < 12 ? 12 : dataMax;
+        });
+
+
+        let worksheetSegunda = workbook.addWorksheet('Presença sem agendamento', {
+          views: [{ state: "frozen", ySplit: 1 }],
+        });
+        worksheetSegunda.addRow(cabecalhoPresentes);
+        worksheetSegunda.autoFilter = "A1:I1";
+
+        worksheetSegunda.eachRow(function(row, rowNumber) {
+          row.eachCell((cell) => {
+            if (rowNumber == 1) {
+              cell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "f5b914" },
+              };
+              cell.style = { font: { bold: true, size: 14 } };
+            }
+            cell.border = {
+              top: { style: "thin" },
+              left: { style: "thin" },
+              bottom: { style: "thin" },
+              right: { style: "thin" },
+            };
+          });
+          row.commit();
+        });
+
+        let itensPresentes = []
+        for (let item of presentes) {
+          let temp = []
+          temp.push(item.nome)
+          temp.push(item.chapa)
+          temp.push(item.setor ? item.setor : "")
+          temp.push(item.motivo)
+          itensPresentes.push(temp)
+        }
+
+        for (let item of itensPresentes) {
+          worksheetSegunda.addRow(item);
+        }
+
+        worksheetSegunda.columns.forEach(function(column) {
+          var dataMax = 0;
+          column.eachCell({ includeEmpty: true }, function(cell) {
+            if (cell.value) var columnLength = cell.value.length;
+            if (columnLength > dataMax) {
+              dataMax = columnLength;
+            }
+          });
+          column.width = dataMax < 12 ? 12 : dataMax;
+        });
+
+
+        workbook.xlsx.writeBuffer().then((data) => {
+          let blob = new Blob([data], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+          fs.saveAs(
+            blob,
+            fname + "-" + dayjs().format("DD_MM_YYYY") + ".xlsx"
+          );
+        });
+      },
 		},
 	}
 </script>
 
 <style scoped>
-	.tamanho-relatorio {
-		height: calc(100vh - 252px);
-		width: 100%;
-	}
-
-	.agend_s_presenca {
-		height: calc(100vh - 130px);
-	}
-
-	.gerandoKpi {
-		z-index: 101;
-	}
-
-	.tamanhoImpressao:nth-child(1) {
-		height: 500px !important;
-		width: 400px !important;
-	}
-	.tamanhoImpressao:nth-child(2) {
-		height: 500px !important;
-		width: 600px !important;
-	}
-
-	@media print {
-		.imprimir {
-			width: 1050px;
-			height: 100%;
-			position: fixed;
-		}
-	}
 </style>
