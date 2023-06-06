@@ -102,6 +102,9 @@
 										<template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
 											<span class="whitespace-nowrap">{{ item.Funcionario.encarregado_sapo }}</span>
 										</template>
+                    <template v-slot:[`body.Funcionario.encarregado_producao`]="{ item }">
+                      <span class="whitespace-nowrap">{{ item.Funcionario.encarregado_producao }}</span>
+                    </template>
 										<template v-slot:[`body.Funcionario.gestor`]="{ item }">
 											<span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
 										</template>
@@ -218,6 +221,9 @@
                     <template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
                       <span class="whitespace-nowrap">{{ item.Funcionario.encarregado_sapo }}</span>
                     </template>
+                    <template v-slot:[`body.Funcionario.encarregado_producao`]="{ item }">
+                      <span class="whitespace-nowrap">{{ item.Funcionario.encarregado_producao }}</span>
+                    </template>
                     <template v-slot:[`body.Funcionario.gestor`]="{ item }">
                       <span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
                     </template>
@@ -259,6 +265,13 @@
               alt=""
               class="w-7 h-7"/>
           </BotaoPadrao>
+          <BotaoPadrao texto="Excel" :disabled="desativarBtnExcel"
+                       @click="tab === 'gestorArea' ? gerarExcelGestor() : gerarExcelSiteManager()">
+            <img
+              src="@/assets/icons/excel-b.svg"
+              alt=""
+              class="w-6 h-6" />
+          </BotaoPadrao>
         </div>
 			</template>
 		</BaseDialog>
@@ -298,6 +311,7 @@
 	import AppTag from "~/components/Ui/AppTag.vue"
 	import AppBadge from "~/components/Ui/AppBadge.vue"
   import {horaExtra} from "~/mixins/horaExtra";
+  import gerarExcel from "~/functions/gerarExcel";
 
 	export default {
     mixins: [horaExtra],
@@ -330,7 +344,7 @@
 				tipoAprovacao: "gestorArea",
 				mostrarAlerta: false,
 				textoAlerta: null,
-				tab: null,
+				tab: 'gestorArea',
 				mostrarTodosGestor: false,
 				pendDiasGestorArea: [],
 				mostrarTodosSiteManager: false,
@@ -362,6 +376,7 @@
           { nome: "Nome", valor: "Funcionario.nome", filtro: true, ordenar: true },
           { nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
           { nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
+          { nome: "Encarregado/Lider Produção", valor: "Funcionario.encarregado_producao", filtro: true },
           { nome: "Gestor", valor: "Funcionario.gestor", filtro: true },
           { nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
           { nome: "Motivo", valor: "motivo", filtro: true, centralizar: true },
@@ -373,6 +388,13 @@
         }
 
         return cabecalho
+      },
+
+      desativarBtnExcel(){
+        if(this.tab === 'gestorArea' && this.dadosGestor.length === 0)
+          return true
+
+        return this.tab === 'siteManager' && this.dadosSiteManager.length === 0
       },
 
 			tabs() {
@@ -517,6 +539,51 @@
 				this.selecionadosGestor = []
 			},
 
+      async gerarExcelGestor() {
+        let dados = this.dadosGestor
+
+        let cabecalho = [
+          "Status",
+          "HE atual",
+          "HE projetada",
+          "Matricula",
+          "Nome",
+          "Cargo",
+          "Encarregado/Lider SAPO",
+          "Encarregado/Lider Produção",
+          "Gestor",
+          "Setor",
+          "HE Atual",
+          "HE Projetada",
+          "Turno",
+          "Motivo", ,
+        ]
+        let nomeArquivo
+
+        nomeArquivo = "agendamentos_gestor"
+
+        let itens = []
+        for (let item of dados) {
+          let temp = []
+          console.log(dados)
+          temp.push(item.aprovacao_he === null ? "Aguardando" : item.aprovacao_he === true ? "Aprovado" : "Negado")
+          temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
+          temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
+          temp.push(item.chapa)
+          temp.push(item.Funcionario ? item.Funcionario.nome : "")
+          temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+          temp.push(item.Funcionario && item.Funcionario.encarregado_producao ? item.Funcionario.encarregado_producao : "")
+          temp.push(item.Funcionario && item.Funcionario.encarregado_sapo ? item.Funcionario.encarregado_sapo : "")
+          temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
+          temp.push(item.Setor ? item.Setor.nome : "")
+          temp.push(item.turno)
+          temp.push(item.motivo)
+          itens.push(temp)
+        }
+
+        gerarExcel(cabecalho, itens, nomeArquivo)
+      },
+
 
       // Site manager
 
@@ -578,6 +645,51 @@
 
         this.mostrarAlerta = true
         this.selecionadosSiteManager = []
+      },
+
+      async gerarExcelSiteManager() {
+        let dados = this.dadosSiteManager
+
+        let cabecalho = [
+          "Status",
+          "HE atual",
+          "HE projetada",
+          "Matricula",
+          "Nome",
+          "Cargo",
+          "Encarregado/Lider SAPO",
+          "Encarregado/Lider Produção",
+          "Gestor",
+          "Setor",
+          "Turno",
+          "Motivo",
+          "Situação",
+        ]
+        let nomeArquivo
+
+        nomeArquivo = "agendamentos_site_manager"
+
+        let itens = []
+        for (let item of dados) {
+          let temp = []
+          console.log(dados)
+          temp.push(item.aprovacao_situacao === null ? "Aguardando" : item.aprovacao_situacao === true ? "Aprovado" : "Negado")
+          temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
+          temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
+          temp.push(item.chapa)
+          temp.push(item.Funcionario ? item.Funcionario.nome : "")
+          temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+          temp.push(item.Funcionario && item.Funcionario.encarregado_sapo ? item.Funcionario.encarregado_sapo : "")
+          temp.push(item.Funcionario && item.Funcionario.encarregado_producao ? item.Funcionario.encarregado_producao : "")
+          temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
+          temp.push(item.Setor ? item.Setor.nome : "")
+          temp.push(item.turno)
+          temp.push(item.motivo)
+          temp.push(item.situacao)
+          itens.push(temp)
+        }
+
+        gerarExcel(cabecalho, itens, nomeArquivo)
       },
 		},
 	}

@@ -155,6 +155,11 @@
 											:dadosSql="true"
 											@atualizar="buscarPendentes"
 											:carregando="carregandoTabelaPendentes">
+                      <template v-slot:[`body.status`]="{ item }">
+												<span class="whitespace-nowrap">
+													{{ item.StatusAgendamento ? item.StatusAgendamento.descricao : "" }}
+												</span>
+                      </template>
 											<template v-slot:[`body.Funcionario.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Funcionario.nome }}</span>
 											</template>
@@ -252,6 +257,11 @@
 											:dadosSql="true"
 											@atualizar="buscarMeusAgendamentos"
 											:carregando="carregandoTabelaMeusAgendamentos">
+                      <template v-slot:[`body.status`]="{ item }">
+												<span class="whitespace-nowrap">
+													{{ item.StatusAgendamento ? item.StatusAgendamento.descricao : "" }}
+												</span>
+                      </template>
 											<template v-slot:[`body.Funcionario.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Funcionario.nome }}</span>
 											</template>
@@ -292,11 +302,7 @@
 													item.Funcionario.direto_indireto
 												}}</span>
 											</template>
-											<template v-slot:[`body.status`]="{ item }">
-												<span class="whitespace-nowrap">
-													{{ item.StatusAgendamento ? item.StatusAgendamento.descricao : "" }}
-												</span>
-											</template>
+
                       <template v-slot:[`body.Funcionario.hora_extra`]="{ item }">
                         {{ horaExtra(item.Funcionario.hora_extra) }}
                       </template>
@@ -328,7 +334,7 @@
 							alt=""
 							class="w-6 h-6" />
 					</BotaoPadrao>
-					<BotaoPadrao texto="Excel">
+					<BotaoPadrao texto="Excel" :disabled="desativarBtnExcel" @click="tab === 'aprovados' ? gerarExcelAprovados() : tab ==='pendentes' ? gerarExcelPendentes(): gerarExcelMeusAgendamentos()">
 						<img
 							src="@/assets/icons/excel-b.svg"
 							alt=""
@@ -363,6 +369,7 @@
 	import AppBadge from "~/components/Ui/AppBadge.vue"
 	import DialogDesagendar from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogDesagendar.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
+  import gerarExcel from "~/functions/gerarExcel";
 
 	export default {
 		mixins: [horaExtra],
@@ -381,7 +388,7 @@
 		},
 		data() {
 			return {
-				tab: null,
+				tab: 'aprovados',
 				dataAprovados: null,
 				dataMeusAgendamentos: null,
 				dataPendentes: null,
@@ -422,9 +429,11 @@
 				carregandoTabelaAprovados: false,
 				diasAprovados: [],
 				ordemAprovados: null,
+        gerandoExcelAprovados:false,
 
 				// Pendentes
 				cabecalhoPendentes: [
+          { nome: "Status", valor: "status" },
 					{ nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
 					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
@@ -457,6 +466,7 @@
 				carregandoTabelaPendentes: false,
 				diasPendentes: [],
 				ordemPendentes: null,
+        gerandoExcelPendentes: false,
 
 				//Meus agendamentos
 				cabecalhoMeusAgendamentos: [
@@ -494,6 +504,7 @@
 				ordemMeusAgendamentos: null,
 				selecionadosMeusAgendamentos: [],
 				mostrarDialogDesagendar: false,
+        gerandoExcelMeusAgendamentos: false,
 			}
 		},
 		computed: {
@@ -507,6 +518,15 @@
 					},
 				]
 			},
+      desativarBtnExcel(){
+        if(this.tab === 'aprovados' && this.dadosAprovados.length === 0)
+          return true
+
+        if (this.tab === 'pendentes' && this.dadosPendentes.length === 0)
+          return true
+
+        return this.tab === 'meusAgendamentos' && this.dadosMeusAgendamentos.length === 0;
+      }
 		},
 		created() {
 			this.buscarDiasAprovados()
@@ -552,6 +572,54 @@
 				await this.buscarAprovados()
 			},
 
+      async gerarExcelAprovados(){
+        this.gerandoExcelAprovados = true
+        let dados = this.dadosAprovados
+
+        let cabecalho = [
+          "Matricula",
+          "Nome",
+          "Cargo",
+          "Encarregado/Lider SAPO",
+          "Encarregado/Lider Produção",
+          "Gestor",
+          "Setor",
+          "HE Atual",
+          "HE Projetada",
+          "Turno",
+          "Motivo",
+          "Aprovado por",
+          "Rota",
+          "Ponto Embarque",
+        ]
+        let nomeArquivo
+
+        nomeArquivo = "agendamento_aprovados"
+
+        let itens = []
+        for (let item of dados) {
+          let temp = []
+          temp.push(item.chapa)
+          temp.push(item.Funcionario ? item.Funcionario.nome : "")
+          temp.push(item.Funcionario ? item.Funcionario.cargo: "")
+          temp.push(item.Funcionario && item.Funcionario.encarregado_producao ? item.Funcionario.encarregado_producao: "")
+          temp.push(item.Funcionario && item.Funcionario.encarregado_sapo ? item.Funcionario.encarregado_sapo: "")
+          temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor: "")
+          temp.push(item.Setor ? item.Setor.nome: "")
+          temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
+          temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
+          temp.push(item.turno)
+          temp.push(item.motivo)
+          temp.push(item.aprovador_he ? item.aprovador_he.nome : "")
+          temp.push(item.Funcionario && item.Funcionario.rota ? item.Funcionario.rota.numero: "")
+          temp.push(item.Funcionario ? item.Funcionario.ponto_embarque: "")
+          itens.push(temp)
+        }
+
+        gerarExcel(cabecalho, itens, nomeArquivo)
+        this.gerandoExcelAprovados = false
+      },
+
 			// Pendentes
 
 			async buscarDiasPendentes() {
@@ -585,7 +653,58 @@
 				await this.buscarPendentes()
 			},
 
-			// Meus agendamentos
+      async gerarExcelPendentes() {
+        this.gerandoExcelPendentes = true
+        let dados = this.dadosPendentes
+
+        let cabecalho = [
+          "Status",
+          "Matricula",
+          "Nome",
+          "Cargo",
+          "Encarregado/Lider SAPO",
+          "Encarregado/Lider Produção",
+          "Gestor",
+          "Setor",
+          "HE Atual",
+          "HE Projetada",
+          "Turno",
+          "Motivo",
+          "Situação",
+          "Rota",
+          "Ponto Embarque",
+        ]
+        let nomeArquivo
+
+        nomeArquivo = "agendamento_pendentes"
+
+        let itens = []
+        for (let item of dados) {
+          let temp = []
+          console.log(dados)
+          temp.push(item.StatusAgendamento ? item.StatusAgendamento.descricao : "")
+          temp.push(item.chapa)
+          temp.push(item.Funcionario ? item.Funcionario.nome : "")
+          temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+          temp.push(item.Funcionario && item.Funcionario.encarregado_producao ? item.Funcionario.encarregado_producao : "")
+          temp.push(item.Funcionario && item.Funcionario.encarregado_sapo ? item.Funcionario.encarregado_sapo : "")
+          temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
+          temp.push(item.Setor ? item.Setor.nome : "")
+          temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
+          temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
+          temp.push(item.turno)
+          temp.push(item.motivo)
+          temp.push(item.situacao)
+          temp.push(item.Funcionario && item.Funcionario.rota ? item.Funcionario.rota.numero : "")
+          temp.push(item.Funcionario ? item.Funcionario.ponto_embarque : "")
+          itens.push(temp)
+        }
+
+        gerarExcel(cabecalho, itens, nomeArquivo)
+        this.gerandoExcelPendentes = false
+      },
+
+      // Meus agendamentos
 
 			async buscarDiasMeusAgendamentos() {
 				let usuario_id = this.$auth.user.id
@@ -640,6 +759,58 @@
 				this.mostrarAlerta = true
 				this.selecionadosMeusAgendamentos = []
 			},
+
+      async gerarExcelMeusAgendamentos() {
+        this.gerandoExcelMeusAgendamentos = true
+        let dados = this.dadosMeusAgendamentos
+
+        let cabecalho = [
+          "Status",
+          "Matricula",
+          "Nome",
+          "Cargo",
+          "Encarregado/Lider SAPO",
+          "Encarregado/Lider Produção",
+          "Gestor",
+          "Setor",
+          "HE Atual",
+          "HE Projetada",
+          "Turno",
+          "Motivo",
+          "Situação",
+          "Aprovado por",
+          "Rota",
+          "Ponto Embarque",
+        ]
+        let nomeArquivo
+
+        nomeArquivo = "agendamento_meus_agendamentos"
+
+        let itens = []
+        for (let item of dados) {
+          let temp = []
+          temp.push(item.StatusAgendamento ? item.StatusAgendamento.descricao : "")
+          temp.push(item.chapa)
+          temp.push(item.Funcionario ? item.Funcionario.nome : "")
+          temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+          temp.push(item.Funcionario && item.Funcionario.encarregado_producao ? item.Funcionario.encarregado_producao : "")
+          temp.push(item.Funcionario && item.Funcionario.encarregado_sapo ? item.Funcionario.encarregado_sapo : "")
+          temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
+          temp.push(item.Setor ? item.Setor.nome : "")
+          temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
+          temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
+          temp.push(item.turno)
+          temp.push(item.motivo)
+          temp.push(item.situacao)
+          temp.push(item.aprovador_he ? item.aprovador_he.nome : "")
+          temp.push(item.Funcionario && item.Funcionario.rota ? item.Funcionario.rota.numero : "")
+          temp.push(item.Funcionario ? item.Funcionario.ponto_embarque : "")
+          itens.push(temp)
+        }
+
+        gerarExcel(cabecalho, itens, nomeArquivo)
+        this.gerandoExcelMeusAgendamentos = false
+      },
 		},
 		watch: {
 			tab(valor) {
