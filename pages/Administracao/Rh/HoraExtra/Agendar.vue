@@ -87,6 +87,7 @@
 				</div>
 			</div>
 			<div class="flex gap-1">
+<!--        {{ agendamento.data }}-->
 				<AppFormSelect
 					label="Turno"
 					:options="turnos"
@@ -520,14 +521,6 @@
 							novosDados[idx]["ativo"] = true
 						}
 					}
-
-					// let chapas = agendamentos.map(( o => o.chapa ))
-					//
-					//   let ativos = novosDados.filter(o => chapas.includes(o.chapa))
-					//
-					// for(let ativo of ativos){
-					//  ativo['ativo'] = true
-					// }
 				}
 
 				this.dados = novosDados

@@ -87,7 +87,7 @@
 						v-if="etapa_id !== 27"
 						:disabled="processo.input === null || processo.input === ''"
 						texto="Processar SS"
-						@click="processarSS()">
+						@click.stop.prevent="processarSS()">
 						<template v-slot>
 							<img
 								src="@/assets/icons/check-b.svg"
