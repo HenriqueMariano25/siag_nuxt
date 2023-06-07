@@ -526,27 +526,6 @@
 				this.dados = novosDados
 			},
 
-			situacaoAgendCheckbox(item) {
-				if (item.ativo) {
-					return "!bg-gray-500"
-					// if (item.aprovacao_he === false || item.aprovacao_situacao === false) {
-					// 	return "!bg-red-300"
-					// } else if (
-					// 	item.aprovacao_he === true ||
-					// 	(item.aprovacao_situacao === true && item.precisa_aprovacao_situacao === true)
-					// ) {
-					// 	return "!bg-green-300"
-					// } else if (
-					// 	item.aprovacao_he === null ||
-					// 	(item.aprovacao_situacao === null && item.precisa_aprovacao_situacao === true)
-					// ) {
-					// 	return "!bg-yellow-300"
-					// }
-				} else {
-					return false
-				}
-			},
-
 			async agendar() {
 				let { data, turno, motivo } = this.agendamento
 
@@ -555,10 +534,11 @@
 					this.tipoAlerta = "erro"
 					this.textoAlerta = "Não é possivel agendar para dias anteriores !"
 				} else {
-					console.log("---------------------------")
-					console.log(this.funcionariosSelecionados)
 
 					let funcionarios = this.funcionariosSelecionados
+
+
+					let funcionariosChapa = funcionarios.map( o => o.chapa )
 					let agendado_por_id = this.$auth.user.id
           let novosDados = new Array(...this.dados)
 
@@ -567,7 +547,7 @@
 					let funcPrEnviar = []
 					let total = 0
 
-					for (let chapa of funcionarios) {
+					for (let chapa of funcionariosChapa) {
 						funcPrEnviar.push(chapa)
 						cont += 1
 						total += 1

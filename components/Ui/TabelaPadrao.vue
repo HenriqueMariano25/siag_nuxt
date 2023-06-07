@@ -278,6 +278,7 @@
 											v-if="c.valor === 'selecione'">
 											<AppFormCheckbox
 												:id="'checkTabela' + parseInt(dado.id)"
+                        :disabled="dado.ativo"
 												:valor="dado"
 												v-model="selecionados" />
 										</div>
@@ -445,14 +446,10 @@
 		},
 		computed: {
 			cabecalhoLocal() {
-				// console.log(this.cabecalho)
-
 				let cabecalho = new Array(...this.cabecalho)
 
 				if (this.selecionar)
 					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true, largura: "w-10" })
-
-				// console.log(cabecalho)
 
 				return cabecalho
 			},
@@ -608,8 +605,6 @@
 			},
 
 			removerFiltro(item) {
-				console.log(item)
-
 				if (this.dadosSql) {
 					let idx = this.filtros.findIndex((o) => o.includes(item))
 					this.filtrosAtivos.splice(idx, 1)
@@ -790,6 +785,7 @@
 					this.atualizarDados()
 				}
 			},
+
 			selecionarTodosDados() {
 				if (!this.selecionandoTodos) {
 					this.selecionados = this.dados
