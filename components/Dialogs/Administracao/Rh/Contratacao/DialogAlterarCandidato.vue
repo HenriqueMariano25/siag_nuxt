@@ -27,10 +27,18 @@
 
 <script>
 import BaseDialog from "~/components/Shared/BaseDialog.vue";
+import AppFormInput from "~/components/Ui/AppFormInput.vue";
+import AppFormSelect from "~/components/Ui/AppFormSelect.vue";
+import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue";
+import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
 
 export default {
   components: {
-    BaseDialog
+    BaseDialog,
+    AppFormInput,
+    AppFormSelect,
+    AppFormTextarea,
+    BotaoPadrao
   },
   props: {
     cards: {
@@ -70,20 +78,14 @@ export default {
     async alterarCandido(){
       let cards = this.cards.map( o => o.id )
       let usuario_id = this.$auth.user.id
-      let {  comentario, motivo_id } = this.alteracao
+      let { comentario, motivo_id } = this.alteracao
 
-
-      console.log(cards)
       let resp = await this.$axios.$post("/contratacao/card/alterar_candidato", { cards , usuario_id,
         comentario, motivo_id })
-
 
       if(!resp.falha){
         this.$emit("alterouCandidato", cards)
       }
-
-      console.log(resp)
-
     }
   }
 };
@@ -92,9 +94,3 @@ export default {
 <style scoped>
 
 </style>
-<script setup>
-import AppFormInput from "~/components/Ui/AppFormInput.vue";
-import AppFormSelect from "~/components/Ui/AppFormSelect.vue";
-import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue";
-import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
-</script>
