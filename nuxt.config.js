@@ -1,8 +1,8 @@
 export default {
   head: {
-    title: 'siagfront',
+    title: 'SIAG - Sistema Integrado Andrade Gutierrez',
     htmlAttrs: {
-      lang: 'en'
+      lang: 'pt-br'
     },
     meta: [
       {charset: 'utf-8'},

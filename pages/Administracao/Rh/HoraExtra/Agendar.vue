@@ -193,6 +193,7 @@
 					<div class="flex gap-2">
 						<BotaoPadrao
 							texto="Aprovar HE"
+              v-if="$auth.user.permissoes.includes('autorizar_he') || $auth.user.permissoes.includes('autorizar_he_situacao')"
 							@click="mostrarDialogAprovarHe = true">
 							<img
 								src="../../../../assets/icons/check-b.svg"

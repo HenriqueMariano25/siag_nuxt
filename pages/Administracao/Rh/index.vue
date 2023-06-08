@@ -11,7 +11,7 @@
 <!--        </svg>-->
 <!--      </ButtonNavegacao>-->
       <ButtonNavegacao titulo="Hora Extra" cor="bg-[#264653]" link="/administracao/rh/horaExtra"
-                       v-if="$auth.user.permissoes.includes('horaExtra_rh_novo')">
+                       v-if="$auth.user.permissoes.includes('horaExtra_rh')">
         <img src="@/assets/icons/clock-check-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
       <ButtonNavegacao titulo="Contratação" cor="bg-[#264653]" link="/administracao/rh/contratacao"
