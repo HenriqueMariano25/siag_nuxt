@@ -111,6 +111,9 @@
 										<template v-slot:[`body.Setor.nome`]="{ item }">
 											<span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
 										</template>
+                    <template v-slot:[`body.agendado_por.nome`]="{ item }">
+											<span class="whitespace-nowrap" v-if="item.agendado_por">{{ item.agendado_por.nome }}</span>
+										</template>
 										<template v-slot:[`body.Funcionario.rota`]="{ item }">
 											<span class="whitespace-nowrap">{{
 												item.Funcionario.rota ? item.Funcionario.rota.numero : ""
@@ -226,6 +229,9 @@
                     </template>
                     <template v-slot:[`body.Funcionario.gestor`]="{ item }">
                       <span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
+                    </template>
+                    <template v-slot:[`body.agendado_por.nome`]="{ item }">
+                      <span class="whitespace-nowrap" v-if="item.agendado_por">{{ item.agendado_por.nome }}</span>
                     </template>
                     <template v-slot:[`body.Setor.nome`]="{ item }">
                       <span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
@@ -372,14 +378,15 @@
           { nome: "Status", valor: "status", centralizar: true },
           { nome: "HE atual", valor: "Funcionario.hora_extra", ordenar: true, centralizar: true },
           { nome: "HE projetada", valor: "heProjetada", ordenar: true, centralizar: true },
+          { nome: "Motivo", valor: "motivo", filtro: true, centralizar: true },
           { nome: "Matricula", valor: "chapa", ordenar: true, filtro: true, centralizar: true },
           { nome: "Nome", valor: "Funcionario.nome", filtro: true, ordenar: true },
           { nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
           { nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
           { nome: "Encarregado/Lider Produção", valor: "Funcionario.encarregado_producao", filtro: true },
           { nome: "Gestor", valor: "Funcionario.gestor", filtro: true },
+          { nome: "Agendado por", valor: "agendado_por.nome", filtro: true },
           { nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
-          { nome: "Motivo", valor: "motivo", filtro: true, centralizar: true },
           { nome: "Turno", valor: "turno", filtro: true, centralizar: true },
         ]
 
@@ -544,8 +551,9 @@
 
         let cabecalho = [
           "Status",
-          "HE atual",
-          "HE projetada",
+          "HE Atual",
+          "HE Projetada",
+          "Motivo",
           "Matricula",
           "Nome",
           "Cargo",
@@ -553,10 +561,7 @@
           "Encarregado/Lider Produção",
           "Gestor",
           "Setor",
-          "HE Atual",
-          "HE Projetada",
           "Turno",
-          "Motivo", ,
         ]
         let nomeArquivo
 
@@ -569,6 +574,7 @@
           temp.push(item.aprovacao_he === null ? "Aguardando" : item.aprovacao_he === true ? "Aprovado" : "Negado")
           temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
           temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
+          temp.push(item.motivo)
           temp.push(item.chapa)
           temp.push(item.Funcionario ? item.Funcionario.nome : "")
           temp.push(item.Funcionario ? item.Funcionario.cargo : "")
@@ -577,7 +583,6 @@
           temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
           temp.push(item.Setor ? item.Setor.nome : "")
           temp.push(item.turno)
-          temp.push(item.motivo)
           itens.push(temp)
         }
 
@@ -654,6 +659,7 @@
           "Status",
           "HE atual",
           "HE projetada",
+          "Motivo",
           "Matricula",
           "Nome",
           "Cargo",
@@ -662,7 +668,6 @@
           "Gestor",
           "Setor",
           "Turno",
-          "Motivo",
           "Situação",
         ]
         let nomeArquivo
@@ -676,6 +681,7 @@
           temp.push(item.aprovacao_situacao === null ? "Aguardando" : item.aprovacao_situacao === true ? "Aprovado" : "Negado")
           temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
           temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
+          temp.push(item.motivo)
           temp.push(item.chapa)
           temp.push(item.Funcionario ? item.Funcionario.nome : "")
           temp.push(item.Funcionario ? item.Funcionario.cargo : "")
@@ -684,7 +690,6 @@
           temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
           temp.push(item.Setor ? item.Setor.nome : "")
           temp.push(item.turno)
-          temp.push(item.motivo)
           temp.push(item.situacao)
           itens.push(temp)
         }

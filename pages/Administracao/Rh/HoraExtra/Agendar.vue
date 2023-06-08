@@ -165,6 +165,13 @@
 					{{ item.numero }} - {{ item.local }}
 				</span>
 			</template>
+      <template v-slot:[`body.fun.encarregado_sapo`]="{ item }">
+				<span
+					v-if="item['fun.encarregado_sapo']"
+					class="whitespace-nowrap">
+					{{ item['fun.encarregado_sapo'] }}
+				</span>
+			</template>
 			<template v-slot:[`body.hora_extra`]="{ item }">
 				<span
 					class="whitespace-nowrap"
@@ -280,7 +287,7 @@
 					{ nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
 					{ nome: "Nome", valor: "nome", filtro: true , colunaTabela: 'fun.nome'},
 					{ nome: "Cargo", valor: "cargo", filtro: true },
-					{ nome: "Encarregado/Lider SAPO", valor: "encarregado_lider_sapo", filtro: true },
+					{ nome: "Encarregado/Lider SAPO", valor: "fun.encarregado_sapo", filtro: true },
 					{ nome: "Rota", valor: "rota" },
 					{ nome: "Ponto de embarque", valor: "ponto_embarque", filtro: true },
 				],
@@ -460,6 +467,8 @@
 
 				if (!resp.falha) {
 					let funcionarios = resp.dados.funcionarios
+          console.log(funcionarios)
+
 					this.totalItens = parseInt(resp.dados.totalItens)
 					this.dados = funcionarios
 					this.carregandoTabela = false
