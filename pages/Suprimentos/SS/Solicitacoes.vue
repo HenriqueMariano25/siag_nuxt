@@ -45,16 +45,21 @@
 					</template>
 					<template v-slot:[`body.situacao`]="{ item }">
 						<div class="flex justify-center">
-							<div
-								v-if="!$dayjs().isAfter(item.data_necessidade, 'day')"
-								class="bg-blue-400 text-black px-2 rounded">
-								No prazo
-							</div>
-							<div
-								v-if="$dayjs().isAfter(item.data_necessidade, 'day')"
-								class="bg-red-400 text-black px-2 rounded">
-								Atrasado
-							</div>
+              <div v-if="item.etapa_ss_id === 6" class="bg-green-400 text-black px-2 rounded">
+                Finalizado
+              </div>
+              <div v-else>
+                <div
+                  v-if="!$dayjs().isAfter(item.data_necessidade, 'day')"
+                  class="bg-blue-400 text-black px-2 rounded">
+                  No prazo
+                </div>
+                <div
+                  v-if="$dayjs().isAfter(item.data_necessidade, 'day')"
+                  class="bg-red-400 text-black px-2 rounded">
+                  Atrasado
+                </div>
+              </div>
 						</div>
 					</template>
 					<template v-slot:[`body.acoes`]="{ item }">
@@ -99,6 +104,13 @@
 							{{ item.Usuario.nome }}
 						</span>
 					</template>
+          <template v-slot:[`body.comprador.nome`]="{ item }">
+						<span
+              v-if="item.comprador"
+              class="whitespace-nowrap">
+							{{ item.comprador.nome }}
+						</span>
+          </template>
 					<template v-slot:[`body.comentarios`]="{ item }">
 						<button
 							class="flex hover:bg-gray-400 min-w-[235px] p-1"
@@ -331,7 +343,9 @@
 					{ nome: "Tipo Solicitação", valor: "tipo_solicitacao", filtro: true },
 					{ nome: "Prazo de Execução", valor: "prazo_execucao" },
 					{ nome: "Necessidade", valor: "data_necessidade", filtro: true },
+					{ nome: "Previsão", valor: "data_necessidade", filtro: true },
 					{ nome: "Etapa", valor: "EtapaSS.nome", filtro: true },
+					{ nome: "Comprador", valor: "comprador.nome", filtro: true },
 					{ nome: "Solicitante", valor: "Usuario.nome", filtro: true },
 					{ nome: "Comentários", valor: "comentarios", filtro: false },
 				]
@@ -451,6 +465,8 @@
 					let SSs = resp.dados.SSs.rows
 					this.totalItens = resp.dados.SSs.count
 					this.dados = SSs
+
+          console.log(SSs)
 					this.carregandoTabela = false
 				}
 			},
