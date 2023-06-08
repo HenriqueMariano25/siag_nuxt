@@ -82,7 +82,7 @@
 						<!--            class="w-2/6"-->
 						<!--            id="status"/>-->
 					</div>
-					<div class="px-1 bg-gray-200 border border-gray-300 flex flex-col pb-1" v-if="!etapa.concluir_card">
+					<div class="px-1 bg-gray-200 border border-gray-300 flex flex-col pb-1 gap-y-1" v-if="!etapa.concluir_card">
 						<div>
 							<span
 								class="text-red-600 text-xl"
@@ -93,22 +93,36 @@
 						<div>
 							<span>Clique na etapa que deseja mover os Cards acima</span>
 						</div>
-						<div class="flex gap-2">
-							<BotaoPadrao
-								:disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
-								:texto="proximaEtapa.ordem + ' - ' + proximaEtapa.nome"
-								cor="bg-primaria-500 hover:bg-primaria-700"
-								class="text-white"
-								@click="processarCards(proximaEtapa.id)" />
-							<div v-for="proxima of etapa.ProximasEtapas">
-								<!--              {{ proxima }}-->
-								<BotaoPadrao
-									:disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
-									:texto="proxima.ordem + ' - ' + proxima.nome"
-									cor="bg-primaria-500 hover:!bg-primaria-700"
-									class="text-white"
-									@click="processarCards(proxima.id)" />
-							</div>
+            <div v-if="etapa.voltar_etapa === true" class="border border-blue-200 bg-blue-100 p-1 flex flex-col gap-1">
+              <span class="text-xl w-full bg-blue-200 px-1 uppercase font-medium">Etapa para retornar</span>
+              <div class="flex ">
+                <BotaoPadrao
+                  :disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
+                  :texto="anteriorEtapa.ordem + ' - ' + anteriorEtapa.nome"
+                  cor="bg-primaria-500 hover:bg-primaria-700"
+                  class="text-white"
+                  @click="processarCards(anteriorEtapa.id)" />
+              </div>
+            </div>
+						<div class="flex flex-col gap-1 border border-green-300 bg-green-200 p-1">
+              <span class="text-xl w-full bg-green-300 px-1 uppercase font-medium">Etapas para avançar</span>
+              <div class="flex gap-2">
+                <BotaoPadrao
+                  :disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
+                  :texto="proximaEtapa.ordem + ' - ' + proximaEtapa.nome"
+                  cor="bg-primaria-500 hover:bg-primaria-700"
+                  class="text-white"
+                  @click="processarCards(proximaEtapa.id)" />
+                <div v-for="proxima of etapa.ProximasEtapas">
+                  <!--              {{ proxima }}-->
+                  <BotaoPadrao
+                    :disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
+                    :texto="proxima.ordem + ' - ' + proxima.nome"
+                    cor="bg-primaria-500 hover:!bg-primaria-700"
+                    class="text-white"
+                    @click="processarCards(proxima.id)" />
+                </div>
+              </div>
 						</div>
 					</div>
 				</div>
@@ -185,6 +199,9 @@
 			proximaEtapa: {
 				type: [Object],
 			},
+      anteriorEtapa: {
+        type: [Object],
+      },
 		},
 		data() {
 			return {
@@ -232,13 +249,6 @@
 				let { comentario } = this.processo
 
 				let { id: etapa_id_origem } = this.etapa
-
-				console.log(cards)
-				console.log(usuario_id)
-				console.log(comentario)
-				// console.log(etapa_id)
-				console.log(this.etapa)
-				// console.log(etapa_id)
 
 				await this.$axios
 					.$post("/contratacao/card/processar/novo_padrao", {

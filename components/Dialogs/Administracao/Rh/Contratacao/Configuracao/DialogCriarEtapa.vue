@@ -84,6 +84,12 @@
                   dica="Se SIM,é obrigatório ter indicação para processar dessa etapa."
                   :invalido="erros.includes('obrigatorio_indicacao')"
                   v-model="etapa.obrigatorio_indicacao"/>
+                <AppFormRadio
+                  id="voltarEtapa"
+                  simNao
+                  titulo="Pode retornar para Etapa anterior ?"
+                  :invalido="erros.includes('voltar_etapa')"
+                  v-model="etapa.voltar_etapa" />
                 <div class="col-span-2 grid grid-cols-2 bg-blue-100 border border-blue-200 pb-1">
                   <div class="col-span-2 flex bg-blue-200 px-2 items-center ">
                     <span class="   text-xl"><strong>Configurações únicas em todo o processo</strong></span>
@@ -243,6 +249,7 @@
           editar_indicacao: null,
           precisa_aprovacao: null,
           obrigatorio_indicacao: null,
+          voltar_etapa: null,
 				},
 				proxima_etapa_id: null,
 				proximasEtapas: [],
@@ -332,7 +339,8 @@
           "concluir_card",
           "iniciar_rh",
           "precisa_aprovacao",
-          "obrigatorio_indicacao"
+          "obrigatorio_indicacao",
+          "voltar_etapa"
         ]
 
         for (let campo of camposObrigatorio) {
