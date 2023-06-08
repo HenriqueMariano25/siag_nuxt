@@ -172,6 +172,13 @@
 					{{ item['fun.encarregado_sapo'] }}
 				</span>
 			</template>
+      <template v-slot:[`body.fun.encarregado_producao`]="{ item }">
+				<span
+					v-if="item['fun.encarregado_producao']"
+					class="whitespace-nowrap">
+					{{ item['fun.encarregado_producao'] }}
+				</span>
+			</template>
 			<template v-slot:[`body.hora_extra`]="{ item }">
 				<span
 					class="whitespace-nowrap"
@@ -287,7 +294,8 @@
 					{ nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
 					{ nome: "Nome", valor: "nome", filtro: true , colunaTabela: 'fun.nome'},
 					{ nome: "Cargo", valor: "cargo", filtro: true },
-					{ nome: "Encarregado/Lider SAPO", valor: "fun.encarregado_sapo", filtro: true },
+					{ nome: "Encar./Lider SAPO", valor: "fun.encarregado_sapo", filtro: true },
+					{ nome: "Encar./Lider Produção", valor: "fun.encarregado_producao", filtro: true },
 					{ nome: "Rota", valor: "rota" },
 					{ nome: "Ponto de embarque", valor: "ponto_embarque", filtro: true },
 				],
@@ -460,15 +468,12 @@
           filtrosFinais = filtros.join("")
         }
 
-        // console.log(filtrosFinais)
 				let resp = await this.$axios.$get("/hora_extra/buscar/funcionarios", {
 					params: { setorId, page: this.pagina - 1, size: this.itensPorPagina, filtros: filtrosFinais, },
 				})
 
 				if (!resp.falha) {
 					let funcionarios = resp.dados.funcionarios
-          console.log(funcionarios)
-
 					this.totalItens = parseInt(resp.dados.totalItens)
 					this.dados = funcionarios
 					this.carregandoTabela = false
@@ -477,8 +482,6 @@
 
       async buscarConfiguracao(){
         let resp = await this.$axios.$get("/hora_extra/configuracao")
-
-        console.log(resp)
         if(!resp.falha){
           this.configuracaoHE = resp.dados.configuracao
           this.verificaSeAberto()
