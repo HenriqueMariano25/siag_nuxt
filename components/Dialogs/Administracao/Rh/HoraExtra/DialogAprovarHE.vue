@@ -570,7 +570,6 @@
         let itens = []
         for (let item of dados) {
           let temp = []
-          console.log(dados)
           temp.push(item.aprovacao_he === null ? "Aguardando" : item.aprovacao_he === true ? "Aprovado" : "Negado")
           temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
           temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
@@ -601,7 +600,6 @@
         if (!resp.falha) {
           let dias = resp.dados.dias
 
-          console.log(dias)
           this.pendDiasSiteManager = dias
         }
       },
@@ -623,23 +621,17 @@
       },
 
       async buscarPorTagSiteManager(data) {
-        console.log(data)
-
         this.dataSiteManager = data
         this.buscarAgendamentosSiteManager()
       },
 
       async aprovadoSiteManager(aprovacao, agendamentos) {
-        console.log("Aquiiiiii")
-
         this.mostrarDialogConfirmarAprovacaoSiteManager = false
 
         if (aprovacao) this.textoAlerta = "Agendamentos aprovados com sucesso!"
         else if (!aprovacao) this.textoAlerta = "Agendamentos negados com sucesso!"
 
           for (let agen of agendamentos) {
-            console.log(agen)
-
             let idx = this.dadosSiteManager.findIndex((o) => o.id === agen)
             if (this.dadosSiteManager[idx].aprovacao_situacao === null) {
               this.pendDiasSiteManager[this.dataSiteManager] -= 1

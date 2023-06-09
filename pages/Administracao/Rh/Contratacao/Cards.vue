@@ -208,15 +208,15 @@
 								alt="excel"
 								class="w-6 h-6" />
 						</BotaoPadrao>
-						<BotaoPadrao
-							:texto="gerandoExcel ? 'Gerando Excel' : 'Excel por etapa'"
-							@click="gerarExcelEtapa()"
-							:disabled="gerandoExcel">
-							<img
-								src="@/assets/icons/excel-b.svg"
-								alt="excel"
-								class="w-6 h-6" />
-						</BotaoPadrao>
+<!--						<BotaoPadrao-->
+<!--							:texto="gerandoExcel ? 'Gerando Excel' : 'Excel por etapa'"-->
+<!--							@click="gerarExcelEtapa()"-->
+<!--							:disabled="gerandoExcel">-->
+<!--							<img-->
+<!--								src="@/assets/icons/excel-b.svg"-->
+<!--								alt="excel"-->
+<!--								class="w-6 h-6" />-->
+<!--						</BotaoPadrao>-->
 					</div>
 					<div class="flex w-full justify-end gap-4">
 						<BotaoPadrao
@@ -766,6 +766,7 @@
 						"Treinamentos",
 						"PEP",
 						"Mobilização",
+            "Criado por",
 						"Último Comentário",
 					]
 					let nomeArquivo
@@ -806,6 +807,7 @@
 								: "",
 						)
 						temp.push(item.mobilizacao)
+						temp.push(item["Usuario.nome"] ? item["Usuario.nome"] : "")
 						item["Comentarios.descricao"] ? temp.push(item["Comentarios.descricao"]) : temp.push("")
 						itens.push(temp)
 					}

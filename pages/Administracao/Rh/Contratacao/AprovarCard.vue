@@ -36,11 +36,13 @@
 				:cabecalho="cabecalho"
 				:dados="dados"
 				@filtrar="recebendoFiltro"
+        @filtros="filtros = $event"
+        @ordem="ordem = $event"
 				:itensPorPagina="itensPorPagina"
 				:pagina="pagina"
 				:totalItens="totalItens"
 				altura="calc(100vh - 190px)"
-				@atualizar="atualizarDados"
+				@atualizar="buscarCards()"
         @dblclick="verDetalhesSS"
         @selecionados="selecionados = $event"
 				:temDetalhes="false">
@@ -53,7 +55,7 @@
 					</div>
 				</template>
 				<template v-slot:[`body.acoes`]="{ item }">
-          <div class="w-10 h-8">
+          <div class="w-8 h-8 flex items-center">
             <BotaoIcone
               @click="
 							card = item
@@ -66,6 +68,9 @@
             </BotaoIcone>
           </div>
 				</template>
+        <template v-slot:[`body.id`]="{ item }">
+          <span class="whitespace-nowrap">{{ ("000000" + item.id).slice(-6) }}</span>
+        </template>s
 				<template v-slot:[`body.Etapa.nome`]="{ item }">
 					<span class="whitespace-nowrap" v-if="item.Etapa && item.Etapa.nome">
 						{{ item.Etapa.nome }}
@@ -77,32 +82,32 @@
 					</span>
 				</template>
 				<template v-slot:[`body.DisciplinaCard.descricao`]="{ item }">
-					<span v-if="item.DisciplinaCard && item.DisciplinaCard.descricao">
+					<span class="whitespace-nowrap" v-if="item.DisciplinaCard && item.DisciplinaCard.descricao">
 						{{ item.DisciplinaCard.descricao }}
 					</span>
 				</template>
 				<template v-slot:[`body.CentroCustoPEP.numero_pep`]="{ item }">
-					<span v-if="item.CentroCustoPEP && item.CentroCustoPEP.numero_pep">
+					<span class="whitespace-nowrap" v-if="item.CentroCustoPEP && item.CentroCustoPEP.numero_pep">
 						{{ item.CentroCustoPEP.numero_pep }}
 					</span>
 				</template>
 				<template v-slot:[`body.FuncaoCard.nome`]="{ item }">
-					<span v-if="item.FuncaoCard && item.FuncaoCard.nome">
+					<span class="whitespace-nowrap" v-if="item.FuncaoCard && item.FuncaoCard.nome">
 						{{ item.FuncaoCard.nome }}
 					</span>
 				</template>
 				<template v-slot:[`body.Indicacao.nome`]="{ item }">
-					<span v-if="item.Indicacao && item.Indicacao.nome">
+					<span class="whitespace-nowrap" v-if="item.Indicacao && item.Indicacao.nome">
 						{{ item.Indicacao.nome }}
 					</span>
 				</template>
 				<template v-slot:[`body.data_necessidade`]="{ item }">
-					<span v-if="item.data_necessidade">
+					<span class="whitespace-nowrap" v-if="item.data_necessidade">
 						{{ $dayjs(item.data_necessidade).format("DD/MM/YYYY") }}
 					</span>
 				</template>
         <template v-slot:[`body.ultima_data`]="{ item }">
-					<span v-if="item.ultima_data">
+					<span class="whitespace-nowrap" v-if="item.ultima_data">
 						{{ $dayjs(item.ultima_data).format("DD/MM/YYYY") }}
 					</span>
 				</template>
@@ -123,7 +128,7 @@
             </div>
           </div>
         </template>
-        <template v-slot:[`body.criado_por`]="{ item }">
+        <template v-slot:[`body.Usuario.nome`]="{ item }">
 					<span v-if="item" class="whitespace-nowrap">
 						{{ item.Usuario ? item.Usuario.nome : "" }}
 					</span>
@@ -139,7 +144,7 @@
             <img
               src="@/assets/icons/comentarios-b.svg"
               alt="close"
-              class="w-7 h-7 mr-1"/>
+              class="w-6 h-6 mr-1"/>
             <span v-if="item.Comentarios.at(-1).descricao">
 							{{
                 item.Comentarios.at(-1).descricao.substr(0, 20)
@@ -151,21 +156,26 @@
 		</div>
 		<RodapePagina>
 			<template v-slot>
-				<div class="flex items-center w-full" v-if="tipoAprovacao !== 'controle'">
-					<div class="flex w-full justify-end">
-						<BotaoPadrao
-							:disabled="selecionados.length <= 0"
-							texto="Aprovar Cards"
-							@click="mostrarDialogAprovarCard = true">
-							<template v-slot>
-								<img
-									src="@/assets/icons/check-b.svg"
-									alt="close"
-									class="w-7 h-7 fill-red-500" />
-							</template>
-						</BotaoPadrao>
-					</div>
-				</div>
+        <div class="flex items-center w-full justify-between">
+          <div class="flex  ">
+            <BotaoPadrao texto="Gerar excel" @click="gerarExcel()">
+              <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
+            </BotaoPadrao>
+          </div>
+          <div class="flex " v-if="tipoAprovacao !== 'controle'">
+            <BotaoPadrao
+              :disabled="selecionados.length <= 0"
+              texto="Aprovar Cards"
+              @click="mostrarDialogAprovarCard = true">
+              <template v-slot>
+                <img
+                  src="@/assets/icons/check-b.svg"
+                  alt="close"
+                  class="w-7 h-7 fill-red-500" />
+              </template>
+            </BotaoPadrao>
+          </div>
+        </div>
 			</template>
 		</RodapePagina>
 		<DialogAprovarCard
@@ -219,6 +229,8 @@
   import {buscarSetores, buscarDisciplinaCard, buscarEtapa} from "~/mixins/buscarInformacoes"
   import {prepararFiltro} from "~/mixins/prepararFiltro";
   import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
+  import gerarExcel from "~/functions/gerarExcel";
+
 
 	export default {
     mixins: [buscarEtapa, prepararFiltro, buscarSetores, buscarDisciplinaCard],
@@ -240,6 +252,7 @@
 			return {
 				dados: [],
 				filtros: {},
+        ordem: null,
 				itensPorPagina: 20,
 				pagina: 1,
 				totalItens: 0,
@@ -283,7 +296,7 @@
 		computed: {
 			cabecalho() {
 				let cabecalho = [
-					{ nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true },
+					// { nome: "Etapa", valor: "Etapa.nome", filtro: true, ordenar: true },
 					{ nome: "Cod.", valor: "id", filtro: true, centralizar: true },
 					{ nome: "Situação", valor: "situacao", centralizar: true },
           {
@@ -305,13 +318,13 @@
 					{ nome: "Função", valor: "FuncaoCard.nome", filtro: true },
 					{ nome: "Nome", valor: "Indicacao.nome", filtro: true },
 					{ nome: "Necessidade", valor: "data_necessidade", filtro: true, centralizar: true, tipoFiltro: "data" },
-					{ nome: "Criado por", valor: "criado_por", filtro: true },
+					{ nome: "Criado por", valor: "Usuario.nome", filtro: true },
 					{ nome: "Última data", valor: "ultima_data", filtro: true, centralizar: true, tipoFiltro: "data" },
 					{ nome: "Comentários", valor: "comentarios"},
 				]
 
 				if (this.tipoAprovacao === "controle") {
-					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-16" })
+					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-12" })
 				} else {
 					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true, largura: "w-10" })
 				}
@@ -378,6 +391,52 @@
         this.mostrarDialogDetalhesCard = true
       },
 
+      async gerarExcel() {
+        let dados = this.dados
+
+        let cabecalho = [
+          "Codigo",
+          "Situação",
+          "Setor",
+          "Disciplina",
+          "PEP",
+          "Função",
+          "Nome",
+          "Necessidade",
+          "Criado por",
+          "Última data",
+        ]
+        let nomeArquivo
+
+        nomeArquivo = "aprovacao"
+
+        let itens = []
+        for (let item of dados) {
+          let temp = []
+          temp.push(("000000" + item.id).slice(-6))
+          temp.push(
+            this.$dayjs().diff(item.ultima_data, "day") <= item.Etapa.leadtime
+              ? "No prazo"
+              : "Atrasado",
+          )
+          temp.push(item.Setor.nome ? item.Setor.nome : "")
+          temp.push(item.DisciplinaCard ? `${item.DisciplinaCard.sigla}` : "")
+          temp.push(
+            item.CentroCustoPEP
+              ? `${item.CentroCustoPEP.numero_pep} - ${item.CentroCustoPEP.descricao}`
+              : "",
+          )
+          temp.push(item.FuncaoCard ? item.FuncaoCard.nome.trim() : "")
+          temp.push(item.Indicacao ? item.Indicacao.nome : "")
+          temp.push(this.$dayjs(item.data_necessidade).format("DD/MM/YYYY"))
+          temp.push(item.Usuario ? item.Usuario.nome : "")
+          temp.push(this.$dayjs(item.ultima_data).format("DD/MM/YYYY"))
+
+          itens.push(temp)
+        }
+
+        gerarExcel(cabecalho, itens, nomeArquivo)
+      },
 
 		},
 		watch: {
