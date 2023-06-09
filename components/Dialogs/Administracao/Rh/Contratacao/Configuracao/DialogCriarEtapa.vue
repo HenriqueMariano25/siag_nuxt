@@ -70,6 +70,13 @@
                   :invalido="erros.includes('concluir_card')"
 									v-model="etapa.concluir_card"/>
                 <AppFormRadio
+                  id="podeRejeitar"
+                  simNao
+                  titulo="Pode rejeitar card nessa etapa ?"
+                  dica="Permiti rejeitar o Card"
+                  :invalido="erros.includes('rejeita_card')"
+                  v-model="etapa.rejeita_card" />
+                <AppFormRadio
                   id="aprovacao"
                   simNao
                   dicaPosicao="right-0"
@@ -250,6 +257,7 @@
           precisa_aprovacao: null,
           obrigatorio_indicacao: null,
           voltar_etapa: null,
+					rejeita_card: null,
 				},
 				proxima_etapa_id: null,
 				proximasEtapas: [],
@@ -340,7 +348,8 @@
           "iniciar_rh",
           "precisa_aprovacao",
           "obrigatorio_indicacao",
-          "voltar_etapa"
+          "voltar_etapa",
+          "rejeita_card",
         ]
 
         for (let campo of camposObrigatorio) {

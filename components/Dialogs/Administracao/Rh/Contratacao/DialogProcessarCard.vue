@@ -138,6 +138,9 @@
 							alt=""
 							class="w-7 h-7" />
 					</BotaoPadrao>
+          <BotaoPadrao texto="Rejeitar cards" @click="rejeitarCard()" v-if="etapa.rejeita_card" class="bg-red-200">
+            <img src="@/assets/icons/close-b.svg" alt="" class="w-7 h-7">
+          </BotaoPadrao>
           <BotaoPadrao texto="Finalizar cards" @click="finalizarCard()" v-if="etapa.concluir_card">
             <img src="@/assets/icons/check-b.svg" alt="" class="w-7 h-7">
           </BotaoPadrao>
@@ -275,7 +278,21 @@
         if(!resp.falha){
           this.$emit("concluido", cards)
         }
+      },
+
+      async rejeitarCard(){
+        let cards = this.cards.map((card) => card.id)
+        let usuario_id = this.$auth.user ? this.$auth.user.id : null
+        let { comentario } = this.processo
+
+        let resp = await this.$axios.$post("/contratacao/card/rejeitar_cards", { cards, usuario_id, comentario })
+
+        if (!resp.falha) {
+          this.$emit("rejeitado", cards)
+        }
       }
+
+
 		},
 	}
 </script>

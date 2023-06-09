@@ -277,6 +277,7 @@
 			:anteriorEtapa="anteriorEtapa"
 			@alterouCandidato="alterouCandidato"
 			@concluido="concluido"
+			@rejeitado="rejeitado"
 			@processado="processado" />
 		<AppAlerta
 			tipo="sucesso"
@@ -639,7 +640,6 @@
 			},
 
 			async concluido(cards) {
-				console.log(cards)
 				this.mostrarDialogProcessarCard = false
 				for (let card of cards) {
 					let index = this.dados.findIndex((obj) => {
@@ -653,6 +653,21 @@
 				this.textoAlerta = "Cards finalizados com sucesso!"
 				this.selecionados = []
 			},
+
+      async rejeitado(cards) {
+        this.mostrarDialogProcessarCard = false
+        for (let card of cards) {
+          let index = this.dados.findIndex((obj) => {
+            return obj.id === card
+          })
+
+          this.dados.splice(index, 1)
+          this.totalItens -= 1
+        }
+        this.mostrarAlerta = true
+        this.textoAlerta = "Cards rejeitados com sucesso!"
+        this.selecionados = []
+      },
 
 			async alterouCandidato(cards) {
 				this.mostrarDialogProcessarCard = false
