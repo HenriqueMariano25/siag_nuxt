@@ -1,6 +1,7 @@
 <template>
 	<BaseDialog
 		:titulo="card_id === null ? 'Criar card' : `Editando card - ${('000000' + card.id).slice(-6)}`"
+    :carregando="carregando"
 		@cancelar="cancelar()">
 		<template v-slot:corpo>
 			<div
@@ -374,6 +375,7 @@
 				erro: [],
 				dataNecessidadeOriginal: null,
 				erroCpf: false,
+        carregando: false
 			}
 		},
 		async fetch() {
@@ -396,7 +398,7 @@
 					return this.$auth.user && this.$auth.user.Setor ? this.$auth.user.Setor.nome : ""
 				},
 				set(value) {
-					console.log(value)
+					// console.log(value)
 				},
 			},
 			podeEditarTudo() {
@@ -458,8 +460,6 @@
 					params: { setor_id },
 				})
 
-				console.log(resp)
-				console.log(resp.disciplinas)
 				if (!resp.falha) {
 					let disciplinas = resp.disciplinas
 					let options = disciplinas.map((o) => {
@@ -481,7 +481,6 @@
 					})
 
 					this.responsaveis = options
-					// this.responsaveis = resp.dados.funcionarios.map( o => o.nome )
 				}
 			},
 
@@ -563,8 +562,6 @@
 			async validarCpf() {
 				let cpf = this.card.indicacao.cpf
 				let indicacao_id = this.card.indicacao_id
-
-				console.log(cpf)
 
 				if (cpf !== null && cpf !== "") {
 					if (cpf.length === 14) {
@@ -688,43 +685,48 @@
 
 			async buscarCard() {
 				let id = this.card_id
+        this.carregando = true
 
-				let { card } = await this.$axios.$get("/contratacao/card/buscar", { params: { id: id } })
+				let resp = await this.$axios.$get("/contratacao/card/buscar", { params: { id: id } })
 
-				let temEquipamentoTi = false
-				if (card.equipamento_card.length > 0) {
-					temEquipamentoTi = card.equipamento_card.filter((obj) => obj.id === 1).length > 0
-				}
-				card.equipamento_ti = temEquipamentoTi
-				//
-				// let temIndicacao = false
-				if (card.Indicacao) {
-					card.tem_indicacao = true
-					card.indicacao = card.Indicacao
-					card.indicacao.url_pdf = card.Indicacao.url_pdf
-				} else {
-					card.tem_indicacao = false
-					card.indicacao = {
-						nome: null,
-						telefone: null,
-						telefone_2: null,
-						telefone_3: null,
-						email: null,
-						indicado_por: null,
-						cpf: null,
-						pdf: null,
-						url_pdf: null,
-					}
-				}
+        if(!resp.falha){
+          let card = resp.dados.card
 
-				this.dataNecessidadeOriginal = card.data_necessidade
-				this.card = card
-				if (card.nrs.length > 0) {
-					this.card.nrs = []
-					for (let nr of card.nrs) {
-						this.card.nrs.push(nr.id)
-					}
-				}
+          let temEquipamentoTi = false
+          if (card.equipamento_card.length > 0) {
+            temEquipamentoTi = card.equipamento_card.filter((obj) => obj.id === 1).length > 0
+          }
+          card.equipamento_ti = temEquipamentoTi
+          if (card.Indicacao) {
+            card.tem_indicacao = true
+            card.indicacao = card.Indicacao
+            card.indicacao.url_pdf = card.Indicacao.url_pdf
+          } else {
+            card.tem_indicacao = false
+            card.indicacao = {
+              nome: null,
+              telefone: null,
+              telefone_2: null,
+              telefone_3: null,
+              email: null,
+              indicado_por: null,
+              cpf: null,
+              pdf: null,
+              url_pdf: null,
+            }
+          }
+
+          this.dataNecessidadeOriginal = card.data_necessidade
+          this.card = Object.assign({}, card)
+
+          if (card.nrs.length > 0) {
+            this.card.nrs = []
+            for (let nr of card.nrs) {
+              this.card.nrs.push(nr.id)
+            }
+          }
+          this.carregando = false
+        }
 			},
 		},
 		watch: {
