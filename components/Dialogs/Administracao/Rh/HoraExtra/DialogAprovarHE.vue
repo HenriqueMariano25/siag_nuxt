@@ -610,7 +610,7 @@
         let ordem = this.ordemSiteManager
 
         let resp = await this.$axios.$get("/hora_extra/aprovacao/site_manager", {
-          params: {data, setor_id, ordem: ordem, filtros: this.filtrosGestor},
+          params: {data, ordem: ordem, filtros: this.filtrosSiteManager},
         })
 
         if (!resp.falha) {
