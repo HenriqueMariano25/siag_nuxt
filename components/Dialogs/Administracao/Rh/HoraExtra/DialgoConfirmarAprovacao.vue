@@ -69,7 +69,8 @@
         </div>
       </template>
       <template v-slot:rodape-btn-direito>
-        <div class="flex gap-2">
+        <div class="flex gap-2 items-center">
+          <span class="text-xl">Total de itens: {{ dados.length }}</span>
           <BotaoPadrao texto="Negar" cor="bg-red-500 hover:bg-red-600" @click="aprovarAgendamentos(false)">
             <img src="@/assets/icons/close-b.svg" alt="" class="w-6 h-6">
           </BotaoPadrao>

@@ -356,7 +356,7 @@
 				mostrarTodosSiteManager: false,
 				pendDiasSiteManager: [],
 				dadosSiteManager: [],
-				filtrosSiteManager: [],
+				filtrosSiteManager: {},
 				itensPorPaginaSiteManager: 50,
 				totalItensSiteManager: 0,
 				paginaSiteManager: 1,
