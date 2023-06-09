@@ -63,6 +63,9 @@
 											<template v-slot:[`body.Funcionario.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Funcionario.nome }}</span>
 											</template>
+                      <template v-slot:[`body.agendado_por.nome`]="{ item }">
+                        <span class="whitespace-nowrap" v-if="item.agendado_por">{{ item.agendado_por.nome }}</span>
+                      </template>
 											<template v-slot:[`body.Funcionario.cargo`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
 											</template>
@@ -186,6 +189,9 @@
 												<span class="whitespace-nowrap">{{
                             item.Funcionario.rota ? item.Funcionario.rota.numero : ""
                           }}</span>
+                      </template>
+                      <template v-slot:[`body.agendado_por.nome`]="{ item }">
+                        <span class="whitespace-nowrap" v-if="item.agendado_por">{{ item.agendado_por.nome }}</span>
                       </template>
                       <template v-slot:[`body.Funcionario.hora_extra`]="{ item }">
                         {{ horaExtra(item.Funcionario.hora_extra) }}
@@ -414,6 +420,7 @@
 						valor: "Funcionario.hora_extra_projetada",
 						centralizar: true,
 					},
+					{ nome: "Agendado por", valor: "agendado_por.nome", filtro: true },
 					{ nome: "Turno", valor: "turno", filtro: true, centralizar: true },
 					{ nome: "Motivo", valor: "motivo", filtro: true, },
 					{ nome: "Aprovado por", valor: "aprovador_he.nome", filtro: true },
@@ -450,6 +457,7 @@
 						valor: "Funcionario.hora_extra_projetada",
 						centralizar: true,
 					},
+          { nome: "Agendado por", valor: "agendado_por.nome", filtro: true },
 					{ nome: "Turno", valor: "turno", filtro: true, centralizar: true },
 					{ nome: "Motivo", valor: "motivo", filtro: true, },
 					{ nome: "Situação", valor: "situacao", filtro: true },
@@ -583,6 +591,7 @@
           "Setor",
           "HE Atual",
           "HE Projetada",
+          "Agendado por",
           "Turno",
           "Motivo",
           "Aprovado por",
@@ -605,6 +614,7 @@
           temp.push(item.Setor ? item.Setor.nome: "")
           temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
           temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
+          temp.push(item.agendado_por ? item.agendado_por.nome : "")
           temp.push(item.turno)
           temp.push(item.motivo)
           temp.push(item.aprovador_he ? item.aprovador_he.nome : "")
@@ -664,6 +674,7 @@
           "Setor",
           "HE Atual",
           "HE Projetada",
+          "Agendado por",
           "Turno",
           "Motivo",
           "Situação",
@@ -688,6 +699,7 @@
           temp.push(item.Setor ? item.Setor.nome : "")
           temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
           temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
+          temp.push(item.agendado_por ? item.agendado_por.nome : "")
           temp.push(item.turno)
           temp.push(item.motivo)
           temp.push(item.situacao)
