@@ -278,6 +278,7 @@
 			@alterouCandidato="alterouCandidato"
 			@concluido="concluido"
 			@rejeitado="rejeitado"
+			@standby="standby"
 			@processado="processado" />
 		<AppAlerta
 			tipo="sucesso"
@@ -666,6 +667,21 @@
         }
         this.mostrarAlerta = true
         this.textoAlerta = "Cards rejeitados com sucesso!"
+        this.selecionados = []
+      },
+
+      async standby(cards) {
+        this.mostrarDialogProcessarCard = false
+        for (let card of cards) {
+          let index = this.dados.findIndex((obj) => {
+            return obj.id === card
+          })
+
+          this.dados.splice(index, 1)
+          this.totalItens -= 1
+        }
+        this.mostrarAlerta = true
+        this.textoAlerta = "Cards movidos para Standby com sucesso!"
         this.selecionados = []
       },
 

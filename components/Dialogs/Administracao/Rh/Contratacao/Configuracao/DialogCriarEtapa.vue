@@ -77,6 +77,13 @@
                   :invalido="erros.includes('rejeita_card')"
                   v-model="etapa.rejeita_card" />
                 <AppFormRadio
+                  id="podeStandby"
+                  simNao
+                  titulo="Pode mover para o Standby nessa etapa ?"
+                  dica="Permiti mover para Standby o Card"
+                  :invalido="erros.includes('standby_card')"
+                  v-model="etapa.standby_card" />
+                <AppFormRadio
                   id="aprovacao"
                   simNao
                   dicaPosicao="right-0"
@@ -102,7 +109,8 @@
                     <span class="   text-xl"><strong>Configurações únicas em todo o processo</strong></span>
                     <AppTooltip>
                       <template v-slot:corpo>
-                        <img src="../../../../../../assets/icons/information-circle-g.svg" alt="" class="w-6 h-6">
+<!--                        <img src="../../../../../../assets/icons/information-circle-g.svg" alt="" class="w-6 h-6">-->
+                        <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7">
                       </template>
                       <template v-slot:tooltip>
                         <div class="min-w-[300px] max-w-full">
@@ -258,6 +266,7 @@
           obrigatorio_indicacao: null,
           voltar_etapa: null,
 					rejeita_card: null,
+					standby_card: null,
 				},
 				proxima_etapa_id: null,
 				proximasEtapas: [],
@@ -350,6 +359,7 @@
           "obrigatorio_indicacao",
           "voltar_etapa",
           "rejeita_card",
+          "standby_card",
         ]
 
         for (let campo of camposObrigatorio) {
