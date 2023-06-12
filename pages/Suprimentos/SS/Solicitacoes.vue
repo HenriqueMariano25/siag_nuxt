@@ -92,6 +92,11 @@
 							{{ $dayjs(item.data_necessidade).format("DD/MM/YYYY") }}
 						</span>
 					</template>
+          <template v-slot:[`body.data_previsao`]="{ item }">
+						<span v-if="item">
+							{{ $dayjs(item.data_previsao).format("DD/MM/YYYY") }}
+						</span>
+					</template>
 					<template v-slot:[`body.EtapaSS.nome`]="{ item }">
 						<span v-if="item.EtapaSS && item.EtapaSS.nome">
 							<span class="whitespace-nowrap">{{ item.EtapaSS.nome }}</span>
@@ -136,29 +141,36 @@
 		<RodapePagina class="print:hidden">
 			<template v-slot>
 				<div class="flex items-center w-full">
-					<div class="flex w-full justify-end gap-4">
-						<BotaoPadrao
-							texto="Criar SS"
-							@click="mostrarDialogCriarSolicitacao = true">
-							<template v-slot>
-								<img
-									src="@/assets/icons/add-b.svg"
-									alt="close"
-									class="w-7 h-7" />
-							</template>
-						</BotaoPadrao>
-						<BotaoPadrao
-							v-if="listaSelect.includes(etapa_id)"
-							texto="Processar SS"
-							:disabled="selecionados.length === 0"
-							@click="escolherProcessar()">
-							<template v-slot>
-								<img
-									src="@/assets/icons/check-circle-b.svg"
-									alt="close"
-									class="w-6 h-6" />
-							</template>
-						</BotaoPadrao>
+					<div class="flex w-full justify-between ">
+            <div class="flex">
+              <BotaoPadrao texto="Gerar Excel" @click="gerarExcel()">
+                <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
+              </BotaoPadrao>
+            </div>
+            <div class="flex gap-3">
+              <BotaoPadrao
+                texto="Criar SS"
+                @click="mostrarDialogCriarSolicitacao = true">
+                <template v-slot>
+                  <img
+                    src="@/assets/icons/add-b.svg"
+                    alt="close"
+                    class="w-7 h-7" />
+                </template>
+              </BotaoPadrao>
+              <BotaoPadrao
+                v-if="listaSelect.includes(etapa_id)"
+                texto="Processar SS"
+                :disabled="selecionados.length === 0"
+                @click="escolherProcessar()">
+                <template v-slot>
+                  <img
+                    src="@/assets/icons/check-circle-b.svg"
+                    alt="close"
+                    class="w-6 h-6" />
+                </template>
+              </BotaoPadrao>
+            </div>
 					</div>
 				</div>
 			</template>
@@ -245,6 +257,7 @@
 	import DialogDetalhesSS from "~/components/Dialogs/Suprimentos/SS/DialogDetalhesSS.vue"
 
 	import { buscarEtapaSS } from "@/mixins/buscarInformacoes"
+  import gerarExcel from "~/functions/gerarExcel";
 	export default {
 		mixins: [buscarEtapaSS],
 		name: "Solicitacoes",
@@ -343,7 +356,7 @@
 					{ nome: "Tipo Solicitação", valor: "tipo_solicitacao", filtro: true },
 					{ nome: "Prazo de Execução", valor: "prazo_execucao" },
 					{ nome: "Necessidade", valor: "data_necessidade", filtro: true },
-					{ nome: "Previsão", valor: "data_necessidade", filtro: true },
+					// { nome: "Previsão", valor: "data_previsao", filtro: true },
 					{ nome: "Etapa", valor: "EtapaSS.nome", filtro: true },
 					{ nome: "Comprador", valor: "comprador.nome", filtro: true },
 					{ nome: "Solicitante", valor: "Usuario.nome", filtro: true },
@@ -527,6 +540,43 @@
 				this.ss_id = dados.id
 				this.mostrarDialogDetalhesSS = true
 			},
+
+      async gerarExcel(){
+        let dados = this.dados
+
+        let cabecalho = [
+          "Acompanhamento",
+          "Situação",
+          "Nat. Operação",
+          "Tipo Solicitação",
+          "Prazo de Execução",
+          "Necessidade",
+          "Etapa",
+          "Comprador",
+          "Solicitante",
+        ]
+        let nomeArquivo
+
+        nomeArquivo = "solicitacoes_servico"
+
+        let itens = []
+        for (let item of dados) {
+          let temp = []
+          temp.push(item.numero_acompanhamento ? item.numero_acompanhamento : "")
+          temp.push(item.etapa_ss_id === 6 ? 'Finalizado' : !this.$dayjs().isAfter(item.data_necessidade, 'day') ? 'No prazo' : 'Atrasado')
+          temp.push(item.natureza_operacao ? item.natureza_operacao : "")
+          temp.push(item.tipo_solicitacao ? item.tipo_solicitacao : "")
+          temp.push(item.data_fim ? `${this.$dayjs(item.data_fim).diff(item.data_inicio, "day")} dias` : "")
+          temp.push(item.data_necessidade ? this.$dayjs(item.data_necessidade).format("DD/MM/YYYY") : "")
+          temp.push(item.EtapaSS ? item.EtapaSS.nome : "")
+          temp.push(item.comprador ? item.comprador.nome : "")
+          temp.push(item.Usuario ? item.Usuario.nome : "")
+          itens.push(temp)
+        }
+
+        gerarExcel(cabecalho, itens, nomeArquivo)
+        // this.gerandoExcelMeusAgendamentos = false
+      }
 		},
 		watch: {
 			etapa_id(valor) {
