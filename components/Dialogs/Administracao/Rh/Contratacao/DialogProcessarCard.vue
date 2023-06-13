@@ -104,7 +104,7 @@
                   @click="processarCards(anteriorEtapa.id)" />
               </div>
             </div>
-						<div class="flex flex-col gap-1 border border-green-300 bg-green-200 p-1">
+						<div class="flex flex-col gap-1 border border-green-300 bg-green-200 p-1" v-if="proximaEtapa">
               <span class="text-xl w-full bg-green-300 px-1 uppercase font-medium">Etapas para avançar</span>
               <div class="flex gap-2">
                 <BotaoPadrao
@@ -141,7 +141,10 @@
           <BotaoPadrao texto="Rejeitar cards" @click="rejeitarCard()" v-if="etapa.rejeita_card" class="bg-red-200">
             <img src="@/assets/icons/close-b.svg" alt="" class="w-7 h-7">
           </BotaoPadrao>
-          <BotaoPadrao texto="Standby cards" @click="standbyCard()" v-if="etapa.rejeita_card" class="">
+          <BotaoPadrao texto="Standby cards" @click="standbyCard()" v-if="etapa.standby_card" class="">
+            <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7">
+          </BotaoPadrao>
+          <BotaoPadrao texto="Retornar cards" @click="retornarDestandbyCard()" v-if="etapa.nome === 'Standby'" class="">
             <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7">
           </BotaoPadrao>
           <BotaoPadrao texto="Finalizar cards" @click="finalizarCard()" v-if="etapa.concluir_card">
@@ -305,8 +308,19 @@
         if (!resp.falha) {
           this.$emit("standby", cards)
         }
-      }
+      },
 
+      async retornarDestandbyCard(){
+        let cards = this.cards.map((card) => card.id)
+        let usuario_id = this.$auth.user ? this.$auth.user.id : null
+        let { comentario } = this.processo
+
+        let resp = await this.$axios.$post("/contratacao/card/retornar_standby_cards", { cards, usuario_id, comentario })
+
+        if (!resp.falha) {
+          this.$emit("retornouStandby", cards)
+        }
+      }
 
 		},
 	}
