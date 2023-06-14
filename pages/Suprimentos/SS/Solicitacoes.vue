@@ -94,7 +94,7 @@
 					</template>
           <template v-slot:[`body.data_previsao`]="{ item }">
 						<span v-if="item">
-							{{ $dayjs(item.data_previsao).format("DD/MM/YYYY") }}
+							{{ calcularPrevisao(item) }}
 						</span>
 					</template>
 					<template v-slot:[`body.EtapaSS.nome`]="{ item }">
@@ -356,7 +356,7 @@
 					{ nome: "Tipo Solicitação", valor: "tipo_solicitacao", filtro: true },
 					{ nome: "Prazo de Execução", valor: "prazo_execucao" },
 					{ nome: "Necessidade", valor: "data_necessidade", filtro: true },
-					// { nome: "Previsão", valor: "data_previsao", filtro: true },
+					{ nome: "Previsão", valor: "data_previsao", filtro: true },
 					{ nome: "Etapa", valor: "EtapaSS.nome", filtro: true },
 					{ nome: "Comprador", valor: "comprador.nome", filtro: true },
 					{ nome: "Solicitante", valor: "Usuario.nome", filtro: true },
@@ -576,7 +576,19 @@
 
         gerarExcel(cabecalho, itens, nomeArquivo)
         // this.gerandoExcelMeusAgendamentos = false
-      }
+      },
+
+
+      calcularPrevisao(item) {
+        if(item.natureza_operacao === 'urgente' && item.data_aprov_site_manager)
+          return `${this.$dayjs(item.data_aprov_site_manager).add(28, 'day').format("DD/MM/YYYY")}`
+        else if(item.natureza_operacao === 'maquina parada' && item.data_aprov_setor)
+          return `${this.$dayjs(item.data_aprov_setor).add(14, 'day').format("DD/MM/YYYY")}`
+        else if (item.natureza_operacao === 'normal' && item.data_aprov_setor)
+          return `${this.$dayjs(item.data_aprov_setor).add(45, 'day').format("DD/MM/YYYY")}`
+
+        return ""
+      },
 		},
 		watch: {
 			etapa_id(valor) {

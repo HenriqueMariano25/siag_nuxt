@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="w-full">
     <div class="flex w-full bg-primaria-900 h-14 flex text-white">
       <button
         @click="tipoAprovacao = 'controle'"
