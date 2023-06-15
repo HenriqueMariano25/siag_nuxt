@@ -103,11 +103,7 @@
 				console.log("Buscando")
         let resp = await this.$axios.$get("/planejamento/disciplinas")
 
-        console.log(resp)
-
         if(!resp.falha){
-          console.log(resp.dados)
-
           let disciplinas = resp.dados.disciplinas
 
           this.dados = disciplinas

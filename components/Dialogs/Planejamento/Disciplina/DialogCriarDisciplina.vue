@@ -17,6 +17,7 @@
               label="Sigla"
               type="text"
               id="sigla"
+              placeholder="Ex: ADM"
               :invalido="erros.includes('sigla')"
               v-model="disciplinaLocal.sigla" />
             <AppFormInput
@@ -24,6 +25,7 @@
               class="grow"
               type="text"
               id="descricao"
+              placeholder="Ex: Administração"
               :invalido="erros.includes('descricao')"
               v-model="disciplinaLocal.descricao" />
             <AppFormSelect
@@ -121,8 +123,6 @@ export default defineComponent({
         let resp = await this.$axios.$post('/planejamento/disciplina/cadastrar', { ...disciplina })
         if(!resp.falha){
           let disciplinaCriada = resp.dados.disciplina
-
-          console.log(disciplinaCriada)
 
           this.$emit("cadastrado", disciplinaCriada)
         }
