@@ -31,6 +31,20 @@
 					alt="close"
 					class="w-8 h-8" />
 			</ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="Planejamento"
+        cor="bg-[#606c38]"
+        link="/planejamento"
+        v-if="
+					$auth.user.permissoes.includes(
+						'setor_planejamento',
+					)
+				">
+        <img
+          src="@/assets/icons/chart-w.svg"
+          alt="close"
+          class="w-8 h-8" />
+      </ButtonNavegacao>
 		</div>
 	</div>
 </template>
