@@ -7,6 +7,9 @@
       <ButtonNavegacao titulo="Sub Disciplina" cor="bg-[#606c38]" link="planejamento/subDisciplina">
         <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
+      <ButtonNavegacao titulo="Equipe Planejamento" cor="bg-[#606c38]" link="planejamento/equipePlanejamento">
+        <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
+      </ButtonNavegacao>
 <!--      <ButtonNavegacao titulo="Gente" cor="bg-[#264653]" link="administracao/gente"-->
 <!--                       v-if="$auth.user.permissoes.includes('gente')">-->
 <!--        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">-->

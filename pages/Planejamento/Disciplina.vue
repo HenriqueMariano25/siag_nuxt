@@ -100,7 +100,6 @@
 		},
 		methods: {
 			async buscarDisciplina() {
-				console.log("Buscando")
         let resp = await this.$axios.$get("/planejamento/disciplinas")
 
         if(!resp.falha){
