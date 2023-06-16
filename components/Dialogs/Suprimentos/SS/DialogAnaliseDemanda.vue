@@ -162,9 +162,10 @@ export default {
 
     async negarSS() {
       let {comentario} = this.processo
-      let solicitacoes = this.solicitacoes.map((ss) => {
-        return ss.id
-      })
+
+      console.log(this.solicitacao)
+
+      let solicitacoes = [this.solicitacao.id]
       let usuario_id = this.$auth.user.id
 
       let resp = await this.$axios.$post('/suprimentos/ss/negar_analise_demanda_ss', {
