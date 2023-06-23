@@ -632,14 +632,14 @@
 					temp.push(item.chapa)
 					temp.push(item.Funcionario ? item.Funcionario.nome : "")
 					temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+          temp.push(
+            item.Funcionario && item.Funcionario.encarregado_sapo
+              ? item.Funcionario.encarregado_sapo
+              : "",
+          )
 					temp.push(
 						item.Funcionario && item.Funcionario.encarregado_producao
 							? item.Funcionario.encarregado_producao
-							: "",
-					)
-					temp.push(
-						item.Funcionario && item.Funcionario.encarregado_sapo
-							? item.Funcionario.encarregado_sapo
 							: "",
 					)
 					temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
@@ -733,14 +733,14 @@
 					temp.push(item.chapa)
 					temp.push(item.Funcionario ? item.Funcionario.nome : "")
 					temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+          temp.push(
+            item.Funcionario && item.Funcionario.encarregado_sapo
+              ? item.Funcionario.encarregado_sapo
+              : "",
+          )
 					temp.push(
 						item.Funcionario && item.Funcionario.encarregado_producao
 							? item.Funcionario.encarregado_producao
-							: "",
-					)
-					temp.push(
-						item.Funcionario && item.Funcionario.encarregado_sapo
-							? item.Funcionario.encarregado_sapo
 							: "",
 					)
 					temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
@@ -851,14 +851,14 @@
 					temp.push(item.chapa)
 					temp.push(item.Funcionario ? item.Funcionario.nome : "")
 					temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+          temp.push(
+            item.Funcionario && item.Funcionario.encarregado_sapo
+              ? item.Funcionario.encarregado_sapo
+              : "",
+          )
 					temp.push(
 						item.Funcionario && item.Funcionario.encarregado_producao
 							? item.Funcionario.encarregado_producao
-							: "",
-					)
-					temp.push(
-						item.Funcionario && item.Funcionario.encarregado_sapo
-							? item.Funcionario.encarregado_sapo
 							: "",
 					)
 					temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
