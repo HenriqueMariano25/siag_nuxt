@@ -4,7 +4,7 @@
 		:class="{ [cor]: cor,'!bg-gray-400 cursor-default !text-gray-500 hover:!bg-gray-400': disabled, 'bg-transparent hover:!bg-gray-100 !rounded-full !p-0' : icone }"
 		@click.prevent.stop="!disabled ? $emit('click'): ''">
 		<slot></slot>
-		<span v-if="texto">{{ texto }}</span>
+		<span v-if="texto" class="whitespace-nowrap">{{ texto }}</span>
 	</button>
 </template>
 
