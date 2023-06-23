@@ -56,8 +56,10 @@
 	import AppFormInput from "~/components/Ui/AppFormInput.vue"
 	import AppFormSelect from "~/components/Ui/AppFormSelect.vue"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
+  import { buscarDisciplina } from "~/mixins/buscarInformacoes";
 
 	export default defineComponent({
+    mixins: [buscarDisciplina],
 		name: "DialogCriarEquipePlanejamento",
 		components: { BotaoPadrao, AppFormSelect, AppFormInput, BaseDialog },
 		props: {
@@ -89,9 +91,9 @@
 				this.$emit("cancelar")
 			},
 			async buscarTodosDisciplinas() {
-				let disciplinas = await this.$axios
-					.$get("/planejamento/disciplinas")
-					.then((resp) => resp.dados.disciplinas)
+        await this.buscarDisciplina()
+
+        let disciplinas = this.$store.state.disciplina.disciplinas
 
 				let options = disciplinas.map((o) => {
 					return { id: o.id, nome: o.descricao }
@@ -115,8 +117,6 @@
 				let equipePlan = this.equipePlanLocal
 
 				this.validarFormulario()
-
-        console.log("Aqui")
 
 				if (this.erros.length === 0) {
 					let resp = await this.$axios.$post("/planejamento/equipe_planejamento/cadastrar", {
@@ -144,6 +144,7 @@
 					}
 				}
 			},
+
 			async deletarEquipePlanejamento() {
 				let id = this.equipePlanejamento.id
 

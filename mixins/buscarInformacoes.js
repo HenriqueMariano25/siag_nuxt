@@ -13,7 +13,9 @@ export const buscarSetores = {
 export const buscarNrs = {
 	methods: {
 		async buscarNrs() {
-			let nrsBuscados = await this.$axios.$get("/contratacao/nrs/buscarTodos").then((resp) => resp.nrs)
+			let nrsBuscados = await this.$axios
+				.$get("/contratacao/nrs/buscarTodos")
+				.then((resp) => resp.nrs)
 
 			return nrsBuscados
 		},
@@ -51,6 +53,31 @@ export const buscarDisciplinaCard = {
 		},
 	},
 }
+
+export const buscarDisciplina = {
+	methods: {
+		async buscarDisciplina(buscarAgora) {
+			let ultimaBusca = this.$store.state.disciplina.ultimaBusca
+			let diferencaEmHoras = 0
+			if (ultimaBusca) diferencaEmHoras = this.$dayjs().diff(this.$dayjs(ultimaBusca), "hour")
+
+			if (buscarAgora || ultimaBusca === null || diferencaEmHoras > 0) {
+				let resp = await this.$axios.$get("/consultas/buscar/disciplinas")
+
+				if (!resp.falha) {
+					let disciplinasBuscadas = resp.dados.disciplinas
+
+					let agora = this.$dayjs()
+
+					this.$store.commit("disciplina/DEFINIR_DISCIPLINA", {
+						disciplinas: disciplinasBuscadas,
+						ultimaBusca: agora,
+					})
+				}
+			}
+		},
+	},
+}
 //
 // export const buscarCentroCusto = {
 // 	methods: {
@@ -75,10 +102,11 @@ export const buscarDisciplinaCard = {
 export const buscarEtapa = {
 	methods: {
 		async buscarEtapa() {
-			let etapaBuscados = await this.$axios.$get("/contratacao/etapa/buscarTodos")
+			let etapaBuscados = await this.$axios
+				.$get("/contratacao/etapa/buscarTodos")
 				.then((resp) => resp.etapas)
 
-      etapaBuscados.sort((a, b) => parseInt(a.ordem) - parseInt(b.ordem))
+			etapaBuscados.sort((a, b) => parseInt(a.ordem) - parseInt(b.ordem))
 
 			return etapaBuscados
 		},

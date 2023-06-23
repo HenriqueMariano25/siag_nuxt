@@ -9,9 +9,9 @@
 				:pagina="pagina"
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
+				@ordem="ordem = $event"
 				:totalItens="totalItens"
 				altura="calc(100vh - 179px)"
-				:dadosSql="true"
 				@atualizar="buscarEquipePlanejamento"
 				:temDetalhes="false">
 				<template v-slot:[`body.acoes`]="{ item }">
@@ -29,7 +29,7 @@
 						</div>
 					</BotaoPadrao>
 				</template>
-				<template v-slot:[`body.disciplina.nome`]="{ item }">
+				<template v-slot:[`body.disciplina.descricao`]="{ item }">
 					<span
 						class="whitespace-nowrap"
 						v-if="item.disciplina"
@@ -99,11 +99,12 @@
 			return {
 				cabecalho: [
 					{ nome: "", valor: "acoes", largura: "w-8" },
-					{ nome: "Descrição", valor: "descricao" },
-					{ nome: "Disciplina", valor: "disciplina.nome" },
+					{ nome: "Descrição", valor: "descricao", filtro: true, ordenar: true },
+					{ nome: "Disciplina", valor: "disciplina.descricao", filtro: true, ordenar: true },
 				],
-				filtros: [],
-				totalItens: 10,
+				filtros: {},
+				ordem: null,
+				totalItens: 0,
 				dados: [],
 				itensPorPagina: 50,
 				pagina: 1,
@@ -118,21 +119,32 @@
 		},
 		methods: {
 			async buscarEquipePlanejamento() {
-				let resp = await this.$axios.$get("/planejamento/equipes_planejamento")
+				let filtros = this.filtros
+				let ordem = this.ordem
+
+				let resp = await this.$axios.$get("/planejamento/equipes_planejamento", {
+					params: {
+						page: this.pagina - 1,
+						size: this.itensPorPagina,
+						filtros,
+						ordem,
+					},
+				})
 
 				if (!resp.falha) {
 					let equipesPlanejamento = resp.dados.equipesPlanejamento
+          let total = resp.dados.total
 
 					this.dados = equipesPlanejamento
+          this.totalItens = total
 				}
 			},
 			cadastrado(equipePlanejamento) {
-
-
 				this.dados.push(equipePlanejamento)
 				this.mostrarDialogCriarEquipePlanejamento = false
 				this.textoAlerta = "Equipe Planejamento cadastrada com sucesso!"
 				this.mostrarAlerta = true
+        this.totalItens += 1
 			},
 			editado(equipePlanejamento) {
 				let idx = this.dados.findIndex((o) => o.id === equipePlanejamento.id)
@@ -140,7 +152,7 @@
 				this.dados[idx].disciplina_id = equipePlanejamento.disciplina_id
 				this.dados[idx].disciplina.descricao = equipePlanejamento.disciplina.descricao
 				this.dados[idx].disciplina.id = equipePlanejamento.disciplina.id
-        this.equipePlanejamento = null
+				this.equipePlanejamento = null
 
 				this.mostrarDialogCriarEquipePlanejamento = false
 				this.textoAlerta = "Equipe Planejamento editada com sucesso!"
@@ -149,11 +161,12 @@
 			deletado(id) {
 				let idx = this.dados.findIndex((o) => o.id === id)
 				this.dados.splice(idx, 1)
-        this.equipePlanejamento = null
+				this.equipePlanejamento = null
 
 				this.mostrarDialogCriarEquipePlanejamento = false
 				this.textoAlerta = "Equipe Planejamento deletada com sucesso!"
 				this.mostrarAlerta = true
+        this.totalItens -= 1
 			},
 		},
 	})
