@@ -134,6 +134,7 @@
         this.dados[idx].descricao = disciplina.descricao
         this.dados[idx].setor.nome = disciplina.setor.nome
 
+        this.disciplina = null
         this.mostrarDialogCriarDisciplina = false
         this.textoAlerta = "Disciplina editada com sucesso!"
         this.mostrarAlerta = true
@@ -145,6 +146,7 @@
         this.mostrarDialogCriarDisciplina = false
         this.textoAlerta = "Disciplina deletada com sucesso!"
         this.mostrarAlerta = true
+        this.disciplina = null
         this.totalItens -= 1
       }
 		},
