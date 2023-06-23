@@ -9,9 +9,9 @@
 				:pagina="pagina"
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
+        @ordem="ordem = $event"
 				:totalItens="totalItens"
 				altura="calc(100vh - 179px)"
-				:dadosSql="true"
 				@atualizar="buscarDisciplina"
 				:temDetalhes="false">
         <template v-slot:[`body.acoes`]="{ item }">
@@ -79,14 +79,15 @@
 			return {
 				cabecalho: [
 					{ nome: "", valor: "acoes", largura: "w-8" },
-					{ nome: "Sigla", valor: "sigla" },
-					{ nome: "Descrição", valor: "descricao" },
-					{ nome: "Setor", valor: "setor.nome"},
+					{ nome: "Sigla", valor: "sigla", filtro: true, ordenar: true },
+					{ nome: "Descrição", valor: "descricao", filtro: true, ordenar: true },
+					{ nome: "Setor", valor: "setor.nome", filtro: true, ordenar: true},
 				],
-				filtros: [],
-				totalItens: 10,
+				filtros: {},
+        ordem: null,
+				totalItens: 0,
 				dados: [],
-				itensPorPagina: 50,
+				itensPorPagina: 100,
 				pagina: 1,
 				mostrarDialogCriarDisciplina: false,
         disciplina: null,
@@ -100,19 +101,32 @@
 		},
 		methods: {
 			async buscarDisciplina() {
-        let resp = await this.$axios.$get("/planejamento/disciplinas")
+        let filtros = this.filtros
+        let ordem = this.ordem
+
+        let resp = await this.$axios.$get("/planejamento/disciplinas", { params: {
+            page: this.pagina - 1,
+            size: this.itensPorPagina,
+            filtros,
+            ordem
+        }})
 
         if(!resp.falha){
           let disciplinas = resp.dados.disciplinas
+          let total = resp.dados.total
 
           this.dados = disciplinas
+          this.totalItens = total
         }
 			},
       cadastrado(disciplina){
+        console.log(disciplina)
+
         this.dados.push(disciplina)
         this.mostrarDialogCriarDisciplina = false
         this.textoAlerta = "Disciplina cadastrada com sucesso!"
         this.mostrarAlerta = true
+        this.totalItens += 1
       },
       editado(disciplina) {
         let idx = this.dados.findIndex( o => o.id === disciplina.id)
@@ -131,6 +145,7 @@
         this.mostrarDialogCriarDisciplina = false
         this.textoAlerta = "Disciplina deletada com sucesso!"
         this.mostrarAlerta = true
+        this.totalItens -= 1
       }
 		},
 	})
