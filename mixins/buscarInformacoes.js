@@ -54,30 +54,7 @@ export const buscarDisciplinaCard = {
 	},
 }
 
-export const buscarDisciplina = {
-	methods: {
-		async buscarDisciplina(buscarAgora) {
-			let ultimaBusca = this.$store.state.disciplina.ultimaBusca
-			let diferencaEmHoras = 0
-			if (ultimaBusca) diferencaEmHoras = this.$dayjs().diff(this.$dayjs(ultimaBusca), "hour")
 
-			if (buscarAgora || ultimaBusca === null || diferencaEmHoras > 0) {
-				let resp = await this.$axios.$get("/consultas/buscar/disciplinas")
-
-				if (!resp.falha) {
-					let disciplinasBuscadas = resp.dados.disciplinas
-
-					let agora = this.$dayjs()
-
-					this.$store.commit("disciplina/DEFINIR_DISCIPLINA", {
-						disciplinas: disciplinasBuscadas,
-						ultimaBusca: agora,
-					})
-				}
-			}
-		},
-	},
-}
 //
 // export const buscarCentroCusto = {
 // 	methods: {
@@ -310,3 +287,80 @@ export const buscarEtapaSS = {
 // 		},
 // 	},
 // }
+
+
+// NOVO PADRÃO
+export const buscarDisciplina = {
+  methods: {
+    async buscarDisciplina(buscarAgora) {
+      let ultimaBusca = this.$store.state.disciplina.ultimaBusca
+      let diferencaEmHoras = 0
+      if (ultimaBusca) diferencaEmHoras = this.$dayjs().diff(this.$dayjs(ultimaBusca), "hour")
+
+      if (buscarAgora || ultimaBusca === null || diferencaEmHoras > 0) {
+        let resp = await this.$axios.$get("/consultas/buscar/disciplinas")
+
+        if (!resp.falha) {
+          let disciplinasBuscadas = resp.dados.disciplinas
+
+          let agora = this.$dayjs()
+
+          this.$store.commit("disciplina/DEFINIR_DISCIPLINA", {
+            disciplinas: disciplinasBuscadas,
+            ultimaBusca: agora,
+          })
+        }
+      }
+    },
+  },
+}
+
+export const buscarSubDisciplina = {
+  methods: {
+    async buscarSubDisciplina(buscarAgora) {
+      let ultimaBusca = this.$store.state.subDisciplina.ultimaBusca
+      let diferencaEmHoras = 0
+      if (ultimaBusca) diferencaEmHoras = this.$dayjs().diff(this.$dayjs(ultimaBusca), "hour")
+
+      if (buscarAgora || ultimaBusca === null || diferencaEmHoras > 0) {
+        let resp = await this.$axios.$get("/consultas/buscar/sub_disciplinas")
+
+        if (!resp.falha) {
+          let subDisciplinasBuscadas = resp.dados.subDisciplinas
+
+          let agora = this.$dayjs()
+
+          this.$store.commit("subDisciplina/DEFINIR_SUB_DISCIPLINA", {
+            subDisciplinas: subDisciplinasBuscadas,
+            ultimaBusca: agora,
+          })
+        }
+      }
+    },
+  },
+}
+
+export const buscarEquipePlanejamento = {
+  methods: {
+    async buscarEquipePlanejamento(buscarAgora) {
+      let ultimaBusca = this.$store.state.equipePlanejamento.ultimaBusca
+      let diferencaEmHoras = 0
+      if (ultimaBusca) diferencaEmHoras = this.$dayjs().diff(this.$dayjs(ultimaBusca), "hour")
+
+      if (buscarAgora || ultimaBusca === null || diferencaEmHoras > 0) {
+        let resp = await this.$axios.$get("/consultas/buscar/equipes_planejamento")
+
+        if (!resp.falha) {
+          let equipesPlanejamentoBuscadas = resp.dados.equipesPlanejamento
+
+          let agora = this.$dayjs()
+
+          this.$store.commit("equipePlanejamento/DEFINIR_EQUIPE_PLANEJAMENTO", {
+            equipesPlanejamento: equipesPlanejamentoBuscadas,
+            ultimaBusca: agora,
+          })
+        }
+      }
+    },
+  },
+}

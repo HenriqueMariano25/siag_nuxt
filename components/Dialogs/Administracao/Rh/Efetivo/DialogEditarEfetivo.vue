@@ -2,7 +2,7 @@
 	<div>
 		<BaseDialog
 			largura="w-11/12"
-      :carregando="carregando"
+			:carregando="carregando"
 			titulo="Editar funcionários"
 			@cancelar="cancelar()">
 			<template v-slot:corpo>
@@ -188,7 +188,12 @@
 <script>
 	import { defineComponent } from "vue"
 	import BaseDialog from "~/components/Shared/BaseDialog.vue"
-	import { buscarSetores } from "~/mixins/buscarInformacoes"
+	import {
+		buscarDisciplina,
+		buscarEquipePlanejamento,
+		buscarSetores,
+		buscarSubDisciplina,
+	} from "~/mixins/buscarInformacoes"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import AppFormSelect from "~/components/Ui/AppFormSelect.vue"
 	import AppFormSelectCompleto from "~/components/Ui/Form/AppFormSelectCompleto.vue"
@@ -196,7 +201,7 @@
 	import AppFormInput from "~/components/Ui/AppFormInput.vue"
 
 	export default defineComponent({
-		mixins: [buscarSetores],
+		mixins: [buscarSetores, buscarDisciplina, buscarSubDisciplina, buscarEquipePlanejamento],
 		name: "DialogEditarEfetivo",
 		components: {
 			AppFormInput,
@@ -247,31 +252,33 @@
 				rotas: [],
 				buscouRotas: false,
 				rotasOriginais: [],
-        carregando: false
+				carregando: false,
 			}
 		},
 
 		async created() {
-      if (this.funcionarios.length === 1) {
-        this.carregando = true
-        let funcionario = this.funcionarios[0]
+			if (this.funcionarios.length === 1) {
+				this.carregando = true
+				let funcionario = this.funcionarios[0]
 
-        this.campos.disciplina_id = funcionario.disciplina_id
-        this.campos.encarregado_lider_id = funcionario.encarregado_lider_id
-        this.campos.supervisor_id = funcionario.supervisor_id
-        this.campos.coordenador_id = funcionario.coordenador_id
-        this.campos.engenheiro_id = funcionario.engenheiro_id
-        this.campos.gestor_id = funcionario.gestor_id
-        this.campos.sub_disciplina_id = funcionario.sub_disciplina_id
-        this.campos.equipe_planejamento_id = funcionario.sub_disciplina_id
-        this.campos.turno_id = funcionario.turno_id
-        this.campos.jornada_trabalho_id = funcionario.jornada_trabalho_id
-        this.campos.setor_id = funcionario.setor ? funcionario.setor.id : null
+				this.campos.disciplina_id = funcionario.disciplina_id
+				this.campos.encarregado_lider_id = funcionario.encarregado_lider_id
+				this.campos.supervisor_id = funcionario.supervisor_id
+				this.campos.coordenador_id = funcionario.coordenador_id
+				this.campos.engenheiro_id = funcionario.engenheiro_id
+				this.campos.gestor_id = funcionario.gestor_id
+				this.campos.sub_disciplina_id = funcionario.sub_disciplina_id
+				this.campos.equipe_planejamento_id = funcionario.sub_disciplina_id
+				this.campos.turno_id = funcionario.turno_id
+				this.campos.jornada_trabalho_id = funcionario.jornada_trabalho_id
+				this.campos.setor_id = funcionario.setor ? funcionario.setor.id : null
 
-        this.transporte.rota_id = funcionario.rota ? funcionario.rota.id : null
-        this.transporte.poltrona = funcionario.poltrona ? funcionario.poltrona : null
-        this.transporte.ponto_embarque = funcionario.ponto_embarque ? funcionario.ponto_embarque : null
-      }
+				this.transporte.rota_id = funcionario.rota ? funcionario.rota.id : null
+				this.transporte.poltrona = funcionario.poltrona ? funcionario.poltrona : null
+				this.transporte.ponto_embarque = funcionario.ponto_embarque
+					? funcionario.ponto_embarque
+					: null
+			}
 
 			await this.buscarResponsaveis()
 			await this.buscarDisciplinas()
@@ -306,50 +313,38 @@
 			},
 
 			async buscarDisciplinas() {
-				let resp = await this.$axios.$get("/planejamento/disciplinas")
+				await this.buscarDisciplina()
+				let disciplinas = this.$store.state.disciplina.disciplinas
 
-				if (!resp.falha) {
-					let disciplinas = resp.dados.disciplinas
+				let options = disciplinas.map((o) => {
+					return {
+						id: o.id,
+						nome: `${o.sigla} - ${o.descricao}`,
+						setor_id: o.setor_id,
+						setor: o.setor.nome,
+					}
+				})
 
-					let options = disciplinas.map((o) => {
-						return {
-							id: o.id,
-							nome: `${o.sigla} - ${o.descricao}`,
-							setor_id: o.setor_id,
-							setor: o.setor.nome,
-						}
-					})
-
-					this.disciplinas = options
-				}
+				this.disciplinas = options
 			},
 
 			async buscarSubDisciplinas() {
-				let resp = await this.$axios.$get("/planejamento/sub_disciplinas")
+				await this.buscarSubDisciplina()
+				let subDisciplinas = this.$store.state.subDisciplina.subDisciplinas
+				let options = subDisciplinas.map((o) => {
+					return { id: o.id, nome: o.descricao }
+				})
 
-				if (!resp.falha) {
-					let subDisciplinas = resp.dados.subDisciplinas
-
-					let options = subDisciplinas.map((o) => {
-						return { id: o.id, nome: o.descricao }
-					})
-
-					this.subDisciplinas = options
-				}
+				this.subDisciplinas = options
 			},
 
 			async buscarEquipesPlanejamento() {
-				let resp = await this.$axios.$get("/planejamento/equipes_planejamento")
-
-				if (!resp.falha) {
-					let equipesPlanejamento = resp.dados.equipesPlanejamento
-
-					let options = equipesPlanejamento.map((o) => {
-						return { id: o.id, nome: o.descricao }
-					})
-
-					this.equipesPlanejamento = options
-				}
+				await this.buscarEquipePlanejamento()
+				let equipesPlanejamento = this.$store.state.equipePlanejamento.equipesPlanejamento
+				let options = equipesPlanejamento.map((o) => {
+					return { id: o.id, nome: o.descricao }
+				})
+				this.equipesPlanejamento = options
 			},
 
 			async buscarTurnos() {

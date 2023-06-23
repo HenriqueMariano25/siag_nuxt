@@ -6,14 +6,14 @@
 				:dados="dados"
 				@filtros="filtros = $event"
 				@pagina="pagina = $event"
-        @ordem="ordem = $event"
+				@ordem="ordem = $event"
 				:itensPorPagina="itensPorPagina"
 				:pagina="pagina"
 				:totalItens="totalItens"
-        :carregando="carregando"
+				:carregando="carregando"
 				@atualizar="buscarEfetivo"
 				@selecionados="funcSelecionados = $event"
-        :limparSelecionarAoRecarregar="true"
+				:limparSelecionarAoRecarregar="true"
 				selecionar>
 				<template v-slot:[`body.rota.id`]="{ item }">
 					<span
@@ -54,11 +54,11 @@
 						item.Supervisor ? item.Supervisor.nome : item.supervisor ? item.supervisor : ""
 					}}</span>
 				</template>
-<!--				<template v-slot:[`body.supervisor`]="{ item }">-->
-<!--					<span class="whitespace-nowrap">{{-->
-<!--						item.Supervisor ? item.Supervisor.nome : item.supervisor ? item.supervisor : ""-->
-<!--					}}</span>-->
-<!--				</template>-->
+				<!--				<template v-slot:[`body.supervisor`]="{ item }">-->
+				<!--					<span class="whitespace-nowrap">{{-->
+				<!--						item.Supervisor ? item.Supervisor.nome : item.supervisor ? item.supervisor : ""-->
+				<!--					}}</span>-->
+				<!--				</template>-->
 				<template v-slot:[`body.Engenheiro.nome`]="{ item }">
 					<span class="whitespace-nowrap">{{
 						item.Engenheiro ? item.Engenheiro.nome : item.engenheiro ? item.engenheiro : ""
@@ -210,10 +210,9 @@
 		},
 		data() {
 			return {
-
 				dados: [],
 				filtros: {},
-        ordem: null,
+				ordem: null,
 				itensPorPagina: 200,
 				pagina: 1,
 				totalItens: 0,
@@ -224,94 +223,89 @@
 				mostrarAlerta: false,
 				textoAlerta: null,
 				mostrarDemitidos: false,
-        carregando: false,
-        rotas: []
+				carregando: false,
+				rotas: [],
 			}
 		},
-    computed: {
-      cabecalho() {
-        let cabecalho = [
-          {
-            nome: "Matrícula",
-            valor: "chapa",
-            filtro: true,
-            ordenar: true,
-            centralizar: true,
-            fixa: false,
-          },
-          { nome: "Nome", valor: "nome", filtro: true, fixa: false },
-          { nome: "Hora Extra", valor: "hora_extra", centralizar: true, ordenar: true },
-          { nome: "Cargo", valor: "cargo", filtro: true },
-          { nome: "Disciplina", valor: "Disciplina.descricao", filtro: true },
-          { nome: "Sub Disciplina", valor: "SubDisciplina.descricao", filtro: true },
-          { nome: "Setor", valor: "setor.nome", filtro: true },
-          { nome: "Encarregado/Lider", valor: "EncarregadoLider.nome", filtro: true },
-          { nome: "Supervisor", valor: "Supervisor.nome", filtro: true },
-          { nome: "Engenheiro", valor: "Engenheiro.nome", filtro: true },
-          { nome: "Coordenador", valor: "Coordenador.nome", filtro: true },
-          { nome: "Gestor", valor: "Gestor.nome", filtro: true },
-          {
-            nome: "Rota", valor: "rota.id", filtro: true , opcoes: this.rotas.length > 0 ? Array.from(
-              new Set(
-                this.rotas.filter((item) => {
-                  return item.local
-                })
-                  .map((item) => {return { 'id': item.id, texto: `${item.numero} - ${item.local}`}}),
-              ),
-            ) : []
-          },
-          { nome: "Ponto de Embarque", valor: "ponto_embarque", filtro: true },
-          { nome: "Turno", valor: "Turno.descricao", filtro: true },
-          { nome: "Jornada", valor: "JornadaTrabalho.descricao", filtro: true },
-          { nome: "Equip. Planejamento", valor: "EquipePlanejamento.descricao", filtro: true },
-          { nome: "Data Admissão", valor: "data_admissao", filtro: true, centralizar: true },
-          { nome: "Data Demissão", valor: "data_demissao", filtro: true, centralizar: true },
-          { nome: "CPF", valor: "cpf", filtro: true },
-          { nome: "D/I", valor: "direto_indireto", filtro: true, centralizar: true },
-          { nome: "His. Mudanças", valor: "historico_mudanca", largura: "w-30" },
-        ]
+		computed: {
+			cabecalho() {
+				let cabecalho = [
+					{
+						nome: "Matrícula",
+						valor: "chapa",
+						filtro: true,
+						ordenar: true,
+						centralizar: true,
+						fixa: false,
+					},
+					{ nome: "Nome", valor: "nome", filtro: true, fixa: false },
+					{ nome: "Hora Extra", valor: "hora_extra", centralizar: true, ordenar: true },
+					{ nome: "Cargo", valor: "cargo", filtro: true },
+					{ nome: "Disciplina", valor: "Disciplina.descricao", filtro: true },
+					{ nome: "Sub Disciplina", valor: "SubDisciplina.descricao", filtro: true },
+					{ nome: "Setor", valor: "setor.nome", filtro: true },
+					{ nome: "Encarregado/Lider SAPO", valor: "encarregado_sapo", filtro: true },
+					{ nome: "Encarregado/Lider", valor: "EncarregadoLider.nome", filtro: true },
+					{ nome: "Supervisor", valor: "Supervisor.nome", filtro: true },
+					{ nome: "Engenheiro", valor: "Engenheiro.nome", filtro: true },
+					{ nome: "Coordenador", valor: "Coordenador.nome", filtro: true },
+					{ nome: "Gestor", valor: "Gestor.nome", filtro: true },
+					{
+						nome: "Rota",
+						valor: "rota.id",
+						filtro: true,
+						opcoes:
+							this.rotas.length > 0
+								? Array.from(
+										new Set(
+											this.rotas
+												.filter((item) => {
+													return item.local
+												})
+												.map((item) => {
+													return { id: item.id, texto: `${item.numero} - ${item.local}` }
+												}),
+										),
+								  )
+								: [],
+					},
+					{ nome: "Ponto de Embarque", valor: "ponto_embarque", filtro: true },
+					{ nome: "Turno", valor: "Turno.descricao", filtro: true },
+					{ nome: "Jornada", valor: "JornadaTrabalho.descricao", filtro: true },
+					{ nome: "Equipe Planejamento", valor: "EquipePlanejamento.descricao", filtro: true },
+					{ nome: "Data Admissão", valor: "data_admissao", filtro: true, centralizar: true },
+					{ nome: "Data Demissão", valor: "data_demissao", filtro: true, centralizar: true },
+					{ nome: "CPF", valor: "cpf", filtro: true },
+					{ nome: "D/I", valor: "direto_indireto", filtro: true, centralizar: true },
+					{ nome: "His. Mudanças", valor: "historico_mudanca", largura: "w-30" },
+				]
 
-        return cabecalho
-      }
-    },
+				return cabecalho
+			},
+		},
 		async created() {
-      await this.buscarRotas()
+			await this.buscarRotas()
 			await this.buscarEfetivo()
 		},
 		methods: {
-      async buscarRotas() {
-        let resp = await this.$axios.$get("/efetivo/buscar/rotas")
+			async buscarRotas() {
+				let resp = await this.$axios.$get("/efetivo/buscar/rotas")
 
-        if (!resp.falha) {
-          let rotas = resp.dados.rotas
+				if (!resp.falha) {
+					let rotas = resp.dados.rotas
 
-          console.log(rotas)
-
-          this.rotas = rotas
-        }
-      },
+					this.rotas = rotas
+				}
+			},
 
 			recebendoFiltro(filtros) {
 				this.filtros = filtros
 			},
-			// async atualizarDados(parametros) {
-			//   let {itensPorPagina, pagina, filtros} = parametros
-			//
-			//   if(itensPorPagina)
-			//     this.itensPorPagina = itensPorPagina
-			//
-			//   if(pagina)
-			//     this.pagina = pagina
-			//
-			//   if(filtros)
-			//     this.filtros = filtros
-			//   this.buscarEfetivo()
-			// },
 			async buscarEfetivo() {
-        this.carregando = true
+				this.carregando = true
 
 				let filtros = this.filtros
-        let ordem = this.ordem
+				let ordem = this.ordem
 
 				if (this.mostrarDemitidos === false) {
 					filtros["data_demissao"] = null
@@ -324,7 +318,7 @@
 						page: this.pagina - 1,
 						size: this.itensPorPagina,
 						filtros,
-            ordem
+						ordem,
 					},
 				})
 
@@ -334,7 +328,7 @@
 
 					this.totalItens = total
 					this.dados = funcionarios
-          this.carregando = false
+					this.carregando = false
 				}
 
 				// let funcionarios = await this.$store.state.funcionarios.funcionarios
@@ -357,43 +351,81 @@
 			},
 
 			async funcionarioEditado({ funcionarios, nomes }) {
-        console.log(nomes)
-        console.log(funcionarios)
-
 				for (let id of funcionarios) {
 					let idx = this.dados.findIndex((o) => o.id === id)
+
 					if (idx >= 0) {
 						nomes.responsavelNome
-							? (this.dados[idx].EncarregadoLider.nome = nomes.responsavelNome)
+							? this.dados[idx].encarregado_lider_id !== null
+								? (this.dados[idx].EncarregadoLider.nome = nomes.responsavelNome)
+								: (this.dados[idx].EncarregadoLider = { nome: nomes.responsavelNome })
 							: null
-						nomes.engenheiroNome ? (this.dados[idx].Engenheiro.nome = nomes.engenheiroNome) : null
-						nomes.supervisorNome ? (this.dados[idx].Supervisor.nome = nomes.supervisorNome) : null
+
+						nomes.engenheiroNome
+							? this.dados[idx].engenheiro_id !== null
+								? (this.dados[idx].Engenheiro.nome = nomes.engenheiroNome)
+								: (this.dados[idx].Engenheiro = { nome: nomes.engenheiroNome })
+							: null
+
+						nomes.supervisorNome
+							? this.dados[idx].supervisor_id !== null
+								? (this.dados[idx].Supervisor.nome = nomes.supervisorNome)
+								: (this.dados[idx].Supervisor = { nome: nomes.supervisorNome })
+							: null
+
 						nomes.coordenadorNome
-							? (this.dados[idx].Coordenador.nome = nomes.coordenadorNome)
+							? this.dados[idx].coordenador_id !== null
+								? (this.dados[idx].Coordenador.nome = nomes.coordenadorNome)
+								: (this.dados[idx].Coordenador = { nome: nomes.coordenadorNome })
 							: null
-						nomes.gestorNome ? (this.dados[idx].Gestor.nome = nomes.gestorNome) : null
+
+						nomes.gestorNome
+							? this.dados[idx].gestor_id !== null
+								? (this.dados[idx].Gestor.nome = nomes.gestorNome)
+								: (this.dados[idx].Gestor = { nome: nomes.gestorNome })
+							: null
+
 						nomes.disciplinaDescricaoNome
-							? (this.dados[idx].Disciplina.descricao = nomes.disciplinaDescricaoNome)
+							? this.dados[idx].disciplina_id !== null
+								? (this.dados[idx].Disciplina.descricao = nomes.disciplinaDescricaoNome)
+								: (this.dados[idx].Disciplina = { descricao: nomes.disciplinaDescricaoNome })
 							: null
+
 						nomes.disciplinaSiglaNome
-							? (this.dados[idx].Disciplina.sigla = nomes.disciplinaSiglaNome)
+							? this.dados[idx].disciplina_id !== null
+								? (this.dados[idx].Disciplina.sigla = nomes.disciplinaSiglaNome)
+								: (this.dados[idx].Disciplina = { sigla: nomes.disciplinaSiglaNome })
 							: null
+
 						nomes.subDisciplinaNome
-							? (this.dados[idx].SubDisciplina.descricao = nomes.subDisciplinaNome)
+							? this.dados[idx].sub_disciplina_id !== null
+								? (this.dados[idx].SubDisciplina.descricao = nomes.subDisciplinaNome)
+								: (this.dados[idx].SubDisciplin = { descricao: nomes.subDisciplinaNome })
 							: null
-						nomes.turnoNome ? (this.dados[idx].Turno.descricao = nomes.turnoNome) : null
+
+						nomes.turnoNome
+							? this.dados[idx].turno_id !== null
+								? (this.dados[idx].Turno.descricao = nomes.turnoNome)
+								: (this.dados[idx].Turno = { descricao: nomes.turnoNome })
+							: null
+
 						nomes.jornadaTrabalhoNome
-							? (this.dados[idx].JornadaTrabalho.descricao = nomes.jornadaTrabalhoNome)
+							? this.dados[idx].jornada_trabalho_id !== null
+								? (this.dados[idx].JornadaTrabalho.descricao = nomes.jornadaTrabalhoNome)
+								: (this.dados[idx].JornadaTrabalho = { descricao: nomes.jornadaTrabalhoNome })
 							: null
-            nomes.setorNome
-              ? (this.dados[idx]['setor'].nome = nomes.setorNome)
-              : null
+
+						nomes.setorNome
+							? this.dados[idx].setor_id
+								? (this.dados[idx].setor.nome = nomes.setorNome)
+								: (this.dados[idx].setor = { nome: nomes.setorNome })
+							: null
 					}
 				}
 
 				this.mostrarDialogEditarEfetivo = false
 				this.mostrarAlerta = true
-        this.funcSelecionados = []
+				this.funcSelecionados = []
 				this.textoAlerta = "Funcionários editados com sucesso!"
 			},
 
@@ -416,23 +448,28 @@
 			async gerarExcel() {
 				this.desativarBotao = true
 				let cabecalho = [
-					"Hora extra",
 					"Matricula",
 					"Nome",
+					"Hora extra",
 					"Cargo",
 					"Disciplina",
+					"Sub Disciplina",
 					"Setor",
 					"Encarregado/Lider SAPO",
-					"Encarregado/Lider Produção",
+					"Encarregado/Lider",
 					"Supervisor",
 					"Engenheiro",
 					"Coordenador",
 					"Gestor",
-					"CPF",
 					"Rota",
+          "Ponto embarque",
+					"Turno",
+					"Jornada",
+					"Equipe Planejamento",
 					"Data de admissão",
 					"Data de demissão",
-					"Turno",
+					"CPF",
+					"Direto/Indireto",
 				]
 				let nomeArquivo
 
@@ -441,25 +478,30 @@
 				let itens = []
 				for (let item of this.dados) {
 					let temp = []
-					temp.push(this.horaExtra(item.hora_extra))
 					temp.push(("0000000000" + item.chapa).slice(-10))
 					temp.push(item.nome)
+					temp.push(this.horaExtra(item.hora_extra))
 					temp.push(item.cargo)
-					temp.push(item.sub_setor)
-					temp.push(item.setor)
-					temp.push(item.encarregado_sapo)
-					temp.push(item.encarregado_producao)
-					temp.push(item.supervisor)
-					temp.push(item.engenheiro)
-					temp.push(item.coordenador)
-					temp.push(item.gestor)
-					temp.push(item.cpf)
+					temp.push(item.Disciplina ? `${item.Disciplina.sigla} - ${item.Disciplina.descricao}` : "")
+					temp.push(item.SubDisciplina ? item.SubDisciplina.descricao : "")
+					temp.push(item.setor ? item.setor.nome : "")
+					temp.push(item.encarregado_sapo ? item.encarregado_sapo : "")
+					temp.push(item.EncarregadoLider ? item.EncarregadoLider.nome : "")
+					temp.push(item.Supervisor ? item.Supervisor.nome : "")
+					temp.push(item.Engenheiro ? item.Engenheiro.nome : "")
+					temp.push(item.Coordenador ? item.Coordenador.nome : "")
+					temp.push(item.Gestor ? item.Gestor.nome : "")
 					item.rota ? temp.push(`${item.rota.numero} - ${item.rota.local}`) : temp.push("")
+					temp.push(item.ponto_embarque ? item.ponto_embarque : "" )
+					temp.push(item.Turno ? item.Turno.descricao : "")
+					temp.push(item.JornadaTrabalho ? item.JornadaTrabalho.descricao : "")
+          temp.push(item.EquipePlanejamento ? item.EquipePlanejamento.descricao : "")
 					temp.push(this.$dayjs(item.data_admissao).format("DD/MM/YYYY"))
 					item.data_demissao
 						? temp.push(this.$dayjs(item.data_demissao).format("DD/MM/YYYY"))
 						: temp.push("")
-					item.noturno ? temp.push("Noturno") : temp.push("Diurno", item.turno)
+					temp.push(item.cpf)
+					temp.push(item.direto_indireto)
 					itens.push(temp)
 				}
 
