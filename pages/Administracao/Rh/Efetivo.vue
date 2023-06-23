@@ -44,42 +44,34 @@
 					<span class="whitespace-nowrap">{{
 						item.EncarregadoLider
 							? item.EncarregadoLider.nome
-							: item.encarregado_producao
-							? item.encarregado_producao
 							: ""
 					}}</span>
 				</template>
 				<template v-slot:[`body.Supervisor.nome`]="{ item }">
 					<span class="whitespace-nowrap">{{
-						item.Supervisor ? item.Supervisor.nome : item.supervisor ? item.supervisor : ""
+						item.Supervisor ? item.Supervisor.nome : ""
 					}}</span>
 				</template>
-				<!--				<template v-slot:[`body.supervisor`]="{ item }">-->
-				<!--					<span class="whitespace-nowrap">{{-->
-				<!--						item.Supervisor ? item.Supervisor.nome : item.supervisor ? item.supervisor : ""-->
-				<!--					}}</span>-->
-				<!--				</template>-->
+
 				<template v-slot:[`body.Engenheiro.nome`]="{ item }">
 					<span class="whitespace-nowrap">{{
-						item.Engenheiro ? item.Engenheiro.nome : item.engenheiro ? item.engenheiro : ""
+						item.Engenheiro ? item.Engenheiro.nome : ""
 					}}</span>
 				</template>
 				<template v-slot:[`body.Coordenador.nome`]="{ item }">
 					<span class="whitespace-nowrap">{{
-						item.Coordenador ? item.Coordenador.nome : item.coordenador ? item.coordenador : ""
+						item.Coordenador ? item.Coordenador.nome : ""
 					}}</span>
 				</template>
 				<template v-slot:[`body.Gestor.nome`]="{ item }">
 					<span class="whitespace-nowrap">{{
-						item.Gestor ? item.Gestor.nome : item.gestor ? item.gestor : ""
+						item.Gestor ? item.Gestor.nome  : ""
 					}}</span>
 				</template>
 				<template v-slot:[`body.Disciplina.descricao`]="{ item }">
 					<span class="whitespace-nowrap">{{
 						item.Disciplina
 							? `${item.Disciplina.sigla} - ${item.Disciplina.descricao}`
-							: item.sub_setor
-							? item.sub_setor
 							: ""
 					}}</span>
 				</template>
@@ -96,14 +88,7 @@
 						item.EquipePlanejamento ? item.EquipePlanejamento.descricao : ""
 					}}</span>
 				</template>
-				<!--				<template v-slot:detalhes="{ item }">-->
-				<!--					<div>-->
-				<!--						<span v-if="item.data_demissao"-->
-				<!--							><strong>Data de demissão: </strong-->
-				<!--							>{{ $dayjs(item.data_demissao).format("DD/MM/YYYY") }}</span-->
-				<!--						>-->
-				<!--					</div>-->
-				<!--				</template>-->
+
 				<template v-slot:rodape>
 					<div>
 						<div>

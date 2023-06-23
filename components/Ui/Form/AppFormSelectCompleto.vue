@@ -22,29 +22,31 @@
 					class="w-6 h-6" />
 			</div>
 		</div>
-		<div class="conteudo">
-			<div class="busca">
-				<img
-					src="@/assets/icons/magnifier-g.svg"
-					alt=""
-					class="w-6 h-6 busca-icone" />
-				<input
-					type="text"
-					placeholder="Busque aqui"
-					class="busca-input"
-					:value="busca"
-					@input="busca = $event.target.value" />
-			</div>
-			<div>
-				<ul class="lista">
-					<li
-						v-for="op of opcoesFiltradas"
-						@click="selecionarOpcao(op, $event)"
-						:key="op.id">
-						{{ op.nome }}
-					</li>
-				</ul>
-			</div>
+		<div class="conteudo" :id="'conteudo-' + id">
+      <div class="sub-conteudo">
+        <div class="busca">
+          <img
+            src="@/assets/icons/magnifier-g.svg"
+            alt=""
+            class="w-6 h-6 busca-icone" />
+          <input
+            type="text"
+            placeholder="Busque aqui"
+            class="busca-input"
+            :value="busca"
+            @input="busca = $event.target.value" />
+        </div>
+        <div>
+          <ul class="lista">
+            <li
+              v-for="op of opcoesFiltradas"
+              @click="selecionarOpcao(op, $event)"
+              :key="op.id">
+              {{ op.nome }}
+            </li>
+          </ul>
+        </div>
+      </div>
 		</div>
 	</div>
 </template>
@@ -70,7 +72,7 @@
 			},
 			id: {
 				type: [String, Number],
-				// required: true,
+				required: true,
 			},
 			retornarObjeto: {
 				type: Boolean,
@@ -99,22 +101,23 @@
 		},
 		mounted() {
 			const wrapper = document.getElementById("wrapper-" + this.id)
+			const conteudo = document.getElementById("conteudo-" + this.id)
 
 			if (!this.disabled && !this.readonly) {
 				const selectCompleto = document.getElementById("btn-selecionar-" + this.id)
 
 				selectCompleto.addEventListener("click", () => {
 					wrapper.classList.toggle("active")
+
+          let posicaoY = conteudo.getBoundingClientRect().top
+          let altura = conteudo.getBoundingClientRect().height
+          let foraDaPagina = (posicaoY + altura) >= window.innerHeight
+
+          if(foraDaPagina){
+            conteudo.classList.add('reverso')
+          }
 				})
 			}
-
-			// const posicao = wrapper.getBoundingClientRect();
-			// const limiteDireito = window.innerWidth;
-			// const limiteInferior = window.innerHeight;
-			//
-			// console.log(posicao)
-			// console.log(limiteDireito)
-			// console.log(limiteInferior)
 		},
 		computed: {
 			opcoesFiltradas() {
@@ -145,8 +148,6 @@
 
 				const wrapper = document.getElementById("wrapper-" + this.id)
 				wrapper.classList.toggle("active")
-				// this.mostrar = false
-				// this.texto = opcao
 				event.stopPropagation() // Evita que o evento de clique seja propagado para o elemento pai
 			},
 		},
@@ -218,11 +219,11 @@
 		display: none;
 		padding: 3px;
 		border: 1px solid rgb(170, 170, 170);
-		border-top: none;
 		background-color: #fff;
 		position: absolute;
-		z-index: 10;
+		z-index: 90;
 		width: 100%;
+    margin-top: -1px;
 	}
 
 	.conteudo .lista {
@@ -252,4 +253,14 @@
 		background-color: #50aef4;
 		border-radius: 25px;
 	}
+
+  .reverso{
+    bottom: 37px;
+    border: 1px solid rgb(170, 170, 170);
+  }
+
+  .reverso .sub-conteudo{
+    display: flex;
+    flex-direction: column-reverse !important;
+  }
 </style>
