@@ -131,7 +131,9 @@
 				<template v-slot>
 					<div class="flex items-center justify-between w-full">
 						<div class="flex">
-							<BotaoExcel @click="gerarExcel" />
+              <BotaoPadrao :texto="gerandoExcel === true ? 'Gerando...' : 'Gerar EXCEL'" @click="gerarExcel" :disabled="gerandoExcel">
+                <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
+              </BotaoPadrao>
 						</div>
 						<div class="flex">
 							<BotaoPadrao
@@ -210,6 +212,7 @@
 				mostrarDemitidos: false,
 				carregando: false,
 				rotas: [],
+        gerandoExcel: false
 			}
 		},
 		computed: {
@@ -431,7 +434,7 @@
 			},
 
 			async gerarExcel() {
-				this.desativarBotao = true
+				this.gerandoExcel = true
 				let cabecalho = [
 					"Matricula",
 					"Nome",
@@ -490,7 +493,7 @@
 					itens.push(temp)
 				}
 
-				this.desativarBotao = false
+				this.gerandoExcel = false
 				gerarExcel(cabecalho, itens, nomeArquivo)
 			},
 		},
