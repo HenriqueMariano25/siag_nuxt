@@ -342,7 +342,7 @@
 					<!--        </BotaoPadrao>-->
 					<BotaoPadrao
 						texto="Desagendar"
-						cor="bg-red-400 hover:!bg-red-500"
+						cor="bg-red-400 hover:bg-red-500"
 						v-if="tab === 'meusAgendamentos'"
 						:disabled="selecionadosMeusAgendamentos.length <= 0"
 						@click="mostrarDialogDesagendar = true">
@@ -621,6 +621,7 @@
 					"Aprovado por",
 					"Rota",
 					"Ponto Embarque",
+					"MOD/MOI",
 				]
 				let nomeArquivo
 
@@ -652,6 +653,7 @@
 					temp.push(item.aprovador_he ? item.aprovador_he.nome : "")
 					temp.push(item.Funcionario && item.Funcionario.rota ? item.Funcionario.rota.numero : "")
 					temp.push(item.Funcionario ? item.Funcionario.ponto_embarque : "")
+					temp.push(item.Funcionario ? item.Funcionario.direto_indireto : "")
 					itens.push(temp)
 				}
 
@@ -720,6 +722,7 @@
 					"Situação",
 					"Rota",
 					"Ponto Embarque",
+          "MOD/MOI",
 				]
 				let nomeArquivo
 
@@ -753,6 +756,7 @@
 					temp.push(item.situacao)
 					temp.push(item.Funcionario && item.Funcionario.rota ? item.Funcionario.rota.numero : "")
 					temp.push(item.Funcionario ? item.Funcionario.ponto_embarque : "")
+          temp.push(item.Funcionario ? item.Funcionario.direto_indireto : "")
 					itens.push(temp)
 				}
 
@@ -839,6 +843,7 @@
 					"Aprovado por",
 					"Rota",
 					"Ponto Embarque",
+          "MOD/MOI",
 				]
 				let nomeArquivo
 
@@ -871,6 +876,7 @@
 					temp.push(item.aprovador_he ? item.aprovador_he.nome : "")
 					temp.push(item.Funcionario && item.Funcionario.rota ? item.Funcionario.rota.numero : "")
 					temp.push(item.Funcionario ? item.Funcionario.ponto_embarque : "")
+          temp.push(item.Funcionario ? item.Funcionario.direto_indireto : "")
 					itens.push(temp)
 				}
 
