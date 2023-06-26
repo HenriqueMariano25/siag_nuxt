@@ -25,7 +25,10 @@
 						<th
 							v-for="cab in cabecalhoLocal"
 							:key="cab.valor"
-							:class="{ [cab.largura]:cab.largura, ['coluna-fixa-head' + ` left-[${cab.posicao}]`]: cab.fixa }"
+							:class="{
+								[cab.largura]: cab.largura,
+								['coluna-fixa-head' + ` left-[${cab.posicao}]`]: cab.fixa,
+							}"
 							class="uppercase px-3 py-1 text-sm text-white relative">
 							<template v-if="cab.valor === 'selecione'">
 								<div class="flex items-center">
@@ -127,19 +130,19 @@
 										</div>
 										<template v-for="o in opcoesFiltradas(cab.opcoes)">
 											<AppFormCheckbox
-                        v-if="!Object.keys(o).includes('id')"
+												v-if="!Object.keys(o).includes('id')"
 												:key="o"
 												:id="'filtroCheck' + o"
 												:valor="o"
 												:label="o"
 												v-model="multSelecionados"></AppFormCheckbox>
-                      <AppFormCheckbox
-                        v-if="Object.keys(o).includes('id')"
-                        :key="o.id"
-                        :id="'filtroCheck' + o.id"
-                        :valor="o.id"
-                        :label="o.texto"
-                        v-model="multSelecionados"></AppFormCheckbox>
+											<AppFormCheckbox
+												v-if="Object.keys(o).includes('id')"
+												:key="o.id"
+												:id="'filtroCheck' + o.id"
+												:valor="o.id"
+												:label="o.texto"
+												v-model="multSelecionados"></AppFormCheckbox>
 										</template>
 									</div>
 									<div class="w-full gap-2 flex justify-between">
@@ -237,7 +240,7 @@
 						</td>
 					</tr>
 					<tr v-if="dados.length === 0 && !carregando">
-						<td :colspan="cabecalhoLocal.length" >
+						<td :colspan="cabecalhoLocal.length">
 							<div class="text-center bg-gray-300 text-3xl py-2 text-gray-500">
 								<span>
 									<strong>SEM DADOS ENCONTRADOS!</strong>
@@ -269,7 +272,10 @@
 								v-for="(c, index) in cabecalhoLocal"
 								:key="index"
 								class="px-3 py-0.5 border border-collapse border-gray-600"
-								:class="{ 'text-center': c.centralizar, ['coluna-fixa-body w-[100px] l-[100px]'] : c.fixa }">
+								:class="{
+									'text-center': c.centralizar,
+									['coluna-fixa-body w-[100px] l-[100px]']: c.fixa,
+								}">
 								<template v-if="c.valor !== 'selecione'">
 									<slot
 										:name="'body.' + c.valor"
@@ -286,7 +292,7 @@
 											v-if="c.valor === 'selecione'">
 											<AppFormCheckbox
 												:id="'checkTabela' + parseInt(dado.id)"
-                        :disabled="dado.ativo"
+												:disabled="dado.ativo"
 												:valor="dado"
 												v-model="selecionados" />
 										</div>
@@ -422,10 +428,10 @@
 			overlay: {
 				type: [Boolean],
 			},
-      limparSelecionarAoRecarregar:{
-        type: [Boolean],
-        default: true
-      }
+			limparSelecionarAoRecarregar: {
+				type: [Boolean],
+				default: true,
+			},
 		},
 		components: {
 			AppFormCheckbox,
@@ -456,8 +462,7 @@
 				selecionandoTodos: false,
 			}
 		},
-    computed: {
-
+		computed: {
 			cabecalhoLocal() {
 				let cabecalho = new Array(...this.cabecalho)
 
@@ -497,28 +502,26 @@
 				return dataInicial === null || dataInicial === "" || dataFinal === null || dataFinal === ""
 			},
 		},
-    mounted() {
+		mounted() {
+			let tabela = document.querySelector(".table")
 
-      let tabela = document.querySelector('.table')
-
-      tabela.addEventListener('resize', this.getColumnWidths);
-    },
-    methods: {
-      getColumnWidths() {
-
-        // console.log("Aqui")
-        // const table = this.$refs.myTable;
-        // const headerCells = table.querySelectorAll('th');
-        // const columnWidths = [];
-        //
-        // headerCells.forEach((cell) => {
-        //   const width = cell.offsetWidth;
-        //   columnWidths.push(width);
-        // });
-        //
-        // console.log(columnWidths);
-        // Faça o que desejar com os valores das larguras das colunas
-      },
+			tabela.addEventListener("resize", this.getColumnWidths)
+		},
+		methods: {
+			getColumnWidths() {
+				// console.log("Aqui")
+				// const table = this.$refs.myTable;
+				// const headerCells = table.querySelectorAll('th');
+				// const columnWidths = [];
+				//
+				// headerCells.forEach((cell) => {
+				//   const width = cell.offsetWidth;
+				//   columnWidths.push(width);
+				// });
+				//
+				// console.log(columnWidths);
+				// Faça o que desejar com os valores das larguras das colunas
+			},
 			valorFiltro(valor) {
 				if (this.dadosSql) {
 					return ""
@@ -566,6 +569,9 @@
 					filtros = this.prepararFiltro(filtrosPrPreparar)
 				}
 
+				// console.log(filtros)
+				// console.log(this.filtros)
+
 				this.$emit("itensPorPagina", itensPorPagina)
 				this.$emit("pagina", pagina)
 				this.$emit("filtros", filtros)
@@ -586,11 +592,10 @@
 			},
 
 			adicionarFiltro(item, event, colunaTabela, tipoFiltro) {
-				if (!this.filtrosAtivos.includes(item)) {
-					this.filtrosAtivos.push(item)
-				}
-
-				let valor = event.target.value
+        let valor = event.target.value
+        if (!this.filtrosAtivos.includes(item) && (valor !== null && valor !== '')) {
+          this.filtrosAtivos.push(item)
+        }
 
 				if (this.dadosSql) {
 					if (this.filtros.some((o) => o.includes(`LOWER(${item})`))) {
@@ -621,17 +626,21 @@
 					}
 				} else {
 					if (item.includes(".")) item = `$${item}$`
-					let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
+					let idxFiltroEncontrado = this.filtros.findIndex((o) =>
+						Object.keys(o).some((o) => o === item)
+					)
 
-					if (idx >= 0 && (valor === null || valor === "")) {
-						this.filtros.splice(idx, 1)
-						if (this.filtrosAtivos.includes(item)) {
-							let idx = this.filtrosAtivos.findIndex((o) => o === item)
-							this.filtrosAtivos.splice(idx, 1)
-						}
-					} else {
-						this.filtros.push({ [item]: valor })
+					if (idxFiltroEncontrado >= 0) {
+						this.filtros.splice(idxFiltroEncontrado, 1)
+
 					}
+
+					if (valor !== null && valor !== "") {
+            this.filtros.push({ [item]: valor })
+					}else{
+            let idxAtivosEncontrado = this.filtrosAtivos.findIndex((o) => o === item)
+            this.filtrosAtivos.splice(idxAtivosEncontrado, 1)
+          }
 				}
 				this.localPagina = 1
 				this.filtroAberto = null
@@ -664,16 +673,15 @@
 			},
 
 			selecionarTodos(opcoes) {
-        if (!this.checkSelecionarTodos) {
-          if (Object.keys(opcoes[0]).includes('id')) {
-
-            this.multSelecionados = opcoes.map(o => o.id)
-          }else {
-            this.multSelecionados = opcoes
-          }
-        } else {
-          this.multSelecionados = []
-        }
+				if (!this.checkSelecionarTodos) {
+					if (Object.keys(opcoes[0]).includes("id")) {
+						this.multSelecionados = opcoes.map((o) => o.id)
+					} else {
+						this.multSelecionados = opcoes
+					}
+				} else {
+					this.multSelecionados = []
+				}
 			},
 
 			filtrarMult(valor) {
@@ -781,16 +789,15 @@
 				let itensFiltrados = opcoes
 
 				if (this.textoParaFiltro !== null && this.textoParaFiltro !== "") {
-          if(Object.keys(opcoes[0]).includes('id')){
-            itensFiltrados = opcoes.filter((o) =>
-              o.texto.toLowerCase().includes(this.textoParaFiltro.toLowerCase()),
-            )
-          }else{
-            itensFiltrados = opcoes.filter((o) =>
-              o.toLowerCase().includes(this.textoParaFiltro.toLowerCase()),
-            )
-          }
-
+					if (Object.keys(opcoes[0]).includes("id")) {
+						itensFiltrados = opcoes.filter((o) =>
+							o.texto.toLowerCase().includes(this.textoParaFiltro.toLowerCase()),
+						)
+					} else {
+						itensFiltrados = opcoes.filter((o) =>
+							o.toLowerCase().includes(this.textoParaFiltro.toLowerCase()),
+						)
+					}
 				}
 
 				return itensFiltrados
@@ -846,12 +853,10 @@
 				this.$emit("selecionados", this.selecionados)
 			},
 			dados(valor) {
-        if(this.limparSelecionarAoRecarregar === true){
-				  this.selecionados = []
-        }
+				if (this.limparSelecionarAoRecarregar === true) {
+					this.selecionados = []
+				}
 				if (this.selecionandoTodos === true) this.selecionandoTodos = false
-
-
 			},
 		},
 	}
@@ -873,7 +878,7 @@
 		border-right: 1px solid rgb(75, 85, 99);
 	}
 
-/*  tr:hover{
+	/*  tr:hover{
     background-color: rgb(75,85,99) !important;
   }*/
 
@@ -881,29 +886,27 @@
 		font-size: 0.8rem;
 	}
 
-  .coluna-fixa-head{
-    //background-color: red;
-    position: -webkit-sticky !important;
-    position: sticky !important;
-    background-color: #00275e !important;
-    left: 0;
-    z-index: 60;
-  }
+	.coluna-fixa-head {
+		//background-color: red;
+		position: -webkit-sticky !important;
+		position: sticky !important;
+		background-color: #00275e !important;
+		left: 0;
+		z-index: 60;
+	}
 
-  .coluna-fixa-body {
-  //background-color: red; position: -webkit-sticky !important;
-    position: sticky !important;
-    background-color: rgb(200,200,200) ;
-    left: 0;
-    z-index: 49;
-    color: black;
-  }
+	.coluna-fixa-body {
+		//background-color: red; position: -webkit-sticky !important;
+		position: sticky !important;
+		background-color: rgb(200, 200, 200);
+		left: 0;
+		z-index: 49;
+		color: black;
+	}
 
-  .coluna-fixa-body:hover {
-  //background-color: red; position: -webkit-sticky !important; position: sticky !important;
-    color: white;
-    background-color: rgb(75, 85, 99) !important;
-  }
-
-
+	.coluna-fixa-body:hover {
+		//background-color: red; position: -webkit-sticky !important; position: sticky !important;
+		color: white;
+		background-color: rgb(75, 85, 99) !important;
+	}
 </style>
