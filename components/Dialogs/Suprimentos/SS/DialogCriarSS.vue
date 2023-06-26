@@ -1574,7 +1574,7 @@
 					this.ss = Object.assign({}, resp.dados.ss)
           this.ss.numero_acompanhamento_original = resp.dados.ss.numero_acompanhamento
 
-					this.fornecedores = this.ss.FornecedorSSes ? this.ss.FornecedorSSes : []
+					this.fornecedores = this.ss.FornecedorSS ? this.ss.FornecedorSSes : []
 					this.matriz = this.ss.MatrizResponsabilidadeSS ? this.ss.MatrizResponsabilidadeSS : []
 					this.carregando = false
 

@@ -364,7 +364,6 @@
 				]
 
 				if (this.listaAcao.includes(this.etapa_id)) {
-          console.log(this.etapa_id)
 					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-9" })
 				}
 
@@ -479,7 +478,6 @@
 					this.totalItens = resp.dados.SSs.count
 					this.dados = SSs
 
-          console.log(SSs)
 					this.carregandoTabela = false
 				}
 			},
@@ -544,6 +542,8 @@
       async gerarExcel(){
         let dados = this.dados
 
+        console.log(dados)
+
         let cabecalho = [
           "Acompanhamento",
           "Situação",
@@ -554,6 +554,7 @@
           "Etapa",
           "Comprador",
           "Solicitante",
+          "Fornecedores"
         ]
         let nomeArquivo
 
@@ -571,11 +572,12 @@
           temp.push(item.EtapaSS ? item.EtapaSS.nome : "")
           temp.push(item.comprador ? item.comprador.nome : "")
           temp.push(item.Usuario ? item.Usuario.nome : "")
+          temp.push(item.FornecedorSS.length > 0 ? item.FornecedorSS.map(o => o.nome).join("; ") : "")
           itens.push(temp)
         }
 
         gerarExcel(cabecalho, itens, nomeArquivo)
-        // this.gerandoExcelMeusAgendamentos = false
+        this.gerandoExcelMeusAgendamentos = false
       },
 
 

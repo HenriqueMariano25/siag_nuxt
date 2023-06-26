@@ -27,7 +27,7 @@
           <span class="py-1 pl-1  bg-gray-300"><strong>4 - Local da prestação de Serviço:</strong></span>
           <span class="py-1 pl-1">{{ ss.local_prestacao_obra === "obra" ? "Canteiro de Obra" : ss.endereco_prestacao }}</span>
           <span class="py-1 pl-1 bg-gray-300"><strong>5 - Fornecedores</strong></span>
-          <div v-for="fornecedor in ss.FornecedorSSes" :key="fornecedor.id" class="py-1 pl-2 flex flex-col">
+          <div v-for="fornecedor in ss.FornecedorSS" :key="fornecedor.id" class="py-1 pl-2 flex flex-col">
             <span><strong>Fornecedor: </strong> {{ fornecedor.nome }}</span>
             <span><strong>E-mail: </strong>{{ fornecedor.email }}</span>
             <span><strong>Pessoa de contato: </strong>{{ fornecedor.pessoa_contato }}</span>
