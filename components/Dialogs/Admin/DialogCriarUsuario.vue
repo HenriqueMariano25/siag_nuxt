@@ -49,13 +49,18 @@
         </div>
         <div class="flex flex-col px-2 w-full relative gap-y-1" v-show="tab===1">
           <div class="flex w-full gap-2 ">
-            <AppFormSelect id="status" obrigatorio :options="permissoes" label="Permissão"
-                           v-model="permissao_id" class="w-full flex"/>
-            <BotaoPadrao cor="bg-primaria-500 hover:bg-primaria-700" @click="adicionarPermissao()">
-              <img src="@/assets/icons/add-b.svg" alt="" class="w-6 h-6 ">
-            </BotaoPadrao>
+            <div class="w-full">
+              <AppFormSelectCompleto id="permissao" label="Permissão" :options="permissoes" obrigatorio
+                                     v-model="permissao_id" />
+            </div>
+            <div class="flex items-end">
+              <BotaoPadrao cor="bg-primaria-500 hover:bg-primaria-700" @click="adicionarPermissao()">
+                <img src="@/assets/icons/add-b.svg" alt="" class="w-6 h-6 ">
+              </BotaoPadrao>
+            </div>
+
           </div>
-          <div class="flex flex-col gap-y-1 max-h-[500px]" style="overflow: auto">
+          <div class="flex flex-col gap-y-1 max-h-[450px]" style="overflow: auto">
             <template v-for="p in usuario.Permissaos">
               <div class="flex items-center  bg-gray-200">
                 <div class="w-full pl-2">
@@ -101,10 +106,13 @@ import AppFormSelect from "~/components/Ui/AppFormSelect.vue";
 import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
 import AppTabela from "~/components/Ui/AppTabela.vue";
 import AppAlerta from "~/components/Ui/AppAlerta.vue";
+import AppFormSelectCompleto from "~/components/Ui/Form/AppFormSelectCompleto.vue";
 
 export default {
   name: "DialogCriarUsuario",
-  components: {AppAlerta, BotaoPadrao, AppFormSelect, AppFormInput, BaseDialog, AppFormTextarea, AppTabela},
+  components: {
+    AppFormSelectCompleto,
+    AppAlerta, BotaoPadrao, AppFormSelect, AppFormInput, BaseDialog, AppFormTextarea, AppTabela},
   props: {
     usuario_id: {
       type: [Number, String],
