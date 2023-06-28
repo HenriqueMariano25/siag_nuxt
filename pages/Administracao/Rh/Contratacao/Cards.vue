@@ -814,6 +814,7 @@
 						"PEP",
 						"Mobilização",
             "Criado por",
+            "Turno",
 						"Último Comentário",
 					]
 					let nomeArquivo
@@ -855,6 +856,7 @@
 						)
 						temp.push(item.mobilizacao)
 						temp.push(item["Usuario.nome"] ? item["Usuario.nome"] : "")
+						temp.push(item.turno ? item.turno : "")
 						item["Comentarios.descricao"] ? temp.push(item["Comentarios.descricao"]) : temp.push("")
 						itens.push(temp)
 					}
