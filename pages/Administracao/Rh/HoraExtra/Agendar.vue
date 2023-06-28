@@ -235,6 +235,7 @@
 			{{ textoAlerta }}
 		</AppAlerta>
 		<DialogAgendamentos
+      :noIntervalo="noIntervalo"
 			v-if="mostrarDialogAgendamentos"
 			@cancelar="mostrarDialogAgendamentos = false" />
 		<DialogAprovarHE

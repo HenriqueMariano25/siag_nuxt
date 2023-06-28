@@ -336,15 +336,18 @@
 				</div>
 			</template>
 			<template v-slot:rodape-btn-direito>
-				<div class="flex gap-2">
+				<div class="flex gap-2 items-center">
 					<!--        <BotaoPadrao texto="Relátorio" >-->
 					<!--          <img src="@/assets/icons/printer-b.svg" alt="" class="w-6 h-6">-->
 					<!--        </BotaoPadrao>-->
+          <div v-if="!noIntervalo && tab === 'meusAgendamentos'" class="flex text-red-400 text-xl">
+            <span><strong>Fora do intervalo de DESAGENDAMENTO</strong></span>
+          </div>
 					<BotaoPadrao
 						texto="Desagendar"
 						cor="bg-red-400 hover:bg-red-500"
 						v-if="tab === 'meusAgendamentos'"
-						:disabled="selecionadosMeusAgendamentos.length <= 0"
+						:disabled="selecionadosMeusAgendamentos.length <= 0 || !noIntervalo"
 						@click="mostrarDialogDesagendar = true">
 						<img
 							src="@/assets/icons/delete-b.svg"
@@ -412,6 +415,11 @@
 			BaseDialog,
 			DialogDesagendar,
 		},
+    props: {
+      noIntervalo:{
+        type: [Boolean]
+      }
+    },
 		data() {
 			return {
 				tab: "aprovados",
