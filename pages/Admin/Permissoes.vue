@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<AppTabela
+	<div class="w-full">
+		<TabelaPadrao
 			:cabecalho="cabecalho"
 			:dados="dados"
 			@filtrar="recebendoFiltro"
@@ -17,7 +17,7 @@
 								permissao_id = item.id
 							"/>
       </template>
-		</AppTabela>
+		</TabelaPadrao>
 		<RodapePagina class="print:hidden">
 			<template v-slot>
 				<div class="flex items-center w-full">
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-	import AppTabela from "~/components/Ui/AppTabela.vue"
+	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
 	import RodapePagina from "~/components/Shared/RodapePagina.vue"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import DialogCriarPermissao from "~/components/Dialogs/Admin/DialogCriarPermissao.vue"
@@ -66,7 +66,7 @@
 		name: "Permissoes",
 		layout: "admin",
 		components: {
-			AppTabela,
+      TabelaPadrao,
 			RodapePagina,
 			BotaoPadrao,
 			DialogCriarPermissao,

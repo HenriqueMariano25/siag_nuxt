@@ -3,7 +3,7 @@
     <div class="h-[100vh] print:hidden">
       <MenuLateralAdmin/>
     </div>
-    <div class="flex p-2 w-full bg-gray-200">
+    <div class="flex p-2 w-full bg-gray-200 relative grow">
       <Nuxt/>
     </div>
   </div>

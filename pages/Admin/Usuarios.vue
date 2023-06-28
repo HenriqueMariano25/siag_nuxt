@@ -1,34 +1,36 @@
 <template>
-	<div>
-		<AppTabela
-			:cabecalho="cabecalho"
-			:dados="dados"
-			:itensPorPagina="itensPorPagina"
-			:pagina="pagina"
-			altura="calc(100vh - 135px)"
-			:totalItens="totalItens"
-			@atualizar="atualizarDados"
-			:carregando="carregando">
-			<template v-slot:[`body.acoes`]="{ item }">
-				<BotaoIconeEditar
-					@click="
+	<div class="w-full">
+    <div class="w-full bg-white flex flex-col gap-2 ">
+      <TabelaPadrao
+        :cabecalho="cabecalho"
+        :dados="dados"
+        :itensPorPagina="itensPorPagina"
+        :pagina="pagina"
+        altura="calc(100vh - 135px)"
+        :totalItens="totalItens"
+        @atualizar="atualizarDados"
+        :carregando="carregando">
+        <template v-slot:[`body.acoes`]="{ item }">
+          <BotaoIconeEditar
+            @click="
 						mostrarDialogCriarUsuario = true
 						usuario_id = item.id
 					" />
-			</template>
-			<template v-slot:[`body.nome`]="{ item }">
-				<span class="whitespace-nowrap">{{ item.nome }}</span>
-			</template>
-			<template v-slot:[`body.usuario`]="{ item }">
-				<span class="whitespace-nowrap">{{ item.usuario }}</span>
-			</template>
-			<template v-slot:[`body.Setor.nome`]="{ item }">
-				<span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
-			</template>
-			<template v-slot:[`body.StatusUsuario.descricao`]="{ item }">
-				<span class="whitespace-nowrap">{{ item.StatusUsuario.descricao }}</span>
-			</template>
-		</AppTabela>
+        </template>
+        <template v-slot:[`body.nome`]="{ item }">
+          <span class="whitespace-nowrap">{{ item.nome }}</span>
+        </template>
+        <template v-slot:[`body.usuario`]="{ item }">
+          <span class="whitespace-nowrap">{{ item.usuario }}</span>
+        </template>
+        <template v-slot:[`body.Setor.nome`]="{ item }">
+          <span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
+        </template>
+        <template v-slot:[`body.StatusUsuario.descricao`]="{ item }">
+          <span class="whitespace-nowrap">{{ item.StatusUsuario.descricao }}</span>
+        </template>
+      </TabelaPadrao>
+    </div>
 		<RodapePagina class="print:hidden">
 			<template v-slot>
 				<div class="flex items-center w-full">
@@ -63,21 +65,21 @@
 </template>
 
 <script>
-	import AppTabela from "~/components/Ui/AppTabela.vue"
+	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
 	import RodapePagina from "~/components/Shared/RodapePagina.vue"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import BotaoIconeEditar from "~/components/Ui/Buttons/BotaoIconeEditar.vue"
 	import DialogCriarUsuario from "~/components/Dialogs/Admin/DialogCriarUsuario.vue"
-	import AppAlerta from "~/components/Ui/AppAlerta.vue"
+	import AppAlerta from "~/components/Ui/AppAlerta.vue";
 	export default {
 		name: "Usuarios",
 		layout: "admin",
 		components: {
-			AppAlerta,
+      TabelaPadrao,
 			DialogCriarUsuario,
 			BotaoPadrao,
 			RodapePagina,
-			AppTabela,
+      AppAlerta,
 			BotaoIconeEditar,
 		},
 		data() {
