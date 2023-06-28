@@ -449,7 +449,7 @@
 				],
 				dadosAprovados: [],
 				filtrosAprovados: {},
-				itensPorPaginaAprovados: 20,
+				itensPorPaginaAprovados: 100,
 				totalItensAprovados: 0,
 				paginaAprovados: 1,
 				carregandoTabelaAprovados: false,
@@ -486,7 +486,7 @@
 				],
 				dadosPendentes: [],
 				filtrosPendentes: {},
-				itensPorPaginaPendentes: 5,
+				itensPorPaginaPendentes: 100,
 				totalItensPendentes: 0,
 				paginaPendentes: 1,
 				carregandoTabelaPendentes: false,
@@ -521,7 +521,7 @@
 				],
 				dadosMeusAgendamentos: [],
 				filtrosMeusAgendamentos: {},
-				itensPorPaginaMeusAgendamentos: 50,
+				itensPorPaginaMeusAgendamentos: 100,
 				totalItensMeusAgendamentos: 0,
 				paginaMeusAgendamentos: 1,
 				carregandoTabelaMeusAgendamentos: false,
@@ -567,7 +567,6 @@
 				if (!resp.falha) {
 					let dados = resp.dados.dias
 					this.diasAprovados = dados
-					console.log(dados)
 				}
 			},
 
@@ -592,7 +591,6 @@
 					this.carregandoTabelaAprovados = false
 					this.dadosAprovados = resp.dados.agendamentos
 					this.totalItensAprovados = resp.dados.totalItens
-					console.log(this.dadosAprovados)
 				}
 			},
 
@@ -731,7 +729,6 @@
 				let itens = []
 				for (let item of dados) {
 					let temp = []
-					console.log(dados)
 					temp.push(item.StatusAgendamento ? item.StatusAgendamento.descricao : "")
 					temp.push(item.chapa)
 					temp.push(item.Funcionario ? item.Funcionario.nome : "")
@@ -776,7 +773,6 @@
 				if (!resp.falha) {
 					let dados = resp.dados.dias
 					this.diasMeusAgendamentos = dados
-					console.log(dados)
 				}
 			},
 
@@ -788,16 +784,14 @@
 				let ordem = this.ordemMeusAgendamentos
 				let filtros = this.filtrosMeusAgendamentos
 
-				console.log(filtros)
-
 				let resp = await this.$axios.$get("/hora_extra/buscar/meus_agendamentos", {
-					params: { data, usuario_id, ordem, filtros },
+					params: { data, usuario_id, ordem, filtros, page: this.paginaMeusAgendamentos - 1,
+            size: this.itensPorPaginaMeusAgendamentos, },
 				})
 
 				if (!resp.falha) {
 					this.carregandoTabelaMeusAgendamentos = false
 					this.dadosMeusAgendamentos = resp.dados.agendamentos
-					console.log(resp.dados.agendamentos)
 					this.totalItensMeusAgendamentos = resp.dados.totalItens
 				}
 			},
@@ -886,7 +880,6 @@
 		},
 		watch: {
 			tab(valor) {
-				console.log(valor)
 
 				if (valor === "pendentes" && this.diasPendentes.length === 0) {
 					this.buscarDiasPendentes()

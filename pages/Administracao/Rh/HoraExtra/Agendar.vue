@@ -573,11 +573,9 @@
 								motivo,
 								agendado_por_id,
 							})
-							console.log(resp)
               let novosAgendados = resp.novosAgendados
               for(let novo of novosAgendados){
                 let idx = novosDados.findIndex( o => o.chapa === novo.chapa)
-                console.log(idx)
 
                 if(idx >= 0 )
                   novosDados[idx]["ativo"] = true
