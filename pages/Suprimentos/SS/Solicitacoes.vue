@@ -542,8 +542,6 @@
       async gerarExcel(){
         let dados = this.dados
 
-        console.log(dados)
-
         let cabecalho = [
           "Acompanhamento",
           "Situação",
@@ -554,7 +552,11 @@
           "Etapa",
           "Comprador",
           "Solicitante",
-          "Fornecedores"
+          "Aprov. Controle",
+          "Aprov. Gestor",
+          "Aprov. Site Manager",
+          "Fornecedores",
+          "Abrangência Escopo"
         ]
         let nomeArquivo
 
@@ -572,7 +574,11 @@
           temp.push(item.EtapaSS ? item.EtapaSS.nome : "")
           temp.push(item.comprador ? item.comprador.nome : "")
           temp.push(item.Usuario ? item.Usuario.nome : "")
+          temp.push(item.data_aprov_controle ? this.$dayjs(item.data_aprov_controle).format("DD/MM/YYYY") : "")
+          temp.push(item.data_aprov_setor ? this.$dayjs(item.data_aprov_setor).format("DD/MM/YYYY") : "")
+          temp.push(item.data_aprov_site_manager ? this.$dayjs(item.data_aprov_site_manager).format("DD/MM/YYYY") : "")
           temp.push(item.FornecedorSS.length > 0 ? item.FornecedorSS.map(o => o.nome).join("; ") : "")
+          temp.push(item.abrangencia_escopo ? item.abrangencia_escopo : "")
           itens.push(temp)
         }
 
