@@ -223,6 +223,115 @@
 									</div>
 								</div>
 							</template>
+              <template v-slot:[`tab.negados`]="{ item }">
+                <div class="px-2 flex flex-col gap-y-2">
+                  <div
+                    class="gap-2 justify-between flex w-full border border-gray-300 bg-gray-200 p-1">
+                    <div class="flex items-end gap-2">
+                      <div v-for="key of Object.keys(diasNegados)">
+                        <AppBadge
+                          cor="!bg-red-400"
+                          corFonte="bg-white"
+                          v-if="diasNegados[key] !== 0"
+                          :texto="diasNegados[key]">
+                          <AppTag
+                            @click="buscarPorTagNegados(key)"
+                            cor="bg-blue-300 hover:bg-blue-400"
+                            :texto="$dayjs(key).format('DD/MM')"
+                            fonte="text-2xl"
+                            :clicavel="true" />
+                        </AppBadge>
+                      </div>
+                    </div>
+                    <div class="flex gap-2">
+                      <AppFormInput
+                        id="data_negados"
+                        type="date"
+                        v-model="dataNegados"
+                        label="Data" />
+                      <div class="flex items-end">
+                        <BotaoPadrao
+                          cor="bg-gray-700 hover:bg-gray-800"
+                          :disabled="dataNegados === null || dataNegados === ''"
+                          @click="buscarNegados">
+                          <img
+                            src="@/assets/icons/magnifier-w.svg"
+                            alt=""
+                            class="w-6 h-6" />
+                        </BotaoPadrao>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <TabelaPadrao
+                      :cabecalho="cabecalhoNegados"
+                      :dados="dadosNegados"
+                      :itensPorPagina="itensPorPaginaNegados"
+                      :pagina="paginaNegados"
+                      :totalItens="totalItensNegados"
+                      @pagina="paginaNegados = $event"
+                      @itensPorPagina="itensPorPaginaNegados = $event"
+                      altura="calc(100vh - 335px)"
+                      @filtros="filtrosNegados = $event"
+                      @atualizar="buscarNegados"
+                      :carregando="carregandoTabelaNegados">
+                      <template v-slot:[`body.status`]="{ item }">
+												<span class="whitespace-nowrap">
+													{{ item.StatusAgendamento ? item.StatusAgendamento.descricao : "" }}
+												</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.nome`]="{ item }">
+                        <span class="whitespace-nowrap">{{ item.Funcionario.nome }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.cargo`]="{ item }">
+                        <span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.encarregado_sapo
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.encarregado_producao`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.encarregado_producao
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.gestor`]="{ item }">
+                        <span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
+                      </template>
+                      <template v-slot:[`body.Setor.nome`]="{ item }">
+                        <span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.rota.numero`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.rota ? item.Funcionario.rota.numero : ""
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.agendado_por.nome`]="{ item }">
+												<span
+                          class="whitespace-nowrap"
+                          v-if="item.agendado_por"
+                        >{{ item.agendado_por.nome }}</span
+                        >
+                      </template>
+                      <template v-slot:[`body.Funcionario.hora_extra`]="{ item }">
+                        {{ horaExtra(item.Funcionario.hora_extra) }}
+                      </template>
+                      <template v-slot:[`body.Funcionario.hora_extra_projetada`]="{ item }">
+                        {{ horaExtra(item.hora_extra_projetada) }}
+                      </template>
+                      <template v-slot:[`body.Funcionario.ponto_embarque`]="{ item }">
+                        <span class="whitespace-nowrap">{{ item.Funcionario.ponto_embarque }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.direto_indireto`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.direto_indireto
+                          }}</span>
+                      </template>
+                    </TabelaPadrao>
+                  </div>
+                </div>
+              </template>
 							<template v-slot:[`tab.meusAgendamentos`]="{ item }">
 								<div class="px-2 flex flex-col gap-y-2">
 									<div
@@ -362,6 +471,8 @@
 								? gerarExcelAprovados()
 								: tab === 'pendentes'
 								? gerarExcelPendentes()
+								: tab === 'negados'
+								? gerarExcelNegados()
 								: gerarExcelMeusAgendamentos()
 						">
 						<img
@@ -502,6 +613,44 @@
 				ordemPendentes: null,
 				gerandoExcelPendentes: false,
 
+        //Negados
+        cabecalhoNegados: [
+          { nome: "Status", valor: "status" },
+          { nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
+          { nome: "Nome", valor: "Funcionario.nome", filtro: true },
+          { nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
+          { nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
+          {
+            nome: "Encarregado/Lider Produção",
+            valor: "Funcionario.encarregado_producao",
+            filtro: true,
+          },
+          { nome: "Gestor", valor: "Funcionario.gestor", filtro: true },
+          { nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
+          { nome: "HE atual", valor: "Funcionario.hora_extra", centralizar: true },
+          {
+            nome: "HE projetada",
+            valor: "Funcionario.hora_extra_projetada",
+            centralizar: true,
+          },
+          { nome: "Agendado por", valor: "agendado_por.nome", filtro: true },
+          { nome: "Turno", valor: "turno", filtro: true, centralizar: true },
+          { nome: "Motivo", valor: "motivo", filtro: true },
+          { nome: "Situação", valor: "situacao", filtro: true },
+          { nome: "Rota", valor: "Funcionario.rota.numero" },
+          { nome: "Ponto Embarque", valor: "Funcionario.ponto_embarque", filtro: true },
+        ],
+        dadosNegados: [],
+        filtrosNegados: {},
+        itensPorPaginaNegados: 100,
+        totalItensNegados: 0,
+        paginaNegados: 1,
+        carregandoTabelaNegados: false,
+        diasNegados: [],
+        ordemNegados: null,
+        gerandoExcelNegados: false,
+        dataNegados: null,
+
 				//Meus agendamentos
 				cabecalhoMeusAgendamentos: [
 					{ nome: "Status", valor: "status" },
@@ -545,6 +694,7 @@
 				return [
 					{ nome: "Aprovados", valor: "aprovados" },
 					{ nome: "Pendentes", valor: "pendentes" },
+					{ nome: "Negados", valor: "negados" },
 					{
 						nome: "Meus agendamento",
 						valor: "meusAgendamentos",
@@ -555,6 +705,8 @@
 				if (this.tab === "aprovados" && this.dadosAprovados.length === 0) return true
 
 				if (this.tab === "pendentes" && this.dadosPendentes.length === 0) return true
+
+				if (this.tab === "negados" && this.dadosNegados.length === 0) return true
 
 				return this.tab === "meusAgendamentos" && this.dadosMeusAgendamentos.length === 0
 			},
@@ -769,6 +921,108 @@
 				this.gerandoExcelPendentes = false
 			},
 
+      // Negados
+
+      async buscarDiasNegados() {
+        let resp = await this.$axios.$get("/hora_extra/agendamentos/negados_dias")
+
+        if (!resp.falha) {
+          let dados = resp.dados.dias
+          this.diasNegados = dados
+        }
+      },
+
+      async buscarNegados() {
+        this.carregandoTabelaNegados = true
+
+        let data = this.dataNegados
+        let ordem = this.ordemNegados
+        let filtros = this.filtrosNegados
+
+        let resp = await this.$axios.$get("/hora_extra/buscar/negados", {
+          params: {
+            data,
+            ordem,
+            filtros,
+            page: this.paginaNegados - 1,
+            size: this.itensPorPaginaNegados,
+          },
+        })
+
+        if (!resp.falha) {
+          this.carregandoTabelaNegados = false
+          this.dadosNegados = resp.dados.agendamentos
+          this.totalItensNegados = resp.dados.totalItens
+        }
+      },
+
+      async buscarPorTagNegados(data) {
+        this.dataNegados = data
+        await this.buscarNegados()
+      },
+
+      async gerarExcelNegados() {
+        this.gerandoExcelNegados = true
+        let dados = this.dadosNegados
+
+        let cabecalho = [
+          "Status",
+          "Matricula",
+          "Nome",
+          "Cargo",
+          "Encarregado/Lider SAPO",
+          "Encarregado/Lider Produção",
+          "Gestor",
+          "Setor",
+          "HE Atual",
+          "HE Projetada",
+          "Agendado por",
+          "Turno",
+          "Motivo",
+          "Situação",
+          "Rota",
+          "Ponto Embarque",
+          "MOD/MOI",
+        ]
+        let nomeArquivo
+
+        nomeArquivo = "agendamento_negados"
+
+        let itens = []
+        for (let item of dados) {
+          let temp = []
+          temp.push(item.StatusAgendamento ? item.StatusAgendamento.descricao : "")
+          temp.push(item.chapa)
+          temp.push(item.Funcionario ? item.Funcionario.nome : "")
+          temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+          temp.push(
+            item.Funcionario && item.Funcionario.encarregado_sapo
+              ? item.Funcionario.encarregado_sapo
+              : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.encarregado_producao
+              ? item.Funcionario.encarregado_producao
+              : "",
+          )
+          temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
+          temp.push(item.Setor ? item.Setor.nome : "")
+          temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
+          temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
+          temp.push(item.agendado_por ? item.agendado_por.nome : "")
+          temp.push(item.turno)
+          temp.push(item.motivo)
+          temp.push(item.situacao)
+          temp.push(item.Funcionario && item.Funcionario.rota ? item.Funcionario.rota.numero : "")
+          temp.push(item.Funcionario ? item.Funcionario.ponto_embarque : "")
+          temp.push(item.Funcionario ? item.Funcionario.direto_indireto : "")
+          itens.push(temp)
+        }
+
+        gerarExcel(cabecalho, itens, nomeArquivo)
+        this.gerandoExcelNegados = false
+      },
+
 			// Meus agendamentos
 
 			async buscarDiasMeusAgendamentos() {
@@ -892,6 +1146,10 @@
 				if (valor === "pendentes" && this.diasPendentes.length === 0) {
 					this.buscarDiasPendentes()
 				}
+
+        if (valor === "negados" && this.diasNegados.length === 0) {
+          this.buscarDiasNegados()
+        }
 
 				if (valor === "meusAgendamentos" && this.diasMeusAgendamentos.length === 0) {
 					this.buscarDiasMeusAgendamentos()
