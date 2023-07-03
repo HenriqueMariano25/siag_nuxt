@@ -23,15 +23,17 @@
 		</div>
 		<div class="print:hidden">
 <!--			<div class="flex">-->
-				<AppTabela
+				<TabelaPadrao
 					:cabecalho="cabecalho"
 					:dados="dados"
-					@filtrar="recebendoFiltro"
+					@filtros="filtros = $event"
 					:itensPorPagina="itensPorPagina"
+					@itensPorPagina="itensPorPagina = $event"
 					:pagina="pagina"
+          @pagina="pagina = $event"
 					altura="calc(100vh - 194px)"
 					:totalItens="totalItens"
-					@atualizar="atualizarDados"
+					@atualizar="buscarSolicitacoes()"
 					@dblclick="verDetalhesSS"
 					:carregando="carregandoTabela"
 					:temDetalhes="false">
@@ -135,7 +137,7 @@
 							</span>
 						</button>
 					</template>
-				</AppTabela>
+				</TabelaPadrao>
 <!--			</div>-->
 		</div>
 		<RodapePagina class="print:hidden">
@@ -247,7 +249,8 @@
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import DialogCriarSS from "~/components/Dialogs/Suprimentos/SS/DialogCriarSS.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
-	import AppTabela from "~/components/Ui/AppTabela.vue"
+	// import AppTabela from "~/components/Ui/AppTabela.vue"
+  import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
 	import DialogComentariosSS from "~/components/Dialogs/Suprimentos/SS/DialogComentariosSS.vue"
 	import BotaoIconeEditar from "~/components/Ui/Buttons/BotaoIconeEditar.vue"
 	import DialogAnaliseDemanda from "~/components/Dialogs/Suprimentos/SS/DialogAnaliseDemanda.vue"
@@ -266,7 +269,7 @@
 			BotaoPadrao,
 			DialogCriarSS,
 			AppAlerta,
-			AppTabela,
+      TabelaPadrao,
 			DialogComentariosSS,
 			BotaoIconeEditar,
 			DialogAnaliseDemanda,
@@ -393,7 +396,7 @@
 			this.etapas = await this.buscarEtapaSS()
 			this.etapa_id = 0
 
-			this.buscarSolicitacoes()
+			await this.buscarSolicitacoes()
 		},
 		methods: {
 			async ssAdicionado() {
@@ -421,24 +424,9 @@
 				if (this.etapa_id === 7) this.mostrarDialogAnaliseDemanda = true
 				if (this.listaSelect.includes(this.etapa_id) && this.etapa_id !== 7 ) this.mostrarDialogProcessarMultSS = true
 			},
-			async atualizarDados(parametros) {
-				let { itensPorPagina, pagina, filtros } = parametros
-
-				if (itensPorPagina) this.itensPorPagina = itensPorPagina
-
-				if (pagina) this.pagina = pagina
-
-				if (filtros) this.filtros = filtros
-
-				await this.buscarSolicitacoes()
-			},
 			async buscarSolicitacoes() {
 				this.carregandoTabela = true
 				let filtros = Object.assign({}, this.filtros)
-
-				for (let f of Object.keys(filtros)) {
-					filtros[f] = { $iLike: `%${filtros[f]}%` }
-				}
 
 				let etapa_id = this.etapa_id
 				if (etapa_id !== 0) {
@@ -474,10 +462,11 @@
 				})
 
 				if (!resp.falha) {
-					let SSs = resp.dados.SSs.rows
-					this.totalItens = resp.dados.SSs.count
-					this.dados = SSs
+					let SSs = resp.dados.SSs
+          let total = resp.dados.total
 
+					this.dados = SSs
+					this.totalItens = total
 					this.carregandoTabela = false
 				}
 			},
