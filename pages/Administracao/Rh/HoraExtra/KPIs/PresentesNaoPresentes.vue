@@ -238,7 +238,7 @@
 					],
 				},
 
-				data: '2023-06-05',
+				data: null,
 				tabs: [
 					{ nome: "Agendados s/ Presença", valor: "agend_s_presenca" },
 					{ nome: "Presentes s/ Agendamento", valor: "pres_s_agendamento" },
@@ -470,6 +470,8 @@
 				if (!resp.falha) {
 					this.buscouDados = true
 					let dados = resp.dados
+          console.log(dados)
+
           await this.gerarGraficosSemAgendamento(dados)
 
 					this.agendSPresenca.totalAgend = dados.agendamentos.length
@@ -481,10 +483,10 @@
 
 					this.agendSPresenca.totalAusente = semPresenca.length
 					this.agendSPresenca.direto = semPresenca.filter(
-						(o) => o.Funcionario.direto_indireto === "D",
+						(o) => o.Funcionario && o.Funcionario.direto_indireto === "D",
 					).length
 					this.agendSPresenca.indireto = semPresenca.filter(
-						(o) => o.Funcionario.direto_indireto === "I",
+						(o) => o.Funcionario && o.Funcionario.direto_indireto === "I",
 					).length
 
 					// Conta a ocorrencia de sem presença por setor
@@ -554,12 +556,18 @@
 						xaxis: {
 							categories: Object.keys(cargosContados),
 							labels: {
-								formatter: function (value) {
-									let textoDivido = value.split(" ")
-                  textoDivido[0] = textoDivido[0].length > 6 ? `${textoDivido[0].substr(0, 5)}${textoDivido[0].length > 5 ? "." : ""}` : textoDivido[0]
-									let textoFinal = textoDivido.join(" ")
-									return `${textoFinal}`
-								},
+								// formatter: function (value) {
+                //   console.log(value)
+                //
+                //   if(value){
+                //     let textoDivido = value.split(" ")
+                //     textoDivido[0] = textoDivido[0].length > 6 ? `${textoDivido[0].substr(0, 5)}${textoDivido[0].length > 5 ? "." : ""}` : textoDivido[0]
+                //     let textoFinal = textoDivido.join(" ")
+                //     return `${textoFinal}`
+                //   }
+                //   return ""
+                //
+								// },
 								rotate: -45,
                 rotateAlways: false
 							},
@@ -786,9 +794,9 @@
         let itens = []
         for (let item of funcionarios) {
           let temp = []
-          temp.push(item.Funcionario.nome)
-          temp.push(item.chapa)
-          temp.push(item.Funcionario.cargo)
+          temp.push(item.Funcionario ? item.Funcionario.nome : "")
+          temp.push(item.Funcionario ? item.chapa : "")
+          temp.push(item.Funcionario ? item.Funcionario.cargo : "")
           temp.push(this.$dayjs(item.createdAt).format("DD/MM/YYYY HH:mm"))
           itens.push(temp)
         }
