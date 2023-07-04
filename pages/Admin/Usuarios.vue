@@ -5,10 +5,14 @@
         :cabecalho="cabecalho"
         :dados="dados"
         :itensPorPagina="itensPorPagina"
+        @itensPorPagina="itensPorPagina = $event"
+        :filtros="filtros"
+        @filtros="filtros = $event"
         :pagina="pagina"
+        @pagina="pagina = $event"
         altura="calc(100vh - 135px)"
         :totalItens="totalItens"
-        @atualizar="atualizarDados"
+        @atualizar="buscarUsuarios()"
         :carregando="carregando">
         <template v-slot:[`body.acoes`]="{ item }">
           <BotaoIconeEditar

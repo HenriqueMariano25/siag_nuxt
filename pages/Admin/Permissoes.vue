@@ -3,12 +3,15 @@
 		<TabelaPadrao
 			:cabecalho="cabecalho"
 			:dados="dados"
-			@filtrar="recebendoFiltro"
-			:itensPorPagina="itensPorPagina"
-			:pagina="pagina"
+      :itensPorPagina="itensPorPagina"
+      @itensPorPagina="itensPorPagina = $event"
+      :filtros="filtros"
+      @filtros="filtros = $event"
+      :pagina="pagina"
+      @pagina="pagina = $event"
 			altura="calc(100vh - 135px)"
 			:totalItens="totalItens"
-			@atualizar="atualizarDados"
+			@atualizar="buscarPermissoes()"
 			:carregando="carregando">
       <template v-slot:[`body.acoes`]="{ item }">
         <BotaoIconeEditar
