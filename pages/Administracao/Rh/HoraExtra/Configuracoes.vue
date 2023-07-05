@@ -684,8 +684,10 @@
 			},
 
 			adicionarAoIntervalo(item) {
-				if (this.diasIntervalo.includes(item)) {
-					let idx = this.diasIntervalo.findIndex((o) => o === item)
+        let diasIntervalo = this.diasIntervalo.map(o => o.dia)
+
+				if (diasIntervalo.includes(item.dia)) {
+					let idx = this.diasIntervalo.findIndex((o) => o.dia === item.dia)
 
 					this.diasIntervalo.splice(idx, 1)
 				} else {
@@ -733,7 +735,9 @@
 			},
 
 			adicionarAoIntervaloAprovacao(item) {
-				if (this.diasIntervaloAprovacao.includes(item)) {
+        let diasIntervaloAprovacao = this.diasIntervaloAprovacao.map(o => o.dia)
+
+				if (diasIntervaloAprovacao.includes(item.dia)) {
 					let idx = this.diasIntervaloAprovacao.findIndex((o) => o === item)
 
 					this.diasIntervaloAprovacao.splice(idx, 1)
