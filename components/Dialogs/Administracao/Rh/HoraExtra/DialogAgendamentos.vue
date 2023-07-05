@@ -378,11 +378,13 @@
 											:itensPorPagina="itensPorPaginaMeusAgendamentos"
 											:pagina="paginaMeusAgendamentos"
 											:totalItens="totalItensMeusAgendamentos"
+                      @itensPorPagina="itensPorPaginaMeusAgendamentos = $event"
 											altura="calc(100vh - 335px)"
 											selecionar
+                      @pagina="paginaMeusAgendamentos = $event"
 											@filtros="filtrosMeusAgendamentos = $event"
 											@selecionados="selecionadosMeusAgendamentos = $event"
-											@atualizar="buscarMeusAgendamentos"
+											@atualizar="buscarMeusAgendamentos()"
 											:carregando="carregandoTabelaMeusAgendamentos">
 											<template v-slot:[`body.status`]="{ item }">
 												<span class="whitespace-nowrap">
