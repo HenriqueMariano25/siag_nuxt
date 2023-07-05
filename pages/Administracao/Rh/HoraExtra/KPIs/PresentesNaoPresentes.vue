@@ -470,8 +470,6 @@
 				if (!resp.falha) {
 					this.buscouDados = true
 					let dados = resp.dados
-          console.log(dados)
-
           await this.gerarGraficosSemAgendamento(dados)
 
 					this.agendSPresenca.totalAgend = dados.agendamentos.length
@@ -503,8 +501,9 @@
 
 					this.opcoesGraSemPresencaPorSetor = {
 						...this.opcoesGraSemPresencaPorSetor,
-						labels: [Object.keys(semPresSetor)],
+						labels: Object.keys(semPresSetor),
 					}
+
 					this.valoresGraSemPresencaPorSetor = [...Object.values(semPresSetor)]
 
 					// Separa quantidade de sem presença com quantidade de funcionario por setor
@@ -556,18 +555,6 @@
 						xaxis: {
 							categories: Object.keys(cargosContados),
 							labels: {
-								// formatter: function (value) {
-                //   console.log(value)
-                //
-                //   if(value){
-                //     let textoDivido = value.split(" ")
-                //     textoDivido[0] = textoDivido[0].length > 6 ? `${textoDivido[0].substr(0, 5)}${textoDivido[0].length > 5 ? "." : ""}` : textoDivido[0]
-                //     let textoFinal = textoDivido.join(" ")
-                //     return `${textoFinal}`
-                //   }
-                //   return ""
-                //
-								// },
 								rotate: -45,
                 rotateAlways: false
 							},
