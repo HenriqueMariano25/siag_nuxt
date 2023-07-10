@@ -1,6 +1,6 @@
 <template>
   <div class="relative geral" >
-    <div class="corpo flex items-center">
+    <div class="corpo flex items-center" :class="{'hover:bg-gray-200 rounded-xl p-0.5':fundo}">
       <slot name="corpo">
 
       </slot>
@@ -22,6 +22,10 @@ export default {
     posicao:{
       type: [String],
       default: 'left-0'
+    },
+    fundo: {
+      type: [Boolean],
+      default: false
     }
   }
 }

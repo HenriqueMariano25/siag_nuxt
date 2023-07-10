@@ -71,12 +71,31 @@
 								mostrarDialogProcessarSS = true
 								ss = item
 							" />
-						<BotaoIconeEditar
-							v-if="etapa_id === 1 && item.Usuario.id === $auth.user.id"
-							@click="
+            <template v-if="etapa_id === 1">
+              <BotaoPadrao icone v-if="item.Usuario.id === $auth.user.id" @click="
 								mostrarDialogCriarSolicitacao = true
 								ss_id = item.id
-							" />
+							">
+                <img src="@/assets/icons/edit-b.svg" alt="" class="w-6 h-6">
+              </BotaoPadrao>
+              <div v-else-if="item.Usuario.id !== $auth.user.id" class="flex justify-center">
+                <AppTooltip largura="w-[200px]" fundo>
+                  <template v-slot:corpo>
+                    <div class="flex justify-center">
+                      <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7 flex">
+                    </div>
+                  </template>
+                  <template v-slot:tooltip>
+                    <div>
+                      <span>
+                        Solicitação criada por outro <strong>SOLICITANTE</strong>, somente o solicitante pode editar essa SS.
+                      </span>
+                    </div>
+                  </template>
+                </AppTooltip>
+              </div>
+            </template>
+
             <BotaoIconeEditar
               v-if="etapa_id === 7 && $auth.user.permissoes.includes('ss_gerenciamento')"
               @click="
@@ -261,10 +280,12 @@
 
 	import { buscarEtapaSS } from "@/mixins/buscarInformacoes"
   import gerarExcel from "~/functions/gerarExcel";
+  import AppTooltip from "~/components/Ui/AppTooltip.vue";
 	export default {
 		mixins: [buscarEtapaSS],
 		name: "Solicitacoes",
 		components: {
+      AppTooltip,
 			RodapePagina,
 			BotaoPadrao,
 			DialogCriarSS,
@@ -367,7 +388,7 @@
 				]
 
 				if (this.listaAcao.includes(this.etapa_id)) {
-					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-9" })
+					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-8" })
 				}
 
         if (this.listaSelect.includes(this.etapa_id)) {
@@ -375,7 +396,7 @@
 				}
 
 				if (this.etapa_id === 1) {
-					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-9" })
+					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-8" })
 				}
 				return cabecalho
 			},

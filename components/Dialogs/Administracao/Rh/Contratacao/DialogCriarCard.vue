@@ -267,7 +267,10 @@
 			</div>
 		</template>
 		<template v-slot:rodape-btn-direito>
-			<div class="flex items-center">
+			<div class="flex items-center gap-2">
+<!--        <BotaoPadrao texto="DELETAR" cor="bg-red-400 hover:!bg-red-500" v-if="podeDeletar">-->
+<!--          <img src="@/assets/icons/delete-b.svg" alt="" class="w-7 h-7">-->
+<!--        </BotaoPadrao>-->
 				<div
 					class="text-red-500 text-xl mr-3"
 					v-if="erro.length > 0">
@@ -404,6 +407,12 @@
 			podeEditarTudo() {
 				if (this.card_id !== null) {
 					return this.card.etapa_id !== 1
+				}
+				return false
+			},
+      podeDeletar() {
+				if (this.card_id !== null) {
+					return this.card.etapa_id <= 3
 				}
 				return false
 			},
