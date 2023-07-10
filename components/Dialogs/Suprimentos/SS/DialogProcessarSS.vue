@@ -85,7 +85,7 @@
 					</BotaoPadrao>
 					<BotaoPadrao
 						v-if="etapa_id !== 27"
-						:disabled="processo.input === null || processo.input === ''"
+						:disabled="(processo.input === null || processo.input === '') || processando"
 						texto="Processar SS"
 						@click="processarSS()">
 						<template v-slot>
@@ -146,6 +146,7 @@
 					input: null,
 				},
 				valNegarSS: false,
+        processando: false
 			}
 		},
 		methods: {
@@ -154,6 +155,9 @@
 			},
 			async processarSS() {
 				console.log("Processando")
+				console.log(this.$dayjs().format("DD/MM/YYYY HH:mm:ss"))
+        this.processando = true
+
 				let { comentario, input } = this.processo
 				let campo = this.campo
 				let label = this.label
@@ -169,12 +173,12 @@
 					usuario_id,
 				})
 
-				console.log(resp)
 				if (!resp.falha) {
 					this.processo = {
 						comentario: null,
 						input: null,
 					}
+          this.processando = false
 					this.$emit("processado", [ss_id])
 				}
 			},
