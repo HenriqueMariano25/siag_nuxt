@@ -1378,7 +1378,9 @@
 						<span>Campos obrigatórios necessários</span>
 					</div>
 
-					<BotaoPadrao texto="salvar" :disabled="bloquearBotaoSalvar" @click="ss_id !== null ? editarSS() : adicionarSS()" />
+					<BotaoPadrao texto="salvar" :disabled="bloquearBotaoSalvar" @click="ss_id !== null ? editarSS() : adicionarSS()">
+            <img src="@/assets/icons/save-b.svg" alt="" class="w-6 h-6">
+          </BotaoPadrao>
 				</div>
 			</div>
 		</template>
@@ -1434,8 +1436,7 @@
 					{ label: "Fora da obra", valor: "fora_obra" },
 				],
 				selecionarTipoSolicitacao: false,
-
-				fornecedores: [],
+        fornecedores: [],
 				ss: {
 					numero_acompanhamento: null,
 					data_emissao: this.$dayjs().format("YYYY-MM-DD"),
@@ -1575,7 +1576,7 @@
 					this.ss = Object.assign({}, resp.dados.ss)
           this.ss.numero_acompanhamento_original = resp.dados.ss.numero_acompanhamento
 
-					this.fornecedores = this.ss.FornecedorSS ? this.ss.FornecedorSSes : []
+					this.fornecedores = this.ss.FornecedorSS ? this.ss.FornecedorSS : []
 					this.matriz = this.ss.MatrizResponsabilidadeSS ? this.ss.MatrizResponsabilidadeSS : []
 					this.carregando = false
 
@@ -1665,6 +1666,9 @@
           this.bloquearBotaoSalvar = true
 					let usuario_id = this.$auth.user.id
 
+          console.log(this.ss)
+          console.log(this.fornecedores)
+
 					let dados = {
 						ss: { ...this.ss },
 						matriz: this.matriz,
@@ -1675,7 +1679,7 @@
 
 					if (!resp.falha) {
             this.bloquearBotaoSalvar = false
-						this.$emit("editado", this.ss.id)
+						this.$emit("editado", { solicitacao: this.ss })
 					}
 				}
 			},

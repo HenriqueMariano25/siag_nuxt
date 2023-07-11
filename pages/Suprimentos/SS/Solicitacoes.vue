@@ -66,12 +66,12 @@
 					</template>
 					<template v-slot:[`body.acoes`]="{ item }">
 						<BotaoIconeEditar
-							v-if="etapa_id !== 1 && etapa_id !== 7"
+							v-if="etapa_id !== 1 && etapa_id !== 2  && etapa_id !== 7"
 							@click="
 								mostrarDialogProcessarSS = true
 								ss = item
 							" />
-            <template v-if="etapa_id === 1">
+            <template v-if="etapa_id === 1 || etapa_id === 2">
               <BotaoPadrao icone v-if="item.Usuario.id === $auth.user.id" @click="
 								mostrarDialogCriarSolicitacao = true
 								ss_id = item.id
@@ -395,7 +395,7 @@
 					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true, largura: "w-10" })
 				}
 
-				if (this.etapa_id === 1) {
+				if (this.etapa_id === 1 || this.etapa_id === 2) {
 					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-8" })
 				}
 				return cabecalho
@@ -425,14 +425,22 @@
 				this.mostrarAlerta = true
 				this.textoAlerta = "Solicitação criada com sucesso!"
 			},
-			async ssEditado(id) {
+			async ssEditado({ solicitacao }) {
+
+        console.log(solicitacao)
+
+
 				this.mostrarDialogCriarSolicitacao = false
 				this.mostrarAlerta = true
 				this.textoAlerta = "Solicitação editada com sucesso!"
 
-				let index = this.dados.findIndex((o) => (o.id = id))
+				let index = this.dados.findIndex((o) => (o.id = solicitacao.id))
 
-				this.dados.splice(index, 1)
+        if(solicitacao.etapa_ss_id === 1)
+				  this.dados.splice(index, 1)
+        // else if(solicitacao.etapa_ss_id === 2 )
+          // this.dados[index] = solicitacao
+
 			},
 			cancelar() {
 				this.card_id = null
