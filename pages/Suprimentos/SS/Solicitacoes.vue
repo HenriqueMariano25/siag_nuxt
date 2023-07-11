@@ -588,6 +588,11 @@
           "Aprov. Gestor",
           "Aprov. Site Manager",
           "Fornecedores",
+          "Data PATEC",
+          "Data Negociação",
+          "Data MCO",
+          "Data Envio Handover",
+          "Data de Finalização",
           "Abrangência Escopo"
         ]
         let nomeArquivo
@@ -597,6 +602,17 @@
         let itens = []
         for (let item of dados) {
           let temp = []
+
+          let data_finalizacao = null
+          if(item.etapa_ss_id === 5 || item.etapa_ss_id === 6){
+            if (item.ComentarioSS) {
+              let finalizado = item.ComentarioSS.find(o => o.etapa_ss_destino_id === 6 || o.etapa_ss_destino_id === 5)
+              if (finalizado) {
+                data_finalizacao = finalizado.createdAt
+              }
+            }
+          }
+
           temp.push(item.numero_acompanhamento ? item.numero_acompanhamento : "")
           temp.push(item.etapa_ss_id === 6 ? 'Finalizado' : !this.$dayjs().isAfter(item.data_necessidade, 'day') ? 'No prazo' : 'Atrasado')
           temp.push(item.natureza_operacao ? item.natureza_operacao : "")
@@ -610,6 +626,11 @@
           temp.push(item.data_aprov_setor ? this.$dayjs(item.data_aprov_setor).format("DD/MM/YYYY") : "")
           temp.push(item.data_aprov_site_manager ? this.$dayjs(item.data_aprov_site_manager).format("DD/MM/YYYY") : "")
           temp.push(item.FornecedorSS.length > 0 ? item.FornecedorSS.map(o => o.nome).join("; ") : "")
+          temp.push(item.data_patec ? this.$dayjs(item.data_patec).format("DD/MM/YYYY") : "")
+          temp.push(item.data_negociacao ? this.$dayjs(item.data_negociacao).format("DD/MM/YYYY") : "")
+          temp.push(item.data_mco ? this.$dayjs(item.data_mco).format("DD/MM/YYYY") : "")
+          temp.push(item.data_envio_handover ? this.$dayjs(item.data_envio_handover).format("DD/MM/YYYY") : "")
+          temp.push(data_finalizacao ? this.$dayjs(data_finalizacao).format("DD/MM/YYYY") : "")
           temp.push(item.abrangencia_escopo ? item.abrangencia_escopo : "")
           itens.push(temp)
         }
