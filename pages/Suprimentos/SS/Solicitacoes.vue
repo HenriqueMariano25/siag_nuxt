@@ -51,16 +51,30 @@
                 Finalizado
               </div>
               <div v-else>
-                <div
-                  v-if="!$dayjs().isAfter(item.data_necessidade, 'day')"
-                  class="bg-blue-400 text-black px-2 rounded">
-                  No prazo
-                </div>
-                <div
-                  v-if="$dayjs().isAfter(item.data_necessidade, 'day')"
-                  class="bg-red-400 text-black px-2 rounded">
-                  Atrasado
-                </div>
+                <template v-if="calcularPrevisao(item)">
+                  <div
+                    v-if="!$dayjs().isAfter(calcularPrevisao(item), 'day')"
+                    class="bg-blue-400 text-black px-2 rounded">
+                    No prazo
+                  </div>
+                  <div
+                    v-if="$dayjs().isAfter(calcularPrevisao(item), 'day')"
+                    class="bg-red-400 text-black px-2 rounded">
+                    Atrasado
+                  </div>
+                </template>
+                <template v-else>
+                  <div
+                    v-if="!$dayjs().isAfter(item.data_necessidade, 'day')"
+                    class="bg-blue-400 text-black px-2 rounded">
+                    No prazo
+                  </div>
+                  <div
+                    v-if="$dayjs().isAfter(item.data_necessidade, 'day')"
+                    class="bg-red-400 text-black px-2 rounded">
+                    Atrasado
+                  </div>
+                </template>
               </div>
 						</div>
 					</template>
@@ -115,7 +129,7 @@
 					</template>
           <template v-slot:[`body.data_previsao`]="{ item }">
 						<span v-if="item">
-							{{ calcularPrevisao(item) }}
+							{{ calcularPrevisao(item) ? $dayjs(calcularPrevisao(item)).format("DD/MM/YYYY") : "" }}
 						</span>
 					</template>
 					<template v-slot:[`body.EtapaSS.nome`]="{ item }">
@@ -607,11 +621,11 @@
 
       calcularPrevisao(item) {
         if(item.natureza_operacao === 'urgente' && item.data_aprov_site_manager)
-          return `${this.$dayjs(item.data_aprov_site_manager).add(28, 'day').format("DD/MM/YYYY")}`
+          return `${this.$dayjs(item.data_aprov_site_manager).add(28, 'day')}`
         else if(item.natureza_operacao === 'maquina parada' && item.data_aprov_setor)
-          return `${this.$dayjs(item.data_aprov_setor).add(14, 'day').format("DD/MM/YYYY")}`
+          return `${this.$dayjs(item.data_aprov_setor).add(14, 'day')}`
         else if (item.natureza_operacao === 'normal' && item.data_aprov_setor)
-          return `${this.$dayjs(item.data_aprov_setor).add(45, 'day').format("DD/MM/YYYY")}`
+          return `${this.$dayjs(item.data_aprov_setor).add(45, 'day')}`
 
         return ""
       },
