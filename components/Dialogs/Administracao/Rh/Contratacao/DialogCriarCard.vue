@@ -584,7 +584,42 @@
 							if (!valido) {
 								this.erro.push("indicacao.cpf")
 								this.erroCpf = "CPF DUPLICADO"
-							}
+							}else{
+
+                cpf = cpf.replace(/\D/g, '');
+
+                let soma = 0;
+                for (let i = 0; i < 9; i++) {
+                  soma += parseInt(cpf.charAt(i)) * (10 - i);
+                }
+                let digito1 = 11 - (soma % 11);
+                if (digito1 === 10 || digito1 === 11) {
+                  digito1 = 0;
+                }
+
+                // Verificar se o primeiro dígito verificador está correto
+                if (parseInt(cpf.charAt(9)) !== digito1) {
+                  this.erro.push("indicacao.cpf")
+                  this.erroCpf = "CPF INVÁLIDO"
+                }
+
+                // Calcular o segundo dígito verificador
+                soma = 0;
+                for (let i = 0; i < 10; i++) {
+                  soma += parseInt(cpf.charAt(i)) * (11 - i);
+                }
+                let digito2 = 11 - (soma % 11);
+                if (digito2 === 10 || digito2 === 11) {
+                  digito2 = 0;
+                }
+
+                // Verificar se o segundo dígito verificador está correto
+                if (parseInt(cpf.charAt(10)) !== digito2) {
+                  this.erro.push("indicacao.cpf")
+                  this.erroCpf = "CPF INVÁLIDO"
+                }
+
+              }
 						}
 					} else {
 						this.erro.push("indicacao.cpf")
