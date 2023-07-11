@@ -90,33 +90,37 @@
 				</template>
 				<template v-slot:[`body.situacao`]="{ item }">
 					<div class="flex justify-center gap-1.5">
-						<template v-if="item['Etapa.conclui_processo'] === false">
-							<div
-								v-if="!($dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime'])"
-								class="bg-blue-400 text-black px-2 rounded whitespace-nowrap">
-								No prazo
-							</div>
-							<div
-								v-if="$dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime']"
-								class="bg-red-400 text-black px-2 rounded whitespace-nowrap">
-								Atrasado
-							</div>
-						</template>
-						<div
-							v-if="item.confidencial === true"
-							class="bg-gray-600 text-white px-2 rounded whitespace-nowrap">
-							Confidencial
-						</div>
-						<div
-							v-if="item['Etapa.conclui_processo'] === true"
-							class="text-black bg-green-400 px-2 rounded whitespace-nowrap">
-							Finalizado
-						</div>
-						<div
-							v-if="item['Etapa.rejeita_processo'] === true"
-							class="text-black bg-red-700 px-2 rounded whitespace-nowrap">
-							Rejeitado
-						</div>
+            <template v-if="item['Etapa.conclui_processo'] === true || item['Etapa.rejeita_processo'] === true">
+              <div
+                v-if="item['Etapa.conclui_processo'] === true"
+                class="text-black bg-green-400 px-2 rounded whitespace-nowrap">
+                Finalizado
+              </div>
+              <div
+                v-if="item['Etapa.rejeita_processo'] === true"
+                class="text-white bg-red-800 px-2 rounded whitespace-nowrap">
+                Rejeitado
+              </div>
+            </template>
+            <template v-else>
+              <template v-if="item['Etapa.conclui_processo'] === false">
+                <div
+                  v-if="!($dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime'])"
+                  class="bg-blue-400 text-black px-2 rounded whitespace-nowrap">
+                  No prazo
+                </div>
+                <div
+                  v-if="$dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime']"
+                  class="bg-red-400 text-black px-2 rounded whitespace-nowrap">
+                  Atrasado
+                </div>
+              </template>
+              <div
+                v-if="item.confidencial === true"
+                class="bg-gray-600 text-white px-2 rounded whitespace-nowrap">
+                Confidencial
+              </div>
+            </template>
 					</div>
 				</template>
 				<template v-slot:[`body.FuncaoCard.nome`]="{ item }">
