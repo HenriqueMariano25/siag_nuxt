@@ -268,9 +268,14 @@
 		</template>
 		<template v-slot:rodape-btn-direito>
 			<div class="flex items-center gap-2">
-<!--        <BotaoPadrao texto="DELETAR" cor="bg-red-400 hover:!bg-red-500" v-if="podeDeletar">-->
-<!--          <img src="@/assets/icons/delete-b.svg" alt="" class="w-7 h-7">-->
-<!--        </BotaoPadrao>-->
+        <BotaoPadrao texto="DELETAR" cor="bg-red-400 hover:!bg-red-500" v-if="podeDeletar && confirmarDeletarCard === false" @click="confirmarDeletarCard = true">
+          <img src="@/assets/icons/delete-b.svg" alt="" class="w-7 h-7">
+        </BotaoPadrao>
+        <div v-if="podeDeletar && confirmarDeletarCard === true" class="flex gap-2 items-center">
+          <BotaoPadrao texto="Sim" cor="bg-green-500 hover:!bg-green-600" @click="deletarCard()"/>
+          <span>Tem certeza que deseja deletar esse Card ?</span>
+          <BotaoPadrao texto="Não" cor="bg-red-500 hover:!bg-red-600" @click="confirmarDeletarCard = false"/>
+        </div>
 				<div
 					class="text-red-500 text-xl mr-3"
 					v-if="erro.length > 0">
@@ -378,7 +383,8 @@
 				erro: [],
 				dataNecessidadeOriginal: null,
 				erroCpf: false,
-        carregando: false
+        carregando: false,
+        confirmarDeletarCard: false
 			}
 		},
 		async fetch() {
@@ -772,6 +778,19 @@
           this.carregando = false
         }
 			},
+
+      async deletarCard(){
+        console.log("Deletando cards")
+
+        let usuario_id = this.$auth.user.id
+        let card_id = this.card.id
+
+        let resp = await this.$axios.$delete("/contratacao/deletar/card", { params: { usuario_id, card_id}})
+
+        if(!resp.falha){
+          this.$emit("deletado", card_id)
+        }
+      }
 		},
 		watch: {
 			"card.quantidade": function (valor) {

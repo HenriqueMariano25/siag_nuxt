@@ -271,6 +271,7 @@
 			:card_id="card_id"
 			@editado="cardEditado"
 			@cadastrado="cardCadastrado"
+      @deletado="cardDeletado"
 			@cancelar="cancelar" />
 		<DialogProcessarCard
 			:cards="selecionados"
@@ -627,6 +628,18 @@
 				this.textoAlerta = "Card cadastrado com sucesso!"
 				this.card_id = null
 			},
+
+      cardDeletado(card_id){
+        let idx = this.dados.findIndex( o => o.id === card_id)
+
+        if(idx >= 0){
+          this.mostrarDialogCriarCard = false
+          this.mostrarAlerta = true
+          this.textoAlerta = "Card deletado com sucesso!"
+          this.card_id = null
+          this.dados.splice(idx, 1)
+        }
+      },
 
 			async processado(dados) {
 				let { cards, etapa_id } = dados
