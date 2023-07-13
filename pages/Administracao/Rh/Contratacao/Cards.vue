@@ -90,7 +90,7 @@
 				</template>
 				<template v-slot:[`body.situacao`]="{ item }">
 					<div class="flex justify-center gap-1.5">
-            <template v-if="item['Etapa.conclui_processo'] === true || item['Etapa.rejeita_processo'] === true">
+            <template v-if="item['Etapa.conclui_processo'] === true || item['Etapa.rejeita_processo'] === true || item['Etapa.standby_processo'] === true">
               <div
                 v-if="item['Etapa.conclui_processo'] === true"
                 class="text-black bg-green-400 px-2 rounded whitespace-nowrap">
@@ -100,6 +100,11 @@
                 v-if="item['Etapa.rejeita_processo'] === true"
                 class="text-white bg-red-800 px-2 rounded whitespace-nowrap">
                 Rejeitado
+              </div>
+              <div
+                v-if="item['Etapa.standby_processo'] === true"
+                class="text-black bg-yellow-500 px-2 rounded whitespace-nowrap">
+                Stand by
               </div>
             </template>
             <template v-else>
