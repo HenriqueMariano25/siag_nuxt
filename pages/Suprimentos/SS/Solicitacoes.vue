@@ -178,7 +178,7 @@
 				<div class="flex items-center w-full">
 					<div class="flex w-full justify-between ">
             <div class="flex">
-              <BotaoPadrao texto="Gerar Excel" @click="gerarExcel()">
+              <BotaoPadrao texto="Excel" @click="gerarExcel()">
                 <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
               </BotaoPadrao>
             </div>
@@ -580,6 +580,7 @@
           "Nat. Operação",
           "Tipo Solicitação",
           "Prazo de Execução",
+          "Emissão",
           "Necessidade",
           "Etapa",
           "Comprador",
@@ -618,6 +619,7 @@
           temp.push(item.natureza_operacao ? item.natureza_operacao : "")
           temp.push(item.tipo_solicitacao ? item.tipo_solicitacao : "")
           temp.push(item.data_fim ? `${this.$dayjs(item.data_fim).diff(item.data_inicio, "day")} dias` : "")
+          temp.push(item.createdAt ? this.$dayjs(item.createdAt).format("DD/MM/YYYY") : "")
           temp.push(item.data_necessidade ? this.$dayjs(item.data_necessidade).format("DD/MM/YYYY") : "")
           temp.push(item.EtapaSS ? item.EtapaSS.nome : "")
           temp.push(item.comprador ? item.comprador.nome : "")
