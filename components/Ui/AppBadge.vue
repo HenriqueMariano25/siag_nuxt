@@ -1,6 +1,7 @@
 <template>
 	<div class="relative">
 		<span
+      v-if="texto !== null"
 			:class="{ [cor]: cor, [corFonte]: corFonte }"
 			class="badge flex items-end rounded-full p-1"
 			>{{ texto }}

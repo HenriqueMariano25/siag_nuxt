@@ -428,9 +428,9 @@
 			overlay: {
 				type: [Boolean],
 			},
-			limparSelecionarAoRecarregar: {
+			limparSelecionar: {
 				type: [Boolean],
-				default: true,
+				// default: true,
 			},
 		},
 		components: {
@@ -853,11 +853,14 @@
 				this.$emit("selecionados", this.selecionados)
 			},
 			dados(valor) {
-				if (this.limparSelecionarAoRecarregar === true) {
+				if (this.limparSelecionar === true) {
 					this.selecionados = []
 				}
 				if (this.selecionandoTodos === true) this.selecionandoTodos = false
 			},
+      limparSelecionar(valor){
+        this.selecionados = []
+      }
 		},
 	}
 </script>

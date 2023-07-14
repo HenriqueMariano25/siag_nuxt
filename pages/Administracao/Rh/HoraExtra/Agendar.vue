@@ -87,7 +87,7 @@
 				</div>
 			</div>
 			<div class="flex gap-1">
-<!--        {{ agendamento.data }}-->
+				<!--        {{ agendamento.data }}-->
 				<AppFormSelect
 					label="Turno"
 					:options="turnos"
@@ -103,7 +103,7 @@
 					placeholder="Ex: Desenvolvimento do novo módulo no SIAG" />
 				<div class="flex items-end">
 					<BotaoPadrao
-            v-if="noIntervalo"
+						v-if="noIntervalo"
 						texto="Agendar"
 						cor="!hover:bg-blue-900 bg-blue-800"
 						@click="agendar()"
@@ -114,21 +114,30 @@
 							alt=""
 							class="w-7 h-7" />
 					</BotaoPadrao>
-          <AppTooltip posicao="right-0" v-if="!noIntervalo">
-            <template v-slot:corpo>
-              <BotaoPadrao texto="Bloqueado" cor="bg-gray-900 hover:bg-gray-900" class="text-white">
-                <img src="@/assets/icons/lock-w.svg" alt="" class="w-7 h-7">
-              </BotaoPadrao>
-            </template>
-            <template v-slot:tooltip>
-              <div class="w-[400px]">
-                <p class="text-red-500 text-2xl">Fora do horário de agendamento</p>
-                <p>Hórario de agendamento:</p>
-                <p> <strong>{{ horarioAgendamento }}</strong></p>
-              </div>
-            </template>
-          </AppTooltip>
-
+					<AppTooltip
+						posicao="right-0"
+						v-if="!noIntervalo">
+						<template v-slot:corpo>
+							<BotaoPadrao
+								texto="Bloqueado"
+								cor="bg-gray-900 hover:bg-gray-900"
+								class="text-white">
+								<img
+									src="@/assets/icons/lock-w.svg"
+									alt=""
+									class="w-7 h-7" />
+							</BotaoPadrao>
+						</template>
+						<template v-slot:tooltip>
+							<div class="w-[400px]">
+								<p class="text-red-500 text-2xl">Fora do horário de agendamento</p>
+								<p>Hórario de agendamento:</p>
+								<p>
+									<strong>{{ horarioAgendamento }}</strong>
+								</p>
+							</div>
+						</template>
+					</AppTooltip>
 				</div>
 			</div>
 		</div>
@@ -137,19 +146,20 @@
 			:dados="dados"
 			:itensPorPagina="itensPorPagina"
 			:pagina="pagina"
-      @pagina="pagina = $event"
-      @itensPorPagina="itensPorPagina = $event"
+			@pagina="pagina = $event"
+			@itensPorPagina="itensPorPagina = $event"
 			:totalItens="totalItens"
-      @filtros="filtros = $event"
-      @ordem="ordem = $event"
+			@filtros="filtros = $event"
+			@ordem="ordem = $event"
 			classPersonalizada="!bg-gray-400"
 			altura="calc(100vh - 277px)"
 			:dadosSql="true"
 			@atualizar="buscarFuncionarios()"
 			:carregando="carregandoTabela"
 			corOverlay="!bg-gray-600/70"
-      selecionar
-      @selecionados="funcionariosSelecionados = $event"
+			:limparSelecionar="limparSelecionar"
+			selecionar
+			@selecionados="funcionariosSelecionados = $event"
 			:overlay="agendamento.data === null || agendamento.data === ''">
 			<template v-slot:[`overlay`]="{ item }">
 				<div class="text-white flex items-center justify-center h-full w-full text-3xl">
@@ -165,18 +175,18 @@
 					{{ item.numero }} - {{ item.local }}
 				</span>
 			</template>
-      <template v-slot:[`body.fun.encarregado_sapo`]="{ item }">
+			<template v-slot:[`body.fun.encarregado_sapo`]="{ item }">
 				<span
 					v-if="item['fun.encarregado_sapo']"
 					class="whitespace-nowrap">
-					{{ item['fun.encarregado_sapo'] }}
+					{{ item["fun.encarregado_sapo"] }}
 				</span>
 			</template>
-      <template v-slot:[`body.fun.encarregado_producao`]="{ item }">
+			<template v-slot:[`body.fun.encarregado_producao`]="{ item }">
 				<span
 					v-if="item['fun.encarregado_producao']"
 					class="whitespace-nowrap">
-					{{ item['fun.encarregado_producao'] }}
+					{{ item["fun.encarregado_producao"] }}
 				</span>
 			</template>
 			<template v-slot:[`body.hora_extra`]="{ item }">
@@ -191,7 +201,9 @@
 				</span>
 			</template>
 			<template v-slot:[`body.hora_extra_projetada`]="{ item }">
-				<span class="whitespace-nowrap" :class="{
+				<span
+					class="whitespace-nowrap"
+					:class="{
 						'font-bold  text-yellow-500': item.hora_extra >= 24 && item.hora_extra < 33.99,
 						'font-bold  text-amber-700': item.hora_extra >= 34 && item.hora_extra < 39.99,
 						'font-bold  text-red-600': item.hora_extra >= 40,
@@ -201,13 +213,54 @@
 			</template>
 		</TabelaPadrao>
 		<div class="bg-red-500 flex">
-			<RodapePagina class="print:hidden">
+			<RodapePagina
+        @fechar="mostrarSelecionados = false"
+				class="print:hidden"
+				detalhes
+				tituloDetalhes="Selecionados"
+        :mostrar="mostrarSelecionados"
+      >
+				<template v-slot:detalhes>
+					<div class="flex w-full p-1 overflow-y-auto max-h-[215px]">
+						<table class="table w-full border-collapse border border-slate-500 text-sm bg-white" >
+							<thead class="bg-blue-200">
+								<tr class="uppercase ">
+									<th class="border border-slate-500">Matrícula</th>
+									<th class="border border-slate-500">Nome</th>
+									<th class="border border-slate-500">Cargo</th>
+									<th class="border border-slate-500">Encarregado/Lider</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr
+									v-for="funcionario of funcionariosSelecionados"
+									:key="funcionario.id">
+									<td class="text-center border border-slate-500">{{ funcionario.chapa }}</td>
+									<td class="border border-slate-500 pl-1">{{ funcionario.nome }}</td>
+									<td class="border border-slate-500 pl-1">{{ funcionario.cargo }}</td>
+									<td class="border border-slate-500 pl-1">{{ funcionario["fun.encarregado_producao"] }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</template>
 				<div class="flex w-full justify-between">
-					<div></div>
+					<div class="flex gap-2">
+            <AppBadge
+              cor="!bg-red-400"
+              corFonte="bg-white"
+              :texto="funcionariosSelecionados.length === 0 ? null : funcionariosSelecionados.length">
+						  <BotaoPadrao texto="Selecionados" @click="mostrarSelecionados = !mostrarSelecionados" :disabled="agendamento.data === null || agendamento.data === ''"/>
+            </AppBadge>
+					</div>
 					<div class="flex gap-2">
 						<BotaoPadrao
 							texto="Aprovar HE"
-              v-if="$auth.user.permissoes.includes('autorizar_he') || $auth.user.permissoes.includes('autorizar_he_situacao')"
+							v-if="
+								$auth.user.permissoes.includes('autorizar_he') ||
+								$auth.user.permissoes.includes('autorizar_he_situacao')
+							"
 							@click="mostrarDialogAprovarHe = true">
 							<img
 								src="../../../../assets/icons/check-b.svg"
@@ -235,11 +288,11 @@
 			{{ textoAlerta }}
 		</AppAlerta>
 		<DialogAgendamentos
-      :noIntervalo="noIntervalo"
+			:noIntervalo="noIntervalo"
 			v-if="mostrarDialogAgendamentos"
 			@cancelar="mostrarDialogAgendamentos = false" />
 		<DialogAprovarHE
-      :liberado="estaNoIntevaloAprovacao"
+			:liberado="estaNoIntevaloAprovacao"
 			v-if="mostrarDialogAprovarHe"
 			@cancelar="mostrarDialogAprovarHe = false" />
 	</div>
@@ -248,7 +301,7 @@
 <script>
 	import AppFormInput from "~/components/Ui/AppFormInput.vue"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
-  import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
+	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
 	import AppFormCheckbox from "~/components/Ui/Form/AppFormCheckbox.vue"
 	import AppFormSelect from "~/components/Ui/AppFormSelect.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
@@ -271,7 +324,7 @@
 			DialogAgendamentos,
 			AppAlerta,
 			AppFormCheckbox,
-      TabelaPadrao,
+			TabelaPadrao,
 			BotaoPadrao,
 			AppFormInput,
 			AppFormSelect,
@@ -292,8 +345,8 @@
 				cabecalho: [
 					{ nome: "HE atual", valor: "hora_extra", centralizar: true },
 					{ nome: "HE projetada", valor: "hora_extra_projetada", centralizar: true },
-					{ nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
-					{ nome: "Nome", valor: "nome", filtro: true , colunaTabela: 'fun.nome'},
+					{ nome: "Matrícula", valor: "chapa", filtro: true, centralizar: true },
+					{ nome: "Nome", valor: "nome", filtro: true, colunaTabela: "fun.nome" },
 					{ nome: "Cargo", valor: "cargo", filtro: true },
 					{ nome: "Encar./Lider SAPO", valor: "fun.encarregado_sapo", filtro: true },
 					{ nome: "Encar./Lider Produção", valor: "fun.encarregado_producao", filtro: true },
@@ -302,7 +355,7 @@
 				],
 				dados: [],
 				filtros: [],
-        ordem: null,
+				ordem: null,
 				itensPorPagina: 50,
 				totalItens: 0,
 				pagina: 1,
@@ -314,9 +367,11 @@
 				mostrarDialogAgendamentos: false,
 				mostrarDialogAprovarHe: false,
 				diasPrAgendamento: [],
-        configuracaoHE: {},
-        noIntervalo: false,
-        horaFechamentoAgendamento: null
+				configuracaoHE: {},
+				noIntervalo: false,
+				horaFechamentoAgendamento: null,
+        mostrarSelecionados: false,
+        limparSelecionar: false
 			}
 		},
 		computed: {
@@ -332,94 +387,103 @@
 				)
 			},
 
-      estaNoIntevaloAprovacao() {
-        let hoje = this.$dayjs()
-        let diaInicio = this.configuracaoHE.data_inicio_inter_aprov
-        let horaInicio = this.configuracaoHE.hora_inicio_inter_aprov
-        let diaFim = this.configuracaoHE.data_fim_inter_aprov
-        let horaFim = this.configuracaoHE.hora_fim_inter_aprov
+			estaNoIntevaloAprovacao() {
+				let hoje = this.$dayjs()
+				let diaInicio = this.configuracaoHE.data_inicio_inter_aprov
+				let horaInicio = this.configuracaoHE.hora_inicio_inter_aprov
+				let diaFim = this.configuracaoHE.data_fim_inter_aprov
+				let horaFim = this.configuracaoHE.hora_fim_inter_aprov
 
-        let diaHoraInicio = hoje.day(diaInicio).hour(horaInicio.split(':')[0]).minute(horaInicio.split(':')[1])
-        let diaHoraFim = hoje.day(diaFim).hour(horaFim.split(':')[0]).minute(horaFim.split(':')[1])
-        let estaEntre = hoje.isBetween(diaHoraInicio , diaHoraFim, null,'[]')
+				let diaHoraInicio = hoje
+					.day(diaInicio)
+					.hour(horaInicio.split(":")[0])
+					.minute(horaInicio.split(":")[1])
+				let diaHoraFim = hoje.day(diaFim).hour(horaFim.split(":")[0]).minute(horaFim.split(":")[1])
+				let estaEntre = hoje.isBetween(diaHoraInicio, diaHoraFim, null, "[]")
 
-        return estaEntre
-      },
+				return estaEntre
+			},
 
-      horarioAgendamento() {
+			horarioAgendamento() {
+				if (Object.keys(this.configuracaoHE).length > 0) {
+					let diaInicioAgend = this.configuracaoHE.data_inicio_inter_agend
+					let horaInicioAgend = this.configuracaoHE.hora_inicio_inter_agend
+					let diaFimAgend = this.configuracaoHE.data_fim_inter_agend
+					let horaFimAgend = this.configuracaoHE.hora_fim_inter_agend
 
-        if(Object.keys(this.configuracaoHE).length > 0){
-          let diaInicioAgend = this.configuracaoHE.data_inicio_inter_agend
-          let horaInicioAgend = this.configuracaoHE.hora_inicio_inter_agend
-          let diaFimAgend = this.configuracaoHE.data_fim_inter_agend
-          let horaFimAgend = this.configuracaoHE.hora_fim_inter_agend
+					let diaInicio = this.$dayjs().day(diaInicioAgend)
+					let diaFim = this.$dayjs().day(diaFimAgend)
 
-
-          let diaInicio = this.$dayjs().day(diaInicioAgend)
-          let diaFim = this.$dayjs().day(diaFimAgend)
-
-
-          return `${diaInicio.locale("pt-br").format("dddd")} ${horaInicioAgend} até ${diaFim.locale("pt-br").format("dddd")} ${horaFimAgend}`
-        }else{
-          return ""
-        }
-
-      },
-
-
+					return `${diaInicio.locale("pt-br").format("dddd")} ${horaInicioAgend} até ${diaFim
+						.locale("pt-br")
+						.format("dddd")} ${horaFimAgend}`
+				} else {
+					return ""
+				}
+			},
 		},
-    async fetch() {
-      await this.buscarDiasPrAgendamento()
-      await this.buscarConfiguracao()
+		async fetch() {
+			await this.buscarDiasPrAgendamento()
+			await this.buscarConfiguracao()
 			await this.buscarFuncionarios()
-    },
-    async mounted(){
-      // await this.verificaSeAberto()
-    },
+		},
+		async mounted() {
+			// await this.verificaSeAberto()
+		},
 
-    methods: {
-      verificaSeAberto() {
-        if(this.verificaDentroIntervalo()){
-          this.noIntervalo = true
-          setTimeout(this.verificaSeAberto, 300000);
-        }else{
-          this.noIntervalo = false
-        }
-      },
+		methods: {
+			verificaSeAberto() {
+				if (this.verificaDentroIntervalo()) {
+					this.noIntervalo = true
+					setTimeout(this.verificaSeAberto, 300000)
+				} else {
+					this.noIntervalo = false
+				}
+			},
 
-      verificaDentroIntervalo() {
-        let hoje = this.$dayjs()
-        let diaLiberacaoUsuario = this.$auth.user.data_liberacao
+			verificaDentroIntervalo() {
+				let hoje = this.$dayjs()
+				let diaLiberacaoUsuario = this.$auth.user.data_liberacao
 
-        if (Object.keys(this.configuracaoHE).length > 0) {
-          let diaInicio = this.configuracaoHE.data_inicio_inter_agend
-          let horaInicio = this.configuracaoHE.hora_inicio_inter_agend
-          let diaFim = this.configuracaoHE.data_fim_inter_agend
-          let horaFim = this.configuracaoHE.hora_fim_inter_agend
+				if (Object.keys(this.configuracaoHE).length > 0) {
+					let diaInicio = this.configuracaoHE.data_inicio_inter_agend
+					let horaInicio = this.configuracaoHE.hora_inicio_inter_agend
+					let diaFim = this.configuracaoHE.data_fim_inter_agend
+					let horaFim = this.configuracaoHE.hora_fim_inter_agend
 
-          let diaHoraInicio = hoje.day(diaInicio).hour(horaInicio.split(':')[0]).minute(horaInicio.split(':')[1])
-          let diaHoraFim = hoje.day(diaFim).hour(horaFim.split(':')[0]).minute(horaFim.split(':')[1])
-          let estaEntre = hoje.isBetween(diaHoraInicio, diaHoraFim, null, '[]')
+					let diaHoraInicio = hoje
+						.day(diaInicio)
+						.hour(horaInicio.split(":")[0])
+						.minute(horaInicio.split(":")[1])
+					let diaHoraFim = hoje
+						.day(diaFim)
+						.hour(horaFim.split(":")[0])
+						.minute(horaFim.split(":")[1])
+					let estaEntre = hoje.isBetween(diaHoraInicio, diaHoraFim, null, "[]")
 
-          if (!estaEntre) {
-            if (diaLiberacaoUsuario === hoje.format("YYYY-MM-DD")) {
-              let horaInicioLiberacao = this.$auth.user.hora_inicio_liberacao
-              horaFim = this.$auth.user.hora_fim_liberacao
+					if (!estaEntre) {
+						if (diaLiberacaoUsuario === hoje.format("YYYY-MM-DD")) {
+							let horaInicioLiberacao = this.$auth.user.hora_inicio_liberacao
+							horaFim = this.$auth.user.hora_fim_liberacao
 
-              let comecoLiberacao = this.$dayjs(diaLiberacaoUsuario).hour(horaInicioLiberacao.split(":")[0]).minute(horaInicioLiberacao.split(':')[1])
-              let fimLiberacao = this.$dayjs(diaLiberacaoUsuario).hour(horaFim.split(":")[0]).minute(horaFim.split(':')[1])
+							let comecoLiberacao = this.$dayjs(diaLiberacaoUsuario)
+								.hour(horaInicioLiberacao.split(":")[0])
+								.minute(horaInicioLiberacao.split(":")[1])
+							let fimLiberacao = this.$dayjs(diaLiberacaoUsuario)
+								.hour(horaFim.split(":")[0])
+								.minute(horaFim.split(":")[1])
 
-              estaEntre = hoje.isBetween(comecoLiberacao, fimLiberacao, null, '[]')
-            }
-          }
+							estaEntre = hoje.isBetween(comecoLiberacao, fimLiberacao, null, "[]")
+						}
+					}
 
-          this.horaFechamentoAgendamento = horaFim
+					this.horaFechamentoAgendamento = horaFim
 
-          return estaEntre
-        }else{
-          return false
-        }
-      },
+					return estaEntre
+				} else {
+					return false
+				}
+			},
 
 			async buscarDiasPrAgendamento() {
 				let resp = await this.$axios.$get("/hora_extra/dias/feriados")
@@ -427,14 +491,13 @@
 				if (!resp.falha) {
 					let feriados = resp.dados.feriados
 
-          const hoje = this.$dayjs();
-          const diaSemana = hoje.day();
-          let diasAteProximoDomingo = (7 - diaSemana) % 7;
-          if(diasAteProximoDomingo > 5)
-            diasAteProximoDomingo = 5
+					const hoje = this.$dayjs()
+					const diaSemana = hoje.day()
+					let diasAteProximoDomingo = (7 - diaSemana) % 7
+					if (diasAteProximoDomingo > 5) diasAteProximoDomingo = 5
 
 					let data = this.$dayjs().format("YYYY-MM-DD")
-          const diaFinal = hoje.add(diasAteProximoDomingo, 'day').format("YYYY-MM-DD")
+					const diaFinal = hoje.add(diasAteProximoDomingo, "day").format("YYYY-MM-DD")
 
 					let dias = []
 					let tipoDia = null
@@ -461,16 +524,21 @@
 				this.carregandoTabela = true
 				let setorId = this.$auth.user.setor_id
 
-        let filtros = [...this.filtros]
+				let filtros = [...this.filtros]
 
-        let filtrosFinais
+				let filtrosFinais
 
-        if (filtros !== "") {
-          filtrosFinais = filtros.join("")
-        }
+				if (filtros !== "") {
+					filtrosFinais = filtros.join("")
+				}
 
 				let resp = await this.$axios.$get("/hora_extra/buscar/funcionarios", {
-					params: { setorId, page: this.pagina - 1, size: this.itensPorPagina, filtros: filtrosFinais, },
+					params: {
+						setorId,
+						page: this.pagina - 1,
+						size: this.itensPorPagina,
+						filtros: filtrosFinais,
+					},
 				})
 
 				if (!resp.falha) {
@@ -481,13 +549,13 @@
 				}
 			},
 
-      async buscarConfiguracao(){
-        let resp = await this.$axios.$get("/hora_extra/configuracao")
-        if(!resp.falha){
-          this.configuracaoHE = resp.dados.configuracao
-          this.verificaSeAberto()
-        }
-      },
+			async buscarConfiguracao() {
+				let resp = await this.$axios.$get("/hora_extra/configuracao")
+				if (!resp.falha) {
+					this.configuracaoHE = resp.dados.configuracao
+					this.verificaSeAberto()
+				}
+			},
 
 			async atualizarDados(parametros) {
 				let { itensPorPagina, pagina, filtros, ordem } = parametros
@@ -503,6 +571,7 @@
 
 			async buscarPorTagDia(data) {
 				this.agendamento.data = data
+        this.limparSelecionar = true
 				await this.buscarAgendFuncDia()
 			},
 
@@ -535,6 +604,9 @@
 							novosDados[idx]["ativo"] = true
 						}
 					}
+          this.limparSelecionar = false
+
+          // this.buscarFuncionarios()
 				}
 
 				this.dados = novosDados
@@ -548,14 +620,11 @@
 					this.tipoAlerta = "erro"
 					this.textoAlerta = "Não é possivel agendar para dias anteriores !"
 				} else {
-
 					let funcionarios = this.funcionariosSelecionados
 
-
-					let funcionariosChapa = funcionarios.map( o => o.chapa )
+					let funcionariosChapa = funcionarios.map((o) => o.chapa)
 					let agendado_por_id = this.$auth.user.id
-          let novosDados = new Array(...this.dados)
-
+					let novosDados = new Array(...this.dados)
 
 					let cont = 0
 					let funcPrEnviar = []
@@ -574,23 +643,21 @@
 								motivo,
 								agendado_por_id,
 							})
-              let novosAgendados = resp.novosAgendados
-              for(let novo of novosAgendados){
-                let idx = novosDados.findIndex( o => o.chapa === novo.chapa)
+							let novosAgendados = resp.novosAgendados
+							for (let novo of novosAgendados) {
+								let idx = novosDados.findIndex((o) => o.chapa === novo.chapa)
 
-                if(idx >= 0 )
-                  novosDados[idx]["ativo"] = true
-              }
-
+								if (idx >= 0) novosDados[idx]["ativo"] = true
+							}
 
 							cont = 0
 							funcPrEnviar = []
 						}
 					}
-          this.mostrarAlerta = true
-          this.textoAlerta = "Agendamento realizado com sucesso!"
-          this.funcionariosSelecionados = []
-          this.dados = novosDados
+					this.mostrarAlerta = true
+					this.textoAlerta = "Agendamento realizado com sucesso!"
+					this.funcionariosSelecionados = []
+					this.dados = novosDados
 				}
 			},
 		},

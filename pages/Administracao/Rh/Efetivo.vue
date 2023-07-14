@@ -13,7 +13,7 @@
 				:carregando="carregando"
 				@atualizar="buscarEfetivo"
 				@selecionados="funcSelecionados = $event"
-				:limparSelecionarAoRecarregar="true"
+				:limparSelecionar="true"
 				selecionar>
 				<template v-slot:[`body.rota.id`]="{ item }">
 					<span
