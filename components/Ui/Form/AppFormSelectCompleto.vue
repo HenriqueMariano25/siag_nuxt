@@ -2,18 +2,40 @@
 	<div
 		:id="'wrapper-' + id"
 		class="wrapper relative">
-		<label class="ml-1.5 text-xs font-medium mb-0.5">
-			{{ label }}
-			<span
-				v-if="obrigatorio"
-				class="text-red-700">
-				*
+		<div class="flex text-sm mt-0.5 ml-2">
+			<span :class="{ 'text-red-600': invalido }">
+				{{ label }}
+				<span
+					v-if="obrigatorio"
+					class="text-red-600 text-sm">
+					<strong>*</strong>
+				</span>
 			</span>
-		</label>
+			<AppTooltip
+				v-if="dica"
+				:posicao="dicaPosicao">
+				<template v-slot:corpo>
+					<img
+						src="@/assets/icons/information-circle-g.svg"
+						alt=""
+						class="w-5 h-5 !z-10"
+						style="z-index: 100 !important" />
+				</template>
+				<template v-slot:tooltip>
+					<div class="min-w-[300px] max-w-full">
+						{{ dica }}
+					</div>
+				</template>
+			</AppTooltip>
+		</div>
 		<div
 			class="btn-selecionar"
 			:id="'btn-selecionar-' + id"
-			:class="{ '!bg-gray-300': readonly, '!border-red-400 !bg-red-100': invalido }">
+			:class="{
+				'!bg-gray-300': readonly,
+				'!border-red-400 !bg-red-100': invalido,
+				'!bg-gray-300': disabled,
+			}">
 			<span>{{ texto }}</span>
 			<div class="icone">
 				<img
@@ -22,40 +44,44 @@
 					class="w-6 h-6" />
 			</div>
 		</div>
-		<div class="conteudo" :id="'conteudo-' + id">
-      <div class="sub-conteudo">
-        <div class="busca">
-          <img
-            src="@/assets/icons/magnifier-g.svg"
-            alt=""
-            class="w-6 h-6 busca-icone" />
-          <input
-            type="text"
-            placeholder="Busque aqui"
-            class="busca-input"
-            :value="busca"
-            @input="busca = $event.target.value" />
-        </div>
-        <div>
-          <ul class="lista">
-            <li
-              v-for="op of opcoesFiltradas"
-              @click="selecionarOpcao(op, $event)"
-              :key="op.id">
-              {{ op.nome }}
-            </li>
-          </ul>
-        </div>
-      </div>
+		<div
+			class="conteudo"
+			:id="'conteudo-' + id">
+			<div class="sub-conteudo">
+				<div class="busca">
+					<img
+						src="@/assets/icons/magnifier-g.svg"
+						alt=""
+						class="w-6 h-6 busca-icone" />
+					<input
+						type="text"
+						placeholder="Busque aqui"
+						class="busca-input"
+						:value="busca"
+						@input="busca = $event.target.value" />
+				</div>
+				<div>
+					<ul class="lista">
+						<li
+							v-for="op of opcoesFiltradas"
+							@click="selecionarOpcao(op, $event)"
+							:key="op.id">
+							{{ op.nome }}
+						</li>
+					</ul>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
 	import { defineComponent } from "vue"
+	import AppTooltip from "~/components/Ui/AppTooltip.vue"
 
 	export default defineComponent({
 		name: "AppFormSelectCompleto",
+		components: { AppTooltip },
 		props: {
 			label: String,
 			value: {
@@ -90,6 +116,14 @@
 				type: Boolean,
 				default: false,
 			},
+			dica: {
+				type: String,
+				default: "",
+			},
+			dicaPosicao: {
+				type: String,
+				default: "left-0",
+			},
 		},
 		data() {
 			return {
@@ -109,13 +143,13 @@
 				selectCompleto.addEventListener("click", () => {
 					wrapper.classList.toggle("active")
 
-          let posicaoY = conteudo.getBoundingClientRect().top
-          let altura = conteudo.getBoundingClientRect().height
-          let foraDaPagina = (posicaoY + altura) >= window.innerHeight
+					let posicaoY = conteudo.getBoundingClientRect().top
+					let altura = conteudo.getBoundingClientRect().height
+					let foraDaPagina = posicaoY + altura >= window.innerHeight
 
-          if(foraDaPagina){
-            conteudo.classList.add('reverso')
-          }
+					if (foraDaPagina) {
+						conteudo.classList.add("reverso")
+					}
 				})
 			}
 		},
@@ -223,7 +257,7 @@
 		position: absolute;
 		z-index: 90;
 		width: 100%;
-    margin-top: -1px;
+		margin-top: -1px;
 	}
 
 	.conteudo .lista {
@@ -254,13 +288,13 @@
 		border-radius: 25px;
 	}
 
-  .reverso{
-    bottom: 37px;
-    border: 1px solid rgb(170, 170, 170);
-  }
+	.reverso {
+		bottom: 37px;
+		border: 1px solid rgb(170, 170, 170);
+	}
 
-  .reverso .sub-conteudo{
-    display: flex;
-    flex-direction: column-reverse !important;
-  }
+	.reverso .sub-conteudo {
+		display: flex;
+		flex-direction: column-reverse !important;
+	}
 </style>

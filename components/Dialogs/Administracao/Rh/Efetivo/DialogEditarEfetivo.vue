@@ -118,13 +118,6 @@
 											:options="subDisciplinas"
 											v-model="campos.sub_disciplina_id"
 											:invalido="erros.includes('sub_disciplina_id')" />
-										<AppFormSelectCompleto
-											obrigatorio
-											id="equipePlanejamentp"
-											label="Equipe Planejamento"
-											:options="equipesPlanejamento"
-											v-model="campos.equipe_planejamento_id"
-											:invalido="erros.includes('equipe_planejamento_id')" />
 										<AppFormSelect
 											label="Turno"
 											:options="turnos"
@@ -137,6 +130,7 @@
 											v-model="campos.jornada_trabalho_id"
 											id="jornadaTrabalho"
 											:invalido="erros.includes('jornada_trabalho_id')" />
+
 									</div>
 								</div>
 							</div>
@@ -167,6 +161,19 @@
 								</div>
 							</div>
 						</template>
+            <template v-slot:[`tab.planejamento`]="{ item }">
+              <div class="flex flex-col gap-2">
+                <div class="grid grid-cols-2 gap-2">
+                  <AppFormSelectCompleto
+                    obrigatorio
+                    id="equipePlanejamentp"
+                    label="Equipe Planejamento"
+                    :options="equipesPlanejamento"
+                    v-model="campos.equipe_planejamento_id"
+                    :invalido="erros.includes('equipe_planejamento_id')" />
+                </div>
+              </div>
+            </template>
 					</AppTabs>
 					<!--          {{ funcionarios}}-->
 				</div>
@@ -174,7 +181,7 @@
 			<template v-slot:rodape-btn-direito>
 				<BotaoPadrao
 					texto="Salvar"
-					@click="tab === 'transporte' ? editarRota() : editarFuncionarios()">
+					@click="tab === 'transporte' ? editarRota() : tab === 'planejamento' ? editarPlanejamento() :  editarFuncionarios()">
 					<img
 						src="@/assets/icons/save-b.svg"
 						alt=""
@@ -244,10 +251,6 @@
 				setores: [],
 				turnos: [],
 				jornadasTrabalho: [],
-				tabs: [
-					{ nome: "Inf. Principais", valor: "informacoes" },
-					{ nome: "Transporte", valor: "transporte" },
-				],
 				tab: "informacoes",
 				rotas: [],
 				buscouRotas: false,
@@ -256,6 +259,22 @@
 			}
 		},
 
+    computed: {
+      tabs() {
+
+       let tabs =   [
+          { nome: "Inf. Principais", valor: "informacoes" },
+        ]
+
+        if(this.$auth.user.permissoes.includes("efetivo_transporte"))
+          tabs.push({ nome: "Transporte", valor: "transporte" })
+
+        if (this.$auth.user.permissoes.includes("efetivo_planejamento"))
+          tabs.push({ nome: "Planejamento", valor: "planejamento" })
+
+        return tabs
+      },
+    },
 		async created() {
 			if (this.funcionarios.length === 1) {
 				this.carregando = true
@@ -268,7 +287,7 @@
 				this.campos.engenheiro_id = funcionario.engenheiro_id
 				this.campos.gestor_id = funcionario.gestor_id
 				this.campos.sub_disciplina_id = funcionario.sub_disciplina_id
-				this.campos.equipe_planejamento_id = funcionario.sub_disciplina_id
+				this.campos.equipe_planejamento_id = funcionario.equipe_planejamento_id
 				this.campos.turno_id = funcionario.turno_id
 				this.campos.jornada_trabalho_id = funcionario.jornada_trabalho_id
 				this.campos.setor_id = funcionario.setor ? funcionario.setor.id : null
@@ -386,7 +405,6 @@
 					"gestor_id",
 					"disciplina_id",
 					"sub_disciplina_id",
-					"equipe_planejamento_id",
 					"setor_id",
 					"turno_id",
 					"jornada_trabalho_id",
@@ -400,6 +418,7 @@
 
 			async editarFuncionarios() {
 				this.validarFormulario()
+
 				if (this.erros.length === 0) {
 					let campos = this.campos
 					let funcionarios = this.funcionarios
@@ -504,6 +523,59 @@
 					this.rotas = options
 				}
 			},
+
+      async editarPlanejamento(){
+        this.erros = []
+
+        let { equipe_planejamento_id } = this.campos
+
+        if(equipe_planejamento_id === null || equipe_planejamento_id === "") this.erros.push('equipe_planejamento_id')
+
+        if(this.erros.length === 0){
+
+          let funcionarios = this.funcionarios
+          let usuario_id = this.$auth.user.id
+
+          let cont = 0
+          let contTotal = 0
+          let funcPrEnviar = []
+
+          let campos = {}
+
+          if (equipe_planejamento_id !== null && equipe_planejamento_id !== "") {
+            campos["equipe_planejamento_id"] = equipe_planejamento_id
+          }
+
+          let equipePlanejamento
+
+          console.log("aqui")
+
+          for (let fun of funcionarios) {
+            cont++
+            contTotal++
+            funcPrEnviar.push(fun.id)
+            if (cont === 5 || contTotal === funcionarios.length) {
+              let resp = await this.$axios.$put("/efetivo/funcionario/editar/planejamento", {
+                campos,
+                funcionarios: funcPrEnviar,
+                usuario_id,
+              })
+
+              if (!resp.falha) {
+                funcPrEnviar = []
+                cont = 0
+                equipePlanejamento = resp.dados.equipePlanejamento
+                console.log(resp.dados)
+              }
+            }
+          }
+
+          let chapas = funcionarios.map((o) => o.id)
+
+          this.$emit("equipePlanEditada", { funcionarios: chapas, equipePlanejamento })
+
+        }
+      }
 		},
 		watch: {
 			"campos.disciplina_id"(valor) {

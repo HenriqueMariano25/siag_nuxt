@@ -42,37 +42,25 @@
 				</template>
 				<template v-slot:[`body.EncarregadoLider.nome`]="{ item }">
 					<span class="whitespace-nowrap">{{
-						item.EncarregadoLider
-							? item.EncarregadoLider.nome
-							: ""
+						item.EncarregadoLider ? item.EncarregadoLider.nome : ""
 					}}</span>
 				</template>
 				<template v-slot:[`body.Supervisor.nome`]="{ item }">
-					<span class="whitespace-nowrap">{{
-						item.Supervisor ? item.Supervisor.nome : ""
-					}}</span>
+					<span class="whitespace-nowrap">{{ item.Supervisor ? item.Supervisor.nome : "" }}</span>
 				</template>
 
 				<template v-slot:[`body.Engenheiro.nome`]="{ item }">
-					<span class="whitespace-nowrap">{{
-						item.Engenheiro ? item.Engenheiro.nome : ""
-					}}</span>
+					<span class="whitespace-nowrap">{{ item.Engenheiro ? item.Engenheiro.nome : "" }}</span>
 				</template>
 				<template v-slot:[`body.Coordenador.nome`]="{ item }">
-					<span class="whitespace-nowrap">{{
-						item.Coordenador ? item.Coordenador.nome : ""
-					}}</span>
+					<span class="whitespace-nowrap">{{ item.Coordenador ? item.Coordenador.nome : "" }}</span>
 				</template>
 				<template v-slot:[`body.Gestor.nome`]="{ item }">
-					<span class="whitespace-nowrap">{{
-						item.Gestor ? item.Gestor.nome  : ""
-					}}</span>
+					<span class="whitespace-nowrap">{{ item.Gestor ? item.Gestor.nome : "" }}</span>
 				</template>
 				<template v-slot:[`body.Disciplina.descricao`]="{ item }">
 					<span class="whitespace-nowrap">{{
-						item.Disciplina
-							? `${item.Disciplina.sigla} - ${item.Disciplina.descricao}`
-							: ""
+						item.Disciplina ? `${item.Disciplina.sigla} - ${item.Disciplina.descricao}` : ""
 					}}</span>
 				</template>
 				<template v-slot:[`body.SubDisciplina.descricao`]="{ item }">
@@ -131,9 +119,15 @@
 				<template v-slot>
 					<div class="flex items-center justify-between w-full">
 						<div class="flex">
-              <BotaoPadrao :texto="gerandoExcel === true ? 'Gerando...' : 'Gerar EXCEL'" @click="gerarExcel" :disabled="gerandoExcel">
-                <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
-              </BotaoPadrao>
+							<BotaoPadrao
+								:texto="gerandoExcel === true ? 'Gerando...' : 'Gerar EXCEL'"
+								@click="gerarExcel"
+								:disabled="gerandoExcel">
+								<img
+									src="@/assets/icons/excel-b.svg"
+									alt=""
+									class="w-7 h-7" />
+							</BotaoPadrao>
 						</div>
 						<div class="flex">
 							<BotaoPadrao
@@ -154,6 +148,7 @@
 				@cancelar="mostrarDialogEditarEfetivo = false"
 				:funcionarios="funcSelecionados"
 				@rotaEditada="rotaEditada"
+				@equipePlanEditada="equipePlanEditada"
 				@editado="funcionarioEditado" />
 			<DialogHistoricoMudanca
 				:funcionario_id="funcionario_id"
@@ -212,7 +207,7 @@
 				mostrarDemitidos: false,
 				carregando: false,
 				rotas: [],
-        gerandoExcel: false
+				gerandoExcel: false,
 			}
 		},
 		computed: {
@@ -433,6 +428,24 @@
 				this.textoAlerta = "Rotas dos funcinários editadas com sucesso!"
 			},
 
+			async equipePlanEditada({ funcionarios, equipePlanejamento }) {
+				console.log(equipePlanejamento)
+
+				for (let id of funcionarios) {
+					let idx = this.dados.findIndex((o) => o.id === id)
+
+					if (idx >= 0) {
+						this.dados[idx].EquipePlanejamento
+							? (this.dados[idx]["EquipePlanejamento"]["descricao"] = equipePlanejamento)
+							: (this.dados[idx]["EquipePlanejamento"] = { descricao: equipePlanejamento })
+					}
+				}
+
+				this.mostrarDialogEditarEfetivo = false
+				this.mostrarAlerta = true
+				this.textoAlerta = "Equipe planejamento editadas com sucesso!"
+			},
+
 			async gerarExcel() {
 				this.gerandoExcel = true
 				let cabecalho = [
@@ -450,7 +463,7 @@
 					"Coordenador",
 					"Gestor",
 					"Rota",
-          "Ponto embarque",
+					"Ponto embarque",
 					"Turno",
 					"Jornada",
 					"Equipe Planejamento",
@@ -470,7 +483,9 @@
 					temp.push(item.nome)
 					temp.push(this.horaExtra(item.hora_extra))
 					temp.push(item.cargo)
-					temp.push(item.Disciplina ? `${item.Disciplina.sigla} - ${item.Disciplina.descricao}` : "")
+					temp.push(
+						item.Disciplina ? `${item.Disciplina.sigla} - ${item.Disciplina.descricao}` : "",
+					)
 					temp.push(item.SubDisciplina ? item.SubDisciplina.descricao : "")
 					temp.push(item.setor ? item.setor.nome : "")
 					temp.push(item.encarregado_sapo ? item.encarregado_sapo : "")
@@ -480,10 +495,10 @@
 					temp.push(item.Coordenador ? item.Coordenador.nome : "")
 					temp.push(item.Gestor ? item.Gestor.nome : "")
 					item.rota ? temp.push(`${item.rota.numero} - ${item.rota.local}`) : temp.push("")
-					temp.push(item.ponto_embarque ? item.ponto_embarque : "" )
+					temp.push(item.ponto_embarque ? item.ponto_embarque : "")
 					temp.push(item.Turno ? item.Turno.descricao : "")
 					temp.push(item.JornadaTrabalho ? item.JornadaTrabalho.descricao : "")
-          temp.push(item.EquipePlanejamento ? item.EquipePlanejamento.descricao : "")
+					temp.push(item.EquipePlanejamento ? item.EquipePlanejamento.descricao : "")
 					temp.push(this.$dayjs(item.data_admissao).format("DD/MM/YYYY"))
 					item.data_demissao
 						? temp.push(this.$dayjs(item.data_demissao).format("DD/MM/YYYY"))
