@@ -239,31 +239,31 @@ export const buscarEtapaSS = {
 		},
 	},
 }
-//
-// export const buscarVeiculos = {
-// 	methods: {
-// 		async buscarVeiculos(salvarStore, filtros = {}) {
-// 			let resp = await api
-// 				.get("/transporte/buscar/veiculos", { params: { filtros: filtros } })
-// 				.then((resp) => resp.data)
-//
-// 			if (!resp.falha) {
-// 				let veiculosBuscado = resp.veiculos
-//
-// 				if (salvarStore) {
-// 					let veiculos = this.$store.state.veiculos
-//
-// 					if (veiculos != null) {
-// 						this.$store.commit("DEFINIR_VEICULOS", veiculosBuscado)
-// 					}
-// 				}
-//
-// 				return veiculosBuscado
-// 			}
-// 		},
-// 	},
-// }
-//
+
+export const buscarVeiculos = {
+  methods: {
+    async buscarVeiculos(filtros = {}) {
+      let veiculosBuscado = await this.$axios
+        .$get("/transporte/buscar/veiculos", { params: { filtros: filtros } })
+        .then((resp) => resp.veiculos)
+
+      return veiculosBuscado
+    },
+  },
+}
+
+export const buscarTurnos = {
+  methods: {
+    async buscarTurnos(filtros = {}) {
+      let turnosBuscado = await this.$axios
+        .$get("/efetivo/buscar/turnos", { params: { filtros: filtros } })
+        .then((resp) => resp.dados.turnos)
+
+      return turnosBuscado
+    },
+  },
+}
+
 // export const buscarRepublicas = {
 // 	methods: {
 // 		async buscarRepublicas(salvarStore, filtros = {}) {

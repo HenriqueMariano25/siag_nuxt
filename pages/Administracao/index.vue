@@ -15,6 +15,10 @@
                 clip-rule="evenodd"/>
         </svg>
       </ButtonNavegacao>
+      <ButtonNavegacao titulo="Transporte" cor="bg-[#264653]" link="administracao/transporte"
+                       v-if="$auth.user.permissoes.includes('transporte')">
+        <img src="@/assets/icons/bus-w.svg" alt="" class="w-7 h-7">
+      </ButtonNavegacao>
     </div>
   </div>
 </template>
