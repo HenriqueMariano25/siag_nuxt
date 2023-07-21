@@ -187,25 +187,17 @@ export const buscarEtapa = {
 // 		},
 // 	},
 // }
-// export const buscarTerceiros = {
-// 	methods: {
-// 		async buscarTerceiros(salvarStore) {
-// 			let terceirosBuscado = await api
-// 				.get("/hora_extra/terceiros")
-// 				.then((resp) => resp.data.terceiros)
-//
-// 			if (salvarStore) {
-// 				let terceiros = this.$store.state.terceiros
-//
-// 				if (terceiros != null) {
-// 					this.$store.commit("DEFINIR_TERCEIROS", terceirosBuscado)
-// 				}
-// 			}
-//
-// 			return terceirosBuscado
-// 		},
-// 	},
-// }
+export const buscarTerceiros = {
+	methods: {
+		async buscarTerceiros() {
+			let terceirosBuscado = await this.$axios
+				.$get("/hora_extra/terceiros")
+				.then((resp) => resp.terceiros)
+
+			return terceirosBuscado
+		},
+	},
+}
 // export const buscarEscopoSS = {
 // 	methods: {
 // 		async buscarEscopoSS(salvarStore) {

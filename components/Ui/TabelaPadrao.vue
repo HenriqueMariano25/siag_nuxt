@@ -257,7 +257,7 @@
 					<!--          </div>-->
 					<!--        </template>-->
 					<template
-						v-for="dado in dados"
+						v-for="(dado, idx) in dados"
 						v-if="!carregando">
 						<tr
 							:class="{
@@ -279,7 +279,7 @@
 								<template v-if="c.valor !== 'selecione'">
 									<slot
 										:name="'body.' + c.valor"
-										v-bind:item="dado">
+										v-bind:item="dado" v-bind:index="idx">
 										<span class="whitespace-nowrap">{{ dado[c.valor] }}</span>
 									</slot>
 								</template>

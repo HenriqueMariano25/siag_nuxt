@@ -51,7 +51,7 @@
 								:invalido="erros.includes('turno')" />
 						</div>
 					</template>
-					<template v-slot:[`tab.funcionarios`]="{ item }">
+					<template v-slot:[`tab.passageiros`]="{ item }">
 						<TabelaPadrao
 							:cabecalho="cabecalho"
 							:dados="dados"
@@ -64,13 +64,11 @@
 							altura="calc(100vh - 279px)"
 							@atualizar="buscarFuncionarios"
 							:temDetalhes="false">
-							<template v-slot:[`body.acoes`]="{ item }">
+							<template v-slot:[`body.acoes`]="{ item, index }">
 								<div class="flex gap-1">
 									<BotaoPadrao
-                    v-if="funcionario_id !== item.id"
-										@click="
-											funcionario_id = item.id
-										"
+										v-if="funcionario_id !== index"
+										@click="funcionario_id = index"
 										icone>
 										<div class="w-6 h-6 flex items-center justify-center">
 											<img
@@ -79,8 +77,18 @@
 												class="w-6 h-6" />
 										</div>
 									</BotaoPadrao>
-                  <BotaoPadrao cor="bg-red-400 hover:!bg-red-500" texto="NÃO" class="!px-1"  v-if="funcionario_id === item.id" @click="funcionario_id = null"/>
-                  <BotaoPadrao cor="bg-green-400 hover:!bg-green-500" texto="SIM" class="!px-2" v-if="funcionario_id === item.id" @click="deletarFuncionario(item.id)"/>
+									<BotaoPadrao
+										cor="bg-red-400 hover:!bg-red-500"
+										texto="NÃO"
+										class="!px-1"
+										v-if="funcionario_id === index"
+										@click="funcionario_id = null" />
+									<BotaoPadrao
+										cor="bg-green-400 hover:!bg-green-500"
+										texto="SIM"
+										class="!px-2"
+										v-if="funcionario_id === index"
+										@click="item.chapa ? deletarFuncionario(index) : deletarTerceiro(index)" />
 								</div>
 							</template>
 						</TabelaPadrao>
@@ -88,7 +96,7 @@
 				</AppTabs>
 			</template>
 			<template v-slot:rodape-btn-direito>
-				<div class="flex justify-end">
+				<div class="flex justify-end gap-2">
 					<BotaoPadrao
 						texto="Salvar"
 						@click="rota ? editarRota() : cadastrarRota()"
@@ -99,9 +107,19 @@
 							class="w-7 h-7" />
 					</BotaoPadrao>
 					<BotaoPadrao
+						texto="Terceiro"
+						cor="bg-green-400 hover:!bg-green-500"
+						v-if="tab === 'passageiros'"
+						@click="mostrarDialogAdicionarTerceiro = true">
+						<img
+							src="@/assets/icons/add-b.svg"
+							alt=""
+							class="w-7 h-7" />
+					</BotaoPadrao>
+					<BotaoPadrao
 						texto="Funcionário"
 						cor="bg-green-400 hover:!bg-green-500"
-						v-if="tab === 'funcionarios'"
+						v-if="tab === 'passageiros'"
 						@click="mostrarDialogAdicionarFuncionario = true">
 						<img
 							src="@/assets/icons/add-b.svg"
@@ -118,8 +136,17 @@
 				mostrarDialogAdicionarFuncionario = false
 				rota = null
 			"
-			@adicionado="adicionado"
+			@adicionado="adicionadoFuncionario"
 			:funcionario="funcionario" />
+		<DialogAdicionaTerceiro
+			v-if="mostrarDialogAdicionarTerceiro"
+			:rota_id="rota.id"
+			@cancelar="
+				mostrarDialogAdicionarTerceiro = false
+				rota = null
+			"
+			@adicionado="adicionadoTerceiro"
+			:terceiro="terceiro" />
 		<AppAlerta
 			tipo="sucesso"
 			:mostrar="mostrarAlerta"
@@ -138,6 +165,7 @@
 	import DialogAdicionaFuncionario from "~/components/Dialogs/Administracao/Transporte/DialogAdicionaFuncionario.vue"
 	import BaseDialog from "~/components/Shared/BaseDialog.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
+	import DialogAdicionaTerceiro from "~/components/Dialogs/Administracao/Transporte/DialogAdicionaTerceiro.vue"
 </script>
 
 <script>
@@ -166,7 +194,7 @@
 				erros: [],
 				tabs: [
 					{ nome: "Rota", valor: "rota" },
-					{ nome: "Funcionários", valor: "funcionarios" },
+					{ nome: "Passageiros", valor: "passageiros" },
 				],
 				tab: "rota",
 				cabecalho: [
@@ -184,10 +212,12 @@
 				itensPorPagina: 100,
 				pagina: 1,
 				mostrarDialogAdicionarFuncionario: false,
+        mostrarDialogAdicionarTerceiro: false,
 				funcionario: null,
+        terceiro: null,
 				mostrarAlerta: false,
 				textoAlerta: null,
-        funcionario_id: null
+				funcionario_id: null,
 			}
 		},
 		async created() {
@@ -242,17 +272,17 @@
 
 			async buscarFuncionarios() {
 				let funcionarios = await this.$axios
-					.get("/transporte/rotas/funcionarios", { params: { id: this.rota.id } })
-					.then((resp) => resp.data.funcionarios)
+					.$get("/transporte/rotas/funcionarios", { params: { id: this.rota.id } })
+					.then((resp) => resp.funcionarios)
 
 				let passageiros
 				passageiros = funcionarios
 
 				let terceiros = await this.$axios
-					.get("/transporte/terceiros/rota", { params: { rota_id: this.rota.id } })
-					.then((resp) => resp.data.terceiros)
+					.$get("/transporte/terceiros/rota", { params: { rota_id: this.rota.id } })
+					.then((resp) => resp.terceiros)
 
-				this.dados.push(...terceiros)
+        passageiros.push(...terceiros)
 
 				passageiros.sort(function (a, b) {
 					if (parseInt(a.poltrona) > parseInt(b.poltrona)) {
@@ -264,13 +294,12 @@
 					return 0
 				})
 
+
+
 				this.dados = passageiros
-				console.log(this.dados)
 			},
 
-			async adicionado({ funcionario }) {
-				console.log(funcionario)
-
+			async adicionadoFuncionario({ funcionario }) {
 				this.dados.push(funcionario)
 
 				this.mostrarDialogAdicionarFuncionario = false
@@ -278,17 +307,43 @@
 				this.mostrarAlerta = true
 			},
 
-      async deletarFuncionario(funcionario_id){
-        let usuario_id = this.$auth.user.id
-        let rota_id = this.rota.id
+      async adicionadoTerceiro(terceiro) {
+        this.dados.push(terceiro)
 
-        let resp = await this.$axios.$post("/transporte/remover/funcionario", { funcionario_id, usuario_id, rota_id })
+        this.mostrarDialogAdicionarTerceiro = false
+        this.textoAlerta = "Terceiro adiciondo com sucesso!"
+        this.mostrarAlerta = true
+      },
+
+			async deletarFuncionario(index) {
+        let funcionario_id = this.dados[index].id
+
+				let usuario_id = this.$auth.user.id
+				let rota_id = this.rota.id
+
+				let resp = await this.$axios.$post("/transporte/remover/funcionario", {
+					funcionario_id,
+					usuario_id,
+					rota_id,
+				})
+
+				if (!resp.falha) {
+					let idx = this.dados.findIndex((o) => o.id === funcionario_id)
+
+					this.dados.splice(idx, 1)
+					this.textoAlerta = "Funcionário deletado com sucesso!"
+					this.mostrarAlerta = true
+				}
+			},
+
+      async deletarTerceiro(index){
+        let terceiro_id = this.dados[index].id
+
+        let resp = await this.$axios.$put(`/transporte/remover/terceiro/rota/${terceiro_id}`)
 
         if(!resp.falha){
-          let idx = this.dados.findIndex( o => o.id === funcionario_id)
-
-          this.dados.splice(idx,1)
-          this.textoAlerta = "Funcionário deletado com sucesso!"
+          this.dados.splice(index, 1)
+          this.textoAlerta = "Terceiro deletado com sucesso!"
           this.mostrarAlerta = true
         }
       }

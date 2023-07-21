@@ -65,7 +65,7 @@
 						<li
 							v-for="op of opcoesFiltradas"
 							@click="selecionarOpcao(op, $event)"
-							:key="op.id">
+							:key="op.key ? op.key : op.id">
 							{{ op.nome }}
 						</li>
 					</ul>
