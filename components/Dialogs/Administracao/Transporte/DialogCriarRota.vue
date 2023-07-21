@@ -193,7 +193,7 @@
 				erros: [],
 				tabs: [
 					{ nome: "Rota", valor: "rota" },
-					{ nome: "Passageiros", valor: "passageiros" },
+					{ nome: "Passageiros", valor: "passageiros", disabled: !this.rota },
 				],
 				tab: "rota",
 				cabecalho: [
