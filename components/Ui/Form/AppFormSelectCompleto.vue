@@ -61,7 +61,7 @@
 						@input="busca = $event.target.value" />
 				</div>
 				<div>
-					<ul class="lista">
+					<ul class="lista" :style="{ maxHeight: altura }">
 						<li
 							v-for="op of opcoesFiltradas"
 							@click="selecionarOpcao(op, $event)"
@@ -124,13 +124,17 @@
 				type: String,
 				default: "left-0",
 			},
+      altura:{
+        type: String,
+        defaut: "170px"
+      }
 		},
 		data() {
 			return {
 				busca: "",
 				mostrar: false,
 				texto: "Selecione",
-				altura: "200px",
+				// altura: "200px",
 			}
 		},
 		mounted() {

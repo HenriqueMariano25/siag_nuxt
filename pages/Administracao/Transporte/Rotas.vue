@@ -98,7 +98,7 @@
 					{ nome: "Número", valor: "numero", filtro: true, ordenar: true },
 					{ nome: "Local", valor: "local", filtro: true, ordenar: true },
 					{ nome: "Horário de saida", valor: "horario_saida", filtro: true, ordenar: true },
-					{ nome: "Veiculo", valor: "Veiculo.nome", filtro: true, ordenar: true },
+					{ nome: "Veículo", valor: "Veiculo.nome", filtro: true, ordenar: true },
 					{ nome: "Turno", valor: "turno", filtro: true, ordenar: true },
 				],
 				filtros: {},
