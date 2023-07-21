@@ -43,9 +43,16 @@
         </div>
       </template>
       <template v-slot:rodape-btn-direito>
-        <BotaoPadrao texto="salvar" @click="salvarTerceiros()">
-          <img src="@/assets/icons/save-b.svg" alt="" class="w-7 h-7">
-        </BotaoPadrao>
+        <div class="flex gar-2 items-center">
+          <div
+            class="text-red-500 text-xl mr-3"
+            v-if="erros.length > 0">
+            <span>Campos obrigatórios necessários</span>
+          </div>
+          <BotaoPadrao texto="salvar" @click="salvarTerceiros()">
+            <img src="@/assets/icons/save-b.svg" alt="" class="w-7 h-7">
+          </BotaoPadrao>
+        </div>
       </template>
     </BaseDialog>
   </div>

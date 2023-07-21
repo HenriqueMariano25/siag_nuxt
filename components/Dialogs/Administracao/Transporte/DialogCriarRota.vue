@@ -40,12 +40,14 @@
 							<AppFormSelect
 								label="Veículo"
 								:options="veiculos"
+                obrigatorio
 								v-model="rotaLocal.veiculo_id"
 								id="status"
 								:invalido="erros.includes('veiculo_id')" />
 							<AppFormSelect
 								label="Turno"
 								:options="turnos"
+                obrigatorio
 								v-model="rotaLocal.turno"
 								id="status"
 								:invalido="erros.includes('turno')" />
@@ -97,7 +99,12 @@
 				</AppTabs>
 			</template>
 			<template v-slot:rodape-btn-direito>
-				<div class="flex justify-end gap-2">
+				<div class="flex justify-end gap-2 items-center">
+          <div
+            class="text-red-500 text-xl mr-3"
+            v-if="erros.length > 0">
+            <span>Campos obrigatórios necessários</span>
+          </div>
 					<BotaoPadrao
 						texto="Salvar"
 						@click="rota ? editarRota() : cadastrarRota()"
@@ -242,28 +249,22 @@
 				this.$emit("cancelar")
 			},
 
-			async cadastrarRota() {
-				let rota = this.rotaLocal
-				await this.$axios.$post("/transporte/rota", { rota }).then((resp) => {
-					let rotaCriada = resp.rota
-
-					this.$emit("cadastrado", rotaCriada)
-				})
-			},
-
-			async buscarFuncionarios() {
+      async buscarFuncionarios() {
         let rota_id = this.rota.id
         let filtros = this.filtros
         let ordem = this.ordem
 
-        let resp = await this.$axios.$get('/transporte/rotas/passageiros/buscar', { params: { rota_id,
+        let resp = await this.$axios.$get('/transporte/rotas/passageiros/buscar', {
+          params: {
+            rota_id,
             page: this.pagina - 1,
             size: this.itensPorPagina,
             filtros,
             ordem
-        }})
+          }
+        })
 
-        if(!resp.falha){
+        if (!resp.falha) {
           let { passageiros } = resp.dados
 
           for (let pass of passageiros) {
@@ -272,7 +273,36 @@
               pass.ativo = true
             }
           }
-				  this.dados = passageiros
+          this.dados = passageiros
+        }
+      },
+
+      validarFormulario() {
+        this.erros = []
+
+        let camposObrigatorio = [
+          "numero",
+          "local",
+          "horario_saida",
+          "veiculo_id",
+          "turno",
+        ]
+
+        for (let campo of camposObrigatorio) {
+          if (this.rotaLocal[`${campo}`] === null || this.rotaLocal[`${campo}`] === "") this.erros.push(campo)
+        }
+      },
+
+			async cadastrarRota() {
+        this.validarFormulario()
+
+        if (this.erros.length === 0) {
+          let rota = this.rotaLocal
+          await this.$axios.$post("/transporte/rota", { rota }).then((resp) => {
+            let rotaCriada = resp.rota
+
+            this.$emit("cadastrado", rotaCriada)
+          })
         }
 			},
 
@@ -298,7 +328,7 @@
 				this.dados.push(funcionario)
 
 				this.mostrarDialogAdicionarFuncionario = false
-				this.textoAlerta = "Funcionário adiciondo com sucesso!"
+				this.textoAlerta = "Funcionário adicionado com sucesso!"
 				this.mostrarAlerta = true
 			},
 
@@ -306,7 +336,7 @@
         this.dados.push(terceiro)
 
         this.mostrarDialogAdicionarTerceiro = false
-        this.textoAlerta = "Terceiro adiciondo com sucesso!"
+        this.textoAlerta = "Terceiro adicionado com sucesso!"
         this.mostrarAlerta = true
       },
 
