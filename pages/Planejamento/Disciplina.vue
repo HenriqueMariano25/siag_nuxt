@@ -143,8 +143,6 @@
 				}
 			},
 			cadastrado(disciplina) {
-				console.log(disciplina)
-
 				this.dados.push(disciplina)
 				this.mostrarDialogCriarDisciplina = false
 				this.textoAlerta = "Disciplina cadastrada com sucesso!"

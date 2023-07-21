@@ -58,6 +58,7 @@
 							:itensPorPagina="itensPorPagina"
 							:pagina="pagina"
 							@pagina="pagina = $event"
+              classPersonalizada="!bg-red-300 hover:!bg-gray-600"
 							@filtros="filtros = $event"
 							@ordem="ordem = $event"
 							:totalItens="totalItens"
@@ -134,7 +135,6 @@
 			:rota_id="rota.id"
 			@cancelar="
 				mostrarDialogAdicionarFuncionario = false
-				rota = null
 			"
 			@adicionado="adicionadoFuncionario"
 			:funcionario="funcionario" />
@@ -143,7 +143,6 @@
 			:rota_id="rota.id"
 			@cancelar="
 				mostrarDialogAdicionarTerceiro = false
-				rota = null
 			"
 			@adicionado="adicionadoTerceiro"
 			:terceiro="terceiro" />
@@ -252,52 +251,48 @@
 				})
 			},
 
-			async editarRota() {
-				let rota = this.rotaLocal
-
-				await this.$axios.$put("/transporte/rota", { rota }).then((resp) => {
-					let rota = resp.rota
-
-					this.$emit("editado", rota)
-				})
-			},
-
-			async deletarRota() {
-				let { id } = this.rota
-
-				await this.$axios.$delete(`/transporte/rota/${id}`).then(() => {
-					this.$emit("deletado", id)
-				})
-			},
-
 			async buscarFuncionarios() {
-				let funcionarios = await this.$axios
-					.$get("/transporte/rotas/funcionarios", { params: { id: this.rota.id } })
-					.then((resp) => resp.funcionarios)
+        let rota_id = this.rota.id
+        let filtros = this.filtros
+        let ordem = this.ordem
 
-				let passageiros
-				passageiros = funcionarios
+        let resp = await this.$axios.$get('/transporte/rotas/passageiros/buscar', { params: { rota_id,
+            page: this.pagina - 1,
+            size: this.itensPorPagina,
+            filtros,
+            ordem
+        }})
 
-				let terceiros = await this.$axios
-					.$get("/transporte/terceiros/rota", { params: { rota_id: this.rota.id } })
-					.then((resp) => resp.terceiros)
+        if(!resp.falha){
+          let { passageiros } = resp.dados
 
-        passageiros.push(...terceiros)
-
-				passageiros.sort(function (a, b) {
-					if (parseInt(a.poltrona) > parseInt(b.poltrona)) {
-						return 1
-					}
-					if (parseInt(a.poltrona) < parseInt(b.poltrona)) {
-						return -1
-					}
-					return 0
-				})
-
-
-
-				this.dados = passageiros
+          for (let pass of passageiros) {
+            let encontrados = passageiros.filter(o => o.poltrona === pass.poltrona)
+            if (encontrados.length > 1) {
+              pass.ativo = true
+            }
+          }
+				  this.dados = passageiros
+        }
 			},
+
+      async editarRota() {
+        let rota = this.rotaLocal
+
+        await this.$axios.$put("/transporte/rota", { rota }).then((resp) => {
+          let rota = resp.rota
+
+          this.$emit("editado", rota)
+        })
+      },
+
+      async deletarRota() {
+        let { id } = this.rota
+
+        await this.$axios.$delete(`/transporte/rota/${id}`).then(() => {
+          this.$emit("deletado", id)
+        })
+      },
 
 			async adicionadoFuncionario({ funcionario }) {
 				this.dados.push(funcionario)
@@ -333,6 +328,7 @@
 					this.dados.splice(idx, 1)
 					this.textoAlerta = "Funcionário deletado com sucesso!"
 					this.mostrarAlerta = true
+          this.funcionario_id = null
 				}
 			},
 
@@ -345,6 +341,7 @@
           this.dados.splice(index, 1)
           this.textoAlerta = "Terceiro deletado com sucesso!"
           this.mostrarAlerta = true
+          this.funcionario_id = null
         }
       }
 		},

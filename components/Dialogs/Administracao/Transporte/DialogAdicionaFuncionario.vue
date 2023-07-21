@@ -56,7 +56,8 @@
 							>Nome: <strong>{{ funcionarioLocal.nome }}</strong>
 						</span>
 						<span class="px-1"
-							>Chapa: <strong>{{ funcionarioLocal.chapa }}</strong>
+							>Matrícula
+              : <strong>{{ funcionarioLocal.chapa }}</strong>
 						</span>
 						<div class="flex flex-col text-lg col-span-2">
 							<span
