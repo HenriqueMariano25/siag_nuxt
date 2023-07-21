@@ -59,15 +59,14 @@
 							>Matrícula
               : <strong>{{ funcionarioLocal.chapa }}</strong>
 						</span>
+
 						<div class="flex flex-col text-lg col-span-2">
-							<span
-								class="px-1"
-								v-if="funcionarioLocal.rota"
-								>Rota anterior:
+							<span class="px-1" v-if="funcionarioLocal.rota && funcionarioNaRota === false">
+                Rota anterior:
 								<strong>
-									{{ funcionarioLocal.rota.numero }} - {{ funcionarioLocal.rota.local }}</strong
-								></span
-							>
+									{{ funcionarioLocal.rota.numero }} - {{ funcionarioLocal.rota.local }}
+                </strong>
+              </span>
 						</div>
 						<!--            <span class="px-1 col-span-2">Chapa: <strong>{{ funcionarioLocal.chapa }}</strong> </span>-->
 						<AppFormInput
@@ -86,6 +85,14 @@
 							id="poltrona"
 							placeholder="Ex: 45"
 							v-model="funcionarioLocal.poltrona" />
+
+            <div class="flex flex-col text-lg col-span-2">
+              <span v-if="funcionarioLocal.rota && funcionarioNaRota === true" class="text-xl px-2 text-red-700">
+                <strong>
+                  Esse funcionário já está nessa rota !
+                </strong>
+              </span>
+            </div>
 					</div>
 				</div>
 			</template>
@@ -93,7 +100,7 @@
 				<BotaoPadrao
 					texto="salvar"
 					@click="adicionarFuncionario()"
-					:disabled="!buscouFuncionario">
+					:disabled="!buscouFuncionario || funcionarioNaRota ">
 					<img
 						src="@/assets/icons/save-b.svg"
 						alt=""
@@ -139,6 +146,7 @@
 				},
 				erros: [],
 				buscouFuncionario: false,
+        funcionarioNaRota: false
 			}
 		},
 		created() {
@@ -172,6 +180,11 @@
 
           console.log(resp)
 					this.funcionarioLocal = Object.assign(this.funcionarioLocal, resp.dados.funcionario)
+          if(this.funcionarioLocal.rota.id === this.rota_id){
+            this.funcionarioNaRota = true
+          }else{
+            this.funcionarioNaRota = false
+          }
 				}
 			},
 			async adicionarFuncionario() {
