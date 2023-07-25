@@ -311,13 +311,18 @@
 			},
 
       async editarRota() {
-        let rota = this.rotaLocal
+        this.validarFormulario()
 
-        await this.$axios.$put("/transporte/rota", { rota }).then((resp) => {
-          let rota = resp.rota
 
-          this.$emit("editado", rota)
-        })
+        if (this.erros.length === 0) {
+          let rota = this.rotaLocal
+
+          await this.$axios.$put("/transporte/rota", { rota }).then((resp) => {
+            let rota = resp.rota
+
+            this.$emit("editado", rota)
+          })
+        }
       },
 
       async deletarRota() {
