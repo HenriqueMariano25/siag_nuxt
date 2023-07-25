@@ -267,13 +267,8 @@
         if (!resp.falha) {
           let { passageiros } = resp.dados
 
-          for (let pass of passageiros) {
-            let encontrados = passageiros.filter(o => o.poltrona === pass.poltrona)
-            if (encontrados.length > 1) {
-              pass.ativo = true
-            }
-          }
           this.dados = passageiros
+          this.verificaPoltronaDuplicada()
         }
       },
 
@@ -290,6 +285,15 @@
 
         for (let campo of camposObrigatorio) {
           if (this.rotaLocal[`${campo}`] === null || this.rotaLocal[`${campo}`] === "") this.erros.push(campo)
+        }
+      },
+
+      verificaPoltronaDuplicada(){
+        for (let pass of this.dados) {
+          let encontrados = this.dados.filter(o => o.poltrona === pass.poltrona)
+          if (encontrados.length > 1) {
+            pass.ativo = true
+          }
         }
       },
 
@@ -327,6 +331,8 @@
 			async adicionadoFuncionario({ funcionario }) {
 				this.dados.push(funcionario)
 
+        this.verificaPoltronaDuplicada()
+
 				this.mostrarDialogAdicionarFuncionario = false
 				this.textoAlerta = "Funcionário adicionado com sucesso!"
 				this.mostrarAlerta = true
@@ -334,6 +340,8 @@
 
       async adicionadoTerceiro(terceiro) {
         this.dados.push(terceiro)
+
+        this.verificaPoltronaDuplicada()
 
         this.mostrarDialogAdicionarTerceiro = false
         this.textoAlerta = "Terceiro adicionado com sucesso!"

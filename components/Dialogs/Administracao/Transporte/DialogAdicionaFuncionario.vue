@@ -177,14 +177,8 @@
 
 				if (!resp.falha) {
 					this.buscouFuncionario = true
-
-          console.log(resp)
 					this.funcionarioLocal = Object.assign(this.funcionarioLocal, resp.dados.funcionario)
-          if(this.funcionarioLocal.rota.id === this.rota_id){
-            this.funcionarioNaRota = true
-          }else{
-            this.funcionarioNaRota = false
-          }
+          this.funcionarioNaRota = !!(this.funcionarioLocal.rota && this.funcionarioLocal.rota.id === this.rota_id);
 				}
 			},
 			async adicionarFuncionario() {
@@ -201,6 +195,8 @@
 				})
 
         if(!resp.falha){
+          this.funcionarioLocal.id = resp.dados.funcionario.id
+
           this.$emit("adicionado", { funcionario: this.funcionarioLocal})
           this.textoAlerta = "Rota cadastrada com sucesso!"
           this.mostrarAlerta = true
