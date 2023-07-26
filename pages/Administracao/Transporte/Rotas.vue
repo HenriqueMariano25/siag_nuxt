@@ -17,7 +17,7 @@
 				<template v-slot:[`body.acoes`]="{ item }">
           <div class="flex">
             <BotaoPadrao icone>
-              <div class="w-7 h-7 flex items-center justify-center">
+              <div class="w-7 h-7 flex items-center justify-center" @click="gerarRelatorio(item)">
                 <img src="@/assets/icons/printer-b.svg" alt="" class="w-6 h-6">
               </div>
             </BotaoPadrao>
@@ -88,6 +88,9 @@
   import RodapePagina from "~/components/Shared/RodapePagina.vue";
   import AppAlerta from "~/components/Ui/AppAlerta.vue";
   import DialogCriarRota from "~/components/Dialogs/Administracao/Transporte/DialogCriarRota.vue";
+
+  import { jsPDF } from "jspdf";
+  import "jspdf-autotable";
 
 	export default {
 		components: { DialogCriarRota, AppAlerta, RodapePagina, BotaoPadrao, CabecalhoPagina, TabelaPadrao },
@@ -167,6 +170,99 @@
         this.rota = null
         this.totalItens -= 1
       },
+
+      async gerarRelatorio(rota){
+        let funcionariosPorRota = []
+
+        let funcionarios = await this.$axios.$get("/transporte/rotas/funcionarios", { params: { id: rota.id } }).then(resp => resp.funcionarios)
+
+
+        funcionariosPorRota = funcionarios
+
+        let terceiros = await this.$axios.$get("/transporte/terceiros/rota", { params: { rota_id: rota.id } }).then(resp => resp.terceiros)
+
+        funcionariosPorRota.push(...terceiros)
+
+        funcionariosPorRota.sort(function(a, b) {
+          if (parseInt(a.poltrona) > parseInt(b.poltrona)) {
+            return 1
+          }
+          if (parseInt(a.poltrona) < parseInt(b.poltrona)) {
+            return -1
+          }
+          return 0
+        })
+
+        let hojeAgr = this.$dayjs().format("DD/MM/YYYY HH:mm:ss");
+
+        let novosDados = JSON.parse(JSON.stringify(funcionariosPorRota));
+        var doc = new jsPDF({});
+        doc.page = 1;
+        doc.setProperties({
+          title: "Relatório pontos de embarque",
+        });
+
+        const logo = require("@/assets/img/logoagcnovo.png");
+        var imgLogo = new Image();
+        imgLogo.src = logo;
+
+        doc.addImage(imgLogo, "PNG", 4, 6, 50, 9);
+        doc.setFontSize(14);
+        doc.setTextColor(0);
+        doc.text("RELATÓRIO PASSEIROS POR ROTA", 75, 9);
+        doc.setFontSize(14);
+        doc.text(`ROTA`, 190, 9);
+        doc.text(`${rota.numero}`, 190, 14);
+        doc.setFontSize(12);
+        doc.text(`Passageiros: ${funcionariosPorRota.length}`, 4, 20);
+        doc.text(
+          `Disponíveis: ${46 - parseInt(funcionariosPorRota.length)}`,
+          60,
+          20
+        );
+
+        doc.line(4, 22, 206, 22);
+        doc.setFontSize(14);
+        doc.autoTable({
+          head: [["Matricula", "Nome", "Cargo", "Ponto de embarque", "Poltrona"]],
+          columns: [
+            { header: "Matricula", dataKey: "chapa" },
+            { header: "Nome", dataKey: "nome" },
+            { header: "Cargo", dataKey: "cargo" },
+            { header: "Ponto de embarque", dataKey: "ponto_embarque" },
+            { header: "Poltrona", dataKey: "poltrona" },
+          ],
+          columnStyles: { id: { halign: "center" } },
+          body: novosDados,
+          theme: "striped",
+
+          headStyles: {
+            fillColor: [50, 50, 50],
+          },
+          bodyStyles: {
+            fontSize: 7,
+          },
+          startY: 24,
+          pageBreak: "auto",
+          margin: { left: 4, right: 4, top: 4 },
+        });
+        const totalPaginas = doc.internal.getNumberOfPages();
+        doc.setTextColor(0);
+        doc.setFontSize(10);
+        for (var i = 1; i <= totalPaginas; i++) {
+          doc.setPage(i);
+          doc.text(
+            `Página ${String(i)} de ${String(totalPaginas)}`,
+            205,
+            294,
+            null,
+            null,
+            "right"
+          );
+          doc.text(hojeAgr, 5, 294);
+        }
+        window.open(doc.output("bloburl", { filename: "tabela_clientes.pdf" }));
+      }
 		},
 	}
 </script>
