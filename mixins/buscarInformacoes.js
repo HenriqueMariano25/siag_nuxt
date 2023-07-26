@@ -321,13 +321,13 @@ export const buscarDisciplina = {
 
 export const buscarSubDisciplina = {
   methods: {
-    async buscarSubDisciplina(buscarAgora) {
+    async buscarSubDisciplina(buscarAgora, filtros ) {
       let ultimaBusca = this.$store.state.subDisciplina.ultimaBusca
       let diferencaEmHoras = 0
       if (ultimaBusca) diferencaEmHoras = this.$dayjs().diff(this.$dayjs(ultimaBusca), "hour")
 
       if (buscarAgora || ultimaBusca === null || diferencaEmHoras > 0) {
-        let resp = await this.$axios.$get("/consultas/buscar/sub_disciplinas")
+        let resp = await this.$axios.$get("/consultas/buscar/sub_disciplinas", { params: { filtros } })
 
         if (!resp.falha) {
           let subDisciplinasBuscadas = resp.dados.subDisciplinas

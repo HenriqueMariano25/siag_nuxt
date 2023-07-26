@@ -96,36 +96,41 @@
 										</span>
 									</div>
 									<div class="grid grid-cols-3 p-1 gap-2">
+                    <AppFormSelectCompleto
+                      obrigatorio
+                      id="disciplina"
+                      label="Disciplina"
+                      :options="disciplinas"
+                      v-model="campos.disciplina_id"
+                      :invalido="erros.includes('disciplina_id')" />
+                    <AppFormSelectCompleto
+                      obrigatorio
+                      id="subDisciplina"
+                      label="Sub Disciplina"
+                      :options="subDisciplinas"
+                      :disabled="!campos.disciplina_id"
+                      dica="Para habilitar esse campo, primeiro selecione uma Disciplina."
+                      v-model="campos.sub_disciplina_id"
+                      :invalido="erros.includes('sub_disciplina_id')" />
 										<AppFormSelectCompleto
 											obrigatorio
 											id="setor"
 											label="Setor"
 											:options="setores"
+                      :disabled="!campos.disciplina_id"
 											readonly
 											v-model="campos.setor_id"
 											:invalido="erros.includes('setor_id')" />
-										<AppFormSelectCompleto
-											obrigatorio
-											id="disciplina"
-											label="Disciplina"
-											:options="disciplinas"
-											v-model="campos.disciplina_id"
-											:invalido="erros.includes('disciplina_id')" />
-										<AppFormSelectCompleto
-											obrigatorio
-											id="subDisciplina"
-											label="Sub Disciplina"
-											:options="subDisciplinas"
-											v-model="campos.sub_disciplina_id"
-											:invalido="erros.includes('sub_disciplina_id')" />
 										<AppFormSelect
 											label="Turno"
 											:options="turnos"
+                      obrigatorio
 											v-model="campos.turno_id"
 											id="turno"
 											:invalido="erros.includes('turno_id')" />
 										<AppFormSelect
 											label="Jornada de trabalho"
+                      obrigatorio
 											:options="jornadasTrabalho"
 											v-model="campos.jornada_trabalho_id"
 											id="jornadaTrabalho"
@@ -301,7 +306,7 @@
 
 			await this.buscarResponsaveis()
 			await this.buscarDisciplinas()
-			await this.buscarSubDisciplinas()
+			// await this.buscarSubDisciplinas()
 			await this.buscarEquipesPlanejamento()
 			await this.buscarTurnos()
 			await this.buscarJornadaTrabalho()
@@ -348,11 +353,17 @@
 			},
 
 			async buscarSubDisciplinas() {
-				await this.buscarSubDisciplina()
+        let disciplina_id = this.campos.disciplina_id
+
+        console.log("Teste")
+
+				await this.buscarSubDisciplina(true,{ disciplina_id })
 				let subDisciplinas = this.$store.state.subDisciplina.subDisciplinas
 				let options = subDisciplinas.map((o) => {
 					return { id: o.id, nome: o.descricao }
 				})
+
+        console.log(subDisciplinas)
 
 				this.subDisciplinas = options
 			},
@@ -578,13 +589,16 @@
       }
 		},
 		watch: {
-			"campos.disciplina_id"(valor) {
+			async "campos.disciplina_id"(valor) {
 				if (valor === null || valor === "") {
 					this.campos.setor_id = null
 				} else {
 					let disciplina = this.disciplinas.find((o) => o.id === valor)
 
 					if (disciplina) this.campos.setor_id = disciplina.setor_id
+
+          this.campos.sub_disciplina_id = null
+          await this.buscarSubDisciplinas()
 				}
 			},
 			tab(valor) {

@@ -12,13 +12,14 @@
 				</span>
 			</span>
 			<AppTooltip
+
 				v-if="dica"
 				:posicao="dicaPosicao">
 				<template v-slot:corpo>
 					<img
 						src="@/assets/icons/information-circle-g.svg"
 						alt=""
-						class="w-5 h-5 !z-10"
+						class="w-5 h-5"
 						style="z-index: 100 !important" />
 				</template>
 				<template v-slot:tooltip>
@@ -32,9 +33,8 @@
 			class="btn-selecionar"
 			:id="'btn-selecionar-' + id"
 			:class="{
-				'!bg-gray-300': readonly,
 				'!border-red-400 !bg-red-100': invalido,
-				'!bg-gray-300': disabled,
+				'!bg-gray-300': disabled || readonly,
 			}">
 			<span>{{ texto }}</span>
 			<div class="icone">
@@ -61,7 +61,8 @@
 						@input="busca = $event.target.value" />
 				</div>
 				<div>
-					<ul class="lista" :style="{ maxHeight: altura }">
+
+					<ul class="lista z-20" :style="{ maxHeight: altura }">
 						<li
 							v-for="op of opcoesFiltradas"
 							@click="selecionarOpcao(op, $event)"
@@ -138,24 +139,7 @@
 			}
 		},
 		mounted() {
-			const wrapper = document.getElementById("wrapper-" + this.id)
-			const conteudo = document.getElementById("conteudo-" + this.id)
-
-			if (!this.disabled && !this.readonly) {
-				const selectCompleto = document.getElementById("btn-selecionar-" + this.id)
-
-				selectCompleto.addEventListener("click", () => {
-					wrapper.classList.toggle("active")
-
-					let posicaoY = conteudo.getBoundingClientRect().top
-					let altura = conteudo.getBoundingClientRect().height
-					let foraDaPagina = posicaoY + altura >= window.innerHeight
-
-					if (foraDaPagina) {
-						conteudo.classList.add("reverso")
-					}
-				})
-			}
+			this.podeMostrarOpcoes()
 		},
 		computed: {
 			opcoesFiltradas() {
@@ -188,6 +172,26 @@
 				wrapper.classList.toggle("active")
 				event.stopPropagation() // Evita que o evento de clique seja propagado para o elemento pai
 			},
+      podeMostrarOpcoes(){
+        const wrapper = document.getElementById("wrapper-" + this.id)
+        const conteudo = document.getElementById("conteudo-" + this.id)
+
+        if (!this.disabled && !this.readonly) {
+          const selectCompleto = document.getElementById("btn-selecionar-" + this.id)
+
+          selectCompleto.addEventListener("click", () => {
+            wrapper.classList.toggle("active")
+
+            let posicaoY = conteudo.getBoundingClientRect().top
+            let altura = conteudo.getBoundingClientRect().height
+            let foraDaPagina = posicaoY + altura >= window.innerHeight
+
+            if (foraDaPagina) {
+              conteudo.classList.add("reverso")
+            }
+          })
+        }
+      }
 		},
 		watch: {
 			options(valor) {
@@ -206,6 +210,12 @@
 					this.texto = "Selecione"
 				}
 			},
+      disabled(){
+        this.podeMostrarOpcoes()
+      },
+      readonly(){
+        this.podeMostrarOpcoes()
+      }
 		},
 	})
 </script>
@@ -215,11 +225,14 @@
 		margin-top: -7px;
 	}
 
+
 	.wrapper.active .btn-selecionar .icone {
 		transform: rotate(-180deg);
+    transition: .1s;
 	}
 
-	.wrapper.active .btn-selecionar {
+  .icone {
+    transition: .1s;
 	}
 
 	.wrapper.active .conteudo {
