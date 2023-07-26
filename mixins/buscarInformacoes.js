@@ -256,6 +256,18 @@ export const buscarTurnos = {
   },
 }
 
+export const buscarRotas = {
+  methods: {
+    async buscarRotas(filtros = {}) {
+      let rotasBuscadas = await this.$axios
+        .$get("/transporte/buscar/rotas_simples", { params: { filtros: filtros } })
+        .then((resp) => resp.dados.rotas)
+
+      return rotasBuscadas
+    },
+  },
+}
+
 // export const buscarRepublicas = {
 // 	methods: {
 // 		async buscarRepublicas(salvarStore, filtros = {}) {
