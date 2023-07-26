@@ -41,8 +41,17 @@
 		<RodapePagina>
 			<template v-slot>
 				<div class="flex justify-end w-full">
-					<!--          <div>-->
-					<div class="flex">
+					<div class="flex gap-2">
+            <BotaoPadrao
+              v-if="$auth.user.permissoes.includes('importar_planejamento')"
+              class="flex"
+              @click="mostrarDialogImportarDisciplina = true"
+              texto="Importar">
+              <img
+                src="@/assets/icons/upload-b.svg"
+                alt=""
+                class="w-6 h-6" />
+            </BotaoPadrao>
 						<BotaoPadrao
 							class="flex"
 							@click="mostrarDialogCriarDisciplina = true"
@@ -53,7 +62,6 @@
 								class="w-7 h-7" />
 						</BotaoPadrao>
 					</div>
-					<!--          </div>-->
 				</div>
 			</template>
 		</RodapePagina>
@@ -67,6 +75,7 @@
 			@editado="editado"
 			@deletado="deletado"
 			:disciplina="disciplina" />
+    <DialogImportarDisciplina v-if="mostrarDialogImportarDisciplina" @cancelar="mostrarDialogImportarDisciplina = false"/>
 		<AppAlerta
 			tipo="sucesso"
 			:mostrar="mostrarAlerta"
@@ -85,10 +94,12 @@
 	import DialogCriarDisciplina from "~/components/Dialogs/Planejamento/Disciplina/DialogCriarDisciplina.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import BotaoIconEditar from "~/components/Ui/Buttons/BotaoIconeEditar.vue"
+  import DialogImportarDisciplina from "~/components/Dialogs/Planejamento/Disciplina/DialogImportarDisciplina.vue";
 
 	export default defineComponent({
 		name: "Disciplina",
 		components: {
+      DialogImportarDisciplina,
 			BotaoIconEditar,
 			AppAlerta,
 			DialogCriarDisciplina,
@@ -115,6 +126,7 @@
 				disciplina: null,
 				mostrarAlerta: false,
 				textoAlerta: null,
+        mostrarDialogImportarDisciplina: false
 			}
 		},
 		created() {
