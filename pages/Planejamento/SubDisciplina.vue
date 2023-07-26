@@ -29,6 +29,9 @@
 						</div>
 					</BotaoPadrao>
 				</template>
+        <template v-slot:[`body.Disciplina.descricao`]="{ item }">
+          <span v-if="item.Disciplina">{{ item.Disciplina.sigla }} - {{ item.Disciplina.descricao }}</span>
+        </template>
 			</TabelaPadrao>
 		</div>
 		<RodapePagina>
@@ -95,6 +98,7 @@
 				cabecalho: [
 					{ nome: "", valor: "acoes", largura: "w-8" },
 					{ nome: "Descrição", valor: "descricao", filtro: true, ordenar: true },
+					{ nome: "Disciplina", valor: "Disciplina.descricao", filtro: true, ordenar: true },
 				],
 				filtros: {},
 				ordem: null,

@@ -7,19 +7,28 @@
     @cancelar="cancelar()">
     <template v-slot:corpo>
       <div
-        class="flex w-full overflow-auto px-2"
+        class="flex w-full px-2"
         style="max-height: calc(80vh)">
         <div
           class="w-full flex gap-x-3 gap-y-3"
           ref="formulario">
           <AppFormInput
             label="Descrição"
+            obrigatorio
             class="grow"
             type="text"
             id="descricao"
             placeholder="Ex: Tubulação"
             :invalido="erros.includes('descricao')"
             v-model="subDisciplinaLocal.descricao" />
+          <AppFormSelectCompleto
+            obrigatorio
+            class="grow"
+            id="rota"
+            label="Disciplina"
+            :options="disciplinas"
+            :invalido="erros.includes('disciplina_id')"
+            v-model="subDisciplinaLocal.disciplina_id"/>
         </div>
       </div>
     </template>
@@ -40,10 +49,13 @@ import BaseDialog from "~/components/Shared/BaseDialog.vue";
 import AppFormInput from "~/components/Ui/AppFormInput.vue";
 import AppFormSelect from "~/components/Ui/AppFormSelect.vue";
 import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
+import { buscarDisciplina } from "~/mixins/buscarInformacoes";
+import AppFormSelectCompleto from "~/components/Ui/Form/AppFormSelectCompleto.vue";
 
 export default defineComponent({
+  mixins: [buscarDisciplina],
   name: "DialogCriarSubDisciplina",
-  components: { BotaoPadrao, AppFormSelect, AppFormInput, BaseDialog },
+  components: { AppFormSelectCompleto, BotaoPadrao, AppFormSelect, AppFormInput, BaseDialog },
   props: {
     subDisciplina: {
       type: [Object],
@@ -54,17 +66,33 @@ export default defineComponent({
     return {
       subDisciplinaLocal: {
         descricao: null,
+        disciplina_id: null
       },
       carregando: false,
-      erros: []
+      erros: [],
+      disciplinas: []
     }
   },
-  created() {
+  async created() {
     if (this.subDisciplina !== null) {
       this.subDisciplinaLocal = Object.assign({}, this.subDisciplina)
     }
+
+    await this.buscarDisciplinas()
   },
   methods: {
+    async buscarDisciplinas() {
+      await this.buscarDisciplina()
+      let disciplinas = this.$store.state.disciplina.disciplinas
+
+      this.disciplinas = disciplinas.map((o) => {
+        return {
+          id: o.id,
+          nome: `${o.sigla} - ${o.descricao}`,
+        }
+      })
+    },
+
     cancelar() {
       this.$emit("cancelar")
     },
@@ -74,6 +102,7 @@ export default defineComponent({
 
       let camposObrigatorio = [
         "descricao",
+        "disciplina_id"
       ]
 
       for (let campo of camposObrigatorio) {
@@ -90,7 +119,6 @@ export default defineComponent({
         let resp = await this.$axios.$post('/planejamento/sub_disciplina/cadastrar', { ...subDisciplina })
         if (!resp.falha) {
           let subDisciplinaCriada = resp.dados.subDisciplina
-
 
           this.$emit("cadastrado", subDisciplinaCriada)
         }
