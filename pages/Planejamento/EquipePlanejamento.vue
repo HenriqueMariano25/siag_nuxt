@@ -41,8 +41,17 @@
 		<RodapePagina>
 			<template v-slot>
 				<div class="flex justify-end w-full">
-					<!--          <div>-->
-					<div class="flex">
+					<div class="flex gap-2">
+						<BotaoPadrao
+							v-if="$auth.user.permissoes.includes('importar_planejamento')"
+							class="flex"
+							@click="mostrarDialogImportarEquipePlanejamento = true"
+							texto="Importar">
+							<img
+								src="@/assets/icons/upload-b.svg"
+								alt=""
+								class="w-6 h-6" />
+						</BotaoPadrao>
 						<BotaoPadrao
 							class="flex"
 							@click="mostrarDialogCriarEquipePlanejamento = true"
@@ -53,7 +62,6 @@
 								class="w-7 h-7" />
 						</BotaoPadrao>
 					</div>
-					<!--          </div>-->
 				</div>
 			</template>
 		</RodapePagina>
@@ -67,6 +75,9 @@
 			@editado="editado"
 			@deletado="deletado"
 			:equipePlanejamento="equipePlanejamento" />
+		<DialogImportarEquipePlanejamento
+			v-if="mostrarDialogImportarEquipePlanejamento"
+			@cancelar="mostrarDialogImportarEquipePlanejamento = false" />
 		<AppAlerta
 			tipo="sucesso"
 			:mostrar="mostrarAlerta"
@@ -83,11 +94,13 @@
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue"
 	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
-	import DialogCriarEquipePlanejamento from "~/components/Dialogs/Planejamento/Disciplina/DialogCriarEquipePlanejamento.vue"
+	import DialogCriarEquipePlanejamento from "~/components/Dialogs/Planejamento/EquipePlanejamento/DialogCriarEquipePlanejamento.vue"
+	import DialogImportarEquipePlanejamento from "~/components/Dialogs/Planejamento/EquipePlanejamento/DialogImportarEquipePlanejamento.vue"
 
 	export default defineComponent({
 		name: "EquipePlanejamento",
 		components: {
+			DialogImportarEquipePlanejamento,
 			DialogCriarEquipePlanejamento,
 			TabelaPadrao,
 			CabecalhoPagina,
@@ -112,6 +125,7 @@
 				equipePlanejamento: null,
 				mostrarAlerta: false,
 				textoAlerta: null,
+				mostrarDialogImportarEquipePlanejamento: false,
 			}
 		},
 		created() {
@@ -133,10 +147,10 @@
 
 				if (!resp.falha) {
 					let equipesPlanejamento = resp.dados.equipesPlanejamento
-          let total = resp.dados.total
+					let total = resp.dados.total
 
 					this.dados = equipesPlanejamento
-          this.totalItens = total
+					this.totalItens = total
 				}
 			},
 			cadastrado(equipePlanejamento) {
@@ -144,7 +158,7 @@
 				this.mostrarDialogCriarEquipePlanejamento = false
 				this.textoAlerta = "Equipe Planejamento cadastrada com sucesso!"
 				this.mostrarAlerta = true
-        this.totalItens += 1
+				this.totalItens += 1
 			},
 			editado(equipePlanejamento) {
 				let idx = this.dados.findIndex((o) => o.id === equipePlanejamento.id)
@@ -166,7 +180,7 @@
 				this.mostrarDialogCriarEquipePlanejamento = false
 				this.textoAlerta = "Equipe Planejamento deletada com sucesso!"
 				this.mostrarAlerta = true
-        this.totalItens -= 1
+				this.totalItens -= 1
 			},
 		},
 	})
