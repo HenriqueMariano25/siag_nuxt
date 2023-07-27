@@ -36,9 +36,18 @@
 		</div>
 		<RodapePagina>
 			<template v-slot>
-				<div class="flex justify-end w-full">
-					<!--          <div>-->
-					<div class="flex">
+        <div class="flex justify-end w-full">
+          <div class="flex gap-2">
+            <BotaoPadrao
+              v-if="$auth.user.permissoes.includes('importar_planejamento')"
+              class="flex"
+              @click="mostrarDialogImportarSubDisciplina = true"
+              texto="Importar">
+              <img
+                src="@/assets/icons/upload-b.svg"
+                alt=""
+                class="w-6 h-6" />
+            </BotaoPadrao>
 						<BotaoPadrao
 							class="flex"
 							@click="mostrarDialogCriarSubDisciplina = true"
@@ -49,7 +58,6 @@
 								class="w-7 h-7" />
 						</BotaoPadrao>
 					</div>
-					<!--          </div>-->
 				</div>
 			</template>
 		</RodapePagina>
@@ -69,6 +77,8 @@
 			@escondeu="mostrarAlerta = false">
 			{{ textoAlerta }}
 		</AppAlerta>
+    <DialogImportarSubDisciplina v-if="mostrarDialogImportarSubDisciplina"
+                              @cancelar="mostrarDialogImportarSubDisciplina = false" />
 	</div>
 </template>
 
@@ -78,13 +88,16 @@
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue"
-	import DialogCriarSubDisciplina from "~/components/Dialogs/Planejamento/Disciplina/DialogCriarSubDisciplina.vue"
+	import DialogCriarSubDisciplina from "~/components/Dialogs/Planejamento/SubDisciplina/DialogCriarSubDisciplina.vue"
 	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
 	import BotaoIconEditar from "~/components/Ui/Buttons/BotaoIconeEditar.vue"
+  import DialogImportarSubDisciplina
+    from "~/components/Dialogs/Planejamento/SubDisciplina/DialogImportarSubDisciplina.vue";
 
 	export default defineComponent({
 		name: "SubDisciplina",
 		components: {
+      DialogImportarSubDisciplina,
 			BotaoIconEditar,
 			AppAlerta,
 			DialogCriarSubDisciplina,
@@ -110,6 +123,7 @@
 				subDisciplina: null,
 				mostrarAlerta: false,
 				textoAlerta: null,
+        mostrarDialogImportarSubDisciplina: false
 			}
 		},
 		created() {
