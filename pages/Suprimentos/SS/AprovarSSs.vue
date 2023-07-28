@@ -64,38 +64,33 @@
               class="w-6 h-6"/>
           </BotaoIcone>
         </template>
-        <template v-slot:[`body.pep`]="{ item }">
-					<span v-if="item">
-						{{ item }}
-					</span>
-        </template>
         <template v-slot:[`body.Setor.nome`]="{ item }">
-					<span v-if="item.Setor && item.Setor.nome">
+					<span v-if="item.Setor && item.Setor.nome" class="whitespace-nowrap">
 						{{ item.Setor.nome }}
 					</span>
         </template>
         <template v-slot:[`body.prazo_execucao`]="{ item }">
-					<span v-if="item">
+					<span v-if="item" class="whitespace-nowrap">
 						{{ $dayjs(item.data_fim).diff(item.data_inicio, "day") }} dias
 					</span>
         </template>
         <template v-slot:[`body.CentroCustoPEP.descricao`]="{ item }">
-					<span v-if="item.CentroCustoPEP && item.CentroCustoPEP.descricao">
+					<span v-if="item.CentroCustoPEP && item.CentroCustoPEP.descricao" class="whitespace-nowrap">
 						{{ item.CentroCustoPEP.descricao }}
 					</span>
         </template>
         <template v-slot:[`body.EtapaSS.nome`]="{ item }">
-					<span v-if="item.EtapaSS && item.EtapaSS.nome">
+					<span v-if="item.EtapaSS && item.EtapaSS.nome" class="whitespace-nowrap">
 						{{ item.EtapaSS.nome }}
 					</span>
         </template>
         <template v-slot:[`body.data_necessidade`]="{ item }">
-					<span v-if="item.data_necessidade">
+					<span v-if="item.data_necessidade" class="whitespace-nowrap">
 						{{ $dayjs(item.data_necessidade).format("DD/MM/YYYY") }}
 					</span>
         </template>
         <template v-slot:[`body.Usuario.nome`]="{ item }">
-					<span v-if="item.Usuario">
+					<span v-if="item.Usuario" class="whitespace-nowrap">
 						{{ item.Usuario.nome }}
 					</span>
         </template>
