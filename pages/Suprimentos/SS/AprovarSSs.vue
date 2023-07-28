@@ -94,6 +94,11 @@
 						{{ $dayjs(item.data_necessidade).format("DD/MM/YYYY") }}
 					</span>
         </template>
+        <template v-slot:[`body.Usuario.nome`]="{ item }">
+					<span v-if="item.Usuario">
+						{{ item.Usuario.nome }}
+					</span>
+        </template>
         <template v-slot:[`body.comentarios`]="{ item }">
           <button
             class="flex hover:bg-gray-400 w-full p-1"
@@ -244,6 +249,7 @@ export default {
         {nome: "Prazo Execução", valor: "prazo_execucao", filtro: true},
         {nome: "Necessidade", valor: "data_necessidade", filtro: true},
         {nome: "Etapa", valor: "EtapaSS.nome", filtro: true},
+        {nome: "Criado por", valor: "Usuario.nome", filtro: true},
         {nome: "Comentários", valor: "comentarios", filtro: true},
       ]
 
