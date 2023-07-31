@@ -429,7 +429,7 @@
 				type: [Boolean],
 			},
 			limparSelecionar: {
-				type: [Boolean],
+				type: [Boolean, Number, String],
 				// default: true,
 			},
 		},
@@ -859,6 +859,8 @@
 				if (this.selecionandoTodos === true) this.selecionandoTodos = false
 			},
       limparSelecionar(valor){
+        console.log(valor)
+
         this.selecionados = []
       }
 		},

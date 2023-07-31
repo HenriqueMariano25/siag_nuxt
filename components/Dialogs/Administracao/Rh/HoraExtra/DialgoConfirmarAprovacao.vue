@@ -175,7 +175,7 @@ export default {
         }
       }
 
-      this.$emit("aprovado",  aprovacao, agendamentos)
+      this.$emit("aprovado",  { aprovacao, agendamentos})
     },
   },
 }

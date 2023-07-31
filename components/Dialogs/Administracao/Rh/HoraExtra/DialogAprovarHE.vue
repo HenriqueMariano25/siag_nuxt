@@ -67,6 +67,7 @@
 										altura="calc(100vh - 335px)"
                     selecionar
                     @selecionados="selecionadosGestor = $event"
+                    :limparSelecionar="limparSelecionados"
 										@atualizar="buscarAgendamentosGestor()"
 										:carregando="carregandoTabelaGestor"
 										:temRodape="false">
@@ -287,7 +288,7 @@
 			:dados="selecionadosGestor"
 			:data="dataGestorArea"
 			tipoAprovacao="gestorArea"
-			@aprovado="aprovado" />
+			@aprovado="aprovado($event);" />
     <DialgoConfirmarAprovacao
       v-if="mostrarDialogConfirmarAprovacaoSiteManager"
       @cancelar="mostrarDialogConfirmarAprovacaoSiteManager = false"
@@ -364,7 +365,8 @@
 				selecionadosSiteManager: [],
         ordemSiteManager: null,
         mostrarDialogConfirmarAprovacaoSiteManager: false,
-        textoErro: ""
+        textoErro: "",
+        limparSelecionados: 1
 			}
 		},
     props: {
@@ -526,7 +528,11 @@
 				this.buscarAgendamentosGestor()
 			},
 
-			async aprovado(aprovacao, agendamentos) {
+			async aprovado($event) {
+        let { aprovacao, agendamentos } = $event
+
+
+        this.selecionadosGestor = []
 				this.mostrarDialogConfirmarAprovacao = false
 
 				if (aprovacao) this.textoAlerta = "Agendamentos aprovados com sucesso!"
@@ -542,8 +548,7 @@
 					}
 				}
 
-				this.mostrarAlerta = true
-				this.selecionadosGestor = []
+        this.limparSelecionados += 1
 			},
 
       async gerarExcelGestor() {
@@ -642,6 +647,7 @@
 
         this.mostrarAlerta = true
         this.selecionadosSiteManager = []
+        this.limparSelecionados += 1
       },
 
       async gerarExcelSiteManager() {
