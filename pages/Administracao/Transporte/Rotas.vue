@@ -176,18 +176,21 @@
 
         let funcionarios = await this.$axios.$get("/transporte/rotas/funcionarios", { params: { id: rota.id } }).then(resp => resp.funcionarios)
 
-
         funcionariosPorRota = funcionarios
 
         let terceiros = await this.$axios.$get("/transporte/terceiros/rota", { params: { rota_id: rota.id } }).then(resp => resp.terceiros)
 
         funcionariosPorRota.push(...terceiros)
 
-        funcionariosPorRota.sort(function(a, b) {
-          if (parseInt(a.poltrona) > parseInt(b.poltrona)) {
+        let funcOrdenados = await funcionariosPorRota.sort((a, b) => {
+          const nomeA = a.nome.toUpperCase()
+          const nomeB = b.nome.toUpperCase()
+
+          if (nomeA > nomeB) {
+
             return 1
           }
-          if (parseInt(a.poltrona) < parseInt(b.poltrona)) {
+          if (nomeA < nomeB) {
             return -1
           }
           return 0
@@ -195,7 +198,7 @@
 
         let hojeAgr = this.$dayjs().format("DD/MM/YYYY HH:mm:ss");
 
-        let novosDados = JSON.parse(JSON.stringify(funcionariosPorRota));
+        let novosDados = JSON.parse(JSON.stringify(funcOrdenados));
         var doc = new jsPDF({});
         doc.page = 1;
         doc.setProperties({
@@ -209,7 +212,7 @@
         doc.addImage(imgLogo, "PNG", 4, 6, 50, 9);
         doc.setFontSize(14);
         doc.setTextColor(0);
-        doc.text("RELATÓRIO PASSEIROS POR ROTA", 75, 9);
+        doc.text("RELATÓRIO PASSAGEIROS POR ROTA", 75, 9);
         doc.setFontSize(14);
         doc.text(`ROTA`, 190, 9);
         doc.text(`${rota.numero}`, 190, 14);
