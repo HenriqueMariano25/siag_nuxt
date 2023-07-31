@@ -50,6 +50,7 @@
 					!this.etapasFinalização.includes(etapa_id)
 				"
 				@selecionados="selecionados = $event"
+        :limparSelecionar="true"
 				:carregando="carregandoTabela"
 				:temDetalhes="false">
 				<template v-slot:[`body.acoes`]="{ item }">
@@ -379,6 +380,7 @@
 				anteriorEtapa: null,
 				etapasAprovacao: [],
 				etapasFinalização: [],
+        limparSelecionar: 1
 			}
 		},
 
@@ -661,6 +663,7 @@
 				this.mostrarAlerta = true
 				this.textoAlerta = "Cards processados com sucesso!"
 				this.selecionados = []
+        this.limparSelecionar += 1
 			},
 
 			async concluido(cards) {
@@ -676,6 +679,7 @@
 				this.mostrarAlerta = true
 				this.textoAlerta = "Cards finalizados com sucesso!"
 				this.selecionados = []
+        this.limparSelecionar += 1
 			},
 
       async rejeitado(cards) {
@@ -691,6 +695,7 @@
         this.mostrarAlerta = true
         this.textoAlerta = "Cards rejeitados com sucesso!"
         this.selecionados = []
+        this.limparSelecionar += 1
       },
 
       async standby(cards) {
@@ -706,6 +711,7 @@
         this.mostrarAlerta = true
         this.textoAlerta = "Cards movidos para Standby com sucesso!"
         this.selecionados = []
+        this.limparSelecionar += 1
       },
 
       async retornouStandby(cards) {
@@ -721,6 +727,7 @@
         this.mostrarAlerta = true
         this.textoAlerta = "Cards retornados e movidos com sucesso!"
         this.selecionados = []
+        this.limparSelecionar += 1
       },
 
 			async alterouCandidato(cards) {

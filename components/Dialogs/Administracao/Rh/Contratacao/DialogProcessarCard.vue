@@ -138,7 +138,7 @@
 							alt=""
 							class="w-7 h-7" />
 					</BotaoPadrao>
-          <BotaoPadrao texto="Rejeitar cards" @click="rejeitarCard()" v-if="etapa.rejeita_card" class="bg-red-200">
+          <BotaoPadrao texto="Rejeitar cards" @click="rejeitarCard()" v-if="etapa.rejeita_card" class="bg-red-300 hover:!bg-red-400">
             <img src="@/assets/icons/close-b.svg" alt="" class="w-7 h-7">
           </BotaoPadrao>
           <BotaoPadrao texto="Standby cards" @click="standbyCard()" v-if="etapa.standby_card" class="">
