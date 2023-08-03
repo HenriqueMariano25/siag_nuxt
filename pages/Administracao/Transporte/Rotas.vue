@@ -43,6 +43,12 @@
 						{{ item.Veiculo.nome }}
 					</span>
 				</template>
+        <template v-slot:[`body.ocupacao`]="{ item }">
+					<span
+            class="whitespace-nowrap">
+						{{ totalOcupacao(item) }}
+					</span>
+        </template>
 			</TabelaPadrao>
 		</div>
     <RodapePagina>
@@ -103,6 +109,7 @@
 					{ nome: "Horário de saida", valor: "horario_saida", ordenar: true },
 					{ nome: "Veículo", valor: "Veiculo.nome", filtro: true, ordenar: true },
 					{ nome: "Turno", valor: "turno", filtro: true, ordenar: true },
+					{ nome: "Ocupação", valor: "ocupacao" },
 				],
 				filtros: {},
 				ordem: null,
@@ -169,6 +176,15 @@
         this.mostrarAlerta = true
         this.rota = null
         this.totalItens -= 1
+      },
+
+      totalOcupacao(item){
+
+        let totalFuncionario = item.Funcionarios ? item.Funcionarios.length : 0
+        let totalTerceiros = item.TerceirosRota ? item.TerceirosRota.length : 0
+
+          return (totalFuncionario + totalTerceiros)
+
       },
 
       async gerarRelatorio(rota){
