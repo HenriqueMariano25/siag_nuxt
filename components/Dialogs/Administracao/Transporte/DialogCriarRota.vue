@@ -51,6 +51,12 @@
 								v-model="rotaLocal.turno"
 								id="status"
 								:invalido="erros.includes('turno')" />
+              <AppFormRadio
+                id="mostrarGrafico"
+                simNao
+                v-model="rotaLocal.mostrar_grafico"
+                :invalido="erros.includes('mostrar_grafico')"
+                titulo="Mostrar em relátorios ?" />
 						</div>
 					</template>
 					<template v-slot:[`tab.passageiros`]="{ item }">
@@ -188,6 +194,7 @@
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import DialogAdicionaTerceiro from "~/components/Dialogs/Administracao/Transporte/DialogAdicionaTerceiro.vue"
 	import DialogAlterarDaRota from "~/components/Dialogs/Administracao/Transporte/DialogAlterarDaRota.vue"
+  import AppFormRadio from "~/components/Ui/Form/AppFormRadio.vue";
 </script>
 
 <script>
@@ -209,6 +216,7 @@
 					horario_saida: null,
 					veiculo_id: null,
 					turno: null,
+          mostrar_grafico: null
 				},
 				carregando: false,
 				veiculos: [],
@@ -293,7 +301,7 @@
 			validarFormulario() {
 				this.erros = []
 
-				let camposObrigatorio = ["numero", "local", "horario_saida", "veiculo_id", "turno"]
+				let camposObrigatorio = ["numero", "local", "horario_saida", "veiculo_id", "turno", "mostrar_grafico"]
 
 				for (let campo of camposObrigatorio) {
 					if (this.rotaLocal[`${campo}`] === null || this.rotaLocal[`${campo}`] === "")

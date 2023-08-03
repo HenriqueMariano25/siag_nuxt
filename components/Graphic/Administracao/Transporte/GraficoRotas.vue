@@ -221,7 +221,13 @@
             totalOcupado = parseInt(totalOcupado) + parseInt(rota.total)
           }
 
-          this.totalPorcentagem = (( totalOcupado ) / (totalVagas / 100)).toFixed(2)
+          let totalPorcentagem = (( totalOcupado ) / (totalVagas / 100)).toFixed(2)
+          if(isNaN(totalPorcentagem)){
+            this.totalPorcentagem = 0
+          }else{
+            this.totalPorcentagem = totalPorcentagem
+          }
+
 
 					this.buscouDados = true
 
