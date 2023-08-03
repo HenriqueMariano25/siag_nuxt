@@ -1,23 +1,39 @@
 <template>
-  <div class="w-full grid  h-fit">
-    <div class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white ">
-      <ButtonNavegacao titulo="Rotas" cor="bg-[#264653]" link="transporte/rotas"
-                       v-if="$auth.user.permissoes.includes('transporte')">
-        <img src="@/assets/icons/route-w.svg" alt="" class="w-8 h-8">
-      </ButtonNavegacao>
+	<div class="w-full grid h-fit">
+		<div
+			class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white">
+			<ButtonNavegacao
+				titulo="Rotas"
+				cor="bg-[#264653]"
+				link="transporte/rotas"
+				v-if="$auth.user.permissoes.includes('transporte')">
+				<img
+					src="@/assets/icons/route-w.svg"
+					alt=""
+					class="w-8 h-8" />
+			</ButtonNavegacao>
+		</div>
+		<div>
+      <GraficoRotas :dados="dados"></GraficoRotas>
     </div>
-  </div>
+	</div>
 </template>
 
 <script>
-import ButtonNavegacao from "~/components/Shared/ButtonNavegacao.vue";
+	import ButtonNavegacao from "~/components/Shared/ButtonNavegacao.vue"
+	import GraficoRotas from "~/components/Graphic/Administracao/Transporte/GraficoRotas.vue"
 
-export default {
-  components: { ButtonNavegacao }
+	export default {
+		components: { ButtonNavegacao, GraficoRotas },
+    data() {
+      return {
+        dados: { "01": 46, "02": 45, "03": 30}
+      };
+    },
+    created(){
 
-};
+    }
+	}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
