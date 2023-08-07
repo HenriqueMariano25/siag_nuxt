@@ -1,8 +1,7 @@
 <template>
   <div class="w-full grid  h-fit">
     <div class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white ">
-      <ButtonNavegacao titulo="Efetivo" cor="bg-[#264653]" link="/administracao/rh/efetivo"
-                       v-if="$auth.user.permissoes.includes('efetivo_rh_novo')">
+      <ButtonNavegacao titulo="Efetivo" cor="bg-[#264653]" link="/administracao/rh/efetivo">
         <img src="@/assets/icons/people-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
       <ButtonNavegacao titulo="Hora Extra" cor="bg-[#264653]" link="/administracao/rh/horaExtra"

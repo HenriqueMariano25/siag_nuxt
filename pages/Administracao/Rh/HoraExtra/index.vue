@@ -102,8 +102,6 @@ export default {
     async buscarAgendamentos() {
       let resp = await this.$axios.$get('/hora_extra/graficos/todos_agendamentos')
 
-      console.log(resp)
-
       if(!resp.falha){
 
 
