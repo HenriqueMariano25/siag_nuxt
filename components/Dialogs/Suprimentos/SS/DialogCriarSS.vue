@@ -1190,7 +1190,7 @@
 						<AppFormTextarea
 							id="observacoes_matriz"
 							label="Observações"
-							placeholder="Observações opicionais"
+							placeholder="Observações opcionais"
 							v-model="ss.observacoes_matriz"
 							class="mt-1" />
 					</div>
@@ -1275,7 +1275,7 @@
 							<AppFormTextarea
 								id="observacoes_condicao"
 								label="Observações"
-								placeholder="Observações opicionais"
+								placeholder="Observações opcionais"
 								v-model="ss.observacoes_condicao"
 								class="mt-1" />
 						</div>
@@ -1354,7 +1354,7 @@
 						<AppFormTextarea
 							id="observacoes_condicao"
 							label="Observações"
-							placeholder="Observações opicionais"
+							placeholder="Observações opcionais"
 							v-model="ss.observacoes_geral"
 							class="mt-1" />
 					</div>

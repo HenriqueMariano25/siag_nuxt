@@ -83,6 +83,18 @@
 								class="w-6 h-6" />
 						</template>
 					</BotaoPadrao>
+          <BotaoPadrao
+            v-if="etapa_id !== 27"
+            :disabled="bloquearBtnNegar"
+            texto="VOLTAR SS"
+            @click="voltarSS()">
+            <template v-slot>
+              <img
+                src="@/assets/icons/back-b.svg"
+                alt="close"
+                class="w-7 h-7" />
+            </template>
+          </BotaoPadrao>
 					<BotaoPadrao
 						v-if="etapa_id !== 27"
 						:disabled="(processo.input === null || processo.input === '') || processando"
@@ -95,6 +107,7 @@
 								class="w-7 h-7" />
 						</template>
 					</BotaoPadrao>
+
 				</div>
 			</div>
 		</template>
@@ -154,8 +167,6 @@
 				this.$emit("cancelar")
 			},
 			async processarSS() {
-				console.log("Processando")
-				console.log(this.$dayjs().format("DD/MM/YYYY HH:mm:ss"))
         this.processando = true
 
 				let { comentario, input } = this.processo
@@ -182,6 +193,25 @@
 					this.$emit("processado", [ss_id])
 				}
 			},
+
+      async voltarSS(){
+        this.processando = true
+        let { comentario } = this.processo
+        let usuario_id = this.$auth.user.id
+        let solicitacoes = [this.ss.id]
+
+        let resp = await this.$axios.post("/suprimentos/ss/voltar_ss", {
+          comentario, solicitacoes, usuario_id
+        })
+
+        console.log(resp)
+
+        if(!resp.falha){
+          this.processando = false
+          this.$emit("retornado", solicitacoes)
+        }
+
+      },
 
 			async finalizarSS() {
 				let { comentario, input } = this.processo

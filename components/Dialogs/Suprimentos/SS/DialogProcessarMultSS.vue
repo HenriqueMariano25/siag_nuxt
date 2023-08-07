@@ -62,6 +62,19 @@
         </div>
         <div class="flex gap-x-2">
           <BotaoPadrao
+            v-if="etapa_id !== 27"
+            :disabled="bloquearBtnNegar"
+            texto="VOLTAR SS"
+            @click="voltarSS()">
+            <template v-slot>
+              <img
+                src="@/assets/icons/back-b.svg"
+                alt="close"
+                class="w-7 h-7" />
+            </template>
+          </BotaoPadrao>
+
+          <BotaoPadrao
             v-if="pularProxEtapa"
             :disabled="processo.comprador === null"
             texto="Processar p/ Cotar"
@@ -154,6 +167,26 @@ export default {
         this.$emit("processado", solicitacoes)
       }
     },
+
+    async voltarSS() {
+      this.processando = true
+      let { comentario } = this.processo
+      let usuario_id = this.$auth.user.id
+      let solicitacoes = this.solicitacoes.map((ss) => {
+        return ss.id
+      })
+
+      let resp = await this.$axios.post("/suprimentos/ss/voltar_ss", {
+        comentario, solicitacoes, usuario_id
+      })
+
+      if (!resp.falha) {
+        this.processando = false
+        this.$emit("retornado", solicitacoes)
+      }
+
+    },
+
     async negarSS() {
       let {comentario} = this.processo
       let solicitacoes = this.solicitacoes.map((ss) => {

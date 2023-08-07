@@ -250,6 +250,7 @@
 			:ss="ss"
 			v-if="mostrarDialogProcessarSS"
 			@processado="processadoSS"
+      @retornado="retornadoSS"
 			@negado="negadoSS"
 			:typeInput="typeInputDialog"
 			:etapa_id="etapa_id"
@@ -263,6 +264,7 @@
 			v-if="mostrarDialogProcessarMultSS"
       :etapa_id="etapa_id"
 			@processado="processadoSS"
+      @retornado="retornadoSS"
       @negado="negadoSS"
 			@cancelar="mostrarDialogProcessarMultSS = false"
 			:pularProxEtapa="pularProxEtapa" />
@@ -541,6 +543,22 @@
 				this.ss = null
 				this.selecionados = []
 			},
+
+      async retornadoSS(solicitacoes){
+        for (let ss of solicitacoes) {
+          let index = this.dados.findIndex((obj) => {
+            return (obj.id = ss)
+          })
+          this.dados.splice(index, 1)
+        }
+
+        this.mostrarDialogProcessarSS = false
+        this.mostrarDialogProcessarMultSS = false
+        this.mostrarAlerta = true
+        this.textoAlerta = "Solicitação voltou etapa com sucesso!"
+        this.ss = null
+        this.selecionados = []
+      },
 
       async negadoSS(solicitacoes){
         for (let ss of solicitacoes) {
