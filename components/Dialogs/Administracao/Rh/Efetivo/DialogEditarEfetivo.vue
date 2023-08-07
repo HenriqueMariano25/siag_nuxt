@@ -343,6 +343,13 @@
         if ([...new Set(this.funcionarios.map(o => o.jornada_trabalho_id))].length === 1) {
           this.campos.jornada_trabalho_id = this.funcionarios[0].jornada_trabalho_id
         }
+
+        if ([...new Set(this.funcionarios.map(o => {
+          return o.setor ? o.setor.id : null
+        }))].length === 1) {
+          this.campos.setor_id = this.funcionarios[0].setor ? this.funcionarios[0].setor.id : null
+        }
+
       }
 
 
@@ -398,15 +405,11 @@
 			async buscarSubDisciplinas() {
         let disciplina_id = this.campos.disciplina_id
 
-        console.log("Teste")
-
 				await this.buscarSubDisciplina(true,{ disciplina_id })
 				let subDisciplinas = this.$store.state.subDisciplina.subDisciplinas
 				let options = subDisciplinas.map((o) => {
 					return { id: o.id, nome: o.descricao }
 				})
-
-        console.log(subDisciplinas)
 
 				this.subDisciplinas = options
 			},
