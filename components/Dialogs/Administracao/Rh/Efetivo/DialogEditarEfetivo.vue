@@ -302,7 +302,50 @@
 				this.transporte.ponto_embarque = funcionario.ponto_embarque
 					? funcionario.ponto_embarque
 					: null
-			}
+			} else{
+        console.log([ ...new Set(this.funcionarios.map( o => o.disciplina_id ))].length)
+          if([...new Set(this.funcionarios.map(o => o.disciplina_id))].length === 1){
+            this.campos.disciplina_id = this.funcionarios[0].disciplina_id
+          }
+
+        if ([...new Set(this.funcionarios.map(o => o.encarregado_lider_id))].length === 1) {
+          this.campos.encarregado_lider_id = this.funcionarios[0].encarregado_lider_id
+        }
+
+        if ([...new Set(this.funcionarios.map(o => o.supervisor_id))].length === 1) {
+          this.campos.supervisor_id = this.funcionarios[0].supervisor_id
+        }
+
+        if ([...new Set(this.funcionarios.map(o => o.coordenador_id))].length === 1) {
+          this.campos.coordenador_id = this.funcionarios[0].coordenador_id
+        }
+
+        if ([...new Set(this.funcionarios.map(o => o.engenheiro_id))].length === 1) {
+          this.campos.engenheiro_id = this.funcionarios[0].engenheiro_id
+        }
+
+        if ([...new Set(this.funcionarios.map(o => o.gestor_id))].length === 1) {
+          this.campos.gestor_id = this.funcionarios[0].gestor_id
+        }
+
+        if ([...new Set(this.funcionarios.map(o => o.sub_disciplina_id))].length === 1) {
+          this.campos.sub_disciplina_id = this.funcionarios[0].sub_disciplina_id
+        }
+
+        if ([...new Set(this.funcionarios.map(o => o.equipe_planejamento_id))].length === 1) {
+          this.campos.equipe_planejamento_id = this.funcionarios[0].equipe_planejamento_id
+        }
+
+        if ([...new Set(this.funcionarios.map(o => o.turno_id))].length === 1) {
+          this.campos.turno_id = this.funcionarios[0].turno_id
+        }
+
+        if ([...new Set(this.funcionarios.map(o => o.jornada_trabalho_id))].length === 1) {
+          this.campos.jornada_trabalho_id = this.funcionarios[0].jornada_trabalho_id
+        }
+      }
+
+
 
 			await this.buscarResponsaveis()
 			await this.buscarDisciplinas()
