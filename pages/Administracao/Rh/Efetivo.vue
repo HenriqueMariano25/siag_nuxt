@@ -8,6 +8,7 @@
 				@pagina="pagina = $event"
 				@ordem="ordem = $event"
 				:itensPorPagina="itensPorPagina"
+        @itensPorPagina="itensPorPagina = $event"
 				:pagina="pagina"
 				:totalItens="totalItens"
 				:carregando="carregando"
