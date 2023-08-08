@@ -47,8 +47,13 @@
 					</template>
 					<template v-slot:[`body.situacao`]="{ item }">
 						<div class="flex justify-center">
-              <div v-if="item.etapa_ss_id === 6" class="bg-green-400 text-black px-2 rounded">
-                Finalizado
+              <div v-if="item.etapa_ss_id === 6 || item.etapa_ss_id === 5" >
+                <div class="bg-green-400 text-black px-2 rounded" v-if="item.etapa_ss_id === 6">
+                  Finalizado
+                </div>
+                <div class="bg-red-700 text-white px-2 rounded" v-if="item.etapa_ss_id === 5">
+                  Cancelado
+                </div>
               </div>
               <div v-else>
                 <template v-if="calcularPrevisao(item)">
@@ -64,16 +69,17 @@
                   </div>
                 </template>
                 <template v-else>
-                  <div
-                    v-if="!$dayjs().isAfter(item.data_necessidade, 'day')"
-                    class="bg-blue-400 text-black px-2 rounded">
-                    No prazo
-                  </div>
-                  <div
-                    v-if="$dayjs().isAfter(item.data_necessidade, 'day')"
-                    class="bg-red-400 text-black px-2 rounded">
-                    Atrasado
-                  </div>
+                  <div class="bg-yellow-400 text-black px-2 rounded">Pendente</div>
+<!--                  <div-->
+<!--                    v-if="!$dayjs().isAfter(item.data_necessidade, 'day')"-->
+<!--                    class="bg-blue-400 text-black px-2 rounded">-->
+<!--                    No prazo-->
+<!--                  </div>-->
+<!--                  <div-->
+<!--                    v-if="$dayjs().isAfter(item.data_necessidade, 'day')"-->
+<!--                    class="bg-red-400 text-black px-2 rounded">-->
+<!--                    Atrasado-->
+<!--                  </div>-->
                 </template>
               </div>
 						</div>
