@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <label for="selectPersonalizado" class="ml-1.5 text-sm mb-0.5" :class="{ 'text-red-600': invalido }">
+    <label for="selectPersonalizado" class="ml-1.5 text-xs font-medium" :class="{ 'text-red-600': invalido }">
       {{ label }}
       <span v-if="obrigatorio" class="text-red-700">*</span>
     </label>

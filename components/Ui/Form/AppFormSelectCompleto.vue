@@ -1,8 +1,8 @@
 <template>
 	<div
 		:id="'wrapper-' + id"
-		class="wrapper relative">
-		<div class="flex text-sm mt-0.5 ml-2">
+		class="wrapper relative ">
+		<div class="flex text-xs ml-1.5 mt-1 font-medium">
 			<span :class="{ 'text-red-600': invalido }">
 				{{ label }}
 				<span
@@ -41,7 +41,7 @@
 				<img
 					src="@/assets/icons/down-chevron-b.svg"
 					alt=""
-					class="w-6 h-6" />
+					class="w-[22px] h-[22px]" />
 			</div>
 		</div>
 		<div

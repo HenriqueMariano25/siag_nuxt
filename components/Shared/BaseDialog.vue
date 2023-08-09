@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="w-full h-full absolute top-0 left-0 bg-black/50 justify-center items-center flex print:bg-black/0 print:relative"
-		style="z-index: 100">
+		style="z-index: 110">
 		<div
 			class="bg-white flex flex-col rounded print:w-full print:absolute print:bg-red-500"
       :class="{ [largura]: largura }"

@@ -6,6 +6,8 @@ require('dayjs/locale/pt-br')
 
 dayjs.extend(isBetween)
 dayjs.extend(weekOfYear)
+dayjs.locale('pt-br')
+// dayjs.extend()
 
 export default (context, inject) => {
   inject('dayjs', dayjs)
