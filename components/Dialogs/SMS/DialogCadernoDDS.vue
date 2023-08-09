@@ -38,8 +38,8 @@
 							<span><strong>RESPONSÁVEL: </strong>{{ responsavel.nome }}</span>
 						</div>
 						<div
-							style="font-size: 26px"
-							class="w-full flex justify-end print:mt-[300px]">
+							style="font-size: 24px"
+							class="w-full flex justify-end print:mt-[200px]">
 							<div class="w-5/12 flex">
 								<span>
 									Favor entregar o caderno de DDS ao setor de <strong>TREINAMENTO</strong> a cada
@@ -48,7 +48,15 @@
 							</div>
 						</div>
 						<div
-							class="flex border border-black items-center p-1 print:mt-[412px]"
+							class="print:mt-[60px] px-2  print:h-[500px]"
+              v-if="recado"
+							style="font-size: 26px">
+							<span>{{ recado.substr(0, 500)  }}{{ recado.length > 500 ? "..." : ""
+                }}</span>
+<!--							<span>{{ recado }}</span>-->
+						</div>
+						<div
+							class="flex border border-black items-center p-1 print:mt-[180px]"
 							style="font-size: 20px">
 							<div class="flex">
 								<img
@@ -78,7 +86,8 @@
 							</div>
 						</div>
 					</div>
-					<div class="flex flex-col pagina-2 border border-black print:h-[1469px] break-before-page ">
+					<div
+						class="flex flex-col pagina-2 border border-black print:h-[1469px] break-before-page">
 						<div class="border-b border-black flex items-center text-center">
 							<div class="p-2 border-r border-black flex">
 								<img
@@ -133,8 +142,9 @@
 							</div>
 						</div>
 					</div>
-					<div v-for="rep in parseInt(repeticaoValidada)" >
-						<div class="flex flex-col pagina-3 border border-black print:h-[1468px] break-before-page">
+					<div v-for="rep in parseInt(repeticaoValidada)">
+						<div
+							class="flex flex-col pagina-3 border border-black print:h-[1468px] break-before-page">
 							<div class="border-b border-black flex items-center text-center">
 								<div class="p-2 border-r border-black flex">
 									<img
@@ -219,7 +229,7 @@
 										</td>
 										<td
 											class=""
-											style="width: 40px;">
+											style="width: 40px">
 											<img
 												src="@/assets/icons/emoticon-smile-b.svg"
 												alt=""
@@ -227,7 +237,7 @@
 										</td>
 										<td
 											class=""
-											style="width: 40px;">
+											style="width: 40px">
 											<img
 												src="@/assets/icons/emoticon-sad-b.svg"
 												alt=""
@@ -253,7 +263,7 @@
 										<td class="text-center"></td>
 										<td
 											class=""
-											style="width: 40px;">
+											style="width: 40px">
 											<img
 												src="@/assets/icons/emoticon-smile-b.svg"
 												alt=""
@@ -261,7 +271,7 @@
 										</td>
 										<td
 											class=""
-											style="width: 40px;">
+											style="width: 40px">
 											<img
 												src="@/assets/icons/emoticon-sad-b.svg"
 												alt=""
@@ -272,7 +282,8 @@
 								</table>
 							</div>
 						</div>
-						<div class="flex flex-col pagina-4 border border-black print:h-[1461px] break-before-page">
+						<div
+							class="flex flex-col pagina-4 border border-black print:h-[1461px] break-before-page">
 							<div class="border-b border-black flex items-center text-center">
 								<div class="p-2 border-r border-black flex">
 									<img
@@ -342,14 +353,12 @@
 									<span><strong>Nome da Empresa Subcontrada (Quando Necessário):</strong></span>
 								</div>
 							</div>
-							<div
-								class="grid grid-cols-12 divide-x divide-black px-1 border-b border-black">
+							<div class="grid grid-cols-12 divide-x divide-black px-1 border-b border-black">
 								<div class="col-span-10">
 									<span><strong>ASSUNTOS ABORDADOS:</strong></span>
 								</div>
 							</div>
-							<div
-								class="grid grid-cols-12 divide-x divide-black px-1 border-b border-black">
+							<div class="grid grid-cols-12 divide-x divide-black px-1 border-b border-black">
 								<div class="col-span-10">
 									<span><strong>Assuntos diversos:</strong></span>
 								</div>
@@ -879,13 +888,13 @@
 									</tr>
 								</table>
 							</div>
-<!--							<div>-->
-<!--								<div-->
-<!--									class="flex flex-col text-center border-b border-black"-->
-<!--									style="font-size: 13px">-->
-<!--									<span><strong>ENCERRAMENTO DA(S) ATIVIDADE(S)</strong></span>-->
-<!--								</div>-->
-<!--							</div>-->
+							<!--							<div>-->
+							<!--								<div-->
+							<!--									class="flex flex-col text-center border-b border-black"-->
+							<!--									style="font-size: 13px">-->
+							<!--									<span><strong>ENCERRAMENTO DA(S) ATIVIDADE(S)</strong></span>-->
+							<!--								</div>-->
+							<!--							</div>-->
 							<div>
 								<table
 									class="tabela"
@@ -940,20 +949,17 @@
 									</tr>
 								</table>
 							</div>
-							<div
-								class="grid grid-cols-12 divide-x divide-black px-1 border-b border-black">
+							<div class="grid grid-cols-12 divide-x divide-black px-1 border-b border-black">
 								<div class="col-span-10">
 									<span><strong>Detalhar oportunidade de melhoria(s):</strong></span>
 								</div>
 							</div>
-              <div
-                class="grid grid-cols-12 divide-x divide-black px-1 border-b border-black">
-                <div class="col-span-10">
-                  <span><strong>ANOTAÇÕES GERAIS:</strong></span>
-                </div>
-              </div>
-							<div
-								class="grid grid-cols-12 divide-x divide-black px-1 border-b border-black">
+							<div class="grid grid-cols-12 divide-x divide-black px-1 border-b border-black">
+								<div class="col-span-10">
+									<span><strong>ANOTAÇÕES GERAIS:</strong></span>
+								</div>
+							</div>
+							<div class="grid grid-cols-12 divide-x divide-black px-1 border-b border-black">
 								<div class="col-span-10">
 									<span>Responsáveis pela equipe:</span>
 								</div>
@@ -962,20 +968,25 @@
 					</div>
 				</div>
 			</template>
-      <template v-slot:rodape-btn-direito>
-        <div>
-          <BotaoPadrao texto="IMPRIMIR" @click="imprimir()">
-            <img src="@/assets/icons/printer-b.svg" alt="" class="w-7 h-7">
-          </BotaoPadrao>
-        </div>
-      </template>
+			<template v-slot:rodape-btn-direito>
+				<div>
+					<BotaoPadrao
+						texto="IMPRIMIR"
+						@click="imprimir()">
+						<img
+							src="@/assets/icons/printer-b.svg"
+							alt=""
+							class="w-7 h-7" />
+					</BotaoPadrao>
+				</div>
+			</template>
 		</BaseDialog>
 	</div>
 </template>
 
 <script>
 	import BaseDialog from "~/components/Shared/BaseDialog.vue"
-  import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
+	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 
 	export default {
 		name: "DialogCadernoDDS",
@@ -984,8 +995,9 @@
 			responsavel: { type: Object },
 			mes: { type: String },
 			funcionarios: { type: [String, Array] },
-			repeticao: { type: [Number] },
-      tarefa: { type: [String ]}
+			repeticao: { type: [Number, String] },
+			tarefa: { type: [String] },
+			recado: { type: [String] },
 		},
 		data() {
 			return {

@@ -33,7 +33,7 @@
 						id="tarefa"
 						type="text"
 						label="Tarefa"
-						class="col-span-9"
+						class="col-span-10"
             v-model="caderno.tarefa"
 						placeholder="Ex: Concretagem na caldeira" />
           <AppFormInput
@@ -43,6 +43,13 @@
             class="col-span-2"
             v-model="caderno.repeticao"
             placeholder="Ex: 30" />
+          <AppFormInput
+            id="tarefa"
+            type="text"
+            label="Recado"
+            class="col-span-11"
+            v-model="caderno.recado"
+            placeholder="Ex: Entregar caderno até o dia ..." />
 					<div class="flex self-end">
 						<BotaoPadrao
 							texto="buscar"
@@ -62,7 +69,7 @@
 						:cabecalho="cabecalho"
 						:dados="dados"
 						:temRodape="false"
-						altura="calc(100vh - 253px)"
+						altura="calc(100vh - 293px)"
 						@atualizar="buscarFuncionariosResponsavel()"
 						:temDetalhes="false">
 					</TabelaPadrao>
@@ -95,6 +102,7 @@
       :funcionarios="dados"
       :repeticao="caderno.repeticao"
       :tarefa="caderno.tarefa"
+      :recado="caderno.recado"
     />
 	</div>
 </template>
@@ -136,7 +144,8 @@
 					tipoResponsavel: "encarregado_lider_id",
 					responsavel: null,
 					tarefa: null,
-          repeticao: null
+          repeticao: null,
+          recado: null
 				},
 				erros: [],
 				cabecalho: [

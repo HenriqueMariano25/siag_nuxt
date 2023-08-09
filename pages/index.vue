@@ -45,6 +45,20 @@
           alt="close"
           class="w-8 h-8" />
       </ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="SMS"
+        cor="bg-[#008000]"
+        link="/sms"
+        v-if="
+					$auth.user.permissoes.includes(
+						'setor_sms',
+					)
+				">
+        <img
+          src="@/assets/icons/hat-w.svg"
+          alt="close"
+          class="w-8 h-8" />
+      </ButtonNavegacao>
 		</div>
 	</div>
 </template>
