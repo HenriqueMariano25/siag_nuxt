@@ -620,8 +620,8 @@
 			cardEditado(dados) {
 				let idx = this.dados.findIndex((o) => o.id === dados.card_id)
 
-				if (this.dados[idx].etapa_id !== 1) this.dados.splice(idx, 1)
-				else this.dados[idx]["Comentarios.descricao"] = dados.comentario
+        this.dados[idx] = Object.assign(this.dados[idx], dados.card)
+        this.dados[idx]["Comentarios.descricao"] = dados.comentario
 
 				this.mostrarDialogCriarCard = false
 				this.mostrarAlerta = true

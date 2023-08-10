@@ -14,6 +14,7 @@
 						label="Setor"
 						type="text"
 						:readonly="true"
+            obrigatorio
 						:disabled="true"
 						id="setor"
 						v-model="nomeSetor" />
@@ -27,6 +28,7 @@
 						v-model="card.quantidade" />
 					<AppFormSelect
 						label="Status"
+            obrigatorio
 						:options="status"
 						v-model="card.status_card_id"
 						id="status"
@@ -34,6 +36,7 @@
 					<AppFormSelect
 						label="Centro de Custo"
 						:options="centrosCusto"
+            obrigatorio
 						v-model="card.centro_custo_pep_id"
 						:disabled="podeEditarTudo"
 						:readonly="podeEditarTudo"
@@ -43,6 +46,7 @@
 						label="Função"
 						:options="funcoes"
 						v-model="card.funcao_id"
+            obrigatorio
 						@change="funcaoSelecionada"
 						:disabled="podeEditarTudo"
 						:readonly="podeEditarTudo"
@@ -51,6 +55,7 @@
 					<AppFormSelect
 						label="Disciplina"
 						:options="disciplinas"
+            obrigatorio
 						:disabled="podeEditarTudo"
 						:readonly="podeEditarTudo"
 						v-model="card.disciplina_id"
@@ -59,6 +64,7 @@
 					<AppFormSelect
 						label="Responsável pelo funcionário"
 						:options="responsaveis"
+            obrigatorio
 						v-model="card.responsavel_id"
 						id="responsavel"
 						:invalido="erro.includes('responsavel_id')" />
@@ -66,6 +72,7 @@
 						label="Data de necesisdade"
 						type="date"
 						id="data_necessidade"
+            obrigatorio
 						v-model="card.data_necessidade"
 						:invalido="invalidoDataNecessidade"
 						textoInvalido="Data de necessidade não pode ser inferior a 30 dias a partir da data atual" />
@@ -229,6 +236,7 @@
 							:invalido="erro.includes('indicacao.indicado_por')"
 							uppercase />
 						<AppFormInput
+              obrigatorio
 							placeholder="Ex: 123.456.789-10"
 							label="CPF"
 							type="text"
@@ -663,7 +671,7 @@
 
 						this.card = {
 							quantidade: null,
-							status: null,
+              status_card_id: null,
 							setor_id: null,
 							centro_custo_pep_id: null,
 							funcao_id: null,
@@ -725,7 +733,7 @@
 
 						if (!resp.falha) {
 							let comentario = resp.dados.comentario
-							this.$emit("editado", { card_id: this.card_id, comentario })
+							this.$emit("editado", { card_id: this.card_id, comentario, card: this.card })
 						}
 					} catch (error) {
 						console.log(error)
