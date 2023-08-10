@@ -862,7 +862,7 @@
 								: "Atrasado",
 						)
 						temp.push(item["Setor.nome"] ? item["Setor.nome"] : "")
-						temp.push(item["DisciplinaCard.sigla"] ? `${item["DisciplinaCard.sigla"]}` : "")
+						temp.push(item["DisciplinaCard.sigla"] ? `${item["DisciplinaCard.sigla"]} - ${item["DisciplinaCard.descricao"]}` : "")
 						temp.push(item["Indicacao.nome"] ? item["Indicacao.nome"] : "")
 						temp.push(item["Indicacao.cpf"] ? item["Indicacao.cpf"].replace(/[^\w\s]/gi, "") : "")
 						temp.push(item["FuncaoCard.nome"] ? item["FuncaoCard.nome"].trim() : "")
