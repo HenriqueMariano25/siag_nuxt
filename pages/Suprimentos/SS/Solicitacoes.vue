@@ -258,6 +258,7 @@
 			@processado="processadoSS"
       @retornado="retornadoSS"
 			@negado="negadoSS"
+      @compradorAlterado="compradorAlterado"
 			:typeInput="typeInputDialog"
 			:etapa_id="etapa_id"
 			@cancelar="
@@ -448,10 +449,6 @@
 				this.textoAlerta = "Solicitação criada com sucesso!"
 			},
 			async ssEditado({ solicitacao }) {
-
-        console.log(solicitacao)
-
-
 				this.mostrarDialogCriarSolicitacao = false
 				this.mostrarAlerta = true
 				this.textoAlerta = "Solicitação editada com sucesso!"
@@ -460,9 +457,6 @@
 
         if(solicitacao.etapa_ss_id === 1)
 				  this.dados.splice(index, 1)
-        // else if(solicitacao.etapa_ss_id === 2 )
-          // this.dados[index] = solicitacao
-
 			},
 			cancelar() {
 				this.card_id = null
@@ -580,6 +574,17 @@
           this.selecionados = []
         }
       },
+
+      async compradorAlterado({ comprador, solicitacoes}){
+        for(let id of solicitacoes){
+          let idx = this.dados.findIndex(o => o.id === id)
+
+          if(idx >= 0){
+            this.dados[idx].comprador.nome = comprador
+          }
+        }
+      },
+
       async canceladoSS(id){
         this.mostrarDialogCriarSolicitacao = false
         this.mostrarAlerta = true

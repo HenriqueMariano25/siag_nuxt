@@ -1,4 +1,5 @@
 <template>
+  <div>
   <BaseDialog
     titulo="Processar SS"
     @cancelar="cancelar()">
@@ -62,6 +63,15 @@
         </div>
         <div class="flex gap-x-2">
           <BotaoPadrao
+            v-if="$auth.user.permissoes.includes('ss_gerenciamento')"
+            texto="Alt. Comprador"
+            @click="mostrarDialogAlterarComprador = true">
+            <img
+              src="@/assets/icons/arrows-rotate-b.svg"
+              alt=""
+              class="w-7 h-7" />
+          </BotaoPadrao>
+          <BotaoPadrao
             v-if="etapa_id !== 27"
             :disabled="bloquearBtnNegar"
             texto="VOLTAR SS"
@@ -101,16 +111,31 @@
       </div>
     </template>
   </BaseDialog>
+    <DialogAlterarComprador
+      v-if="mostrarDialogAlterarComprador"
+      @cancelar="mostrarDialogAlterarComprador = false"
+      @alterado="alterado"
+      :solicitacoes="solicitacoes" />
+    <AppAlerta
+      tipo="sucesso"
+      :mostrar="mostrarAlerta"
+      @escondeu="mostrarAlerta = false">
+      {{ textoAlerta }}
+    </AppAlerta>
+  </div>
 </template>
 
 <script>
 import BaseDialog from "~/components/Shared/BaseDialog.vue";
 import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
 import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue";
+import AppAlerta from "~/components/Ui/AppAlerta.vue";
+import DialogAlterarComprador from "~/components/Dialogs/Suprimentos/SS/DialogAlterarComprador.vue";
 
 export default {
   name: "DialogProcessarMultSS",
   components: {
+    DialogAlterarComprador, AppAlerta,
     BaseDialog,
     BotaoPadrao,
     AppFormTextarea,
@@ -131,7 +156,10 @@ export default {
       processo: {
         comentario: null,
       },
-      valNegarSS:false
+      valNegarSS:false,
+      mostrarDialogAlterarComprador: false,
+      mostrarAlerta: false,
+      textoAlerta: ""
     }
   },
   computed: {
@@ -209,6 +237,16 @@ export default {
         this.$emit('negado', solicitacoes)
       }
 
+    },
+
+    async alterado(comprador) {
+      this.textoAlerta = "Comprador alterado com sucesso!"
+      this.mostrarAlerta = true
+      this.mostrarDialogAlterarComprador = false
+
+      let solicitacoes = this.solicitacoes
+
+      this.$emit("compradorAlterado", { comprador, solicitacoes })
     }
   }
 }

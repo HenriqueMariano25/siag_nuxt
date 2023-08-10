@@ -49,6 +49,14 @@
                 <span class="ml-2" v-if="menuAberto">Administração</span>
               </button>
             </NuxtLink>
+            <template v-if="$auth.user.permissoes.includes('solicitacao_servico')">
+              <NuxtLink to="/suprimentos">
+                <button class="items-center flex h-11 hover:bg-white/[.30] w-full p-1 rounded text-sm">
+                  <img src="@/assets/icons/forklift-w.svg" alt="close" class="w-8 h-8" />
+                  <span class="ml-2" v-if="menuAberto">Suprimentos</span>
+                </button>
+              </NuxtLink>
+            </template>
             <template v-if="$auth.user.permissoes.includes('setor_planejamento')">
               <NuxtLink to="/planejamento">
                 <button class="items-center flex h-11 hover:bg-white/[.30] w-full p-1 rounded text-sm ">
@@ -57,14 +65,7 @@
                 </button>
               </NuxtLink>
             </template>
-            <template v-if="$auth.user.permissoes.includes('solicitacao_servico')">
-              <NuxtLink to="/suprimentos">
-                <button class="items-center flex h-11 hover:bg-white/[.30] w-full p-1 rounded text-sm">
-                  <img src="@/assets/icons/forklift-w.svg" alt="close" class="w-8 h-8"/>
-                  <span class="ml-2" v-if="menuAberto">Suprimentos</span>
-                </button>
-              </NuxtLink>
-            </template>
+
             <template v-if="$auth.user.permissoes.includes(
 						'setor_sms',
 					)">
