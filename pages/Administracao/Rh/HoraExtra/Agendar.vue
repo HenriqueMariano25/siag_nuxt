@@ -371,7 +371,8 @@
 				noIntervalo: false,
 				horaFechamentoAgendamento: null,
         mostrarSelecionados: false,
-        limparSelecionar: false
+        limparSelecionar: false,
+        agendamentosPorDia: {}
 			}
 		},
 		computed: {
@@ -546,6 +547,9 @@
 					this.totalItens = parseInt(resp.dados.totalItens)
 					this.dados = funcionarios
 					this.carregandoTabela = false
+          if(this.agendamento.data){
+            await this.buscarAgendFuncDia()
+          }
 				}
 			},
 
@@ -585,17 +589,24 @@
 					agA["ativo"] = false
 				}
 
-				let resp = await this.$axios.$get("/hora_extra/agendamentos/funcionario/dia", {
-					params: { data, setor_id },
-				})
+        let agendamentos = []
+
+        if (Object.keys(this.agendamentosPorDia).includes(data)) {
+          agendamentos = this.agendamentosPorDia[data]
+        } else {
+          let resp = await this.$axios.$get("/hora_extra/agendamentos/funcionario/dia", {
+            params: { data, setor_id },
+          })
+
+          agendamentos = resp.dados.agendamentos
+
+          this.agendamentosPorDia[data] = agendamentos
+        }
 
 				let novosDados = new Array(...this.dados)
-
-				if (!resp.falha) {
-					let { agendamentos } = resp.dados
-
 					for (let ag of agendamentos) {
 						let idx = novosDados.findIndex((o) => o.chapa === ag.chapa)
+
 
 						if (idx >= 0) {
 							novosDados[idx]["aprovacao_he"] = ag.aprovacao_he
@@ -605,9 +616,6 @@
 						}
 					}
           this.limparSelecionar = false
-
-          // this.buscarFuncionarios()
-				}
 
 				this.dados = novosDados
 			},
@@ -620,6 +628,7 @@
 					this.tipoAlerta = "erro"
 					this.textoAlerta = "Não é possivel agendar para dias anteriores !"
 				} else {
+          this.limparSelecionar = true
 					let funcionarios = this.funcionariosSelecionados
 
 					let funcionariosChapa = funcionarios.map((o) => o.chapa)
@@ -645,9 +654,7 @@
 							})
 							let novosAgendados = resp.novosAgendados
 							for (let novo of novosAgendados) {
-								let idx = novosDados.findIndex((o) => o.chapa === novo.chapa)
-
-								if (idx >= 0) novosDados[idx]["ativo"] = true
+                this.agendamentosPorDia[data].push(novo)
 							}
 
 							cont = 0
@@ -658,6 +665,8 @@
 					this.textoAlerta = "Agendamento realizado com sucesso!"
 					this.funcionariosSelecionados = []
 					this.dados = novosDados
+          this.limparSelecionar = false
+          await this.buscarAgendFuncDia()
 				}
 			},
 		},

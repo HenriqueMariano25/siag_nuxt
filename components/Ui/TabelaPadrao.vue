@@ -598,7 +598,7 @@
         }
 
 				if (this.dadosSql) {
-					if (this.filtros.some((o) => o.includes(`LOWER(${item})`))) {
+					if (this.filtros.some((o) => o.includes(`LOWER(${colunaTabela})`))) {
 						let idx = this.filtros.findIndex((o) => o.includes(`LOWER(${item})`))
 
 						this.filtros.splice(idx, 1)
@@ -859,8 +859,6 @@
 				if (this.selecionandoTodos === true) this.selecionandoTodos = false
 			},
       limparSelecionar(valor){
-        console.log(valor)
-
         this.selecionados = []
       }
 		},
