@@ -128,6 +128,15 @@
 												v-model="checkSelecionarTodos"
 												@click="selecionarTodos(cab.opcoes)"></AppFormCheckbox>
 										</div>
+                    <div class="py-1">
+                      <AppFormCheckbox
+                        key="vazios"
+                        id="filtroCheckVazios"
+                        :valor="null"
+                        label="Vazios"
+                        v-model="multSelecionados"
+                        ></AppFormCheckbox>
+                    </div>
 										<template v-for="o in opcoesFiltradas(cab.opcoes)">
 											<AppFormCheckbox
 												v-if="!Object.keys(o).includes('id')"
@@ -676,8 +685,10 @@
 				if (!this.checkSelecionarTodos) {
 					if (Object.keys(opcoes[0]).includes("id")) {
 						this.multSelecionados = opcoes.map((o) => o.id)
+            this.multSelecionados.unshift(null)
 					} else {
 						this.multSelecionados = opcoes
+            this.multSelecionados.unshift(null)
 					}
 				} else {
 					this.multSelecionados = []

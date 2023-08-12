@@ -25,7 +25,6 @@
 			},
 			valor: {
 				type: [String, Number, Array, Object, Boolean],
-				required: true,
 				default: "",
 			},
 			value: [Boolean, Array, String],
