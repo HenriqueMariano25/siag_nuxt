@@ -375,16 +375,19 @@
 								: (this.dados[idx].Disciplina = { descricao: nomes.disciplinaDescricaoNome })
 							: null
 
-						nomes.disciplinaSiglaNome
-							? this.dados[idx].disciplina_id !== null
-								? (this.dados[idx].Disciplina.sigla = nomes.disciplinaSiglaNome)
-								: (this.dados[idx].Disciplina = { sigla: nomes.disciplinaSiglaNome })
-							: null
+            if(nomes.disciplinaSiglaNome){
+              if(this.dados[idx].disciplina_id !== null){
+                this.dados[idx].Disciplina.sigla = nomes.disciplinaSiglaNome
+                this.dados[idx].Disciplina.descricao = nomes.disciplinaDescricaoNome
+              }else{
+                this.dados[idx].Disciplina = { sigla: nomes.disciplinaSiglaNome, descricao: nomes.disciplinaDescricaoNome }
+              }
+            }
 
 						nomes.subDisciplinaNome
 							? this.dados[idx].sub_disciplina_id !== null
 								? (this.dados[idx].SubDisciplina.descricao = nomes.subDisciplinaNome)
-								: (this.dados[idx].SubDisciplin = { descricao: nomes.subDisciplinaNome })
+								: (this.dados[idx].SubDisciplina = { descricao: nomes.subDisciplinaNome })
 							: null
 
 						nomes.turnoNome

@@ -282,6 +282,7 @@
     },
 		async created() {
 			if (this.funcionarios.length === 1) {
+
 				this.carregando = true
 				let funcionario = this.funcionarios[0]
 
@@ -303,7 +304,6 @@
 					? funcionario.ponto_embarque
 					: null
 			} else{
-        console.log([ ...new Set(this.funcionarios.map( o => o.disciplina_id ))].length)
           if([...new Set(this.funcionarios.map(o => o.disciplina_id))].length === 1){
             this.campos.disciplina_id = this.funcionarios[0].disciplina_id
           }
@@ -352,8 +352,6 @@
 
       }
 
-
-
 			await this.buscarResponsaveis()
 			await this.buscarDisciplinas()
 			// await this.buscarSubDisciplinas()
@@ -362,10 +360,9 @@
 			await this.buscarJornadaTrabalho()
 
 			let setores = await this.buscarSetores()
-			let options = setores.map((o) => {
+      this.setores = setores.map((o) => {
 				return { id: o.id, nome: o.nome }
 			})
-			this.setores = options
 			this.carregando = false
 		},
 		methods: {
@@ -378,11 +375,9 @@
 				if (!resp.falha) {
 					let responsaveis = resp.dados.responsaveis
 
-					let options = responsaveis.map((o) => {
+          this.responsaveis = responsaveis.map((o) => {
 						return { id: o.id, nome: o.nome }
 					})
-
-					this.responsaveis = options
 				}
 			},
 
@@ -390,7 +385,7 @@
 				await this.buscarDisciplina()
 				let disciplinas = this.$store.state.disciplina.disciplinas
 
-				let options = disciplinas.map((o) => {
+        this.disciplinas = disciplinas.map((o) => {
 					return {
 						id: o.id,
 						nome: `${o.sigla} - ${o.descricao}`,
@@ -398,8 +393,6 @@
 						setor: o.setor.nome,
 					}
 				})
-
-				this.disciplinas = options
 			},
 
 			async buscarSubDisciplinas() {
@@ -407,20 +400,17 @@
 
 				await this.buscarSubDisciplina(true,{ disciplina_id })
 				let subDisciplinas = this.$store.state.subDisciplina.subDisciplinas
-				let options = subDisciplinas.map((o) => {
+        this.subDisciplinas = subDisciplinas.map((o) => {
 					return { id: o.id, nome: o.descricao }
 				})
-
-				this.subDisciplinas = options
 			},
 
 			async buscarEquipesPlanejamento() {
 				await this.buscarEquipePlanejamento()
 				let equipesPlanejamento = this.$store.state.equipePlanejamento.equipesPlanejamento
-				let options = equipesPlanejamento.map((o) => {
+        this.equipesPlanejamento = equipesPlanejamento.map((o) => {
 					return { id: o.id, nome: o.descricao }
 				})
-				this.equipesPlanejamento = options
 			},
 
 			async buscarTurnos() {
@@ -429,11 +419,9 @@
 				if (!resp.falha) {
 					let turnos = resp.dados.turnos
 
-					let options = turnos.map((o) => {
+          this.turnos = turnos.map((o) => {
 						return { id: o.id, nome: o.descricao }
 					})
-
-					this.turnos = options
 				}
 			},
 
@@ -443,11 +431,9 @@
 				if (!resp.falha) {
 					let jornadasTrabalho = resp.dados.jornadasTrabalho
 
-					let options = jornadasTrabalho.map((o) => {
+          this.jornadasTrabalho = jornadasTrabalho.map((o) => {
 						return { id: o.id, nome: o.descricao }
 					})
-
-					this.jornadasTrabalho = options
 				}
 			},
 
@@ -643,7 +629,6 @@
 
 					if (disciplina) this.campos.setor_id = disciplina.setor_id
 
-          this.campos.sub_disciplina_id = null
           await this.buscarSubDisciplinas()
 				}
 			},
