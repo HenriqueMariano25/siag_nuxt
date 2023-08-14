@@ -40,7 +40,7 @@
       </template>
       <template v-slot:rodape-btn-direito>
         <div class="flex justify-end" >
-          <BotaoPadrao texto="Salvar" @click="disciplina ? editarDisciplina() : cadastrarDisciplina()">
+          <BotaoPadrao texto="Salvar" @clique="disciplina ? editarDisciplina() : cadastrarDisciplina()">
             <img src="@/assets/icons/save-b.svg" alt="" class="w-7 h-7">
           </BotaoPadrao>
         </div>

@@ -158,7 +158,7 @@
 			<template v-slot>
         <div class="flex items-center w-full justify-between">
           <div class="flex  ">
-            <BotaoPadrao texto="Gerar excel" @click="gerarExcel()">
+            <BotaoPadrao texto="Gerar excel" @clique="gerarExcel()">
               <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
             </BotaoPadrao>
           </div>
@@ -166,7 +166,7 @@
             <BotaoPadrao
               :disabled="selecionados.length <= 0"
               texto="Aprovar Cards"
-              @click="mostrarDialogAprovarCard = true">
+              @clique="mostrarDialogAprovarCard = true">
               <template v-slot>
                 <img
                   src="@/assets/icons/check-b.svg"

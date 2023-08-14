@@ -48,7 +48,7 @@
 								texto="Negar SS"
 								cor="bg-red-400 hover:bg-red-600"
 								class="ml-5"
-								@click="valNegarSS = true"
+								@clique="valNegarSS = true"
 								:disabled="bloquearBtnNegar"
 								v-if="!valNegarSS">
 								<img
@@ -62,12 +62,12 @@
 								<BotaoPadrao
 									texto="Não"
 									cor="bg-red-400 hover:bg-red-600"
-									@click="valNegarSS = false" />
+									@clique="valNegarSS = false" />
 								<span>Tem certeza que deseja negar essa solicitação ?</span>
 								<BotaoPadrao
 									texto="Sim"
 									cor="bg-green-400 hover:bg-green-600"
-									@click="negarSS()" />
+									@clique="negarSS()" />
 							</div>
 						</div>
 					</div>
@@ -75,7 +75,7 @@
 						<BotaoPadrao
               v-if="$auth.user.permissoes.includes('ss_gerenciamento')"
 							texto="Alt. Comprador"
-							@click="mostrarDialogAlterarComprador = true">
+							@clique="mostrarDialogAlterarComprador = true">
 							<img
 								src="@/assets/icons/arrows-rotate-b.svg"
 								alt=""
@@ -85,7 +85,7 @@
 							v-if="etapa_id === 17 || etapa_id === 27"
 							:disabled="processo.input === null || processo.input === ''"
 							texto="Finalizar SS"
-							@click="finalizarSS()">
+							@clique="finalizarSS()">
 							<template v-slot>
 								<img
 									src="@/assets/icons/check-circle-b.svg"
@@ -97,7 +97,7 @@
 							v-if="etapa_id !== 27"
 							:disabled="bloquearBtnNegar"
 							texto="VOLTAR SS"
-							@click="voltarSS()">
+							@clique="voltarSS()">
 							<template v-slot>
 								<img
 									src="@/assets/icons/back-b.svg"
@@ -109,7 +109,7 @@
 							v-if="etapa_id !== 27"
 							:disabled="processo.input === null || processo.input === '' || processando"
 							texto="Processar SS"
-							@click="processarSS()">
+							@clique="processarSS()">
 							<template v-slot>
 								<img
 									src="@/assets/icons/check-b.svg"

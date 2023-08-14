@@ -54,7 +54,7 @@
                                      v-model="permissao_id" />
             </div>
             <div class="flex items-end">
-              <BotaoPadrao cor="bg-primaria-500 hover:bg-primaria-700" @click="adicionarPermissao()">
+              <BotaoPadrao cor="bg-primaria-500 hover:bg-primaria-700" @clique="adicionarPermissao()">
                 <img src="@/assets/icons/add-b.svg" alt="" class="w-6 h-6 ">
               </BotaoPadrao>
             </div>
@@ -67,7 +67,7 @@
                   {{ p.descricao }}
                 </div>
                 <div>
-                  <BotaoPadrao @click="deletarPermissao(p.UsuarioPermissao.id)">
+                  <BotaoPadrao @clique="deletarPermissao(p.UsuarioPermissao.id)">
                     <img src="@/assets/icons/delete-b.svg" alt="" class="w-7 h-7">
                   </BotaoPadrao>
                 </div>
@@ -79,10 +79,10 @@
     </template>
     <template v-slot:rodape-btn-direito>
       <div class="flex gap-2">
-        <BotaoPadrao texto="resetar senha" @click="resetarSenha()" v-if="usuario_id !== null">
+        <BotaoPadrao texto="resetar senha" @clique="resetarSenha()" v-if="usuario_id !== null">
           <img src="@/assets/icons/lock-open-b.svg" alt="salvar" class="w-6 h-6">
         </BotaoPadrao>
-        <BotaoPadrao texto="salvar" @click="usuario_id !== null ? editarUsuario() : criarUsuario()">
+        <BotaoPadrao texto="salvar" @clique="usuario_id !== null ? editarUsuario() : criarUsuario()">
           <img src="@/assets/icons/save-b.svg" alt="salvar" class="w-7 h-7">
         </BotaoPadrao>
       </div>

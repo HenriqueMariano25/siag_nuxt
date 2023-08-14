@@ -102,7 +102,7 @@
       </div>
       </template>
       <template v-slot:rodape-btn-direito>
-        <BotaoPadrao texto="imprimir" @click="imprimir()">
+        <BotaoPadrao texto="imprimir" @clique="imprimir()">
           <img src="@/assets/icons/printer-b.svg" alt="" class="w-7 h-7">
         </BotaoPadrao>
       </template>

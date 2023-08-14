@@ -39,7 +39,7 @@
         <BotaoPadrao
           texto="Negar SS"
           cor="bg-red-500"
-          @click="aprovarSSs(false)"
+          @clique="aprovarSSs(false)"
           :disabled="bloquearBtnNegar">
           <template v-slot>
             <img src="@/assets/icons/close-b.svg" alt="close" class="w-6 h-6"/>
@@ -48,7 +48,7 @@
         <BotaoPadrao
           texto="Aprovar SS"
           cor="bg-green-500"
-          @click="aprovarSSs(true)">
+          @clique="aprovarSSs(true)">
           <template v-slot>
             <img src="@/assets/icons/check-b.svg" alt="close" class="w-7 h-7"/>
           </template>

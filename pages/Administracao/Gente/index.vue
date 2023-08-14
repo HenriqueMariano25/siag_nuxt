@@ -2,7 +2,7 @@
   <div>
     <div class="bg-gray-300 p-2 flex ">
       <AppFormFile label="Importar Excel" id="excel" @change="arquivo = $event"/>
-      <BotaoPadrao texto="Gerar Excel" class="flex border border-gray-400 ml-3" @click="gerarExcel()"/>
+      <BotaoPadrao texto="Gerar Excel" class="flex border border-gray-400 ml-3" @clique="gerarExcel()"/>
     </div>
   </div>
 </template>

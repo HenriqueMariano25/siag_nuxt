@@ -41,7 +41,7 @@
 					<div class="flex w-full justify-end gap-4">
 						<BotaoPadrao
 							texto="Criar usuário"
-							@click="mostrarDialogCriarUsuario = true">
+							@clique="mostrarDialogCriarUsuario = true">
 							<template v-slot>
 								<img
 									src="@/assets/icons/add-b.svg"

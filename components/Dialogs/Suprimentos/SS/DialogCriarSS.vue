@@ -230,7 +230,7 @@
 									texto="Adicionar"
 									cor="bg-[#15536D]"
 									class="text-white self-end"
-									@click="adicionarFornecedor()">
+									@clique="adicionarFornecedor()">
 								</BotaoPadrao>
 							</div>
 						</div>
@@ -252,7 +252,7 @@
 										<td class="border border-gray-400">
 											<BotaoIcone
 												class="flex"
-												@click="removerFornecedor(index)">
+												@clique="removerFornecedor(index)">
 												<img
 													src="@/assets/icons/delete-b.svg"
 													alt="close"
@@ -1378,7 +1378,7 @@
 						<span>Campos obrigatórios necessários</span>
 					</div>
 
-					<BotaoPadrao texto="salvar" :disabled="bloquearBotaoSalvar" @click="ss_id !== null ? editarSS() : adicionarSS()">
+					<BotaoPadrao texto="salvar" :disabled="bloquearBotaoSalvar" @clique="ss_id !== null ? editarSS() : adicionarSS()">
             <img src="@/assets/icons/save-b.svg" alt="" class="w-6 h-6">
           </BotaoPadrao>
 				</div>

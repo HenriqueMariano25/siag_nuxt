@@ -16,7 +16,7 @@
 				:temDetalhes="false">
 				<template v-slot:[`body.acoes`]="{ item }">
 					<BotaoPadrao
-						@click="
+						@clique="
 							equipePlanejamento = item
 							mostrarDialogCriarEquipePlanejamento = true
 						"
@@ -45,7 +45,7 @@
 						<BotaoPadrao
 							v-if="$auth.user.permissoes.includes('importar_planejamento')"
 							class="flex"
-							@click="mostrarDialogImportarEquipePlanejamento = true"
+							@clique="mostrarDialogImportarEquipePlanejamento = true"
 							texto="Importar">
 							<img
 								src="@/assets/icons/upload-b.svg"
@@ -54,7 +54,7 @@
 						</BotaoPadrao>
 						<BotaoPadrao
 							class="flex"
-							@click="mostrarDialogCriarEquipePlanejamento = true"
+							@clique="mostrarDialogCriarEquipePlanejamento = true"
 							texto="Adicionar">
 							<img
 								src="@/assets/icons/add-b.svg"

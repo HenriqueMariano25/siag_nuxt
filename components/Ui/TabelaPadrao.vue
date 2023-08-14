@@ -157,14 +157,14 @@
 									<div class="w-full gap-2 flex justify-between">
 										<BotaoPadrao
 											texto="Limpar"
-											@click="limparFiltrarMult(cab.valor)"
+											@clique="limparFiltrarMult(cab.valor)"
 											class=" ">
 										</BotaoPadrao>
 										<BotaoPadrao
 											texto="Filtrar"
 											cor="bg-primaria-500 hover:bg-primaria-700 text-white"
 											class=" "
-											@click="filtrarMult(cab.valor)">
+											@clique="filtrarMult(cab.valor)">
 										</BotaoPadrao>
 									</div>
 								</div>
@@ -223,12 +223,12 @@
 										<div class="flex justify-between">
 											<BotaoPadrao
 												texto="Limpar"
-												@click="limparFiltroData(cab.valor)"></BotaoPadrao>
+												@clique="limparFiltroData(cab.valor)"></BotaoPadrao>
 											<BotaoPadrao
 												:disabled="desativarBtnSalvarData"
 												texto="Filtrar"
 												cor="bg-primaria-500 text-white hover:bg-primaria-700"
-												@click="filtrarData(cab.valor)"></BotaoPadrao>
+												@clique="filtrarData(cab.valor)"></BotaoPadrao>
 										</div>
 									</div>
 								</div>

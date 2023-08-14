@@ -972,7 +972,7 @@
 				<div>
 					<BotaoPadrao
 						texto="IMPRIMIR"
-						@click="imprimir()">
+						@clique="imprimir()">
 						<img
 							src="@/assets/icons/printer-b.svg"
 							alt=""

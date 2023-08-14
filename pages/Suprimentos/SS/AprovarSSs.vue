@@ -122,7 +122,7 @@
             <BotaoPadrao
               :disabled="selecionados.length <= 0"
               texto="Aprovar SS"
-              @click="mostrarDialogAprovarSS = true">
+              @clique="mostrarDialogAprovarSS = true">
               <template v-slot>
                 <img
                   src="@/assets/icons/check-b.svg"

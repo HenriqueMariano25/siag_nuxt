@@ -10,19 +10,19 @@
       </template>
       <template v-slot:rodape-btn-direito>
         <div class="flex w-full gap-2 justify-end">
-            <BotaoPadrao texto="Deletar" @click="deletando = !deletando" v-if="!deletando">
+            <BotaoPadrao texto="Deletar" @clique="deletando = !deletando" v-if="!deletando">
               <img src="@/assets/icons/delete-b.svg" alt="" class="w-7 h-7">
             </BotaoPadrao>
             <div class="flex  items-center gap-2 !text-base" v-if="deletando">
 
               <BotaoPadrao texto="Sim" cor="bg-green-400 hover:!bg-green-500 !p-1"
-                           @click="deletarMotivo()" />
+                           @clique="deletarMotivo()" />
               <span>Tem certeza que deseja remover ?</span>
               <BotaoPadrao texto="Não" cor="bg-red-400 hover:!bg-red-500 !p-1"
-                           @click="deletando = !deletando" />
+                           @clique="deletando = !deletando" />
             </div>
             <div class="flex">
-              <BotaoPadrao texto="salvar" @click="motivo === null ? cadastrarMotivo() : editarMotivo()">
+              <BotaoPadrao texto="salvar" @clique="motivo === null ? cadastrarMotivo() : editarMotivo()">
                 <img src="@/assets/icons/save-b.svg" alt="" class="w-7 h-7">
               </BotaoPadrao>
             </div>

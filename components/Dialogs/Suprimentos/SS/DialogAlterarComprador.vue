@@ -25,7 +25,7 @@
 			<div>
 				<BotaoPadrao
 					texto="alterar"
-					@click="alterarComprador()">
+					@clique="alterarComprador()">
 					<img
 						src="@/assets/icons/save-b.svg"
 						alt=""

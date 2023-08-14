@@ -15,7 +15,7 @@
 					<BotaoPadrao
 						icone
 						class="!p-0"
-						@click="
+						@clique="
 							motivo = item
 							mostrarDialogCriarMotivo = true
 						">
@@ -34,7 +34,7 @@
 					<div class="flex">
 						<BotaoPadrao
 							texto="Adicionar"
-							@click="mostrarDialogCriarMotivo = true">
+							@clique="mostrarDialogCriarMotivo = true">
 							<img
 								src="@/assets/icons/add-b.svg"
 								alt=""

@@ -186,7 +186,7 @@
 			<template v-slot:rodape-btn-direito>
 				<BotaoPadrao
 					texto="Salvar"
-					@click="tab === 'transporte' ? editarRota() : tab === 'planejamento' ? editarPlanejamento() :  editarFuncionarios()">
+					@clique="tab === 'transporte' ? editarRota() : tab === 'planejamento' ? editarPlanejamento() :  editarFuncionarios()">
 					<img
 						src="@/assets/icons/save-b.svg"
 						alt=""

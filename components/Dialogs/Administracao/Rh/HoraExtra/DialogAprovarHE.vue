@@ -21,7 +21,7 @@
 											<BotaoPadrao
                         :disabled="dataGestorArea === null || dataGestorArea === ''"
 												cor="bg-gray-600"
-												@click="buscarAgendamentosGestor()">
+												@clique="buscarAgendamentosGestor()">
 												<img
 													src="@/assets/icons/magnifier-w.svg"
 													alt=""
@@ -157,7 +157,7 @@
                       <BotaoPadrao
                         :disabled="dataSiteManager === null || dataSiteManager === ''"
                         cor="bg-gray-600"
-                        @click="buscarAgendamentosSiteManager()">
+                        @clique="buscarAgendamentosSiteManager()">
                         <img
                           src="@/assets/icons/magnifier-w.svg"
                           alt=""
@@ -294,14 +294,14 @@
             class="flex"
             :disabled="desaBotaoAprovarNegar"
             cor="bg-blue-500 hover:bg-blue-600"
-            @click="tab === 'gestorArea' ? mostrarDialogConfirmarAprovacao = true : mostrarDialogConfirmarAprovacaoSiteManager = true">
+            @clique="tab === 'gestorArea' ? mostrarDialogConfirmarAprovacao = true : mostrarDialogConfirmarAprovacaoSiteManager = true">
             <img
               src="@/assets/icons/check-b.svg"
               alt=""
               class="w-7 h-7"/>
           </BotaoPadrao>
           <BotaoPadrao texto="Excel" :disabled="desativarBtnExcel"
-                       @click="tab === 'gestorArea' ? gerarExcelGestor() : gerarExcelSiteManager()">
+                       @clique="tab === 'gestorArea' ? gerarExcelGestor() : gerarExcelSiteManager()">
             <img
               src="@/assets/icons/excel-b.svg"
               alt=""
@@ -672,6 +672,8 @@
       },
 
       async aprovadoSiteManager(aprovacao, agendamentos) {
+        console.log(aprovacao, agendamentos)
+
         this.mostrarDialogConfirmarAprovacaoSiteManager = false
 
         if (aprovacao) this.textoAlerta = "Agendamentos aprovados com sucesso!"

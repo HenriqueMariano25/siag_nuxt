@@ -39,7 +39,7 @@
       </template>
       <template v-slot:rodape-btn-direito>
         <div>
-          <BotaoPadrao texto="salvar" @click="editarFuncionario()">
+          <BotaoPadrao texto="salvar" @clique="editarFuncionario()">
             <img src="@/assets/icons/save-b.svg" alt="" class="w-7 h-7">
           </BotaoPadrao>
         </div>

@@ -35,15 +35,15 @@
             <BotaoCancelar @click="$emit('cancelar')"/>
             <slot name="rodape-btn-deletar" v-if="btnDeletar">
               <div>
-                <BotaoPadrao texto="Deletar" cor="bg-red-500" class="ml-2" @click="estaDeletando = !estaDeletando" v-if="!estaDeletando">
+                <BotaoPadrao texto="Deletar" cor="bg-red-500" class="ml-2" @clique="estaDeletando = !estaDeletando" v-if="!estaDeletando">
                   <template v-slot>
                     <img src="@/assets/icons/delete-b.svg" alt="close" class="w-6 h-6"/>
                   </template>
                 </BotaoPadrao>
                 <div class="flex items-center ml-2" v-if="estaDeletando" >
-                  <BotaoPadrao texto="Não" cor=" bg-red-500" @click="estaDeletando = false"></BotaoPadrao>
+                  <BotaoPadrao texto="Não" cor=" bg-red-500" @clique="estaDeletando = false"></BotaoPadrao>
                   <span class="px-2">Certeza que deseja deletar esse item ?</span>
-                  <BotaoPadrao texto="Sim" cor="bg-green-500" @click="deletar"></BotaoPadrao>
+                  <BotaoPadrao texto="Sim" cor="bg-green-500" @clique="deletar"></BotaoPadrao>
                 </div>
               </div>
             </slot>

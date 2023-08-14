@@ -14,7 +14,7 @@
 							<BotaoPadrao
 								texto="importar"
 								cor="bg-primaria-100 hover:!bg-primaria-200"
-								@click="importarSubDisciplina()"
+								@clique="importarSubDisciplina()"
 								:disabled="!arquivo">
 								<img
 									src="@/assets/icons/upload-b.svg"

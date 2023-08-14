@@ -37,7 +37,7 @@
       </template>
       <template v-slot:rodape-btn-direito>
         <div>
-          <BotaoPadrao texto="Desagendar" cor="bg-red-400 hover:bg-red-500" @click="desagendar()">
+          <BotaoPadrao texto="Desagendar" cor="bg-red-400 hover:bg-red-500" @clique="desagendar()">
             <img src="@/assets/icons/delete-b.svg" alt="" class="w-6 h-6">
           </BotaoPadrao>
         </div>

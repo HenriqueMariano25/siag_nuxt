@@ -42,7 +42,7 @@
 					texto="Negar Card"
 					cor="bg-red-500"
           :disabled="bloquearBtnNegar"
-					@click="aprovarSSControle(false)">
+					@clique="aprovarSSControle(false)">
 					<template v-slot>
 						<img
 							src="@/assets/icons/close-b.svg"
@@ -53,7 +53,7 @@
 				<BotaoPadrao
 					texto="Aprovar Card"
 					cor="bg-green-500"
-					@click="aprovarSSControle(true)">
+					@clique="aprovarSSControle(true)">
 					<template v-slot>
 						<img
 							src="@/assets/icons/check-b.svg"

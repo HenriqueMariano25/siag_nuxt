@@ -49,7 +49,7 @@
             v-if="erros.length > 0">
             <span>Campos obrigatórios necessários</span>
           </div>
-          <BotaoPadrao texto="salvar" @click="salvarTerceiros()">
+          <BotaoPadrao texto="salvar" @clique="salvarTerceiros()">
             <img src="@/assets/icons/save-b.svg" alt="" class="w-7 h-7">
           </BotaoPadrao>
         </div>

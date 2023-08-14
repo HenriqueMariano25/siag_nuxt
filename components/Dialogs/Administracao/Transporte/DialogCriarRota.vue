@@ -77,7 +77,7 @@
 								<div class="flex gap-1">
 									<BotaoPadrao
 										v-if="funcionario_id !== index"
-										@click="funcionario_id = index"
+										@clique="funcionario_id = index"
 										icone>
 										<div class="w-6 h-6 flex items-center justify-center">
 											<img
@@ -88,7 +88,7 @@
 									</BotaoPadrao>
 									<BotaoPadrao
 										v-if="funcionario_id !== index"
-										@click="alterarDaRota(item, index)"
+										@clique="alterarDaRota(item, index)"
 										icone>
 										<div class="w-6 h-6 flex items-center justify-center">
 											<img
@@ -102,13 +102,13 @@
 										texto="NÃO"
 										class="!px-1"
 										v-if="funcionario_id === index"
-										@click="funcionario_id = null" />
+										@clique="funcionario_id = null" />
 									<BotaoPadrao
 										cor="bg-green-400 hover:!bg-green-500"
 										texto="SIM"
 										class="!px-2"
 										v-if="funcionario_id === index"
-										@click="item.chapa ? deletarFuncionario(index) : deletarTerceiro(index)" />
+										@clique="item.chapa ? deletarFuncionario(index) : deletarTerceiro(index)" />
 								</div>
 							</template>
 						</TabelaPadrao>
@@ -124,7 +124,7 @@
 					</div>
 					<BotaoPadrao
 						texto="Salvar"
-						@click="rota ? editarRota() : cadastrarRota()"
+						@clique="rota ? editarRota() : cadastrarRota()"
 						v-if="tab === 'rota'">
 						<img
 							src="@/assets/icons/save-b.svg"
@@ -135,7 +135,7 @@
 						texto="Terceiro"
 						cor="bg-green-400 hover:!bg-green-500"
 						v-if="tab === 'passageiros'"
-						@click="mostrarDialogAdicionarTerceiro = true">
+						@clique="mostrarDialogAdicionarTerceiro = true">
 						<img
 							src="@/assets/icons/add-b.svg"
 							alt=""
@@ -145,7 +145,7 @@
 						texto="Funcionário"
 						cor="bg-green-400 hover:!bg-green-500"
 						v-if="tab === 'passageiros'"
-						@click="mostrarDialogAdicionarFuncionario = true">
+						@clique="mostrarDialogAdicionarFuncionario = true">
 						<img
 							src="@/assets/icons/add-b.svg"
 							alt=""

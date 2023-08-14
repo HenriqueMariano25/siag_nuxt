@@ -36,7 +36,7 @@
 								<BotaoPadrao
 									texto="Buscar"
 									cor="bg-blue-300 hover:!bg-blue-400"
-									@click="buscarFuncionario()">
+									@clique="buscarFuncionario()">
 									<img
 										src="@/assets/icons/magnifier-b.svg"
 										alt=""
@@ -99,7 +99,7 @@
 			<template v-slot:rodape-btn-direito>
 				<BotaoPadrao
 					texto="salvar"
-					@click="adicionarFuncionario()"
+					@clique="adicionarFuncionario()"
 					:disabled="!buscouFuncionario || funcionarioNaRota ">
 					<img
 						src="@/assets/icons/save-b.svg"

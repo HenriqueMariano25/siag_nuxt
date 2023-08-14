@@ -63,7 +63,7 @@
 											texto="salvar"
 											cor="bg-primaria-300 hover:bg-primaria-500"
 											class="text-white"
-											@click="salvarIntervaloAgendamento">
+											@clique="salvarIntervaloAgendamento">
 											<img
 												src="@/assets/icons/save-w.svg"
 												alt=""
@@ -138,7 +138,7 @@
 											:disabled="desativarSalvarIntervaloAprovacao"
 											texto="salvar"
 											cor="bg-primaria-300 hover:bg-primaria-500"
-											@click="salvarIntervaloAprovacao()"
+											@clique="salvarIntervaloAprovacao()"
 											class="text-white">
 											<img
 												src="@/assets/icons/save-w.svg"
@@ -176,7 +176,7 @@
 											:disabled="desativarSalvarFolha"
 											texto="salvar"
 											cor="bg-primaria-300 hover:bg-primaria-500"
-											@click="salvarDataFolha()"
+											@clique="salvarDataFolha()"
 											class="text-white">
 											<img
 												src="@/assets/icons/save-w.svg"
@@ -232,7 +232,7 @@
 										texto="Salvar"
 										class="text-white"
 										:disabled="desativarSalvarLimiteHE"
-										@click="salvarLimiteHe"
+										@clique="salvarLimiteHe"
 										cor="bg-primaria-300 hover:bg-primaria-500">
 										<img
 											src="@/assets/icons/save-w.svg"
@@ -277,7 +277,7 @@
 										:disabled="desativarSalvarBloquearIntervalo"
 										cor="bg-primaria-300 hover:bg-primaria-500"
 										class="text-white"
-										@click="salvarBloqueioIntervalor()">
+										@clique="salvarBloqueioIntervalor()">
 										<img
 											src="@/assets/icons/lock-w.svg"
 											alt=""
@@ -375,7 +375,7 @@
 									<BotaoPadrao texto="Liberar" :disabled="desativarSalvarLiberarUsuario"
                                cor="bg-primaria-300 hover:bg-primaria-500"
                                class="text-white"
-                               @click="liberarUsuarios()"
+                               @clique="liberarUsuarios()"
                   >
 										<img
 											src="@/assets/icons/lock-open-w.svg"

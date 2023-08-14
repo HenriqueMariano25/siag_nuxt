@@ -92,7 +92,7 @@
 								ss = item
 							" />
             <template v-if="etapa_id === 1 || etapa_id === 2">
-              <BotaoPadrao icone v-if="item.Usuario.id === $auth.user.id" @click="
+              <BotaoPadrao icone v-if="item.Usuario.id === $auth.user.id" @clique="
 								mostrarDialogCriarSolicitacao = true
 								ss_id = item.id
 							">
@@ -184,14 +184,14 @@
 				<div class="flex items-center w-full">
 					<div class="flex w-full justify-between ">
             <div class="flex">
-              <BotaoPadrao texto="Excel" @click="gerarExcel()">
+              <BotaoPadrao texto="Excel" @clique="gerarExcel()">
                 <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
               </BotaoPadrao>
             </div>
             <div class="flex gap-3">
               <BotaoPadrao
                 texto="Criar SS"
-                @click="mostrarDialogCriarSolicitacao = true">
+                @clique="mostrarDialogCriarSolicitacao = true">
                 <template v-slot>
                   <img
                     src="@/assets/icons/add-b.svg"
@@ -203,7 +203,7 @@
                 v-if="listaSelect.includes(etapa_id)"
                 texto="Processar SS"
                 :disabled="selecionados.length === 0"
-                @click="escolherProcessar()">
+                @clique="escolherProcessar()">
                 <template v-slot>
                   <img
                     src="@/assets/icons/check-circle-b.svg"

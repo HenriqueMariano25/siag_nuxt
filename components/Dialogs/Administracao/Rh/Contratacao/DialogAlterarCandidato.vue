@@ -17,7 +17,7 @@
           </div>
         </template>
       <template v-slot:rodape-btn-direito>
-        <BotaoPadrao texto="Alterar candidato" @click="alterarCandido()" :disabled="alteracao.motivo_id === null || alteracao.motivo_id === ''">
+        <BotaoPadrao texto="Alterar candidato" @clique="alterarCandido()" :disabled="alteracao.motivo_id === null || alteracao.motivo_id === ''">
           <img src="@/assets/icons/back-b.svg" alt="" class="w-7 h-7">
         </BotaoPadrao>
       </template>

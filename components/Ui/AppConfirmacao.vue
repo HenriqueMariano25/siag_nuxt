@@ -4,7 +4,7 @@
 			:texto="textoBtn"
 			cor="bg-red-500 hover:bg-red-700"
 			v-if="!mostrarConfirmacao"
-			@click="mostrarConfirmacao = !mostrarConfirmacao">
+			@clique="mostrarConfirmacao = !mostrarConfirmacao">
 			<img
 				src="@/assets/icons/delete-b.svg"
 				alt="close"
@@ -16,12 +16,12 @@
 			<BotaoPadrao
 				texto="Não"
 				cor="bg-red-500 hover:bg-red-700"
-				@click="mostrarConfirmacao = !mostrarConfirmacao" />
+				@clique="mostrarConfirmacao = !mostrarConfirmacao" />
 			<span>{{ texto }}</span>
 			<BotaoPadrao
 				texto="Sim"
 				cor="bg-green-500 hover:bg-green-700"
-				@click="confirmado()" />
+				@clique="confirmado()" />
 		</div>
 	</div>
 </template>

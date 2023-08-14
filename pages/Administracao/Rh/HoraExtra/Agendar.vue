@@ -106,7 +106,7 @@
 						v-if="noIntervalo"
 						texto="Agendar"
 						cor="!hover:bg-blue-900 bg-blue-800"
-						@click="agendar()"
+						@clique="agendar()"
 						:disabled="desabilitarBotoes"
 						class="text-white">
 						<img
@@ -251,7 +251,7 @@
               cor="!bg-red-400"
               corFonte="bg-white"
               :texto="funcionariosSelecionados.length === 0 ? null : funcionariosSelecionados.length">
-						  <BotaoPadrao texto="Selecionados" @click="mostrarSelecionados = !mostrarSelecionados" :disabled="agendamento.data === null || agendamento.data === ''"/>
+						  <BotaoPadrao texto="Selecionados" @clique="mostrarSelecionados = !mostrarSelecionados" :disabled="agendamento.data === null || agendamento.data === ''"/>
             </AppBadge>
 					</div>
 					<div class="flex gap-2">
@@ -261,7 +261,7 @@
 								$auth.user.permissoes.includes('autorizar_he') ||
 								$auth.user.permissoes.includes('autorizar_he_situacao')
 							"
-							@click="mostrarDialogAprovarHe = true">
+							@clique="mostrarDialogAprovarHe = true">
 							<img
 								src="../../../../assets/icons/check-b.svg"
 								alt=""
@@ -269,7 +269,7 @@
 						</BotaoPadrao>
 						<BotaoPadrao
 							texto="Agendamentos"
-							@click="mostrarDialogAgendamentos = true">
+							@clique="mostrarDialogAgendamentos = true">
 							<img
 								src="../../../../assets/icons/list-check-b.svg"
 								alt=""

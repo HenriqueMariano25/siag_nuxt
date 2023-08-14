@@ -7,7 +7,7 @@
 						texto="imprimir"
 						cor="bg-blue-300 !hover:bg-blue-400"
 						:disabled="!buscouDados"
-						@click="mostrarDialogAgendadosSPresenca = true">
+						@clique="mostrarDialogAgendadosSPresenca = true">
 						<img
 							src="@/assets/icons/printer-b.svg"
 							alt=""
@@ -17,7 +17,7 @@
 						texto="Lista de funcionários"
 						cor="bg-blue-300 !hover:bg-blue-400"
 						:disabled="!buscouDados"
-						@click="listaFuncionarios()">
+						@clique="listaFuncionarios()">
 						<img
 							src="@/assets/icons/list-b.svg"
 							alt=""
@@ -35,7 +35,7 @@
 					<BotaoPadrao
             :disabled="data === null || data === ''"
 						texto="Gerar kpi"
-						@click="gerarKpi()"
+						@clique="gerarKpi()"
 						cor="bg-gray-900 text-white"></BotaoPadrao>
 				</div>
 			</div>

@@ -161,7 +161,7 @@
 								<div>
 									<BotaoPadrao
 										cor="bg-blue-400 hover:!bg-blue-500"
-										@click="adicionarProximaEtapa()">
+										@clique="adicionarProximaEtapa()">
 										<img
 											src="../../../../../../assets/icons/add-b.svg"
 											alt=""
@@ -175,11 +175,11 @@
 										<span>{{ proxima.ordem }} - {{ proxima.nome }}</span>
                     <div>
                         <div class="flex  items-center gap-2 !text-base" v-if="deletandoProximaEtapa && proximaEtapaId === proxima.id">
-                          <BotaoPadrao texto="Sim" cor="bg-green-400 hover:!bg-green-500 !p-1" @click="deletarProximaEtapa(proxima)" />
+                          <BotaoPadrao texto="Sim" cor="bg-green-400 hover:!bg-green-500 !p-1" @clique="deletarProximaEtapa(proxima)" />
                           <span>Tem certeza que deseja remover ?</span>
-                          <BotaoPadrao texto="Não" cor="bg-red-400 hover:!bg-red-500 !p-1" @click="deletandoProximaEtapa = false; proximaEtapaId = null" />
+                          <BotaoPadrao texto="Não" cor="bg-red-400 hover:!bg-red-500 !p-1" @clique="deletandoProximaEtapa = false; proximaEtapaId = null" />
                         </div>
-                      <BotaoPadrao class="!p-1" icone @click="deletandoProximaEtapa = true; proximaEtapaId = proxima.id" v-if="proximaEtapaId !== proxima.id" >
+                      <BotaoPadrao class="!p-1" icone @clique="deletandoProximaEtapa = true; proximaEtapaId = proxima.id" v-if="proximaEtapaId !== proxima.id" >
                         <img src="../../../../../../assets/icons/delete-b.svg" alt="" class="w-6 h-6">
                       </BotaoPadrao>
                     </div>
@@ -199,7 +199,7 @@
           </div>
 					<BotaoPadrao
 						texto="salvar"
-						@click="etapa_id === null ? cadastrarEtapa() : editarEtapa()">
+						@clique="etapa_id === null ? cadastrarEtapa() : editarEtapa()">
 						<img
 							src="../../../../../../assets/icons/save-b.svg"
 							alt="salvar"

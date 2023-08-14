@@ -13,7 +13,7 @@
 					<span class="text-lg">
 						{{ tituloDetalhes }}
 					</span>
-					<BotaoPadrao icone @click="$emit('fechar')">
+					<BotaoPadrao icone @clique="$emit('fechar')">
 						<img
 							src="@/assets/icons/close-b.svg"
 							alt=""

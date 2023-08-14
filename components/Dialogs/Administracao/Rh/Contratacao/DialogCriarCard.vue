@@ -165,7 +165,7 @@
 					<div class="self-end">
 						<BotaoPadrao
 							texto="Adicionar indicação"
-							@click="card.tem_indicacao = true"
+							@clique="card.tem_indicacao = true"
 							cor="bg-green-400 hover:bg-green-500"
 							v-if="card.tem_indicacao === false">
 							<img
@@ -175,7 +175,7 @@
 						</BotaoPadrao>
 						<BotaoPadrao
 							texto="Remover indicação"
-							@click="card.tem_indicacao = false"
+							@clique="card.tem_indicacao = false"
 							cor="bg-red-400 hover:bg-red-500"
 							v-if="card.tem_indicacao === true">
 							<img
@@ -276,20 +276,20 @@
 		</template>
 		<template v-slot:rodape-btn-direito>
 			<div class="flex items-center gap-2">
-        <BotaoPadrao texto="DELETAR" cor="bg-red-400 hover:!bg-red-500" v-if="podeDeletar && confirmarDeletarCard === false" @click="confirmarDeletarCard = true">
+        <BotaoPadrao texto="DELETAR" cor="bg-red-400 hover:!bg-red-500" v-if="podeDeletar && confirmarDeletarCard === false" @clique="confirmarDeletarCard = true">
           <img src="@/assets/icons/delete-b.svg" alt="" class="w-7 h-7">
         </BotaoPadrao>
         <div v-if="podeDeletar && confirmarDeletarCard === true" class="flex gap-2 items-center">
-          <BotaoPadrao texto="Sim" cor="bg-green-500 hover:!bg-green-600" @click="deletarCard()"/>
+          <BotaoPadrao texto="Sim" cor="bg-green-500 hover:!bg-green-600" @clique="deletarCard()"/>
           <span>Tem certeza que deseja deletar esse Card ?</span>
-          <BotaoPadrao texto="Não" cor="bg-red-500 hover:!bg-red-600" @click="confirmarDeletarCard = false"/>
+          <BotaoPadrao texto="Não" cor="bg-red-500 hover:!bg-red-600" @clique="confirmarDeletarCard = false"/>
         </div>
 				<div
 					class="text-red-500 text-xl mr-3"
 					v-if="erro.length > 0">
 					<span>Campos obrigatórios necessários</span>
 				</div>
-				<BotaoSalvar @click="card_id !== null ? editarContratacao() : adicionarContratacao()" />
+				<BotaoSalvar @clique="card_id !== null ? editarContratacao() : adicionarContratacao()" />
 			</div>
 		</template>
 	</BaseDialog>

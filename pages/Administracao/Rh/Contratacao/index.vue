@@ -84,7 +84,7 @@
 						texto="Filtrar"
 						cor="bg-primaria-500"
 						:disabled="nPodeFiltrar"
-						@click="
+						@clique="
 							atualizarGraPorSetor()
 							atualizarGraPorSetorMaoObra()
 						">

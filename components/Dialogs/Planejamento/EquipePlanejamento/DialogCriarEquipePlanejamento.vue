@@ -38,7 +38,7 @@
 				<div class="flex justify-end">
 					<BotaoPadrao
 						texto="Salvar"
-						@click="equipePlanejamento ? editarEquipePlanejamento() : cadastrarEquipePlanejamento()">
+						@clique="equipePlanejamento ? editarEquipePlanejamento() : cadastrarEquipePlanejamento()">
 						<img
 							src="@/assets/icons/save-b.svg"
 							alt=""

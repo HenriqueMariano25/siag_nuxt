@@ -27,7 +27,7 @@
 					<div class="flex w-full justify-end gap-4">
 						<BotaoPadrao
 							texto="Criar Permissão"
-							@click="mostrarDialogCriarPermissao = true">
+							@clique="mostrarDialogCriarPermissao = true">
 							<template v-slot>
 								<img
 									src="@/assets/icons/add-b.svg"

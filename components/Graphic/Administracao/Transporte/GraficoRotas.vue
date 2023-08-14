@@ -14,7 +14,7 @@
 			<div class="flex items-end">
 				<BotaoPadrao
 					texto="Filtrar"
-          @click="buscarRotas()"
+          @clique="buscarRotas()"
 					class="bg-primaria-500 hover:!bg-primaria-700 text-white">
 					<img
 						src="@/assets/icons/magnifier-w.svg"

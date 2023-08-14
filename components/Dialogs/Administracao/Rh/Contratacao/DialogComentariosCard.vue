@@ -53,7 +53,7 @@
       </AppAlerta>
 		</template>
 		<template v-slot:rodape-btn-direito>
-			<BotaoPadrao texto="Comentar" @click="comentar()">
+			<BotaoPadrao texto="Comentar" @clique="comentar()">
 				<img
 					src="@/assets/icons/add-b.svg"
 					alt="btn-add"

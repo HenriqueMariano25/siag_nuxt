@@ -111,7 +111,7 @@
     </template>
     <template v-slot:rodape-btn-direito>
       <div class="flex items-center">
-        <BotaoPadrao texto="Gerar PDF" @click="imprimir()">
+        <BotaoPadrao texto="Gerar PDF" @clique="imprimir()">
           <img src="@/assets/icons/printer-b.svg" alt="" class="w-7 h-7">
         </BotaoPadrao>
       </div>

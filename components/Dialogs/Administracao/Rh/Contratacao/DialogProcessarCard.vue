@@ -46,7 +46,7 @@
 													<BotaoPadrao
 														class="z-0 !p-0 flex border border-green-500"
 														cor="bg-green-300 hover:!bg-green-400"
-														@click="
+														@clique="
 															cardAddIndicacao = card
 															mostraDialogAdicionarIndicacao = true
 														">
@@ -101,7 +101,7 @@
                   :texto="anteriorEtapa.ordem + ' - ' + anteriorEtapa.nome"
                   cor="bg-primaria-500 hover:bg-primaria-700"
                   class="text-white"
-                  @click="processarCards(anteriorEtapa.id)" />
+                  @clique="processarCards(anteriorEtapa.id)" />
               </div>
             </div>
 						<div class="flex flex-col gap-1 border border-green-300 bg-green-200 p-1" v-if="proximaEtapa">
@@ -112,7 +112,7 @@
                   :texto="proximaEtapa.ordem + ' - ' + proximaEtapa.nome"
                   cor="bg-primaria-500 hover:bg-primaria-700"
                   class="text-white"
-                  @click="processarCards(proximaEtapa.id)" />
+                  @clique="processarCards(proximaEtapa.id)" />
                 <div v-for="proxima of etapa.ProximasEtapas">
                   <!--              {{ proxima }}-->
                   <BotaoPadrao
@@ -120,7 +120,7 @@
                     :texto="proxima.ordem + ' - ' + proxima.nome"
                     cor="bg-primaria-500 hover:!bg-primaria-700"
                     class="text-white"
-                    @click="processarCards(proxima.id)" />
+                    @clique="processarCards(proxima.id)" />
                 </div>
               </div>
 						</div>
@@ -131,23 +131,23 @@
 				<div class="flex items-center gap-5 text-black">
 					<BotaoPadrao
 						v-if="etapa.alterar_candidato === true"
-						@click="mostrarDialogAlterarCandidado = true"
+						@clique="mostrarDialogAlterarCandidado = true"
 						texto="Alterar candidato">
 						<img
 							src="@/assets/icons/back-b.svg"
 							alt=""
 							class="w-7 h-7" />
 					</BotaoPadrao>
-          <BotaoPadrao texto="Rejeitar cards" @click="rejeitarCard()" v-if="etapa.rejeita_card" class="bg-red-300 hover:!bg-red-400">
+          <BotaoPadrao texto="Rejeitar cards" @clique="rejeitarCard()" v-if="etapa.rejeita_card" class="bg-red-300 hover:!bg-red-400">
             <img src="@/assets/icons/close-b.svg" alt="" class="w-7 h-7">
           </BotaoPadrao>
-          <BotaoPadrao texto="Standby cards" @click="standbyCard()" v-if="etapa.standby_card" class="">
+          <BotaoPadrao texto="Standby cards" @clique="standbyCard()" v-if="etapa.standby_card" class="">
             <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7">
           </BotaoPadrao>
-          <BotaoPadrao texto="Retornar cards" @click="retornarDestandbyCard()" v-if="etapa.nome === 'Standby'" class="">
+          <BotaoPadrao texto="Retornar cards" @clique="retornarDestandbyCard()" v-if="etapa.nome === 'Standby'" class="">
             <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7">
           </BotaoPadrao>
-          <BotaoPadrao texto="Finalizar cards" @click="finalizarCard()" v-if="etapa.concluir_card">
+          <BotaoPadrao texto="Finalizar cards" @clique="finalizarCard()" v-if="etapa.concluir_card">
             <img src="@/assets/icons/check-b.svg" alt="" class="w-7 h-7">
           </BotaoPadrao>
 					<!--          Lembrar que tem que selecionar motivo da desistencia da indicação-->

@@ -38,7 +38,7 @@
 			<div class="flex gap-x-2">
 				<BotaoPadrao
 					texto="Limpar"
-					@click="limparFiltro">
+					@clique="limparFiltro">
 					<img
 						src="@/assets/icons/eraser-b.svg"
 						alt="close"
@@ -46,7 +46,7 @@
 				</BotaoPadrao>
 				<BotaoPadrao
 					texto="Filtrar"
-					@click="filtrar()">
+					@clique="filtrar()">
 					<img
 						src="@/assets/icons/filter-b.svg"
 						alt="close"

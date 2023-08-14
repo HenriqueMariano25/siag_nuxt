@@ -105,7 +105,7 @@
 					<BotaoPadrao
 						texto="Historico"
 						class="!p-1"
-						@click="
+						@clique="
 							funcionario_id = item.id
 							mostrarDialogHistoricoMudanca = true
 						">
@@ -122,7 +122,7 @@
 						<div class="flex">
 							<BotaoPadrao
 								:texto="gerandoExcel === true ? 'Gerando...' : 'Gerar EXCEL'"
-								@click="gerarExcel"
+								@clique="gerarExcel"
 								:disabled="gerandoExcel">
 								<img
 									src="@/assets/icons/excel-b.svg"
@@ -132,7 +132,7 @@
 						</div>
 						<div class="flex">
 							<BotaoPadrao
-								@click="mostrarDialogEditarEfetivo = true"
+								@clique="mostrarDialogEditarEfetivo = true"
 								texto="editar"
 								:disabled="funcSelecionados.length === 0">
 								<img

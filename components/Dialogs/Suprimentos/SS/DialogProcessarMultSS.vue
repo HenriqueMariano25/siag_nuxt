@@ -49,15 +49,15 @@
       <div class="flex items-center gap-5 text-black w-full justify-between">
         <div>
           <div v-if="etapa_id >= 9 && etapa_id <= 18">
-            <BotaoPadrao texto="Negar SS" cor="bg-red-400 hover:bg-red-600" class="ml-5" @click="valNegarSS = true"
+            <BotaoPadrao texto="Negar SS" cor="bg-red-400 hover:bg-red-600" class="ml-5" @clique="valNegarSS = true"
                          :disabled="bloquearBtnNegar"
                          v-if="!valNegarSS">
               <img src="@/assets/icons/close-b.svg" alt="close" class="w-6 h-6"/>
             </BotaoPadrao>
             <div class="flex items-center text-white ml-5 gap-x-5" v-if="valNegarSS">
-              <BotaoPadrao texto="Não" cor="bg-red-400 hover:bg-red-600" @click="valNegarSS = false"/>
+              <BotaoPadrao texto="Não" cor="bg-red-400 hover:bg-red-600" @clique="valNegarSS = false"/>
               <span>Tem certeza que deseja negar essa solicitação ?</span>
-              <BotaoPadrao texto="Sim" cor="bg-green-400 hover:bg-green-600" @click="negarSS()"/>
+              <BotaoPadrao texto="Sim" cor="bg-green-400 hover:bg-green-600" @clique="negarSS()"/>
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@
           <BotaoPadrao
             v-if="$auth.user.permissoes.includes('ss_gerenciamento')"
             texto="Alt. Comprador"
-            @click="mostrarDialogAlterarComprador = true">
+            @clique="mostrarDialogAlterarComprador = true">
             <img
               src="@/assets/icons/arrows-rotate-b.svg"
               alt=""
@@ -75,7 +75,7 @@
             v-if="etapa_id !== 27"
             :disabled="bloquearBtnNegar"
             texto="VOLTAR SS"
-            @click="voltarSS()">
+            @clique="voltarSS()">
             <template v-slot>
               <img
                 src="@/assets/icons/back-b.svg"
@@ -88,7 +88,7 @@
             v-if="pularProxEtapa"
             :disabled="processo.comprador === null"
             texto="Processar p/ Cotar"
-            @click="processarSS(true)">
+            @clique="processarSS(true)">
             <template v-slot>
               <img
                 src="@/assets/icons/right-down-b.svg"
@@ -99,7 +99,7 @@
           <BotaoPadrao
             :disabled="processo.comprador === null"
             texto="Processar SS"
-            @click="processarSS(false)">
+            @clique="processarSS(false)">
             <template v-slot>
               <img
                 src="@/assets/icons/check-b.svg"

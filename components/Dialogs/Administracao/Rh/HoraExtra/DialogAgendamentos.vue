@@ -39,7 +39,7 @@
 												<BotaoPadrao
 													cor="bg-gray-700 hover:bg-gray-800"
 													:disabled="dataAprovados === null || dataAprovados === ''"
-													@click="buscarAprovados">
+													@clique="buscarAprovados">
 													<img
 														src="@/assets/icons/magnifier-w.svg"
 														alt=""
@@ -144,7 +144,7 @@
 												<BotaoPadrao
 													cor="bg-gray-700 hover:bg-gray-800"
 													:disabled="dataPendentes === null || dataPendentes === ''"
-													@click="buscarPendentes">
+													@clique="buscarPendentes">
 													<img
 														src="@/assets/icons/magnifier-w.svg"
 														alt=""
@@ -253,7 +253,7 @@
                         <BotaoPadrao
                           cor="bg-gray-700 hover:bg-gray-800"
                           :disabled="dataNegados === null || dataNegados === ''"
-                          @click="buscarNegados">
+                          @clique="buscarNegados">
                           <img
                             src="@/assets/icons/magnifier-w.svg"
                             alt=""
@@ -362,7 +362,7 @@
 												<BotaoPadrao
 													cor="bg-gray-700 hover:bg-gray-800"
 													:disabled="dataMeusAgendamentos === null || dataMeusAgendamentos === ''"
-													@click="buscarMeusAgendamentos">
+													@clique="buscarMeusAgendamentos">
 													<img
 														src="@/assets/icons/magnifier-w.svg"
 														alt=""
@@ -459,7 +459,7 @@
 						cor="bg-red-400 hover:bg-red-500"
 						v-if="tab === 'meusAgendamentos'"
 						:disabled="selecionadosMeusAgendamentos.length <= 0 || !noIntervalo"
-						@click="mostrarDialogDesagendar = true">
+						@clique="mostrarDialogDesagendar = true">
 						<img
 							src="@/assets/icons/delete-b.svg"
 							alt=""
@@ -468,7 +468,7 @@
 					<BotaoPadrao
 						texto="Excel"
 						:disabled="desativarBtnExcel"
-						@click="
+						@clique="
 							tab === 'aprovados'
 								? gerarExcelAprovados()
 								: tab === 'pendentes'

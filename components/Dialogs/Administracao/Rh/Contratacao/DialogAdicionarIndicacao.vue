@@ -119,7 +119,7 @@
       <template v-slot:rodape-btn-direito>
         <div class="flex items-center gap-5 text-black">
           <BotaoPadrao
-            @click="adicionarIndicacao()"
+            @clique="adicionarIndicacao()"
             texto="adicionar">
             <img src="@/assets/icons/add-b.svg" alt="" class="w-7 h-7">
           </BotaoPadrao>

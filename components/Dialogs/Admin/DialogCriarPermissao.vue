@@ -21,7 +21,7 @@
 <!--            <img src="@/assets/icons/delete-b.svg" alt="close" class="w-6 h-6"/>-->
 <!--          </template>-->
 <!--        </BotaoPadrao>-->
-        <BotaoSalvar class="flex" @click="permissao_id ? editarPermissao() : criarPermissao()"/>
+        <BotaoSalvar class="flex" @clique="permissao_id ? editarPermissao() : criarPermissao()"/>
     </template>
   </BaseDialog>
 </template>

@@ -10,7 +10,7 @@
     </template>
     <template v-slot:rodape-btn-direito>
       <div class="flex items-center gap-5 text-black">
-        <BotaoPadrao cor="bg-red-500" @click="sair()"
+        <BotaoPadrao cor="bg-red-500" @clique="sair()"
           texto="Sair">
         </BotaoPadrao>
       </div>

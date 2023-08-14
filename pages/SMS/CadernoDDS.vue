@@ -55,7 +55,7 @@
 							texto="buscar"
 							cor="bg-blue-600 hover:!bg-blue-700"
               :disabled="temCampoVazioReponsavel"
-							@click="buscarFuncionariosResponsavel()"
+							@clique="buscarFuncionariosResponsavel()"
 							class="text-white">
 							<img
 								src="@/assets/icons/magnifier-w.svg"
@@ -83,7 +83,7 @@
 						<BotaoPadrao
 							class="flex"
 							:disabled="temCampoVazio"
-							@click="gerarCaderno()"
+							@clique="gerarCaderno()"
 							texto="Imprimir">
 							<img
 								src="@/assets/icons/printer-b.svg"

@@ -211,7 +211,7 @@
 						<!--						</BotaoPadrao>-->
 						<BotaoPadrao
 							:texto="gerandoExcel ? 'Gerando Excel' : 'Excel'"
-							@click="gerarExcel()"
+							@clique="gerarExcel()"
 							:disabled="gerandoExcel">
 							<img
 								src="@/assets/icons/excel-b.svg"
@@ -231,7 +231,7 @@
 					<div class="flex w-full justify-end gap-4">
 						<BotaoPadrao
 							texto="Criar Card"
-							@click="mostrarDialogCriarCard = true">
+							@clique="mostrarDialogCriarCard = true">
 							<template v-slot>
 								<svg
 									width="24px"
@@ -260,7 +260,7 @@
 						<BotaoPadrao
 							texto="Processar Card"
 							:disabled="selecionados.length === 0"
-							@click="mostrarDialogProcessarCard = true">
+							@clique="mostrarDialogProcessarCard = true">
 							<template v-slot>
 								<img
 									src="@/assets/icons/check-circle-b.svg"

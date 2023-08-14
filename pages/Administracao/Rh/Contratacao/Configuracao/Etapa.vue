@@ -6,7 +6,7 @@
       </div>
       <div v-for="item of itens" class="bg-blue-200 flex p-1 justify-between items-center">
         <div class="flex gap-2 items-center">
-          <BotaoPadrao class="!p-1" @click="etapa_id = item.id; mostrarDialogCriarEtapa = true" icone>
+          <BotaoPadrao class="!p-1" @clique="etapa_id = item.id; mostrarDialogCriarEtapa = true" icone>
             <img src="@/assets/icons/edit-b.svg" alt="" class="w-6 h-6">
           </BotaoPadrao>
           <span class="text-xl">{{ item.ordem }} - {{ item.nome }}</span>
@@ -26,7 +26,7 @@
         <div class="flex justify-between">
           <div class="flex"></div>
           <div class="flex">
-            <BotaoPadrao texto="adicionar" @click="mostrarDialogCriarEtapa = true">
+            <BotaoPadrao texto="adicionar" @clique="mostrarDialogCriarEtapa = true">
               <img src="@/assets/icons/add-b.svg" alt="" class="w-7 h-7">
             </BotaoPadrao>
           </div>

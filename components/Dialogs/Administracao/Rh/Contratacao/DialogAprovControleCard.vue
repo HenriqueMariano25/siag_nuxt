@@ -29,7 +29,7 @@
         <BotaoPadrao
           texto="Negar Card"
           cor="bg-red-500"
-          @click="aprovarCardControle(false)">
+          @clique="aprovarCardControle(false)">
           <template v-slot>
             <img src="@/assets/icons/close-b.svg" alt="close" class="w-6 h-6"/>
           </template>
@@ -37,7 +37,7 @@
         <BotaoPadrao
           texto="Aprovar Card"
           cor="bg-green-500"
-          @click="aprovarCardControle(true)">
+          @clique="aprovarCardControle(true)">
           <template v-slot>
             <img src="@/assets/icons/check-b.svg" alt="close" class="w-7 h-7"/>
           </template>
