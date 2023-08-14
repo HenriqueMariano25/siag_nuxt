@@ -1389,7 +1389,6 @@
 
 <script>
 	import BaseDialog from "~/components/Shared/BaseDialog.vue"
-	import BotaoSalvar from "~/components/Ui/Buttons/BotaoSalvar.vue"
 	import AppFormInput from "~/components/Ui/AppFormInput.vue"
 	import AppFormSelect from "~/components/Ui/AppFormSelect.vue"
 	import AppFormCheckbox from "~/components/Ui/Form/AppFormCheckbox.vue"
@@ -1405,7 +1404,6 @@
 			BotaoIcone,
 			BotaoPadrao,
 			BaseDialog,
-			BotaoSalvar,
 			AppFormInput,
 			AppFormSelect,
 			AppFormCheckbox,

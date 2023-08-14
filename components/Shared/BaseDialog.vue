@@ -57,7 +57,6 @@
 
 <script>
 	import BotaoCancelar from "~/components/Ui/Buttons/BotaoCancelar.vue"
-	import BotaoSalvar from "~/components/Ui/Buttons/BotaoSalvar.vue"
   import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
 	export default {
 		name: "BaseDialog",
@@ -83,7 +82,6 @@
 		components: {
       BotaoPadrao,
 			BotaoCancelar,
-			BotaoSalvar,
 		},
     data(){
       return{

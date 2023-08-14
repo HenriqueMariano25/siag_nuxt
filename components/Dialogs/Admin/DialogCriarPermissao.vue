@@ -21,7 +21,9 @@
 <!--            <img src="@/assets/icons/delete-b.svg" alt="close" class="w-6 h-6"/>-->
 <!--          </template>-->
 <!--        </BotaoPadrao>-->
-        <BotaoSalvar class="flex" @clique="permissao_id ? editarPermissao() : criarPermissao()"/>
+      <BotaoPadrao texto="salvar" @clique="permissao_id ? editarPermissao() : criarPermissao()">
+        <img src="@/assets/icons/save-b.svg" alt="" class="w-8 h-8">
+      </BotaoPadrao>
     </template>
   </BaseDialog>
 </template>
@@ -30,7 +32,6 @@
 import BaseDialog from "~/components/Shared/BaseDialog.vue";
 import AppFormInput from "~/components/Ui/AppFormInput.vue";
 import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue";
-import BotaoSalvar from "~/components/Ui/Buttons/BotaoSalvar.vue";
 import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
 export default {
   name: "DialogCriarPermissao",
@@ -38,7 +39,6 @@ export default {
     BaseDialog,
     AppFormInput,
     AppFormTextarea,
-    BotaoSalvar,
     BotaoPadrao
   },
   props:{

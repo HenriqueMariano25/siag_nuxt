@@ -289,7 +289,9 @@
 					v-if="erro.length > 0">
 					<span>Campos obrigatórios necessários</span>
 				</div>
-				<BotaoSalvar @clique="card_id !== null ? editarContratacao() : adicionarContratacao()" />
+        <BotaoPadrao texto="salvar" @clique="card_id !== null ? editarContratacao() : adicionarContratacao()" >
+          <img src="@/assets/icons/save-b.svg" alt="" class="w-8 h-8">
+        </BotaoPadrao>
 			</div>
 		</template>
 	</BaseDialog>
@@ -297,7 +299,6 @@
 
 <script>
 	import BaseDialog from "~/components/Shared/BaseDialog.vue"
-	import BotaoSalvar from "~/components/Ui/Buttons/BotaoSalvar.vue"
 	import AppFormInput from "~/components/Ui/AppFormInput.vue"
 	import AppFormSelect from "~/components/Ui/AppFormSelect.vue"
 	import AppFormRadio from "~/components/Ui/Form/AppFormRadio.vue"
@@ -316,7 +317,6 @@
 		components: {
 			BotaoPadrao,
 			BaseDialog,
-			BotaoSalvar,
 			AppFormInput,
 			AppFormSelect,
 			AppFormRadio,
