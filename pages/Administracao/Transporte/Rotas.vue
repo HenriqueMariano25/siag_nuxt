@@ -17,7 +17,7 @@
 				<template v-slot:[`body.acoes`]="{ item }">
           <div class="flex">
             <BotaoPadrao icone>
-              <div class="w-7 h-7 flex items-center justify-center" @clique="gerarRelatorio(item)">
+              <div class="w-7 h-7 flex items-center justify-center" @click="gerarRelatorio(item)">
                 <img src="@/assets/icons/printer-b.svg" alt="" class="w-6 h-6">
               </div>
             </BotaoPadrao>
