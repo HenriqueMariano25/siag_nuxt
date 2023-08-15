@@ -33,41 +33,46 @@
 						v-model="card.status_card_id"
 						id="status"
 						:invalido="erro.includes('status_card_id')" />
-					<AppFormSelect
-						label="Centro de Custo"
-						:options="centrosCusto"
+          <AppFormSelectCompleto
+            altura="95px"
+            class="grow"
             obrigatorio
-						v-model="card.centro_custo_pep_id"
-						:disabled="podeEditarTudo"
-						:readonly="podeEditarTudo"
-						id="centro_custo"
-						:invalido="erro.includes('centro_custo_pep_id')" />
-					<AppFormSelect
-						label="Função"
-						:options="funcoes"
-						v-model="card.funcao_id"
+            id="centro_custo"
+            label="Centro de Custo"
+            :options="centrosCusto"
+            v-model="card.centro_custo_pep_id"
+            :invalido="erro.includes('centro_custo_pep_id')" />
+          <AppFormSelectCompleto
+            altura="95px"
+            class="grow"
             obrigatorio
-						@change="funcaoSelecionada"
-						:disabled="podeEditarTudo"
-						:readonly="podeEditarTudo"
-						id="funcao"
-						:invalido="erro.includes('funcao_id')" />
-					<AppFormSelect
-						label="Disciplina"
-						:options="disciplinas"
+            id="funcao"
+            label="Função"
+            :options="funcoes"
+            :disabled="podeEditarTudo"
+            :readonly="podeEditarTudo"
+            v-model="card.funcao_id"
+            :invalido="erro.includes('funcao_id')" />
+          <AppFormSelectCompleto
+            altura="95px"
+            class="grow"
             obrigatorio
-						:disabled="podeEditarTudo"
-						:readonly="podeEditarTudo"
-						v-model="card.disciplina_id"
-						id="disciplina"
-						:invalido="erro.includes('disciplina_id')" />
-					<AppFormSelect
-						label="Responsável pelo funcionário"
-						:options="responsaveis"
+            id="disciplina"
+            label="Disciplina"
+            :options="disciplinas"
+            :disabled="podeEditarTudo"
+            :readonly="podeEditarTudo"
+            v-model="card.disciplina_id"
+            :invalido="erro.includes('disciplina_id')" />
+          <AppFormSelectCompleto
+            altura="160px"
+            class="grow"
             obrigatorio
-						v-model="card.responsavel_id"
-						id="responsavel"
-						:invalido="erro.includes('responsavel_id')" />
+            id="responsavel"
+            label="Responsável pelo funcionário"
+            :options="responsaveis"
+            v-model="card.responsavel_id"
+            :invalido="erro.includes('responsavel_id')" />
 					<AppFormInput
 						label="Data de necesisdade"
 						type="date"
@@ -308,6 +313,7 @@
 	import { buscarNrs } from "@/mixins/buscarInformacoes"
 	import money from "vuejs-money"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
+  import AppFormSelectCompleto from "~/components/Ui/Form/AppFormSelectCompleto.vue";
 
 	// import {VMoney} from 'v-money'
 	export default {
@@ -315,6 +321,7 @@
 		name: "DialogCriarCard",
 		mixins: [buscarNrs],
 		components: {
+      AppFormSelectCompleto,
 			BotaoPadrao,
 			BaseDialog,
 			AppFormInput,
