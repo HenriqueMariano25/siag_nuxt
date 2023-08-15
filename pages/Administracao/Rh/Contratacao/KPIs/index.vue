@@ -45,7 +45,7 @@ export default {
         for(let et of etapas){
           if(item.duracao[Object.keys(et)[0]] !== null && item.duracao[Object.keys(et)[0]] !== undefined){
 
-            if (bject.keys(item.duracao[Object.keys(et)[0]]).includes("tempo")) {
+            if (Object.keys(item.duracao[Object.keys(et)[0]]).includes("tempo")) {
               temp.push(item.duracao[Object.keys(et)[0]].tempo)
             }else{
               temp.push("")
@@ -80,7 +80,7 @@ export default {
       for (let item of motivos) {
         let temp = []
         temp.push(item.descricao)
-        temp.push(item.quantidadeAlterada)
+        temp.push(parseInt(item.quantidadeAlterada))
 
         itens.push(temp)
       }
