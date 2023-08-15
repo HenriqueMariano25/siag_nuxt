@@ -46,10 +46,22 @@
           alt="close"
           class="w-8 h-8"/>
       </ButtonNavegacao>
+      <ButtonNavegacao
+        v-if="
+					$auth.user.permissoes.includes('kpi_contratacao')
+				"
+        titulo="KPIs"
+        cor="bg-[#264653]"
+        link="/administracao/rh/contratacao/kpis">
+        <img
+          src="@/assets/icons/graph-w.svg"
+          alt="close"
+          class="w-8 h-8" />
+      </ButtonNavegacao>
 		</div>
 		<div class="border border-gray-500 h-full">
 			<div
-				class="w-full bg-primaria-900 text-white flex flex-row text-center divide-x divide-gray-700 justify-center">
+				class="w-full  bg-primaria-900 text-white flex flex-row text-center divide-x divide-gray-700 justify-center">
 				<button
 					class="flex p-2 hover:bg-primaria-700 box-border print:hidden text-white w-full text-center"
 					:class="{ 'border-b-4 !border-b-white bg-primaria-500': tipoGrafico === 'porSetor' }"
