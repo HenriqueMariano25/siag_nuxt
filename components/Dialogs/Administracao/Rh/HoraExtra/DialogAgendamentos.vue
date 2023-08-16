@@ -80,14 +80,31 @@
 													item.Funcionario.encarregado_sapo
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.encarregado_producao`]="{ item }">
+											<template v-slot:[`body.Funcionario.EncarregadoLider`]="{ item }">
 												<span class="whitespace-nowrap">{{
-													item.Funcionario.encarregado_producao
+													item.Funcionario.EncarregadoLider ? item.Funcionario.EncarregadoLider.nome : ""
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.gestor`]="{ item }">
-												<span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
-											</template>
+                      <template v-slot:[`body.Funcionario.Supervisor`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.Supervisor ? item.Funcionario.Supervisor.nome : ""
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Engenheiro`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.nome : ""
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Coordenador`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.Coordenador ? item.Funcionario.Coordenador.nome : ""
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Gestor`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.Gestor ? item.Funcionario.Gestor.nome : ""
+                          }}</span>
+                      </template>
 											<template v-slot:[`body.Setor.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
 											</template>
@@ -182,14 +199,31 @@
 													item.Funcionario.encarregado_sapo
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.encarregado_producao`]="{ item }">
+                      <template v-slot:[`body.Funcionario.EncarregadoLider`]="{ item }">
 												<span class="whitespace-nowrap">{{
-													item.Funcionario.encarregado_producao
-												}}</span>
-											</template>
-											<template v-slot:[`body.Funcionario.gestor`]="{ item }">
-												<span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
-											</template>
+                            item.Funcionario.EncarregadoLider ? item.Funcionario.EncarregadoLider.nome : ""
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Supervisor`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.Supervisor ? item.Funcionario.Supervisor.nome : ""
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Engenheiro`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.nome : ""
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Coordenador`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.Coordenador ? item.Funcionario.Coordenador.nome : ""
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Gestor`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.Gestor ? item.Funcionario.Gestor.nome : ""
+                          }}</span>
+                      </template>
 											<template v-slot:[`body.Setor.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
 											</template>
@@ -291,13 +325,30 @@
                             item.Funcionario.encarregado_sapo
                           }}</span>
                       </template>
-                      <template v-slot:[`body.Funcionario.encarregado_producao`]="{ item }">
+                      <template v-slot:[`body.Funcionario.EncarregadoLider`]="{ item }">
 												<span class="whitespace-nowrap">{{
-                            item.Funcionario.encarregado_producao
+                            item.Funcionario.EncarregadoLider ? item.Funcionario.EncarregadoLider.nome : ""
                           }}</span>
                       </template>
-                      <template v-slot:[`body.Funcionario.gestor`]="{ item }">
-                        <span class="whitespace-nowrap">{{ item.Funcionario.gestor }}</span>
+                      <template v-slot:[`body.Funcionario.Supervisor`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.Supervisor ? item.Funcionario.Supervisor.nome : ""
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Engenheiro`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.nome : ""
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Coordenador`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.Coordenador ? item.Funcionario.Coordenador.nome : ""
+                          }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Gestor`]="{ item }">
+												<span class="whitespace-nowrap">{{
+                            item.Funcionario.Gestor ? item.Funcionario.Gestor.nome : ""
+                          }}</span>
                       </template>
                       <template v-slot:[`body.Setor.nome`]="{ item }">
                         <span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
@@ -549,11 +600,26 @@
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
 					{ nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
 					{
-						nome: "Encarregado/Lider Produção",
-						valor: "Funcionario.encarregado_producao",
+						nome: "Encarregado/Lider",
+						valor: "Funcionario.EncarregadoLider",
 						filtro: true,
 					},
-					{ nome: "Gestor", valor: "Funcionario.gestor", filtro: true },
+          {
+            nome: "Supervisor",
+            valor: "Funcionario.Supervisor",
+            filtro: true,
+          },
+          {
+            nome: "Engenheiro",
+            valor: "Funcionario.Engenheiro",
+            filtro: true,
+          },
+          {
+            nome: "Coordenador",
+            valor: "Funcionario.Coordenador",
+            filtro: true,
+          },
+					{ nome: "Gestor", valor: "Funcionario.Gestor", filtro: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
 					{ nome: "HE atual", valor: "Funcionario.hora_extra", centralizar: true },
 					{
@@ -585,12 +651,27 @@
 					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
 					{ nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
-					{
-						nome: "Encarregado/Lider Produção",
-						valor: "Funcionario.encarregado_producao",
-						filtro: true,
-					},
-					{ nome: "Gestor", valor: "Funcionario.gestor", filtro: true },
+          {
+            nome: "Encarregado/Lider",
+            valor: "Funcionario.EncarregadoLider",
+            filtro: true,
+          },
+          {
+            nome: "Supervisor",
+            valor: "Funcionario.Supervisor",
+            filtro: true,
+          },
+          {
+            nome: "Engenheiro",
+            valor: "Funcionario.Engenheiro",
+            filtro: true,
+          },
+          {
+            nome: "Coordenador",
+            valor: "Funcionario.Coordenador",
+            filtro: true,
+          },
+          { nome: "Gestor", valor: "Funcionario.Gestor", filtro: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
 					{ nome: "HE atual", valor: "Funcionario.hora_extra", centralizar: true },
 					{
@@ -623,11 +704,26 @@
           { nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
           { nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
           {
-            nome: "Encarregado/Lider Produção",
-            valor: "Funcionario.encarregado_producao",
+            nome: "Encarregado/Lider",
+            valor: "Funcionario.EncarregadoLider",
             filtro: true,
           },
-          { nome: "Gestor", valor: "Funcionario.gestor", filtro: true },
+          {
+            nome: "Supervisor",
+            valor: "Funcionario.Supervisor",
+            filtro: true,
+          },
+          {
+            nome: "Engenheiro",
+            valor: "Funcionario.Engenheiro",
+            filtro: true,
+          },
+          {
+            nome: "Coordenador",
+            valor: "Funcionario.Coordenador",
+            filtro: true,
+          },
+          { nome: "Gestor", valor: "Funcionario.Gestor", filtro: true },
           { nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
           { nome: "HE atual", valor: "Funcionario.hora_extra", centralizar: true },
           {
@@ -770,7 +866,10 @@
 					"Nome",
 					"Cargo",
 					"Encarregado/Lider SAPO",
-					"Encarregado/Lider Produção",
+					"Encarregado/Lider",
+					"Supervisor",
+					"Engenheiro",
+					"Coordenador",
 					"Gestor",
 					"Setor",
 					"HE Atual",
@@ -798,12 +897,31 @@
               ? item.Funcionario.encarregado_sapo
               : "",
           )
-					temp.push(
-						item.Funcionario && item.Funcionario.encarregado_producao
-							? item.Funcionario.encarregado_producao
-							: "",
-					)
-					temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
+          temp.push(
+            item.Funcionario && item.Funcionario.EncarregadoLider
+              ? item.Funcionario.EncarregadoLider.nome
+              : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Supervisor
+              ? item.Funcionario.Supervisor.nome
+              : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Engenheiro
+              ? item.Funcionario.Engenheiro.nome
+              : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Coordenador
+              ? item.Funcionario.Coordenador.nome
+              : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Gestor
+              ? item.Funcionario.Gestor.nome
+              : "",
+          )
 					temp.push(item.Setor ? item.Setor.nome : "")
 					temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
 					temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
@@ -871,7 +989,10 @@
 					"Nome",
 					"Cargo",
 					"Encarregado/Lider SAPO",
-					"Encarregado/Lider Produção",
+          "Encarregado/Lider",
+          "Supervisor",
+          "Engenheiro",
+          "Coordenador",
 					"Gestor",
 					"Setor",
 					"HE Atual",
@@ -900,12 +1021,31 @@
               ? item.Funcionario.encarregado_sapo
               : "",
           )
-					temp.push(
-						item.Funcionario && item.Funcionario.encarregado_producao
-							? item.Funcionario.encarregado_producao
-							: "",
-					)
-					temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
+          temp.push(
+            item.Funcionario && item.Funcionario.EncarregadoLider
+              ? item.Funcionario.EncarregadoLider.nome
+              : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Supervisor
+              ? item.Funcionario.Supervisor.nome
+              : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Engenheiro
+              ? item.Funcionario.Engenheiro.nome
+              : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Coordenador
+              ? item.Funcionario.Coordenador.nome
+              : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Gestor
+              ? item.Funcionario.Gestor.nome
+              : "",
+          )
 					temp.push(item.Setor ? item.Setor.nome : "")
 					temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
 					temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
@@ -973,7 +1113,10 @@
           "Nome",
           "Cargo",
           "Encarregado/Lider SAPO",
-          "Encarregado/Lider Produção",
+          "Encarregado/Lider",
+          "Supervisor",
+          "Engenheiro",
+          "Coordenador",
           "Gestor",
           "Setor",
           "HE Atual",
@@ -1003,11 +1146,30 @@
               : "",
           )
           temp.push(
-            item.Funcionario && item.Funcionario.encarregado_producao
-              ? item.Funcionario.encarregado_producao
+            item.Funcionario && item.Funcionario.EncarregadoLider
+              ? item.Funcionario.EncarregadoLider.nome
               : "",
           )
-          temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
+          temp.push(
+            item.Funcionario && item.Funcionario.Supervisor
+              ? item.Funcionario.Supervisor.nome
+              : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Engenheiro
+              ? item.Funcionario.Engenheiro.nome
+              : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Coordenador
+              ? item.Funcionario.Coordenador.nome
+              : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Gestor
+              ? item.Funcionario.Gestor.nome
+              : "",
+          )
           temp.push(item.Setor ? item.Setor.nome : "")
           temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
           temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
