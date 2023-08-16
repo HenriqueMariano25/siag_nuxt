@@ -1,6 +1,6 @@
 <template>
 	<div class="w-full grow gap-y-2 flex flex-col">
-		<div class="flex flex-col p-1 bg-white gap-2 border border-gray-300 shadow">
+		<div class="flex flex-col p-1 bg-white gap-2 border border-gray-300 shadow print:hidden">
 			<div class="text-gray-600">
 				<span
 					>Selecione uma data abaixo e preencha todos os campos para realizar o agendamento:</span
@@ -142,6 +142,7 @@
 			</div>
 		</div>
 		<TabelaPadrao
+      class="print:hidden"
 			:cabecalho="cabecalho"
 			:dados="dados"
 			:itensPorPagina="itensPorPagina"
