@@ -671,9 +671,7 @@
         this.buscarAgendamentosSiteManager()
       },
 
-      async aprovadoSiteManager(aprovacao, agendamentos) {
-        console.log(aprovacao, agendamentos)
-
+      async aprovadoSiteManager({aprovacao, agendamentos}) {
         this.mostrarDialogConfirmarAprovacaoSiteManager = false
 
         if (aprovacao) this.textoAlerta = "Agendamentos aprovados com sucesso!"
@@ -681,6 +679,7 @@
 
           for (let agen of agendamentos) {
             let idx = this.dadosSiteManager.findIndex((o) => o.id === agen)
+
             if (this.dadosSiteManager[idx].aprovacao_situacao === null) {
               this.pendDiasSiteManager[this.dataSiteManager] -= 1
             }
