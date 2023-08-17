@@ -12,6 +12,12 @@
         <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
       </BotaoPadrao>
     </div>
+    <div class="bg-white p-1 flex items-center gap-2">
+      <h1 class="text-xl font-bold">Cards em StandBy</h1>
+      <BotaoPadrao texto="Excel" @clique="buscarKpiStandby" cor="bg-blue-300 hover:!bg-blue-400">
+        <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
+      </BotaoPadrao>
+    </div>
   </div>
 </template>
 
@@ -81,6 +87,29 @@ export default {
         let temp = []
         temp.push(item.descricao)
         temp.push(parseInt(item.quantidadeAlterada))
+
+        itens.push(temp)
+      }
+
+      gerarExcel(cabecalho, itens, nomeArquivo)
+    },
+
+    async buscarKpiStandby() {
+      let resp = await this.$axios.$get("/contratacao/kpi/etapas_standby")
+
+      let { cards } = resp.dados
+
+      let cabecalho = ['Card', "Função", "Dias parados"]
+
+      let nomeArquivo
+      nomeArquivo = "kpi_stand_by"
+
+      let itens = []
+      for (let item of cards) {
+        let temp = []
+        temp.push(item.id)
+        temp.push(item.FuncaoCard.nome)
+        temp.push(item.tempo)
 
         itens.push(temp)
       }
