@@ -1,7 +1,7 @@
 <template>
 	<BaseDialog
 		:titulo="card_id === null ? 'Criar card' : `Editando card - ${('000000' + card.id).slice(-6)}`"
-    :carregando="carregando"
+		:carregando="carregando"
 		@cancelar="cancelar()">
 		<template v-slot:corpo>
 			<div
@@ -14,7 +14,7 @@
 						label="Setor"
 						type="text"
 						:readonly="true"
-            obrigatorio
+						obrigatorio
 						:disabled="true"
 						id="setor"
 						v-model="nomeSetor" />
@@ -28,56 +28,56 @@
 						v-model="card.quantidade" />
 					<AppFormSelect
 						label="Status"
-            obrigatorio
+						obrigatorio
 						:options="status"
 						v-model="card.status_card_id"
 						id="status"
 						:invalido="erro.includes('status_card_id')" />
-          <AppFormSelectCompleto
-            altura="95px"
-            class="grow"
-            obrigatorio
-            id="centro_custo"
-            label="Centro de Custo"
-            :options="centrosCusto"
-            v-model="card.centro_custo_pep_id"
-            :invalido="erro.includes('centro_custo_pep_id')" />
-          <AppFormSelectCompleto
-            altura="95px"
-            class="grow"
-            obrigatorio
-            id="funcao"
-            label="Função"
-            :options="funcoes"
-            :disabled="podeEditarTudo"
-            :readonly="podeEditarTudo"
-            v-model="card.funcao_id"
-            :invalido="erro.includes('funcao_id')" />
-          <AppFormSelectCompleto
-            altura="95px"
-            class="grow"
-            obrigatorio
-            id="disciplina"
-            label="Disciplina"
-            :options="disciplinas"
-            :disabled="podeEditarTudo"
-            :readonly="podeEditarTudo"
-            v-model="card.disciplina_id"
-            :invalido="erro.includes('disciplina_id')" />
-          <AppFormSelectCompleto
-            altura="160px"
-            class="grow"
-            obrigatorio
-            id="responsavel"
-            label="Responsável pelo funcionário"
-            :options="responsaveis"
-            v-model="card.responsavel_id"
-            :invalido="erro.includes('responsavel_id')" />
+					<AppFormSelectCompleto
+						altura="95px"
+						class="grow"
+						obrigatorio
+						id="centro_custo"
+						label="Centro de Custo"
+						:options="centrosCusto"
+						v-model="card.centro_custo_pep_id"
+						:invalido="erro.includes('centro_custo_pep_id')" />
+					<AppFormSelectCompleto
+						altura="95px"
+						class="grow"
+						obrigatorio
+						id="funcao"
+						label="Função"
+						:options="funcoes"
+						:disabled="podeEditarTudo"
+						:readonly="podeEditarTudo"
+						v-model="card.funcao_id"
+						:invalido="erro.includes('funcao_id')" />
+					<AppFormSelectCompleto
+						altura="95px"
+						class="grow"
+						obrigatorio
+						id="disciplina"
+						label="Disciplina"
+						:options="disciplinas"
+						:disabled="podeEditarTudo"
+						:readonly="podeEditarTudo"
+						v-model="card.disciplina_id"
+						:invalido="erro.includes('disciplina_id')" />
+					<AppFormSelectCompleto
+						altura="160px"
+						class="grow"
+						obrigatorio
+						id="responsavel"
+						label="Responsável pelo funcionário"
+						:options="responsaveis"
+						v-model="card.responsavel_id"
+						:invalido="erro.includes('responsavel_id')" />
 					<AppFormInput
 						label="Data de necesisdade"
 						type="date"
 						id="data_necessidade"
-            obrigatorio
+						obrigatorio
 						v-model="card.data_necessidade"
 						:invalido="invalidoDataNecessidade"
 						textoInvalido="Data de necessidade não pode ser inferior a 30 dias a partir da data atual" />
@@ -241,7 +241,7 @@
 							:invalido="erro.includes('indicacao.indicado_por')"
 							uppercase />
 						<AppFormInput
-              obrigatorio
+							obrigatorio
 							placeholder="Ex: 123.456.789-10"
 							label="CPF"
 							type="text"
@@ -281,22 +281,42 @@
 		</template>
 		<template v-slot:rodape-btn-direito>
 			<div class="flex items-center gap-2">
-        <BotaoPadrao texto="DELETAR" cor="bg-red-400 hover:!bg-red-500" v-if="podeDeletar && confirmarDeletarCard === false" @clique="confirmarDeletarCard = true">
-          <img src="@/assets/icons/delete-b.svg" alt="" class="w-7 h-7">
-        </BotaoPadrao>
-        <div v-if="podeDeletar && confirmarDeletarCard === true" class="flex gap-2 items-center">
-          <BotaoPadrao texto="Sim" cor="bg-green-500 hover:!bg-green-600" @clique="deletarCard()"/>
-          <span>Tem certeza que deseja deletar esse Card ?</span>
-          <BotaoPadrao texto="Não" cor="bg-red-500 hover:!bg-red-600" @clique="confirmarDeletarCard = false"/>
-        </div>
+				<BotaoPadrao
+					texto="DELETAR"
+					cor="bg-red-400 hover:!bg-red-500"
+					v-if="podeDeletar && confirmarDeletarCard === false"
+					@clique="confirmarDeletarCard = true">
+					<img
+						src="@/assets/icons/delete-b.svg"
+						alt=""
+						class="w-7 h-7" />
+				</BotaoPadrao>
+				<div
+					v-if="podeDeletar && confirmarDeletarCard === true"
+					class="flex gap-2 items-center">
+					<BotaoPadrao
+						texto="Sim"
+						cor="bg-green-500 hover:!bg-green-600"
+						@clique="deletarCard()" />
+					<span>Tem certeza que deseja deletar esse Card ?</span>
+					<BotaoPadrao
+						texto="Não"
+						cor="bg-red-500 hover:!bg-red-600"
+						@clique="confirmarDeletarCard = false" />
+				</div>
 				<div
 					class="text-red-500 text-xl mr-3"
 					v-if="erro.length > 0">
 					<span>Campos obrigatórios necessários</span>
 				</div>
-        <BotaoPadrao texto="salvar" @clique="card_id !== null ? editarContratacao() : adicionarContratacao()" >
-          <img src="@/assets/icons/save-b.svg" alt="" class="w-8 h-8">
-        </BotaoPadrao>
+				<BotaoPadrao
+					texto="salvar"
+					@clique="card_id !== null ? editarContratacao() : adicionarContratacao()">
+					<img
+						src="@/assets/icons/save-b.svg"
+						alt=""
+						class="w-8 h-8" />
+				</BotaoPadrao>
 			</div>
 		</template>
 	</BaseDialog>
@@ -313,7 +333,7 @@
 	import { buscarNrs } from "@/mixins/buscarInformacoes"
 	import money from "vuejs-money"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
-  import AppFormSelectCompleto from "~/components/Ui/Form/AppFormSelectCompleto.vue";
+	import AppFormSelectCompleto from "~/components/Ui/Form/AppFormSelectCompleto.vue"
 
 	// import {VMoney} from 'v-money'
 	export default {
@@ -321,7 +341,7 @@
 		name: "DialogCriarCard",
 		mixins: [buscarNrs],
 		components: {
-      AppFormSelectCompleto,
+			AppFormSelectCompleto,
 			BotaoPadrao,
 			BaseDialog,
 			AppFormInput,
@@ -398,8 +418,8 @@
 				erro: [],
 				dataNecessidadeOriginal: null,
 				erroCpf: false,
-        carregando: false,
-        confirmarDeletarCard: false
+				carregando: false,
+				confirmarDeletarCard: false,
 			}
 		},
 		async fetch() {
@@ -431,7 +451,7 @@
 				}
 				return false
 			},
-      podeDeletar() {
+			podeDeletar() {
 				if (this.card_id !== null) {
 					return this.card.etapa_id <= 3
 				}
@@ -446,7 +466,7 @@
 			},
 		},
 
-		async created() {
+		async mounted() {
 			if (this.card_id !== null) {
 				await this.buscarCard()
 			}
@@ -605,42 +625,40 @@
 							if (!valido) {
 								this.erro.push("indicacao.cpf")
 								this.erroCpf = "CPF DUPLICADO"
-							}else{
+							} else {
+								cpf = cpf.replace(/\D/g, "")
 
-                cpf = cpf.replace(/\D/g, '');
+								let soma = 0
+								for (let i = 0; i < 9; i++) {
+									soma += parseInt(cpf.charAt(i)) * (10 - i)
+								}
+								let digito1 = 11 - (soma % 11)
+								if (digito1 === 10 || digito1 === 11) {
+									digito1 = 0
+								}
 
-                let soma = 0;
-                for (let i = 0; i < 9; i++) {
-                  soma += parseInt(cpf.charAt(i)) * (10 - i);
-                }
-                let digito1 = 11 - (soma % 11);
-                if (digito1 === 10 || digito1 === 11) {
-                  digito1 = 0;
-                }
+								// Verificar se o primeiro dígito verificador está correto
+								if (parseInt(cpf.charAt(9)) !== digito1) {
+									this.erro.push("indicacao.cpf")
+									this.erroCpf = "CPF INVÁLIDO"
+								}
 
-                // Verificar se o primeiro dígito verificador está correto
-                if (parseInt(cpf.charAt(9)) !== digito1) {
-                  this.erro.push("indicacao.cpf")
-                  this.erroCpf = "CPF INVÁLIDO"
-                }
+								// Calcular o segundo dígito verificador
+								soma = 0
+								for (let i = 0; i < 10; i++) {
+									soma += parseInt(cpf.charAt(i)) * (11 - i)
+								}
+								let digito2 = 11 - (soma % 11)
+								if (digito2 === 10 || digito2 === 11) {
+									digito2 = 0
+								}
 
-                // Calcular o segundo dígito verificador
-                soma = 0;
-                for (let i = 0; i < 10; i++) {
-                  soma += parseInt(cpf.charAt(i)) * (11 - i);
-                }
-                let digito2 = 11 - (soma % 11);
-                if (digito2 === 10 || digito2 === 11) {
-                  digito2 = 0;
-                }
-
-                // Verificar se o segundo dígito verificador está correto
-                if (parseInt(cpf.charAt(10)) !== digito2) {
-                  this.erro.push("indicacao.cpf")
-                  this.erroCpf = "CPF INVÁLIDO"
-                }
-
-              }
+								// Verificar se o segundo dígito verificador está correto
+								if (parseInt(cpf.charAt(10)) !== digito2) {
+									this.erro.push("indicacao.cpf")
+									this.erroCpf = "CPF INVÁLIDO"
+								}
+							}
 						}
 					} else {
 						this.erro.push("indicacao.cpf")
@@ -678,7 +696,7 @@
 
 						this.card = {
 							quantidade: null,
-              status_card_id: null,
+							status_card_id: null,
 							setor_id: null,
 							centro_custo_pep_id: null,
 							funcao_id: null,
@@ -750,62 +768,64 @@
 
 			async buscarCard() {
 				let id = this.card_id
-        this.carregando = true
+				this.carregando = true
 
 				let resp = await this.$axios.$get("/contratacao/card/buscar", { params: { id: id } })
 
-        if(!resp.falha){
-          let card = resp.dados.card
+				if (!resp.falha) {
+					let card = resp.dados.card
 
-          let temEquipamentoTi = false
-          if (card.equipamento_card.length > 0) {
-            temEquipamentoTi = card.equipamento_card.filter((obj) => obj.id === 1).length > 0
-          }
-          card.equipamento_ti = temEquipamentoTi
-          if (card.Indicacao) {
-            card.tem_indicacao = true
-            card.indicacao = card.Indicacao
-            card.indicacao.url_pdf = card.Indicacao.url_pdf
-          } else {
-            card.tem_indicacao = false
-            card.indicacao = {
-              nome: null,
-              telefone: null,
-              telefone_2: null,
-              telefone_3: null,
-              email: null,
-              indicado_por: null,
-              cpf: null,
-              pdf: null,
-              url_pdf: null,
-            }
-          }
+					let temEquipamentoTi = false
+					if (card.equipamento_card.length > 0) {
+						temEquipamentoTi = card.equipamento_card.filter((obj) => obj.id === 1).length > 0
+					}
+					card.equipamento_ti = temEquipamentoTi
+					if (card.Indicacao) {
+						card.tem_indicacao = true
+						card.indicacao = card.Indicacao
+						card.indicacao.url_pdf = card.Indicacao.url_pdf
+					} else {
+						card.tem_indicacao = false
+						card.indicacao = {
+							nome: null,
+							telefone: null,
+							telefone_2: null,
+							telefone_3: null,
+							email: null,
+							indicado_por: null,
+							cpf: null,
+							pdf: null,
+							url_pdf: null,
+						}
+					}
 
-          this.dataNecessidadeOriginal = card.data_necessidade
-          this.card = Object.assign({}, card)
+					this.dataNecessidadeOriginal = card.data_necessidade
+					this.card = Object.assign({}, card)
 
-          if (card.nrs.length > 0) {
-            this.card.nrs = []
-            for (let nr of card.nrs) {
-              this.card.nrs.push(nr.id)
-            }
-          }
-          this.carregando = false
-        }
+					if (card.nrs.length > 0) {
+						this.card.nrs = []
+						for (let nr of card.nrs) {
+							this.card.nrs.push(nr.id)
+						}
+					}
+					this.carregando = false
+				}
 			},
 
-      async deletarCard(){
-        console.log("Deletando cards")
+			async deletarCard() {
+				console.log("Deletando cards")
 
-        let usuario_id = this.$auth.user.id
-        let card_id = this.card.id
+				let usuario_id = this.$auth.user.id
+				let card_id = this.card.id
 
-        let resp = await this.$axios.$delete("/contratacao/deletar/card", { params: { usuario_id, card_id}})
+				let resp = await this.$axios.$delete("/contratacao/deletar/card", {
+					params: { usuario_id, card_id },
+				})
 
-        if(!resp.falha){
-          this.$emit("deletado", card_id)
-        }
-      }
+				if (!resp.falha) {
+					this.$emit("deletado", card_id)
+				}
+			},
 		},
 		watch: {
 			"card.quantidade": function (valor) {

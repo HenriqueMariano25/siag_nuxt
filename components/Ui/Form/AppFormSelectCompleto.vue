@@ -205,7 +205,9 @@
 			value(valor) {
 				if (valor !== null && valor !== "") {
 					let op = this.options.find((o) => o.id === valor)
-					this.texto = op.nome
+          if(op){
+					  this.texto = op.nome
+          }
 				} else {
 					this.texto = "Selecione"
 				}
