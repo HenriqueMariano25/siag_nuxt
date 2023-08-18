@@ -1291,8 +1291,11 @@
 					"Nome",
 					"Cargo",
 					"Encarregado/Lider SAPO",
-					"Encarregado/Lider Produção",
-					"Gestor",
+          "Encarregado/Lider",
+          "Supervisor",
+          "Engenheiro",
+          "Coordenador",
+          "Gestor",
 					"Setor",
 					"HE Atual",
 					"HE Projetada",
@@ -1320,12 +1323,23 @@
 							? item.Funcionario.encarregado_sapo
 							: "",
 					)
-					temp.push(
-						item.Funcionario && item.Funcionario.encarregado_producao
-							? item.Funcionario.encarregado_producao
-							: "",
-					)
-					temp.push(item.Funcionario && item.Funcionario.gestor ? item.Funcionario.gestor : "")
+          temp.push(
+            item.Funcionario && item.Funcionario.EncarregadoLider
+              ? item.Funcionario.EncarregadoLider.nome
+              : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Supervisor ? item.Funcionario.Supervisor.nome : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.nome : "",
+          )
+          temp.push(
+            item.Funcionario && item.Funcionario.Coordenador
+              ? item.Funcionario.Coordenador.nome
+              : "",
+          )
+          temp.push(item.Funcionario && item.Funcionario.Gestor ? item.Funcionario.Gestor.nome : "")
 					temp.push(item.Setor ? item.Setor.nome : "")
 					temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
 					temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
