@@ -41,22 +41,22 @@
 						item.JornadaTrabalho ? item.JornadaTrabalho.descricao : ""
 					}}</span>
 				</template>
-				<template v-slot:[`body.EncarregadoLider.nome`]="{ item }">
+				<template v-slot:[`body.EncarregadoLider.id`]="{ item }">
 					<span class="whitespace-nowrap">{{
 						item.EncarregadoLider ? item.EncarregadoLider.nome : ""
 					}}</span>
 				</template>
-				<template v-slot:[`body.Supervisor.nome`]="{ item }">
+				<template v-slot:[`body.Supervisor.id`]="{ item }">
 					<span class="whitespace-nowrap">{{ item.Supervisor ? item.Supervisor.nome : "" }}</span>
 				</template>
 
-				<template v-slot:[`body.Engenheiro.nome`]="{ item }">
+				<template v-slot:[`body.Engenheiro.id`]="{ item }">
 					<span class="whitespace-nowrap">{{ item.Engenheiro ? item.Engenheiro.nome : "" }}</span>
 				</template>
-				<template v-slot:[`body.Coordenador.nome`]="{ item }">
+				<template v-slot:[`body.Coordenador.id`]="{ item }">
 					<span class="whitespace-nowrap">{{ item.Coordenador ? item.Coordenador.nome : "" }}</span>
 				</template>
-				<template v-slot:[`body.Gestor.nome`]="{ item }">
+				<template v-slot:[`body.Gestor.id`]="{ item }">
 					<span class="whitespace-nowrap">{{ item.Gestor ? item.Gestor.nome : "" }}</span>
 				</template>
 				<template v-slot:[`body.Disciplina.descricao`]="{ item }">
@@ -209,6 +209,7 @@
 				carregando: false,
 				rotas: [],
 				gerandoExcel: false,
+        responsaveis: []
 			}
 		},
 		computed: {
@@ -229,15 +230,72 @@
 					{ nome: "Sub Disciplina", valor: "SubDisciplina.descricao", filtro: true },
 					{ nome: "Setor", valor: "setor.nome", filtro: true },
 					{ nome: "Encarregado/Lider SAPO", valor: "encarregado_sapo", filtro: true },
-					{ nome: "Encarregado/Lider", valor: "EncarregadoLider.nome", filtro: true },
-					{ nome: "Supervisor", valor: "Supervisor.nome", filtro: true },
-					{ nome: "Engenheiro", valor: "Engenheiro.nome", filtro: true },
-					{ nome: "Coordenador", valor: "Coordenador.nome", filtro: true },
-					{ nome: "Gestor", valor: "Gestor.nome", filtro: true },
+					{ nome: "Encarregado/Lider", valor: "EncarregadoLider.id", filtro: true,
+           mostrarVazio: true,
+            opcoes:
+              this.responsaveis.length > 0
+                ? Array.from(
+                  new Set(
+                    this.responsaveis
+                      .map((item) => {
+                        return { id: item.id, texto: item.nome }
+                      }),
+                  ),
+                )
+                : [], },
+					{ nome: "Supervisor", valor: "Supervisor.id", filtro: true, mostrarVazio: true,
+            opcoes:
+              this.responsaveis.length > 0
+                ? Array.from(
+                  new Set(
+                    this.responsaveis
+                      .map((item) => {
+                        return { id: item.id, texto: item.nome }
+                      }),
+                  ),
+                )
+                : [], },
+					{ nome: "Engenheiro", valor: "Engenheiro.id", filtro: true, mostrarVazio: true,
+            opcoes:
+              this.responsaveis.length > 0
+                ? Array.from(
+                  new Set(
+                    this.responsaveis
+                      .map((item) => {
+                        return { id: item.id, texto: item.nome }
+                      }),
+                  ),
+                )
+                : [], },
+					{ nome: "Coordenador", valor: "Coordenador.id", filtro: true, mostrarVazio: true,
+            opcoes:
+              this.responsaveis.length > 0
+                ? Array.from(
+                  new Set(
+                    this.responsaveis
+                      .map((item) => {
+                        return { id: item.id, texto: item.nome }
+                      }),
+                  ),
+                )
+                : [], },
+					{ nome: "Gestor", valor: "Gestor.nome", filtro: true, mostrarVazio: true,
+            opcoes:
+              this.responsaveis.length > 0
+                ? Array.from(
+                  new Set(
+                    this.responsaveis
+                      .map((item) => {
+                        return { id: item.id, texto: item.nome }
+                      }),
+                  ),
+                )
+                : [], },
 					{
 						nome: "Rota",
 						valor: "rota.id",
 						filtro: true,
+            mostrarVazio: true,
 						opcoes:
 							this.rotas.length > 0
 								? Array.from(
@@ -270,8 +328,21 @@
 		async created() {
 			await this.buscarRotas()
 			await this.buscarEfetivo()
+      await this.buscarResponsaveis()
 		},
 		methods: {
+      async buscarResponsaveis() {
+        let resp = await this.$axios.$get("/efetivo/buscar_responsaveis")
+
+        if (!resp.falha) {
+          let responsaveis = resp.dados.responsaveis
+
+          this.responsaveis = responsaveis.map((o) => {
+            return { id: o.id, nome: o.nome }
+          })
+        }
+      },
+
 			async buscarRotas() {
 				let resp = await this.$axios.$get("/efetivo/buscar/rotas")
 

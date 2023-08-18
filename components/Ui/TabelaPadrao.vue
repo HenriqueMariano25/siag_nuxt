@@ -104,70 +104,78 @@
 										</div>
 									</div>
 								</div>
-								<div
-									style="top: 34px"
+								<FiltroMultiSelecao
+									@filtrarMult="filtrarMult"
+									@limparFiltrarMult="limparFiltrarMult"
 									v-if="filtroAberto === cab.valor && cab.opcoes && cab.tipoFiltro !== 'data'"
-									class="absolute text-start px-2 py-1 rounded-sm shadow-lg bg-white min-w-[300px] border border-gray-200">
-									<AppFormInput
-										id="filtroMultSelecao"
-										class="w-full"
-										type="text"
-										:label="'Buscar por ' + cab.nome"
-										:value="textoParaFiltro"
-										v-model="textoParaFiltro"
-										placeholder=""
-										@keyup.enter.prevent.stop="adicionarFiltro(cab.valor, $event)" />
-									<div
-										class="text-black gap-y-1 h-[200px] overflow-y-auto border border-gray-400 p-2 mt-2 mb-2">
-										<div class="border-b border-gray-800 mb-1 py-1">
-											<AppFormCheckbox
-												key="todos"
-												id="filtroCheckTodos"
-												:valor="false"
-												label="todos"
-												v-model="checkSelecionarTodos"
-												@click="selecionarTodos(cab.opcoes)"></AppFormCheckbox>
-										</div>
-                    <div class="py-1">
-                      <AppFormCheckbox
-                        key="vazios"
-                        id="filtroCheckVazios"
-                        :valor="null"
-                        label="Vazios"
-                        v-model="multSelecionados"
-                        ></AppFormCheckbox>
-                    </div>
-										<template v-for="o in opcoesFiltradas(cab.opcoes)">
-											<AppFormCheckbox
-												v-if="!Object.keys(o).includes('id')"
-												:key="o"
-												:id="'filtroCheck' + o"
-												:valor="o"
-												:label="o"
-												v-model="multSelecionados"></AppFormCheckbox>
-											<AppFormCheckbox
-												v-if="Object.keys(o).includes('id')"
-												:key="o.id"
-												:id="'filtroCheck' + o.id"
-												:valor="o.id"
-												:label="o.texto"
-												v-model="multSelecionados"></AppFormCheckbox>
-										</template>
-									</div>
-									<div class="w-full gap-2 flex justify-between">
-										<BotaoPadrao
-											texto="Limpar"
-											@clique="limparFiltrarMult(cab.valor)"
-											class=" ">
-										</BotaoPadrao>
-										<BotaoPadrao
-											texto="Filtrar"
-											cor="bg-primaria-500 hover:bg-primaria-700 text-white"
-											class=" "
-											@clique="filtrarMult(cab.valor)">
-										</BotaoPadrao>
-									</div>
-								</div>
+									:cabecalhoNome="cab.nome"
+									:cabecalhoValor="cab.valor"
+									:mostrar-vazio="cab.mostrarVazio"
+									:cabecalhoOpcoes="cab.opcoes" />
+								<!--								<div-->
+								<!--									style="top: 34px"-->
+								<!--									v-if="filtroAberto === cab.valor && cab.opcoes && cab.tipoFiltro !== 'data'"-->
+								<!--									class="absolute text-start px-2 py-1 rounded-sm shadow-lg bg-white min-w-[300px] border border-gray-200">-->
+								<!--									<AppFormInput-->
+								<!--										id="filtroMultSelecao"-->
+								<!--										class="w-full"-->
+								<!--										type="text"-->
+								<!--										:label="'Buscar por ' + cab.nome"-->
+								<!--										:value="textoParaFiltro"-->
+								<!--										v-model="textoParaFiltro"-->
+								<!--										placeholder=""-->
+								<!--										@keyup.enter.prevent.stop="adicionarFiltro(cab.valor, $event)" />-->
+								<!--									<div-->
+								<!--										class="text-black gap-y-1 h-[200px] overflow-y-auto border border-gray-400 p-2 mt-2 mb-2">-->
+								<!--										<div class="border-b border-gray-800 mb-1 py-1">-->
+								<!--											<AppFormCheckbox-->
+								<!--												key="todos"-->
+								<!--												:id="`filtroCheckTodos-${cab.valor}`"-->
+								<!--												:valor="false"-->
+								<!--												label="todos"-->
+								<!--												v-model="checkSelecionarTodos"-->
+								<!--												@click="selecionarTodos(cab.opcoes, cab.mostrarVazio)"></AppFormCheckbox>-->
+								<!--										</div>-->
+								<!--                    <div class="py-1" v-if="cab.mostrarVazio">-->
+								<!--                      <AppFormCheckbox-->
+								<!--                        key="vazios"-->
+								<!--                        id="filtroCheckVazios"-->
+								<!--                        :valor="null"-->
+								<!--                        label="Vazios"-->
+								<!--                        v-model="multSelecionados"-->
+								<!--                        ></AppFormCheckbox>-->
+								<!--                    </div>-->
+								<!--										<template v-for="o in opcoesFiltradas(cab.opcoes)">-->
+								<!--											<AppFormCheckbox-->
+								<!--												v-if="!Object.keys(o).includes('id')"-->
+								<!--												:key="o"-->
+								<!--												:id="'filtroCheck' + o"-->
+								<!--												:valor="o"-->
+								<!--												:label="o"-->
+								<!--												v-model="multSelecionados"></AppFormCheckbox>-->
+								<!--											<AppFormCheckbox-->
+								<!--												v-if="Object.keys(o).includes('id')"-->
+								<!--												:key="o.id"-->
+								<!--												:id="'filtroCheck' + o.id"-->
+								<!--												:valor="o.id"-->
+								<!--												:label="o.texto"-->
+								<!--												v-model="multSelecionados"></AppFormCheckbox>-->
+								<!--										</template>-->
+								<!--									</div>-->
+								<!--									<div class="w-full gap-2 flex justify-between">-->
+								<!--										<BotaoPadrao-->
+								<!--											texto="Limpar"-->
+								<!--											@clique="limparFiltrarMult(cab.valor)"-->
+								<!--											class=" ">-->
+								<!--										</BotaoPadrao>-->
+								<!--										<BotaoPadrao-->
+								<!--											texto="Filtrar"-->
+								<!--											cor="bg-primaria-500 hover:bg-primaria-700 text-white"-->
+								<!--											class=" "-->
+								<!--											@clique="filtrarMult(cab.valor, $event, cab.colunaTabela, cab.tipoFiltro, cab.nome)">-->
+								<!--										</BotaoPadrao>-->
+								<!--									</div>-->
+								<!--								</div>-->
 								<div
 									style="top: 34px"
 									v-if="filtroAberto === cab.valor && !cab.opcoes && cab.tipoFiltro !== 'data'"
@@ -202,6 +210,8 @@
 										</button>
 									</div>
 								</div>
+
+								<!--                FILTRO POR DATA-->
 								<div
 									style="top: 34px"
 									v-if="filtroAberto === cab.valor && cab.tipoFiltro === 'data'"
@@ -288,7 +298,8 @@
 								<template v-if="c.valor !== 'selecione'">
 									<slot
 										:name="'body.' + c.valor"
-										v-bind:item="dado" v-bind:index="idx">
+										v-bind:item="dado"
+										v-bind:index="idx">
 										<span class="whitespace-nowrap">{{ dado[c.valor] }}</span>
 									</slot>
 								</template>
@@ -380,6 +391,7 @@
 	import AppFormCheckbox from "~/components/Ui/Form/AppFormCheckbox.vue"
 
 	import { prepararFiltro } from "~/mixins/prepararFiltro"
+	import FiltroMultiSelecao from "~/components/Ui/Tabela/FiltroMultiSelecao.vue"
 
 	export default {
 		mixins: [prepararFiltro],
@@ -443,6 +455,7 @@
 			},
 		},
 		components: {
+			FiltroMultiSelecao,
 			AppFormCheckbox,
 			BotaoPadrao,
 			AppFormInput,
@@ -601,10 +614,10 @@
 			},
 
 			adicionarFiltro(item, event, colunaTabela, tipoFiltro) {
-        let valor = event.target.value
-        if (!this.filtrosAtivos.includes(item) && (valor !== null && valor !== '')) {
-          this.filtrosAtivos.push(item)
-        }
+				let valor = event.target.value
+				if (!this.filtrosAtivos.includes(item) && valor !== null && valor !== "") {
+					this.filtrosAtivos.push(item)
+				}
 
 				if (this.dadosSql) {
 					if (this.filtros.some((o) => o.includes(`LOWER(${colunaTabela})`))) {
@@ -636,20 +649,19 @@
 				} else {
 					if (item.includes(".")) item = `$${item}$`
 					let idxFiltroEncontrado = this.filtros.findIndex((o) =>
-						Object.keys(o).some((o) => o === item)
+						Object.keys(o).some((o) => o === item),
 					)
 
 					if (idxFiltroEncontrado >= 0) {
 						this.filtros.splice(idxFiltroEncontrado, 1)
-
 					}
 
 					if (valor !== null && valor !== "") {
-            this.filtros.push({ [item]: valor })
-					}else{
-            let idxAtivosEncontrado = this.filtrosAtivos.findIndex((o) => o === item)
-            this.filtrosAtivos.splice(idxAtivosEncontrado, 1)
-          }
+						this.filtros.push({ [item]: valor })
+					} else {
+						let idxAtivosEncontrado = this.filtrosAtivos.findIndex((o) => o === item)
+						this.filtrosAtivos.splice(idxAtivosEncontrado, 1)
+					}
 				}
 				this.localPagina = 1
 				this.filtroAberto = null
@@ -681,30 +693,26 @@
 				this.atualizarDados()
 			},
 
-			selecionarTodos(opcoes) {
+			selecionarTodos(opcoes, mostrarVazio) {
 				if (!this.checkSelecionarTodos) {
 					if (Object.keys(opcoes[0]).includes("id")) {
 						this.multSelecionados = opcoes.map((o) => o.id)
-            this.multSelecionados.unshift(null)
+						if (mostrarVazio) this.multSelecionados.unshift(null)
 					} else {
 						this.multSelecionados = opcoes
-            this.multSelecionados.unshift(null)
+						if (mostrarVazio) this.multSelecionados.unshift(null)
 					}
 				} else {
 					this.multSelecionados = []
 				}
 			},
 
-			filtrarMult(valor) {
+			filtrarMult({ valor, multSelecionados }) {
 				this.localPagina = 1
 				this.filtroAberto = null
 
-				if (!this.filtrosAtivos.includes(valor)) {
-					this.filtrosAtivos.push(valor)
-				}
-
 				if (this.dadosSql) {
-					if (this.multSelecionados.length === 0) {
+					if (multSelecionados.length === 0) {
 						let idx = this.filtros.findIndex((o) => o.includes(valor))
 						this.filtros.splice(idx, 1)
 						if (this.filtrosAtivos.includes(valor)) {
@@ -712,12 +720,18 @@
 							this.filtrosAtivos.splice(idx, 1)
 						}
 					} else {
-						let filtro = ` AND ${valor} IN (${this.multSelecionados.map((o) => "'" + o + "'")})`
+						let idx = this.filtros.findIndex((o) => o.includes(valor))
+						if (idx >= 0) {
+							this.filtros.splice(idx, 1)
+						}
+
+						let filtro = ` AND ${valor} IN (${multSelecionados.map((o) => "'" + o + "'")})`
 
 						this.filtros.push(filtro)
 					}
 				} else {
-					if (this.multSelecionados.length === 0) {
+
+					if (multSelecionados.length === 0) {
 						let idx = this.filtros.findIndex((o) =>
 							Object.keys(o).some((o) => o === "$" + valor + "$"),
 						)
@@ -727,17 +741,26 @@
 							this.filtrosAtivos.splice(idx, 1)
 						}
 					} else {
-						let filtro = { ["$" + valor + "$"]: { $or: [...this.multSelecionados] } }
+						let idx = this.filtros.findIndex((o) => {
+							return Object.keys(o).includes(`$${valor}$`)
+						})
+
+						if (idx >= 0) {
+							this.filtros.splice(idx, 1)
+						}
+
+						let filtro = { ["$" + valor + "$"]: { $or: [...multSelecionados] } }
 						this.filtros.push(filtro)
 					}
 				}
 
 				this.localPagina = 1
+        this.filtrosAtivos.push(valor)
 				this.filtroAberto = null
 				this.atualizarDados()
 			},
 
-			limparFiltrarMult(valor) {
+			limparFiltrarMult({ valor }) {
 				this.localPagina = 1
 				this.filtroAberto = null
 				this.multSelecionados = []
@@ -751,9 +774,9 @@
 					let idx = this.filtros.findIndex((o) => o.includes(valor))
 					this.filtros.splice(idx, 1)
 				} else {
-					let idx = this.filtros.findIndex((o) =>
-						Object.keys(o).some((o) => o === "$" + valor + "$"),
-					)
+					let idx = this.filtros.findIndex((o) => {
+						return Object.keys(o).some((o) => o === "$" + valor + "$")
+					})
 					this.filtros.splice(idx, 1)
 				}
 
@@ -869,9 +892,9 @@
 				}
 				if (this.selecionandoTodos === true) this.selecionandoTodos = false
 			},
-      limparSelecionar(valor){
-        this.selecionados = []
-      }
+			limparSelecionar(valor) {
+				this.selecionados = []
+			},
 		},
 	}
 </script>

@@ -61,11 +61,11 @@
 				<template v-slot:[`body.id`]="{ item }">
 					<span class="whitespace-nowrap">{{ ("000000" + item.id).slice(-6) }}</span>
 				</template>
-				<template v-slot:[`body.Etapa.nome`]="{ item }">
+				<template v-slot:[`body.Etapa.id`]="{ item }">
 					<span
-						v-if="item.Etapa && item.Etapa.nome"
+						v-if="item['Etapa.nome']"
 						class="whitespace-nowrap">
-						{{ item.Etapa.nome }}
+						{{ item['Etapa.nome'] }}
 					</span>
 				</template>
 				<template v-slot:[`body.Setor.nome`]="{ item }">
@@ -398,15 +398,16 @@
 					},
 					{
 						nome: "Etapa",
-						valor: "Etapa.nome",
+						valor: "Etapa.id",
 						filtro: true,
+            // mostrarVazio: true,
 						opcoes: Array.from(
 							new Set(
 								this.etapas
 									.filter((item) => {
 										return item.nome
 									})
-									.map((item) => `${item.nome}`),
+									.map((item) => { return { id: item.id, texto: item.nome} }),
 							),
 						),
 					},
