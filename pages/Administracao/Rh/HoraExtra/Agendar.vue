@@ -528,10 +528,10 @@
 
 				let filtros = [...this.filtros]
 
-				let filtrosFinais
+        let filtrosFinais
 
 				if (filtros !== "") {
-					filtrosFinais = filtros.join("")
+          filtrosFinais = filtros.join("")
 				}
 
 				let resp = await this.$axios.$get("/hora_extra/buscar/funcionarios", {
