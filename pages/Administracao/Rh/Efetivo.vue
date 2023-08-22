@@ -119,7 +119,19 @@
 			<RodapePagina>
 				<template v-slot>
 					<div class="flex items-center justify-between w-full">
-						<div class="flex">
+						<div class="flex gap-2">
+
+              <vue-blob-json-csv
+                file-type="json"
+                file-name="efetivo"
+                :data="dadosJson"
+                v-if="$auth.user.permissoes.includes('exportar_efetivo_json')"
+              >
+                <button class="bg-white flex rounded-sm px-2 items-center py-2 gap-1.5" @click="dadosExportarJson()">
+                  <img src="@/assets/icons/json-b.svg" alt="" class="w-7 h-7">
+                  <span>EXPORTAR JSON</span>
+                </button>
+              </vue-blob-json-csv>
 							<BotaoPadrao
 								:texto="gerandoExcel === true ? 'Gerando...' : 'Gerar EXCEL'"
 								@clique="gerarExcel"
@@ -209,7 +221,8 @@
 				carregando: false,
 				rotas: [],
 				gerandoExcel: false,
-        responsaveis: []
+        responsaveis: [],
+        dadosJson: [],
 			}
 		},
 		computed: {
@@ -586,6 +599,36 @@
 				this.gerandoExcel = false
 				gerarExcel(cabecalho, itens, nomeArquivo)
 			},
+
+      dadosExportarJson() {
+        console.log("Aqui")
+
+        let dados = this.dados.map((funcionario) => {
+          let id_cargo = funcionario.id_cargo
+          if (funcionario.id_cargo) {
+            if (/^[a-zA-Z]+$/.test(funcionario.id_cargo.charAt(0))) {
+              id_cargo = '9' + id_cargo.slice(1)
+            }
+          }
+
+          return {
+            'CPF': parseInt(funcionario.cpf),
+            'NOME': funcionario.nome,
+            'MATRICULA': parseInt(funcionario.chapa),
+            'FUNCAO_NOME': funcionario.cargo,
+            'FUNCAO_ID': id_cargo,
+            'EQUIPE_NOME': funcionario.encarregado_sapo,
+            'EQUIPE_ID': parseInt(funcionario.id_encarregado_sapo),
+            'DATA_ADMISSAO': funcionario.data_admissao ? this.$dayjs(funcionario.data_admissao).format("YYYY-MM-DD") : "",
+            'DATA_DEMISSAO': funcionario.data_demissao ? this.$dayjs(funcionario.data_demissao).format("YYYY-MM-DD") : "",
+            'ATIVO': funcionario.data_demissao === null ? true : false,
+            'CREATED_AT': this.$dayjs(funcionario.createdAt).format("YYYY-MM-DD HH:mm:ss"),
+            'UPDATED_AT': this.$dayjs(funcionario.updatedAt).format("YYYY-MM-DD HH:mm:ss"),
+          }
+        });
+
+        this.dadosJson = dados
+      },
 		},
 		watch: {
 			mostrarDemitidos(valor) {

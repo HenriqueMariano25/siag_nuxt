@@ -32,7 +32,8 @@ export default {
     '@/plugins/dayjs',
     '@/plugins/maska',
     '@/plugins/money',
-    {src: '~/plugins/vue-apexcharts', ssr: false}
+    {src: '~/plugins/vue-apexcharts', ssr: false},
+    '@/plugins/vueBlobJsonCsv',
   ],
 
   components: true,

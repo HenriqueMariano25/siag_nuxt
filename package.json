@@ -28,6 +28,7 @@
     "socket.io-client": "^4.7.1",
     "vue": "^2.7.10",
     "vue-apexcharts": "^1.6.2",
+    "vue-blob-json-csv": "^0.1.7",
     "vue-server-renderer": "^2.7.10",
     "vue-template-compiler": "^2.7.10",
     "vuejs-money": "^1.0.6"
