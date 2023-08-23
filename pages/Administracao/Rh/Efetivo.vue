@@ -292,7 +292,7 @@
                   ),
                 )
                 : [], },
-					{ nome: "Gestor", valor: "Gestor.nome", filtro: true, mostrarVazio: true,
+					{ nome: "Gestor", valor: "Gestor.id", filtro: true, mostrarVazio: true,
             opcoes:
               this.responsaveis.length > 0
                 ? Array.from(
