@@ -81,7 +81,6 @@
 import AppFormInput from "~/components/Ui/AppFormInput.vue";
 import AppFormSelect from "~/components/Ui/AppFormSelect.vue";
 import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
-import { buscarTerceiros } from "~/mixins/buscarInformacoes";
 import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
 import AppBadge from "~/components/Ui/AppBadge.vue";
 import RodapePagina from "~/components/Shared/RodapePagina.vue";
@@ -153,8 +152,6 @@ export default {
 
       let resp = await this.$axios
         .$get("/hora_extra/terceiros/novo_padrao")
-
-      console.log(resp.dados)
 
       this.dados = resp.dados.terceiros
     },
