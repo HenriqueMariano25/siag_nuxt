@@ -14,6 +14,7 @@
         </div>
         <div>
           <div class="p-1">
+            <NuxtLink to="/usuario">
             <button class="items-center flex h-11 hover:bg-white/[.30] w-full p-2 rounded text-sm">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                 <path fill-rule="evenodd"
@@ -22,6 +23,7 @@
               </svg>
               <span class="ml-2" v-if="menuAberto">{{ $auth.user.nome.split(" ")[0] }}</span>
             </button>
+            </NuxtLink>
           </div>
         </div>
         <div>
