@@ -2,9 +2,12 @@
 	<div
 		class="flex fixed bg-cover bg-center bg-no-repeat w-full h-full bg-login justify-center items-center"
     v-on:keyup.enter="login">
-		<div class="border border-gray-800 bg-gray-100/[.80] flex flex-col z-10 p-6 h-fit w-1/3"
+		<div class="border border-gray-800 bg-gray-100/[.80] flex flex-col z-10 p-6 h-fit w-1/3 "
          >
-			<div class="font-bold text-center text-5xl mb-2">
+      <div>
+        <img src="@/assets/img/logogrande.png" alt="" class="mb-3">
+      </div>
+			<div class="font-bold text-center text-6xl mb-2 text-[#00152D]">
 				<h1>SIAG</h1>
 			</div>
 			<div class="space-y-3">
@@ -35,7 +38,12 @@
 					</button>
 				</div>
 			</div>
+
 		</div>
+    <div class="mt-6 text-center text-lg absolute bottom-0 w-full bg-[#00152D] text-white py-1">
+      <span>Desenvolvido por: <strong>Henrique Mariano da Silva</strong></span>
+
+    </div>
 	</div>
 </template>
 
