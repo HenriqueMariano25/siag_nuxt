@@ -183,11 +183,11 @@
 					{{ item["fun.encarregado_sapo"] }}
 				</span>
 			</template>
-			<template v-slot:[`body.fun.encarregado_producao`]="{ item }">
+			<template v-slot:[`body.encar.nome`]="{ item }">
 				<span
-					v-if="item['fun.encarregado_producao']"
+					v-if="item['encarregado_lider.nome']"
 					class="whitespace-nowrap">
-					{{ item["fun.encarregado_producao"] }}
+					{{ item["encarregado_lider.nome"] }}
 				</span>
 			</template>
 			<template v-slot:[`body.hora_extra`]="{ item }">
@@ -350,7 +350,7 @@
 					{ nome: "Nome", valor: "nome", filtro: true, colunaTabela: "fun.nome" },
 					{ nome: "Cargo", valor: "cargo", filtro: true },
 					{ nome: "Encar./Lider SAPO", valor: "fun.encarregado_sapo", filtro: true },
-					{ nome: "Encar./Lider Produção", valor: "fun.encarregado_producao", filtro: true },
+					{ nome: "Encarregado/Lider", valor: "encar.nome", filtro: true },
 					{ nome: "Rota", valor: "rota" },
 					{ nome: "Ponto de embarque", valor: "ponto_embarque", filtro: true },
 				],
