@@ -14,6 +14,12 @@
         link="/administracao/rh/contratacao/configuracao/motivoAlteracao">
         <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="NRs"
+        cor="bg-[#264653]"
+        link="/administracao/rh/contratacao/configuracao/NRs">
+        <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
+      </ButtonNavegacao>
     </div>
   </div>
 </template>
