@@ -124,7 +124,7 @@
 			async editado(nr) {
 				let idx = this.dados.findIndex((o) => o.id === nr.id)
 
-				if (idx > 0) {
+				if (idx >= 0) {
 					this.dados[idx].nr = nr.nr
 					this.dados[idx].descricao = nr.descricao
 				}
@@ -137,7 +137,7 @@
 			async deletado(id) {
 				let idx = this.dados.findIndex((o) => o.id === id)
 
-				if (idx > 0) {
+				if (idx >= 0) {
 					this.dados.splice(idx, 1)
 				}
 
