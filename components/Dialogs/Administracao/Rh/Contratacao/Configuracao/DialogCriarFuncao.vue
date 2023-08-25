@@ -127,12 +127,14 @@
         ],
 			}
 		},
-		async created() {
+		async mounted() {
 			this.setores = await this.buscarSetores()
 
       if (this.funcao) {
-        this.funcaoLocal = Object.assign({}, this.funcao)
-        if(this.funcao.setor.length > 0) this.funcaoLocal.setores = this.funcao.setor.map( o => o.id )
+        let funcaoFormatada = Object.assign({}, this.funcao)
+        funcaoFormatada['setores'] = this.funcao.setor.map(o => o.id)
+
+        this.funcaoLocal = funcaoFormatada
       }
 		},
 		methods: {
