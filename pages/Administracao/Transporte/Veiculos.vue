@@ -116,7 +116,7 @@
       cadastrado(veiculo) {
         this.dados.push(veiculo)
         this.mostrarDialogCriarVeiculo = false
-        this.textoAlerta = "Veículo cadastrada com sucesso!"
+        this.textoAlerta = "Veículo cadastrado com sucesso!"
         this.mostrarAlerta = true
         this.totalItens += 1
       },
@@ -127,7 +127,7 @@
 
         this.veiculo = null
         this.mostrarDialogCriarVeiculo = false
-        this.textoAlerta = "Veículo editada com sucesso!"
+        this.textoAlerta = "Veículo editado com sucesso!"
         this.mostrarAlerta = true
       },
 
@@ -136,7 +136,7 @@
         this.dados.splice(idx, 1)
 
         this.mostrarDialogCriarVeiculo = false
-        this.textoAlerta = "Veículo deletada com sucesso!"
+        this.textoAlerta = "Veículo deletado com sucesso!"
         this.mostrarAlerta = true
         this.veiculo = null
         this.totalItens -= 1
