@@ -12,6 +12,16 @@
 					alt=""
 					class="w-8 h-8" />
 			</ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="Veículos"
+        cor="bg-[#264653]"
+        link="transporte/veiculos"
+        v-if="$auth.user.permissoes.includes('transporte')">
+        <img
+          src="@/assets/icons/vehicle-w.svg"
+          alt=""
+          class="w-8 h-8" />
+      </ButtonNavegacao>
 		</div>
 		<div>
       <GraficoRotas :dados="dados"></GraficoRotas>
