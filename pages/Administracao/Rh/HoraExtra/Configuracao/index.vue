@@ -5,6 +5,15 @@
                        v-if="$auth.user.permissoes.includes('horaExtra_feriados')">
         <img src="@/assets/icons/calendar-days-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
+      <ButtonNavegacao titulo="Liberação/Bloqueio" cor="bg-[#264653]"
+                       link="/administracao/rh/horaExtra/configuracao/LiberacaoBloqueio"
+                       v-if="$auth.user.permissoes.includes('liberacao_bloqueio_he')">
+        <img src="@/assets/icons/lock-open-w.svg" alt="" class="w-8 h-8">
+      </ButtonNavegacao>
+      <ButtonNavegacao titulo="Configurações" cor="bg-[#264653]" link="/administracao/rh/horaExtra/configuracao/configuracoes"
+                       v-if="$auth.user.permissoes.includes('configuracao_he')">
+        <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
+      </ButtonNavegacao>
     </div>
   </div>
 </template>

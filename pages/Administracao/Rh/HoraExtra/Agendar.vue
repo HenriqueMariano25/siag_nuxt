@@ -142,7 +142,7 @@
 			</div>
 		</div>
 		<TabelaPadrao
-      class="print:hidden"
+			class="print:hidden"
 			:cabecalho="cabecalho"
 			:dados="dados"
 			:itensPorPagina="itensPorPagina"
@@ -215,17 +215,16 @@
 		</TabelaPadrao>
 		<div class="bg-red-500 flex">
 			<RodapePagina
-        @fechar="mostrarSelecionados = false"
+				@fechar="mostrarSelecionados = false"
 				class="print:hidden"
 				detalhes
 				tituloDetalhes="Selecionados"
-        :mostrar="mostrarSelecionados"
-      >
+				:mostrar="mostrarSelecionados">
 				<template v-slot:detalhes>
 					<div class="flex w-full p-1 overflow-y-auto max-h-[215px]">
-						<table class="table w-full border-collapse border border-slate-500 text-sm bg-white" >
+						<table class="table w-full border-collapse border border-slate-500 text-sm bg-white">
 							<thead class="bg-blue-200">
-								<tr class="uppercase ">
+								<tr class="uppercase">
 									<th class="border border-slate-500">Matrícula</th>
 									<th class="border border-slate-500">Nome</th>
 									<th class="border border-slate-500">Cargo</th>
@@ -239,21 +238,27 @@
 									<td class="text-center border border-slate-500">{{ funcionario.chapa }}</td>
 									<td class="border border-slate-500 pl-1">{{ funcionario.nome }}</td>
 									<td class="border border-slate-500 pl-1">{{ funcionario.cargo }}</td>
-									<td class="border border-slate-500 pl-1">{{ funcionario["fun.encarregado_producao"] }}</td>
+									<td class="border border-slate-500 pl-1">
+										{{ funcionario["fun.encarregado_producao"] }}
+									</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
-
 				</template>
 				<div class="flex w-full justify-between">
 					<div class="flex gap-2">
-            <AppBadge
-              cor="!bg-red-400"
-              corFonte="bg-white"
-              :texto="funcionariosSelecionados.length === 0 ? null : funcionariosSelecionados.length">
-						  <BotaoPadrao texto="Selecionados" @clique="mostrarSelecionados = !mostrarSelecionados" :disabled="agendamento.data === null || agendamento.data === ''"/>
-            </AppBadge>
+						<AppBadge
+							cor="!bg-red-400"
+							corFonte="bg-white"
+							:texto="
+								funcionariosSelecionados.length === 0 ? null : funcionariosSelecionados.length
+							">
+							<BotaoPadrao
+								texto="Selecionados"
+								@clique="mostrarSelecionados = !mostrarSelecionados"
+								:disabled="agendamento.data === null || agendamento.data === ''" />
+						</AppBadge>
 					</div>
 					<div class="flex gap-2">
 						<BotaoPadrao
@@ -293,7 +298,7 @@
 			v-if="mostrarDialogAgendamentos"
 			@cancelar="mostrarDialogAgendamentos = false" />
 		<DialogAprovarHE
-			:liberado="estaNoIntevaloAprovacao"
+			:liberado="podeAprovar()"
 			v-if="mostrarDialogAprovarHe"
 			@cancelar="mostrarDialogAprovarHe = false" />
 	</div>
@@ -371,9 +376,9 @@
 				configuracaoHE: {},
 				noIntervalo: false,
 				horaFechamentoAgendamento: null,
-        mostrarSelecionados: false,
-        limparSelecionar: false,
-        agendamentosPorDia: {}
+				mostrarSelecionados: false,
+				limparSelecionar: false,
+				agendamentosPorDia: {},
 			}
 		},
 		computed: {
@@ -401,9 +406,7 @@
 					.hour(horaInicio.split(":")[0])
 					.minute(horaInicio.split(":")[1])
 				let diaHoraFim = hoje.day(diaFim).hour(horaFim.split(":")[0]).minute(horaFim.split(":")[1])
-				let estaEntre = hoje.isBetween(diaHoraInicio, diaHoraFim, null, "[]")
-
-				return estaEntre
+        return hoje.isBetween(diaHoraInicio, diaHoraFim, null, "[]")
 			},
 
 			horarioAgendamento() {
@@ -424,16 +427,40 @@
 				}
 			},
 		},
-		async fetch() {
-			await this.buscarDiasPrAgendamento()
-			await this.buscarConfiguracao()
-			await this.buscarFuncionarios()
-		},
 		async mounted() {
-			// await this.verificaSeAberto()
+      await this.buscarDiasPrAgendamento()
+      await this.buscarConfiguracao()
+      await this.buscarFuncionarios()
+			await this.podeAprovar()
 		},
 
 		methods: {
+			podeAprovar() {
+				console.log("pode aprovar")
+				console.log(this.$auth.user)
+				let {
+					data_liberacao_aprovacao,
+					hora_inicio_liberacao_aprovacao,
+					hora_fim_liberacao_aprovacao,
+				} = this.$auth.user
+
+        if(this.$dayjs().format("YYYY-MM-DD") === data_liberacao_aprovacao){
+          let diaLiberacao = this.$dayjs(data_liberacao_aprovacao).get("date")
+          let inicioIntLiberacao = this.$dayjs().date(diaLiberacao).hour(hora_inicio_liberacao_aprovacao.split(":")[0]).minute(hora_inicio_liberacao_aprovacao.split(":")[1])
+
+          let fimIntLiberacao = this.$dayjs().date(diaLiberacao).hour(hora_fim_liberacao_aprovacao.split(":")[0]).minute(hora_fim_liberacao_aprovacao.split(":")[1])
+
+          let estaEntre = this.$dayjs().isBetween(inicioIntLiberacao, fimIntLiberacao, null, "[]")
+          if(estaEntre){
+            return true
+          }else{
+            return this.estaNoIntevaloAprovacao
+          }
+        }else{
+          return this.estaNoIntevaloAprovacao
+        }
+			},
+
 			verificaSeAberto() {
 				if (this.verificaDentroIntervalo()) {
 					this.noIntervalo = true
@@ -528,10 +555,10 @@
 
 				let filtros = [...this.filtros]
 
-        let filtrosFinais
+				let filtrosFinais
 
 				if (filtros !== "") {
-          filtrosFinais = filtros.join("")
+					filtrosFinais = filtros.join("")
 				}
 
 				let resp = await this.$axios.$get("/hora_extra/buscar/funcionarios", {
@@ -548,9 +575,9 @@
 					this.totalItens = parseInt(resp.dados.totalItens)
 					this.dados = funcionarios
 					this.carregandoTabela = false
-          if(this.agendamento.data){
-            await this.buscarAgendFuncDia()
-          }
+					if (this.agendamento.data) {
+						await this.buscarAgendFuncDia()
+					}
 				}
 			},
 
@@ -576,7 +603,7 @@
 
 			async buscarPorTagDia(data) {
 				this.agendamento.data = data
-        this.limparSelecionar = true
+				this.limparSelecionar = true
 				await this.buscarAgendFuncDia()
 			},
 
@@ -590,33 +617,32 @@
 					agA["ativo"] = false
 				}
 
-        let agendamentos = []
+				let agendamentos = []
 
-        if (Object.keys(this.agendamentosPorDia).includes(data)) {
-          agendamentos = this.agendamentosPorDia[data]
-        } else {
-          let resp = await this.$axios.$get("/hora_extra/agendamentos/funcionario/dia", {
-            params: { data, setor_id },
-          })
+				if (Object.keys(this.agendamentosPorDia).includes(data)) {
+					agendamentos = this.agendamentosPorDia[data]
+				} else {
+					let resp = await this.$axios.$get("/hora_extra/agendamentos/funcionario/dia", {
+						params: { data, setor_id },
+					})
 
-          agendamentos = resp.dados.agendamentos
+					agendamentos = resp.dados.agendamentos
 
-          this.agendamentosPorDia[data] = agendamentos
-        }
+					this.agendamentosPorDia[data] = agendamentos
+				}
 
 				let novosDados = new Array(...this.dados)
-					for (let ag of agendamentos) {
-						let idx = novosDados.findIndex((o) => o.chapa === ag.chapa)
+				for (let ag of agendamentos) {
+					let idx = novosDados.findIndex((o) => o.chapa === ag.chapa)
 
-
-						if (idx >= 0) {
-							novosDados[idx]["aprovacao_he"] = ag.aprovacao_he
-							novosDados[idx]["precisa_aprovacao_situacao"] = ag.precisa_aprovacao_situacao
-							novosDados[idx]["aprovacao_situacao"] = ag.aprovacao_situacao
-							novosDados[idx]["ativo"] = true
-						}
+					if (idx >= 0) {
+						novosDados[idx]["aprovacao_he"] = ag.aprovacao_he
+						novosDados[idx]["precisa_aprovacao_situacao"] = ag.precisa_aprovacao_situacao
+						novosDados[idx]["aprovacao_situacao"] = ag.aprovacao_situacao
+						novosDados[idx]["ativo"] = true
 					}
-          this.limparSelecionar = false
+				}
+				this.limparSelecionar = false
 
 				this.dados = novosDados
 			},
@@ -629,7 +655,7 @@
 					this.tipoAlerta = "erro"
 					this.textoAlerta = "Não é possivel agendar para dias anteriores !"
 				} else {
-          this.limparSelecionar = true
+					this.limparSelecionar = true
 					let funcionarios = this.funcionariosSelecionados
 
 					let funcionariosChapa = funcionarios.map((o) => o.chapa)
@@ -655,7 +681,7 @@
 							})
 							let novosAgendados = resp.novosAgendados
 							for (let novo of novosAgendados) {
-                this.agendamentosPorDia[data].push(novo)
+								this.agendamentosPorDia[data].push(novo)
 							}
 
 							cont = 0
@@ -666,8 +692,8 @@
 					this.textoAlerta = "Agendamento realizado com sucesso!"
 					this.funcionariosSelecionados = []
 					this.dados = novosDados
-          this.limparSelecionar = false
-          await this.buscarAgendFuncDia()
+					this.limparSelecionar = false
+					await this.buscarAgendFuncDia()
 				}
 			},
 		},
