@@ -1,6 +1,6 @@
 <template>
   <div class="w-full grid  h-fit">
-    <div class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white ">
+    <div class="border grid grid-cols-4 gap-3 border-1 shadow border-gray-300 p-2 rounded bg-white ">
       <ButtonNavegacao titulo="RH" cor="bg-[#264653]" link="administracao/rh">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
           <path fill-rule="evenodd"
@@ -22,6 +22,10 @@
       <ButtonNavegacao titulo="Catracas" cor="bg-[#264653]" link="administracao/catracas"
                        v-if="$auth.user.permissoes.includes('acessos_catraca')">
         <img src="@/assets/icons/gate-w.svg" alt="" class="w-8 h-8">
+      </ButtonNavegacao>
+      <ButtonNavegacao titulo="PSP" cor="bg-[#264653]" link="administracao/psp"
+                       v-if="$auth.user.permissoes.includes('administracao_psp')">
+        <img src="@/assets/icons/travel-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
     </div>
   </div>

@@ -73,8 +73,6 @@
 				if (!resp.falha) {
 					let funcionario = resp.dados.funcionario
 					this.funcionario = funcionario
-
-					console.log(funcionario)
 				}
 			},
 		},
