@@ -142,8 +142,17 @@
 									class="w-7 h-7" />
 							</BotaoPadrao>
 						</div>
-						<div class="flex">
+						<div class="flex gap-2">
+              <BotaoPadrao
+                @clique="mostrarDialogAtualizarHe = true"
+                texto="importar he">
+                <img
+                  src="@/assets/icons/upload-b.svg"
+                  alt=""
+                  class="w-7 h-7" />
+              </BotaoPadrao>
 							<BotaoPadrao
+                v-if="$auth.user.permissoes.includes('atualizar_he_efetivo')"
 								@clique="mostrarDialogEditarEfetivo = true"
 								texto="editar"
 								:disabled="funcSelecionados.length === 0">
@@ -163,6 +172,7 @@
 				@rotaEditada="rotaEditada"
 				@equipePlanEditada="equipePlanEditada"
 				@editado="funcionarioEditado" />
+      <DialogAtualizarHe v-if="mostrarDialogAtualizarHe" @cancelar="mostrarDialogAtualizarHe = false" @atualizado="atualizadoHe"/>
 			<DialogHistoricoMudanca
 				:funcionario_id="funcionario_id"
 				v-if="mostrarDialogHistoricoMudanca"
@@ -189,11 +199,13 @@
 	import DialogHistoricoMudanca from "~/components/Dialogs/Administracao/Rh/Efetivo/DialogHistoricoMudanca.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import AppFormSwitch from "~/components/Ui/AppFormSwitch.vue"
+  import DialogAtualizarHe from "~/components/Dialogs/Administracao/Rh/Efetivo/DialogAtualizarHe.vue";
 
 	export default {
 		name: "index",
 		mixins: [horaExtra],
 		components: {
+      DialogAtualizarHe,
 			AppFormSwitch,
 			AppAlerta,
 			DialogHistoricoMudanca,
@@ -223,6 +235,7 @@
 				gerandoExcel: false,
         responsaveis: [],
         dadosJson: [],
+        mostrarDialogAtualizarHe: false
 			}
 		},
 		computed: {
@@ -629,6 +642,12 @@
 
         this.dadosJson = dados
       },
+
+      async atualizadoHe(){
+        this.mostrarDialogAtualizarHe = false
+        this.textoAlerta = "Atualização de Hora Extra realizada com sucesso!"
+        this.mostrarAlerta = true
+      }
 		},
 		watch: {
 			mostrarDemitidos(valor) {
