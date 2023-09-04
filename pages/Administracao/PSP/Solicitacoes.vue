@@ -37,6 +37,11 @@
 				:limparSelecionar="true"
 				:carregando="carregandoTabela"
 				:temDetalhes="false">
+        <template v-slot:[`body.id`]="{ item }">
+					<span class="whitespace-nowrap">
+						{{ ("00000" + item.id).slice(-5) }}
+					</span>
+        </template>
 				<template v-slot:[`body.EtapaPsp.id`]="{ item }">
 					<span class="whitespace-nowrap">
 						{{ item.EtapaPsp ? item.EtapaPsp.nome : "" }}
@@ -199,25 +204,20 @@
 			async buscarEtapas() {
 				let resp = await this.$axios.$get("/psp/buscar/etapas")
 
-				console.log(resp)
-
 				if (!resp.falha) {
 					this.etapas = resp.dados.etapas
 				}
 			},
+
 			async buscarPsps() {
 				this.carregandoTabela = true
         let filtros = this.filtros
 
-        console.log(this.etapa_psp_id)
         if(this.etapa_psp_id > 0){
           filtros['etapa_psp_id'] = this.etapa_psp_id
         }else{
-          // filtros
           delete filtros.etapa_psp_id
         }
-
-        // filtros['etapa_ss']
 
 				let resp = await this.$axios.$get("/psp/buscar/todas", { params: { filtros }})
 
@@ -226,12 +226,13 @@
 					this.carregandoTabela = false
 				}
 			},
+
 			verDetalhesPsp(dados) {
 				this.card_id = dados.id
 				this.mostrarDialogDetalhesCard = true
 			},
+
 			async cadastrado(psp) {
-				console.log(psp)
         if(this.etapa_psp_id === 0 || this.etapa_psp_id === psp.etapa_psp_id){
           this.dados.push(psp)
         }

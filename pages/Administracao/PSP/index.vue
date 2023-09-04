@@ -5,6 +5,9 @@
       <ButtonNavegacao titulo="Solicitações" cor="bg-[#264653]" link="psp/solicitacoes">
         <img src="@/assets/icons/travel-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
+      <ButtonNavegacao titulo="Aprovar PSP" cor="bg-[#264653]" link="psp/aprovacao">
+        <img src="@/assets/icons/check-circle-w.svg" alt="" class="w-8 h-8">
+      </ButtonNavegacao>
       <ButtonNavegacao titulo="Configurações" cor="bg-[#264653]" link="psp/configuracoes">
         <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
