@@ -145,6 +145,7 @@
 						<div class="flex gap-2">
               <BotaoPadrao
                 @clique="mostrarDialogAtualizarHe = true"
+                v-if="$auth.user.permissoes.includes('atualizar_he_efetivo')"
                 texto="importar he">
                 <img
                   src="@/assets/icons/upload-b.svg"
@@ -152,7 +153,6 @@
                   class="w-7 h-7" />
               </BotaoPadrao>
 							<BotaoPadrao
-                v-if="$auth.user.permissoes.includes('atualizar_he_efetivo')"
 								@clique="mostrarDialogEditarEfetivo = true"
 								texto="editar"
 								:disabled="funcSelecionados.length === 0">
