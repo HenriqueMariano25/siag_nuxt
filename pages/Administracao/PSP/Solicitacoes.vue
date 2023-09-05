@@ -21,7 +21,7 @@
 				</button>
 			</div>
 		</div>
-		<div>
+		<div class="print:hidden">
 			<TabelaPadrao
 				:cabecalho="cabecalho"
 				:dados="dados"
@@ -116,14 +116,18 @@
 		<DialogProcessarPsp
 			v-if="mostrarDialogProcessarPsp"
 			@cancelar="mostrarDialogProcessarPsp = false"
-      @processado="processado"
+			@processado="processado"
 			:selecionados="selecionados" />
-    <AppAlerta
-      tipo="sucesso"
-      :mostrar="mostrarAlerta"
-      @escondeu="mostrarAlerta = false">
-      {{ textoAlerta }}
-    </AppAlerta>
+		<DialogDetalhesPsp
+			v-if="mostrarDialogDetalhesPsp"
+			@cancelar="mostrarDialogDetalhesPsp = false"
+			:psp_id="psp_id" />
+		<AppAlerta
+			tipo="sucesso"
+			:mostrar="mostrarAlerta"
+			@escondeu="mostrarAlerta = false">
+			{{ textoAlerta }}
+		</AppAlerta>
 	</div>
 </template>
 
@@ -134,12 +138,14 @@
 	import AppFormRadio from "~/components/Ui/Form/AppFormRadio.vue"
 	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
 	import DialogProcessarPsp from "~/components/Dialogs/Administracao/Psp/DialogProcessarPsp.vue"
-  import AppAlerta from "~/components/Ui/AppAlerta.vue";
+	 import AppAlerta from "~/components/Ui/AppAlerta.vue";
+	 import DialogDetalhesPsp from "~/components/Dialogs/Administracao/Psp/DialogDetalhesPsp.vue";
 
 	export default {
 		name: "Psp",
 		components: {
-      AppAlerta,
+	     DialogDetalhesPsp,
+	     AppAlerta,
 			DialogProcessarPsp,
 			TabelaPadrao,
 			AppFormRadio,
@@ -161,8 +167,10 @@
 				selecionados: [],
 				carregandoTabela: true,
 				mostrarDialogProcessarPsp: false,
-        mostrarAlerta: false,
-        textoAlerta: null
+	       mostrarAlerta: false,
+	       textoAlerta: null,
+	       mostrarDialogDetalhesPsp: false,
+	       psp_id: null,
 			}
 		},
 		computed: {
@@ -243,8 +251,8 @@
 			},
 
 			verDetalhesPsp(dados) {
-				this.card_id = dados.id
-				this.mostrarDialogDetalhesCard = true
+				this.psp_id = dados.id
+				this.mostrarDialogDetalhesPsp = true
 			},
 
 			async cadastrado(psp) {
@@ -253,19 +261,19 @@
 				}
 			},
 
-      processado(psps){
-        for(let psp of psps){
-          let idx = this.dados.findIndex(o => o.id === psp)
+	     processado(psps){
+	       for(let psp of psps){
+	         let idx = this.dados.findIndex(o => o.id === psp)
 
-          if(idx >= 0){
-            this.dados.splice(idx, 1)
-          }
-        }
+	         if(idx >= 0){
+	           this.dados.splice(idx, 1)
+	         }
+	       }
 
-        this.textoAlerta = "PSPs processada com sucesso!"
-        this.mostrarAlerta = true
-        this.mostrarDialogProcessarPsp = false
-      }
+	       this.textoAlerta = "PSPs processada com sucesso!"
+	       this.mostrarAlerta = true
+	       this.mostrarDialogProcessarPsp = false
+	     }
 		},
 		watch: {
 			async etapa_psp_id() {
