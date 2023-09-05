@@ -31,17 +31,18 @@
 				@filtros="filtros = $event"
 				:totalItens="totalItens"
 				altura="calc(100vh - 194px)"
+				:selecionar="podeEditar"
 				@atualizar="buscarPsps"
 				@dblclick="verDetalhesPsp"
 				@selecionados="selecionados = $event"
 				:limparSelecionar="true"
 				:carregando="carregandoTabela"
 				:temDetalhes="false">
-        <template v-slot:[`body.id`]="{ item }">
+				<template v-slot:[`body.id`]="{ item }">
 					<span class="whitespace-nowrap">
 						{{ ("00000" + item.id).slice(-5) }}
 					</span>
-        </template>
+				</template>
 				<template v-slot:[`body.EtapaPsp.id`]="{ item }">
 					<span class="whitespace-nowrap">
 						{{ item.EtapaPsp ? item.EtapaPsp.nome : "" }}
@@ -96,6 +97,14 @@
 								alt=""
 								class="w-7 h-7" />
 						</BotaoPadrao>
+						<BotaoPadrao
+							texto="processar"
+							@clique="mostrarDialogProcessarPsp = true">
+							<img
+								src="@/assets/icons/check-circle-b.svg"
+								alt=""
+								class="w-7 h-7" />
+						</BotaoPadrao>
 					</div>
 				</div>
 			</template>
@@ -104,6 +113,17 @@
 			v-if="mostrarDialogCriarPsp"
 			@cancelar="mostrarDialogCriarPsp = false"
 			@cadastrado="cadastrado" />
+		<DialogProcessarPsp
+			v-if="mostrarDialogProcessarPsp"
+			@cancelar="mostrarDialogProcessarPsp = false"
+      @processado="processado"
+			:selecionados="selecionados" />
+    <AppAlerta
+      tipo="sucesso"
+      :mostrar="mostrarAlerta"
+      @escondeu="mostrarAlerta = false">
+      {{ textoAlerta }}
+    </AppAlerta>
 	</div>
 </template>
 
@@ -113,15 +133,25 @@
 	import DialogCriarPsp from "~/components/Dialogs/Administracao/Psp/DialogCriarPsp.vue"
 	import AppFormRadio from "~/components/Ui/Form/AppFormRadio.vue"
 	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
+	import DialogProcessarPsp from "~/components/Dialogs/Administracao/Psp/DialogProcessarPsp.vue"
+  import AppAlerta from "~/components/Ui/AppAlerta.vue";
 
 	export default {
 		name: "Psp",
-		components: { TabelaPadrao, AppFormRadio, DialogCriarPsp, BotaoPadrao, RodapePagina },
+		components: {
+      AppAlerta,
+			DialogProcessarPsp,
+			TabelaPadrao,
+			AppFormRadio,
+			DialogCriarPsp,
+			BotaoPadrao,
+			RodapePagina,
+		},
 		data() {
 			return {
 				mostrarDialogCriarPsp: false,
 				etapas: [],
-        etapa_psp_id: 0,
+				etapa_psp_id: 0,
 				dados: [],
 				filtros: {},
 				itensPorPagina: 50,
@@ -130,6 +160,9 @@
 				totalItens: 0,
 				selecionados: [],
 				carregandoTabela: true,
+				mostrarDialogProcessarPsp: false,
+        mostrarAlerta: false,
+        textoAlerta: null
 			}
 		},
 		computed: {
@@ -140,7 +173,6 @@
 						valor: "id",
 						filtro: true,
 						centralizar: true,
-						colunaTabela: "card.id",
 						ordenar: true,
 						tipoFiltro: "inteiro",
 					},
@@ -172,28 +204,11 @@
 					{ nome: "Solicitado por", valor: "solicitado_por" },
 				]
 
-				let listaEdicao = [0, 1, 2, 3, 4, 5, 6]
-
-				if (this.$auth.user.permissoes.includes("editar_card_adm_contratacao"))
-					listaEdicao = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-
-				if (listaEdicao.some((o) => this.etapa_id === o)) {
-					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-10" })
-				}
-
-				let listaNaoSelect = [0, 1, 2, 3]
-
-				if (this.$auth.user.permissoes.includes("rh_contratacoes")) {
-					// if (!listaNaoSelect.some((o) => this.etapa_id === o)) {
-					//   cabecalho.unshift({nome: "", valor: "selecione", centralizar: true, largura: "w-10"})
-					// }
-				}
-
 				return cabecalho
 			},
 
-			isAdminCardRH() {
-				return this.$auth.user.permissoes.includes("editar_card_adm_contratacao")
+			podeEditar() {
+				return this.etapa_psp_id >= 5 && this.etapa_psp_id <= 7
 			},
 		},
 		created() {
@@ -211,15 +226,15 @@
 
 			async buscarPsps() {
 				this.carregandoTabela = true
-        let filtros = this.filtros
+				let filtros = this.filtros
 
-        if(this.etapa_psp_id > 0){
-          filtros['etapa_psp_id'] = this.etapa_psp_id
-        }else{
-          delete filtros.etapa_psp_id
-        }
+				if (this.etapa_psp_id > 0) {
+					filtros["etapa_psp_id"] = this.etapa_psp_id
+				} else {
+					delete filtros.etapa_psp_id
+				}
 
-				let resp = await this.$axios.$get("/psp/buscar/todas", { params: { filtros }})
+				let resp = await this.$axios.$get("/psp/buscar/todas", { params: { filtros } })
 
 				if (!resp.falha) {
 					this.dados = resp.dados.psps
@@ -233,18 +248,32 @@
 			},
 
 			async cadastrado(psp) {
-        if(this.etapa_psp_id === 0 || this.etapa_psp_id === psp.etapa_psp_id){
-          this.dados.push(psp)
+				if (this.etapa_psp_id === 0 || this.etapa_psp_id === psp.etapa_psp_id) {
+					this.dados.push(psp)
+				}
+			},
+
+      processado(psps){
+        for(let psp of psps){
+          let idx = this.dados.findIndex(o => o.id === psp)
+
+          if(idx >= 0){
+            this.dados.splice(idx, 1)
+          }
         }
+
+        this.textoAlerta = "PSPs processada com sucesso!"
+        this.mostrarAlerta = true
+        this.mostrarDialogProcessarPsp = false
+      }
+		},
+		watch: {
+			async etapa_psp_id() {
+				this.pagina = 1
+
+				await this.buscarPsps()
 			},
 		},
-    watch: {
-      async etapa_psp_id() {
-        this.pagina = 1
-
-        await this.buscarPsps()
-      },
-    },
 	}
 </script>
 
