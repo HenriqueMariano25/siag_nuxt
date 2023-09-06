@@ -22,19 +22,19 @@
 								class="even:bg-gray-300 odd:bg-white">
 								<td class="px-1 border border-gray-700">{{ ("00000" + psp.id).slice(-5) }}</td>
 								<td class="px-1 border border-gray-700">
-									{{ psp.Funcionario ? psp.Funcionario.nome : "" }}
+									{{ psp['Funcionario.nome'] ? psp['Funcionario.nome'] : "" }}
 								</td>
 								<td class="px-1 border border-gray-700">
-									{{ psp.Funcionario ? psp.Funcionario.cargo : "" }}
+									{{ psp['Funcionario.cargo'] ? psp['Funcionario.cargo'] : "" }}
 								</td>
-								<td class="px-1 border border-gray-700">{{ psp.motivo ? psp.motivo : "" }}</td>
+								<td class="px-1 border border-gray-700">{{ psp['Psp.motivo'] ? psp['Psp.motivo'] : "" }}</td>
 								<td class="px-1 border border-gray-700">
-									{{ psp.data_ida ? $dayjs(psp.data_ida).format("DD/MM/YYYY") : "" }}
+									{{ psp['Psp.data_ida'] ? $dayjs(psp['Psp.data_ida']).format("DD/MM/YYYY") : "" }}
 								</td>
 							</tr>
 						</tbody>
 					</table>
-					<div>
+					<div class="mt-1">
 						<AppFormTextarea
 							id="comentario"
 							label="Comentario"

@@ -26,6 +26,7 @@
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
+        @itensPorPagina="itensPorPagina = $event"
 				:pagina="pagina"
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
@@ -36,9 +37,8 @@
 				@dblclick="verDetalhesPsp"
 				@selecionados="selecionados = $event"
 				:limparSelecionar="true"
-				:carregando="carregandoTabela"
-				:temDetalhes="false">
-				<template v-slot:[`body.id`]="{ item }">
+				:carregando="carregandoTabela">
+				<template v-slot:[`body.Psp.id`]="{ item }">
 					<span class="whitespace-nowrap">
 						{{ ("00000" + item.id).slice(-5) }}
 					</span>
@@ -178,7 +178,7 @@
 				let cabecalho = [
 					{
 						nome: "Cod.",
-						valor: "id",
+						valor: "Psp.id",
 						filtro: true,
 						centralizar: true,
 						ordenar: true,
@@ -201,15 +201,15 @@
 							),
 						),
 					},
-					{ nome: "Funcionário", valor: "Funcionario.nome" },
-					{ nome: "Cargo", valor: "Funcionario.cargo" },
-					{ nome: "Setor", valor: "Funcionario.setor.nome" },
-					{ nome: "Motivo", valor: "motivo" },
+					{ nome: "Funcionário", valor: "Funcionario.nome", filtro: true },
+					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
+					{ nome: "Setor", valor: "Funcionario.setor.nome", filtro: true},
+					{ nome: "Motivo", valor: "motivo", filtro: true },
 					{ nome: "Data de ida", valor: "data_ida" },
-					{ nome: "Destino", valor: "destino" },
-					{ nome: "Transporte", valor: "meio_transporte" },
-					{ nome: "Centro Custo", valor: "CentroCustoPEP.descricao" },
-					{ nome: "Solicitado por", valor: "solicitado_por" },
+					{ nome: "Destino", valor: "destino", filtro: true },
+					{ nome: "Transporte", valor: "meio_transporte", filtro: true },
+					{ nome: "Centro Custo", valor: "CentroCustoPEP.descricao", filtro: true },
+					{ nome: "Solicitado por", valor: "solicitado_por", filtro: true },
 				]
 
 				return cabecalho
@@ -242,10 +242,15 @@
 					delete filtros.etapa_psp_id
 				}
 
-				let resp = await this.$axios.$get("/psp/buscar/todas", { params: { filtros } })
+        let page = this.pagina
+        let size = this.itensPorPagina
+
+				let resp = await this.$axios.$get("/psp/buscar/todas", { params: { filtros, page, size } })
 
 				if (!resp.falha) {
 					this.dados = resp.dados.psps
+          this.totalItens = resp.dados.total
+
 					this.carregandoTabela = false
 				}
 			},

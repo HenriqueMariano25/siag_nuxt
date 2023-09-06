@@ -591,9 +591,6 @@
 					filtros = this.prepararFiltro(filtrosPrPreparar)
 				}
 
-				// console.log(filtros)
-				// console.log(this.filtros)
-
 				this.$emit("itensPorPagina", itensPorPagina)
 				this.$emit("pagina", pagina)
 				this.$emit("filtros", filtros)
