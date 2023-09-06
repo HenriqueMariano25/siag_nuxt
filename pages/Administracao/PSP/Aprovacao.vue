@@ -214,13 +214,10 @@
 		async mounted() {
 			this.etapa_psp_id = this.etapas[0].valor
 
-			// await this.buscarPsps()
 		},
 		methods: {
 			async buscarPsps() {
 				let filtros = [...this.filtros]
-
-				// filtros["etapa_psp_id"] = parseInt(this.etapa_psp_id)
 
 				let page = this.pagina
 				let size = this.itensPorPagina
