@@ -1,7 +1,9 @@
 <template>
 	<div class="w-full">
 		<BaseDialog
-			:titulo="cadastrou ? 'PSP cadastrada' : 'Criar PSP'"
+			:titulo="psp_id ? 'Editar PSP' : cadastrou ? 'PSP cadastrada' : 'Criar PSP'"
+      :btnDeletar="psp_id !== null && psp_id !== ''"
+      @deletar="deletarPsp()"
 			:carregando="carregando"
 			@cancelar="cancelar()">
 			<template v-slot:corpo>
@@ -21,13 +23,14 @@
 										label="Funcionário"
 										:options="funcionarios"
 										v-model="psp.funcionario_id"
+                    :disabled="editandoPsp"
 										class="grow" />
 									<div class="flex self-end">
 										<BotaoPadrao
 											texto="buscar"
 											cor="bg-primaria-200 hover:bg-primaria-500 text-white"
 											@clique="buscarFuncionario"
-											:disabled="psp.funcionario_id === null || psp.funcionario_id === ''">
+											:disabled="(psp.funcionario_id === null || psp.funcionario_id === '') || editandoPsp">
 											<img
 												src="@/assets/icons/magnifier-w.svg"
 												alt=""
@@ -394,7 +397,7 @@
 				<div class="flex">
 					<BotaoPadrao
 						texto="salvar"
-						@clique="cadastrarPsp()"
+						@clique="psp_id ? editarPsp() : cadastrarPsp()"
 						v-if="!cadastrou">
 						<img
 							src="@/assets/icons/save-b.svg"
@@ -482,8 +485,14 @@
 				dependentes: [],
 				errosDependentes: [],
 				erroSemDependente: false,
+        editandoPsp: false
 			}
 		},
+    props: {
+      psp_id: {
+        type: [Object, Number],
+      }
+    },
 		computed: {
 			motivoOutro() {
 				return this.psp.motivo === "outros"
@@ -492,15 +501,31 @@
 				return this.$dayjs(this.psp.data_ida).diff(this.$dayjs(), "day") < 35
 			},
 		},
-		created() {
-			this.buscarFuncionarios()
-			this.buscarTurnos()
-			this.buscarCentrosCusto()
+		async created() {
+			await this.buscarFuncionarios()
+			await this.buscarTurnos()
+			await this.buscarCentrosCusto()
+
+      if(this.psp_id){
+        this.editandoPsp = true
+        await this.buscarPsp()
+      }
 		},
 		methods: {
 			cancelar() {
 				this.$emit("cancelar")
 			},
+      async buscarPsp() {
+        let resp = await this.$axios.$get(`/psp/buscar/${this.psp_id}`)
+
+        if (!resp.falha) {
+          let psp = resp.dados.psp
+          this.psp.funcionario_id = psp.funcionario_id
+          await this.buscarFuncionario()
+          this.psp = Object.assign(this.psp, resp.dados.psp)
+          this.carregando = false
+        }
+      },
 			async buscarFuncionarios() {
 				let resp = await this.$axios.$get("/efetivo/buscar_responsaveis")
 
@@ -535,7 +560,6 @@
 					let prazo = resp.dados.prazo
           let ultimaPsp = resp.dados.ultimaPsp
 
-					console.log(funcionario)
 					this.psp.cargo = funcionario.cargo
 					this.psp.chapa = funcionario.chapa
 					this.psp.cpf = funcionario.cpf
@@ -560,6 +584,17 @@
           }
 				}
 			},
+      async deletarPsp(){
+        let usuario_id = this.$auth.user.id
+        let psp_id = this.psp_id
+
+        let resp = await this.$axios.$post("/psp/deletar", { usuario_id, psp_id})
+
+
+        if(!resp.falha){
+          this.$emit("deletado", psp_id )
+        }
+      },
 			async buscarCentrosCusto() {
 				let resp = await this.$axios.$get("/suprimentos/ss/centro_custo/buscarTodos")
 
@@ -615,8 +650,6 @@
 
 				if (this.erros.length === 0 && this.erroSemDependente === false) {
 					let resp = await this.$axios.$post("/psp/criar", { ...psp, usuario_id, dependentes })
-
-					console.log(resp)
 					if (!resp.falha) {
             let pspEncontrada = resp.dados.psp
 
@@ -625,11 +658,32 @@
 						this.$emit("cadastrado", pspEncontrada)
 					}
 				}
-
-				// this.cadastrou = !this.cadastrou
-				// this.textoAlerta = "PSP cadastrada com sucesso!"
-				// this.mostrarAlerta = true
 			},
+
+      async editarPsp(){
+        this.validarFormulario()
+        let psp = this.psp
+        let usuario_id = this.$auth.user.id
+        let dependentes = []
+        let psp_id = this.psp_id
+
+        if (psp.motivo === "Mobilização familiar") {
+          if (this.dependentes.length <= 0) {
+            this.erroSemDependente = true
+          } else {
+            dependentes = this.dependentes
+          }
+        }
+
+        if (this.erros.length === 0 && this.erroSemDependente === false) {
+          let resp = await this.$axios.$post("/psp/editar", { ...psp, usuario_id, dependentes, psp_id })
+
+          if (!resp.falha) {
+            let pspEncontrada = resp.dados.psp
+            this.$emit("editado", pspEncontrada)
+          }
+        }
+      },
 
 			validarDependente() {
 				this.errosDependentes = []

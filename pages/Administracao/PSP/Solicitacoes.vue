@@ -32,12 +32,17 @@
 				@filtros="filtros = $event"
 				:totalItens="totalItens"
 				altura="calc(100vh - 194px)"
-				:selecionar="podeEditar"
+				:selecionar="podeProcessar"
 				@atualizar="buscarPsps"
 				@dblclick="verDetalhesPsp"
 				@selecionados="selecionados = $event"
 				:limparSelecionar="true"
 				:carregando="carregandoTabela">
+        <template v-slot:[`body.acao`]="{ item }">
+					<BotaoPadrao icone @clique="editarPsp(item)">
+            <img src="@/assets/icons/edit-b.svg" alt="" class="w-6 h-6">
+          </BotaoPadrao>
+        </template>
 				<template v-slot:[`body.Psp.id`]="{ item }">
 					<span class="whitespace-nowrap">
 						{{ ("00000" + item.id).slice(-5) }}
@@ -111,7 +116,10 @@
 		</RodapePagina>
 		<DialogCriarPsp
 			v-if="mostrarDialogCriarPsp"
-			@cancelar="mostrarDialogCriarPsp = false"
+			@cancelar="mostrarDialogCriarPsp = false; psp_id = null"
+      :psp_id="psp_id"
+      @deletado="deletado"
+      @editado="editado"
 			@cadastrado="cadastrado" />
 		<DialogProcessarPsp
 			v-if="mostrarDialogProcessarPsp"
@@ -212,10 +220,14 @@
 					{ nome: "Solicitado por", valor: "solicitado_por", filtro: true },
 				]
 
+        if(this.etapa_psp_id >= 1 && this.etapa_psp_id <= 4){
+          cabecalho.unshift({ nome: "", valor: "acao" },)
+        }
+
 				return cabecalho
 			},
 
-			podeEditar() {
+			podeProcessar() {
 				return this.etapa_psp_id >= 5 && this.etapa_psp_id <= 7
 			},
 		},
@@ -266,6 +278,28 @@
 				}
 			},
 
+      async editado(psp) {
+        let idx = this.dados.findIndex( o => o.id === psp.id)
+
+        if(idx >= 0){
+          this.dados[idx] = Object.assign(this.dados[idx], psp)
+        }
+
+        this.mostrarDialogCriarPsp = false
+        this.textoAlerta = "PSP editado com sucesso!"
+        this.mostrarAlerta = true
+      },
+
+      async deletado(psp_id){
+        let idx = this.dados.findIndex( o => o.id === psp_id)
+
+        if(idx >= 0){
+          this.dados.splice(idx, 1)
+          this.textoAlerta = "PSP deletada com sucesso!"
+          this.mostrarAlerta = true
+        }
+      },
+
 	     processado(psps){
 	       for(let psp of psps){
 	         let idx = this.dados.findIndex(o => o.id === psp)
@@ -278,7 +312,12 @@
 	       this.textoAlerta = "PSPs processada com sucesso!"
 	       this.mostrarAlerta = true
 	       this.mostrarDialogProcessarPsp = false
-	     }
+	     },
+
+      editarPsp(item){
+        this.psp_id = item.id
+        this.mostrarDialogCriarPsp = true
+      }
 		},
 		watch: {
 			async etapa_psp_id() {

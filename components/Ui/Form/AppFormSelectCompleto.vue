@@ -176,7 +176,7 @@
         const wrapper = document.getElementById("wrapper-" + this.id)
         const conteudo = document.getElementById("conteudo-" + this.id)
 
-        if (!this.disabled && !this.readonly) {
+        if (!this.disabled || !this.readonly) {
           const selectCompleto = document.getElementById("btn-selecionar-" + this.id)
 
           selectCompleto.addEventListener("click", () => {
