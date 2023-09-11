@@ -26,7 +26,7 @@
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
-        @itensPorPagina="itensPorPagina = $event"
+				@itensPorPagina="itensPorPagina = $event"
 				:pagina="pagina"
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
@@ -38,11 +38,17 @@
 				@selecionados="selecionados = $event"
 				:limparSelecionar="true"
 				:carregando="carregandoTabela">
-        <template v-slot:[`body.acao`]="{ item }">
-					<BotaoPadrao icone @clique="editarPsp(item)" v-if="(item.criado_por.id === $auth.user.id) || podeEditarPsp">
-            <img src="@/assets/icons/edit-b.svg" alt="" class="w-6 h-6">
-          </BotaoPadrao>
-        </template>
+				<template v-slot:[`body.acao`]="{ item }">
+					<BotaoPadrao
+						icone
+						@clique="editarPsp(item)"
+						v-if="item.criado_por.id === $auth.user.id || podeEditarPsp">
+						<img
+							src="@/assets/icons/edit-b.svg"
+							alt=""
+							class="w-6 h-6" />
+					</BotaoPadrao>
+				</template>
 				<template v-slot:[`body.Psp.id`]="{ item }">
 					<span class="whitespace-nowrap">
 						{{ ("00000" + item.id).slice(-5) }}
@@ -88,6 +94,20 @@
 						{{ item.CentroCustoPEP ? item.CentroCustoPEP.descricao : "" }}
 					</span>
 				</template>
+				<template v-slot:[`body.historico`]="{ item }">
+					<div class="w-[120px]">
+						<BotaoPadrao
+							texto="Historico"
+							class="!py-0.5 border border-gray-500"
+							@clique="mostrarDialogHistoricoPsp = true; psp_id = item.id "
+							>
+							<img
+								src="@/assets/icons/history-b.svg"
+								alt=""
+								class="w-6 h-6" />
+						</BotaoPadrao>
+					</div>
+				</template>
 			</TabelaPadrao>
 		</div>
 		<RodapePagina class="print:hidden">
@@ -103,7 +123,7 @@
 								class="w-7 h-7" />
 						</BotaoPadrao>
 						<BotaoPadrao
-              v-if="podeProcessar"
+							v-if="podeProcessar"
 							texto="processar"
 							@clique="mostrarDialogProcessarPsp = true">
 							<img
@@ -117,10 +137,13 @@
 		</RodapePagina>
 		<DialogCriarPsp
 			v-if="mostrarDialogCriarPsp"
-			@cancelar="mostrarDialogCriarPsp = false; psp_id = null"
-      :psp_id="psp_id"
-      @deletado="deletado"
-      @editado="editado"
+			@cancelar="
+				mostrarDialogCriarPsp = false
+				psp_id = null
+			"
+			:psp_id="psp_id"
+			@deletado="deletado"
+			@editado="editado"
 			@cadastrado="cadastrado" />
 		<DialogProcessarPsp
 			v-if="mostrarDialogProcessarPsp"
@@ -130,6 +153,10 @@
 		<DialogDetalhesPsp
 			v-if="mostrarDialogDetalhesPsp"
 			@cancelar="mostrarDialogDetalhesPsp = false"
+			:psp_id="psp_id" />
+		<DialogHistoricoPsp
+			@cancelar="mostrarDialogHistoricoPsp = false"
+			v-if="mostrarDialogHistoricoPsp"
 			:psp_id="psp_id" />
 		<AppAlerta
 			tipo="sucesso"
@@ -147,14 +174,16 @@
 	import AppFormRadio from "~/components/Ui/Form/AppFormRadio.vue"
 	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
 	import DialogProcessarPsp from "~/components/Dialogs/Administracao/Psp/DialogProcessarPsp.vue"
-	 import AppAlerta from "~/components/Ui/AppAlerta.vue";
-	 import DialogDetalhesPsp from "~/components/Dialogs/Administracao/Psp/DialogDetalhesPsp.vue";
+	import AppAlerta from "~/components/Ui/AppAlerta.vue"
+	import DialogDetalhesPsp from "~/components/Dialogs/Administracao/Psp/DialogDetalhesPsp.vue"
+	import DialogHistoricoPsp from "~/components/Dialogs/Administracao/Psp/DialogHistoricoPsp.vue"
 
 	export default {
 		name: "Psp",
 		components: {
-	     DialogDetalhesPsp,
-	     AppAlerta,
+			DialogHistoricoPsp,
+			DialogDetalhesPsp,
+			AppAlerta,
 			DialogProcessarPsp,
 			TabelaPadrao,
 			AppFormRadio,
@@ -176,10 +205,11 @@
 				selecionados: [],
 				carregandoTabela: true,
 				mostrarDialogProcessarPsp: false,
-	       mostrarAlerta: false,
-	       textoAlerta: null,
-	       mostrarDialogDetalhesPsp: false,
-	       psp_id: null,
+				mostrarAlerta: false,
+				textoAlerta: null,
+				mostrarDialogDetalhesPsp: false,
+				psp_id: null,
+				mostrarDialogHistoricoPsp: false,
 			}
 		},
 		computed: {
@@ -212,29 +242,34 @@
 					},
 					{ nome: "Funcionário", valor: "Funcionario.nome", filtro: true },
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
-					{ nome: "Setor", valor: "Funcionario.setor.nome", filtro: true},
+					{ nome: "Setor", valor: "Funcionario.setor.nome", filtro: true },
 					{ nome: "Motivo", valor: "motivo", filtro: true },
 					{ nome: "Data de ida", valor: "data_ida" },
 					{ nome: "Destino", valor: "destino", filtro: true },
 					{ nome: "Transporte", valor: "meio_transporte", filtro: true },
 					{ nome: "Centro Custo", valor: "CentroCustoPEP.descricao", filtro: true },
 					{ nome: "Solicitado por", valor: "criado_por.nome", filtro: true },
+					{ nome: "Histórico", valor: "historico", filtro: true, largura: "w-[150px]" },
 				]
 
-        if(this.etapa_psp_id >= 1 && this.etapa_psp_id <= 4){
-          cabecalho.unshift({ nome: "", valor: "acao" },)
-        }
+				if (this.etapa_psp_id >= 1 && this.etapa_psp_id <= 4) {
+					cabecalho.unshift({ nome: "", valor: "acao" })
+				}
 
 				return cabecalho
 			},
 
 			podeProcessar() {
-				return (this.etapa_psp_id >= 5 && this.etapa_psp_id <= 7) && this.$auth.user.permissoes.includes('gerenciamento_psp')
+				return (
+					this.etapa_psp_id >= 5 &&
+					this.etapa_psp_id <= 7 &&
+					this.$auth.user.permissoes.includes("gerenciamento_psp")
+				)
 			},
 
-      podeEditarPsp(){
-        return this.$auth.user.permissoes.includes('gerenciamento_psp')
-      }
+			podeEditarPsp() {
+				return this.$auth.user.permissoes.includes("gerenciamento_psp")
+			},
 		},
 		created() {
 			this.buscarEtapas()
@@ -259,14 +294,14 @@
 					delete filtros.etapa_psp_id
 				}
 
-        let page = this.pagina
-        let size = this.itensPorPagina
+				let page = this.pagina
+				let size = this.itensPorPagina
 
 				let resp = await this.$axios.$get("/psp/buscar/todas", { params: { filtros, page, size } })
 
 				if (!resp.falha) {
 					this.dados = resp.dados.psps
-          this.totalItens = resp.dados.total
+					this.totalItens = resp.dados.total
 
 					this.carregandoTabela = false
 				}
@@ -283,47 +318,47 @@
 				}
 			},
 
-      async editado(psp) {
-        let idx = this.dados.findIndex( o => o.id === psp.id)
+			async editado(psp) {
+				let idx = this.dados.findIndex((o) => o.id === psp.id)
 
-        if(idx >= 0){
-          this.dados[idx] = Object.assign(this.dados[idx], psp)
-        }
+				if (idx >= 0) {
+					this.dados[idx] = Object.assign(this.dados[idx], psp)
+				}
 
-        this.mostrarDialogCriarPsp = false
-        this.textoAlerta = "PSP editado com sucesso!"
-        this.mostrarAlerta = true
-      },
+				this.mostrarDialogCriarPsp = false
+				this.textoAlerta = "PSP editado com sucesso!"
+				this.mostrarAlerta = true
+			},
 
-      async deletado(psp_id){
-        let idx = this.dados.findIndex( o => o.id === psp_id)
+			async deletado(psp_id) {
+				let idx = this.dados.findIndex((o) => o.id === psp_id)
 
-        if(idx >= 0){
-          this.dados.splice(idx, 1)
-          this.mostrarDialogCriarPsp = false
-          this.textoAlerta = "PSP deletada com sucesso!"
-          this.mostrarAlerta = true
-        }
-      },
+				if (idx >= 0) {
+					this.dados.splice(idx, 1)
+					this.mostrarDialogCriarPsp = false
+					this.textoAlerta = "PSP deletada com sucesso!"
+					this.mostrarAlerta = true
+				}
+			},
 
-	     processado(psps){
-	       for(let psp of psps){
-	         let idx = this.dados.findIndex(o => o.id === psp)
+			processado(psps) {
+				for (let psp of psps) {
+					let idx = this.dados.findIndex((o) => o.id === psp)
 
-	         if(idx >= 0){
-	           this.dados.splice(idx, 1)
-	         }
-	       }
+					if (idx >= 0) {
+						this.dados.splice(idx, 1)
+					}
+				}
 
-	       this.textoAlerta = "PSPs processada com sucesso!"
-	       this.mostrarAlerta = true
-	       this.mostrarDialogProcessarPsp = false
-	     },
+				this.textoAlerta = "PSPs processada com sucesso!"
+				this.mostrarAlerta = true
+				this.mostrarDialogProcessarPsp = false
+			},
 
-      editarPsp(item){
-        this.psp_id = item.id
-        this.mostrarDialogCriarPsp = true
-      }
+			editarPsp(item) {
+				this.psp_id = item.id
+				this.mostrarDialogCriarPsp = true
+			},
 		},
 		watch: {
 			async etapa_psp_id() {
