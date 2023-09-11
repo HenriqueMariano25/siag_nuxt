@@ -590,7 +590,6 @@
 
         let resp = await this.$axios.$post("/psp/deletar", { usuario_id, psp_id})
 
-
         if(!resp.falha){
           this.$emit("deletado", psp_id )
         }

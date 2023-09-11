@@ -295,6 +295,7 @@
 
         if(idx >= 0){
           this.dados.splice(idx, 1)
+          this.mostrarDialogCriarPsp = false
           this.textoAlerta = "PSP deletada com sucesso!"
           this.mostrarAlerta = true
         }
