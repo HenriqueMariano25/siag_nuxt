@@ -212,6 +212,7 @@
 											type="text"
 											label="Descrição do motivo"
 											obrigatorio
+                      :invalido="erros.includes('outros_motivo')"
 											placeholder="Ex: Descreva o motivo"
 											v-model="psp.outros_motivo" />
 									</div>
@@ -628,6 +629,10 @@
 					"centro_custo_pep_id",
 				]
 
+        if(this.psp.motivo === 'outros'){
+          camposObrigatorio.push('outros_motivo')
+        }
+
 				for (let campo of camposObrigatorio) {
 					if (this.psp[`${campo}`] === null || this.psp[`${campo}`] === "") this.erros.push(campo)
 				}
@@ -645,7 +650,9 @@
 					}else{
             dependentes = this.dependentes
           }
-				}
+				}else{
+          this.erroSemDependente = false
+        }
 
 				if (this.erros.length === 0 && this.erroSemDependente === false) {
 					let resp = await this.$axios.$post("/psp/criar", { ...psp, usuario_id, dependentes })
@@ -672,6 +679,8 @@
           } else {
             dependentes = this.dependentes
           }
+        } else {
+          this.erroSemDependente = false
         }
 
         if (this.erros.length === 0 && this.erroSemDependente === false) {
