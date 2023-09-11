@@ -78,7 +78,7 @@
 						{{ item.destino ? item.destino : "" }}
 					</span>
 				</template>
-				<template v-slot:[`body.solicitado_por`]="{ item }">
+				<template v-slot:[`body.criado_por.nome`]="{ item }">
 					<span class="whitespace-nowrap">
 						{{ item.criado_por ? item.criado_por.nome : "" }}
 					</span>
@@ -217,7 +217,7 @@
 					{ nome: "Destino", valor: "destino", filtro: true },
 					{ nome: "Transporte", valor: "meio_transporte", filtro: true },
 					{ nome: "Centro Custo", valor: "CentroCustoPEP.descricao", filtro: true },
-					{ nome: "Solicitado por", valor: "solicitado_por", filtro: true },
+					{ nome: "Solicitado por", valor: "criado_por.nome", filtro: true },
 				]
 
         if(this.etapa_psp_id >= 1 && this.etapa_psp_id <= 4){
