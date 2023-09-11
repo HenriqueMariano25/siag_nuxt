@@ -39,7 +39,7 @@
 				:limparSelecionar="true"
 				:carregando="carregandoTabela">
         <template v-slot:[`body.acao`]="{ item }">
-					<BotaoPadrao icone @clique="editarPsp(item)">
+					<BotaoPadrao icone @clique="editarPsp(item)" v-if="(item.criado_por.id === $auth.user.id) || podeEditarPsp">
             <img src="@/assets/icons/edit-b.svg" alt="" class="w-6 h-6">
           </BotaoPadrao>
         </template>
@@ -103,6 +103,7 @@
 								class="w-7 h-7" />
 						</BotaoPadrao>
 						<BotaoPadrao
+              v-if="podeProcessar"
 							texto="processar"
 							@clique="mostrarDialogProcessarPsp = true">
 							<img
@@ -228,8 +229,12 @@
 			},
 
 			podeProcessar() {
-				return this.etapa_psp_id >= 5 && this.etapa_psp_id <= 7
+				return (this.etapa_psp_id >= 5 && this.etapa_psp_id <= 7) && this.$auth.user.permissoes.includes('gerenciamento_psp')
 			},
+
+      podeEditarPsp(){
+        return this.$auth.user.permissoes.includes('gerenciamento_psp')
+      }
 		},
 		created() {
 			this.buscarEtapas()
