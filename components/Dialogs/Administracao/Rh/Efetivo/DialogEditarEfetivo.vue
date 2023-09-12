@@ -171,11 +171,18 @@
                 <div class="grid grid-cols-2 gap-2">
                   <AppFormSelectCompleto
                     obrigatorio
-                    id="equipePlanejamentp"
+                    id="equipePlanejamento"
                     label="Equipe Planejamento"
                     :options="equipesPlanejamento"
-                    v-model="campos.equipe_planejamento_id"
+                    v-model="planejamento.equipe_planejamento_id"
                     :invalido="erros.includes('equipe_planejamento_id')" />
+                  <AppFormSelect
+                    id="permanencia"
+                    label="Permanência"
+                    :options="tiposPermanencia"
+                    v-model="planejamento.permanencia"
+                    obrigatorio
+                    :invalido="erros.includes('permanencia')" />
                 </div>
               </div>
             </template>
@@ -238,7 +245,6 @@
 					gestor_id: null,
 					disciplina_id: null,
 					sub_disciplina_id: null,
-					equipe_planejamento_id: null,
 					setor_id: null,
 					turno_id: null,
 					jornada_trabalho_id: null,
@@ -248,6 +254,10 @@
 					ponto_embarque: null,
 					poltrona: null,
 				},
+        planejamento:{
+          permanencia: null,
+          equipe_planejamento_id: null,
+        },
 				responsaveis: [],
 				erros: [],
 				disciplinas: [],
@@ -261,6 +271,10 @@
 				buscouRotas: false,
 				rotasOriginais: [],
 				carregando: false,
+        tiposPermanencia: [
+          { id: 'permanência', nome: "Permanência"},
+          { id: 'produtivo', nome: "Produtivo"},
+        ]
 			}
 		},
 
@@ -280,33 +294,46 @@
         return tabs
       },
     },
-		async created() {
-			if (this.funcionarios.length === 1) {
+		async mounted() {
+      await this.buscarResponsaveis()
+			await this.buscarDisciplinas()
+			// await this.buscarSubDisciplinas()
+			await this.buscarEquipesPlanejamento()
+			await this.buscarTurnos()
+			await this.buscarJornadaTrabalho()
 
-				this.carregando = true
-				let funcionario = this.funcionarios[0]
+			let setores = await this.buscarSetores()
+      this.setores = setores.map((o) => {
+				return { id: o.id, nome: o.nome }
+			})
 
-				this.campos.disciplina_id = funcionario.disciplina_id
-				this.campos.encarregado_lider_id = funcionario.encarregado_lider_id
-				this.campos.supervisor_id = funcionario.supervisor_id
-				this.campos.coordenador_id = funcionario.coordenador_id
-				this.campos.engenheiro_id = funcionario.engenheiro_id
-				this.campos.gestor_id = funcionario.gestor_id
-				this.campos.sub_disciplina_id = funcionario.sub_disciplina_id
-				this.campos.equipe_planejamento_id = funcionario.equipe_planejamento_id
-				this.campos.turno_id = funcionario.turno_id
-				this.campos.jornada_trabalho_id = funcionario.jornada_trabalho_id
-				this.campos.setor_id = funcionario.setor ? funcionario.setor.id : null
+      if (this.funcionarios.length === 1) {
 
-				this.transporte.rota_id = funcionario.rota ? funcionario.rota.id : null
-				this.transporte.poltrona = funcionario.poltrona ? funcionario.poltrona : null
-				this.transporte.ponto_embarque = funcionario.ponto_embarque
-					? funcionario.ponto_embarque
-					: null
-			} else{
-          if([...new Set(this.funcionarios.map(o => o.disciplina_id))].length === 1){
-            this.campos.disciplina_id = this.funcionarios[0].disciplina_id
-          }
+        this.carregando = true
+        let funcionario = Object.assign({}, this.funcionarios[0])
+
+        this.campos.disciplina_id = funcionario.disciplina_id
+        this.campos.encarregado_lider_id = funcionario.encarregado_lider_id
+        this.campos.supervisor_id = funcionario.supervisor_id
+        this.campos.coordenador_id = funcionario.coordenador_id
+        this.campos.engenheiro_id = funcionario.engenheiro_id
+        this.campos.gestor_id = funcionario.gestor_id
+        this.campos.sub_disciplina_id = funcionario.sub_disciplina_id
+        this.campos.turno_id = funcionario.turno_id
+        this.campos.jornada_trabalho_id = funcionario.jornada_trabalho_id
+        this.campos.setor_id = funcionario.setor ? funcionario.setor.id : null
+
+        this.transporte.rota_id = funcionario.rota ? funcionario.rota.id : null
+        this.transporte.poltrona = funcionario.poltrona ? funcionario.poltrona : null
+        this.transporte.ponto_embarque = funcionario.ponto_embarque
+          ? funcionario.ponto_embarque
+          : null
+
+        this.planejamento.equipe_planejamento_id = funcionario.equipe_planejamento_id ? funcionario.equipe_planejamento_id : null
+      } else {
+        if ([...new Set(this.funcionarios.map(o => o.disciplina_id))].length === 1) {
+          this.campos.disciplina_id = this.funcionarios[0].disciplina_id
+        }
 
         if ([...new Set(this.funcionarios.map(o => o.encarregado_lider_id))].length === 1) {
           this.campos.encarregado_lider_id = this.funcionarios[0].encarregado_lider_id
@@ -351,18 +378,6 @@
         }
 
       }
-
-			await this.buscarResponsaveis()
-			await this.buscarDisciplinas()
-			// await this.buscarSubDisciplinas()
-			await this.buscarEquipesPlanejamento()
-			await this.buscarTurnos()
-			await this.buscarJornadaTrabalho()
-
-			let setores = await this.buscarSetores()
-      this.setores = setores.map((o) => {
-				return { id: o.id, nome: o.nome }
-			})
 			this.carregando = false
 		},
 		methods: {
@@ -463,7 +478,7 @@
 				this.validarFormulario()
 
 				if (this.erros.length === 0) {
-					let campos = this.campos
+					let campos = Object.assign({}, this.campos)
 					let funcionarios = this.funcionarios
 					let usuario_id = this.$auth.user.id
 
@@ -570,9 +585,10 @@
       async editarPlanejamento(){
         this.erros = []
 
-        let { equipe_planejamento_id } = this.campos
+        let { equipe_planejamento_id, permanencia } = this.planejamento
 
         if(equipe_planejamento_id === null || equipe_planejamento_id === "") this.erros.push('equipe_planejamento_id')
+        if(permanencia === null || permanencia === "") this.erros.push('permanencia')
 
         if(this.erros.length === 0){
 
@@ -589,9 +605,11 @@
             campos["equipe_planejamento_id"] = equipe_planejamento_id
           }
 
-          let equipePlanejamento
+          if (permanencia !== null && permanencia !== "") {
+            campos["permanencia"] = permanencia
+          }
 
-          console.log("aqui")
+          let equipePlanejamento
 
           for (let fun of funcionarios) {
             cont++
@@ -608,7 +626,6 @@
                 funcPrEnviar = []
                 cont = 0
                 equipePlanejamento = resp.dados.equipePlanejamento
-                console.log(resp.dados)
               }
             }
           }
@@ -616,7 +633,6 @@
           let chapas = funcionarios.map((o) => o.id)
 
           this.$emit("equipePlanEditada", { funcionarios: chapas, equipePlanejamento })
-
         }
       }
 		},
@@ -637,7 +653,12 @@
 					if (this.buscouRotas === false) {
 						this.buscarRotas()
 					}
-				}
+				}else if(valor === "planejamento"){
+          if(this.funcionarios.length === 1){
+            this.planejamento.equipe_planejamento_id = this.funcionarios[0].EquipePlanejamento.id
+            this.planejamento.permanencia = this.funcionarios[0].permanencia
+          }
+        }
 			},
 		},
 	})

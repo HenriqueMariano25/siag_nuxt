@@ -341,6 +341,7 @@
 					{ nome: "Turno", valor: "Turno.descricao", filtro: true },
 					{ nome: "Jornada", valor: "JornadaTrabalho.descricao", filtro: true },
 					{ nome: "Equipe Planejamento", valor: "EquipePlanejamento.descricao", filtro: true },
+					{ nome: "Permanência", valor: "permanencia", filtro: true },
 					{ nome: "Data Admissão", valor: "data_admissao", filtro: true, centralizar: true },
 					{ nome: "Data Demissão", valor: "data_demissao", filtro: true, centralizar: true },
 					{ nome: "CPF", valor: "cpf", filtro: true },
@@ -568,6 +569,7 @@
 					"Turno",
 					"Jornada",
 					"Equipe Planejamento",
+					"Permanencia",
 					"Data de admissão",
 					"Data de demissão",
 					"CPF",
@@ -600,6 +602,7 @@
 					temp.push(item.Turno ? item.Turno.descricao : "")
 					temp.push(item.JornadaTrabalho ? item.JornadaTrabalho.descricao : "")
 					temp.push(item.EquipePlanejamento ? item.EquipePlanejamento.descricao : "")
+					temp.push(item.permanencia ? item.permanencia : "")
 					temp.push(this.$dayjs(item.data_admissao).format("DD/MM/YYYY"))
 					item.data_demissao
 						? temp.push(this.$dayjs(item.data_demissao).format("DD/MM/YYYY"))

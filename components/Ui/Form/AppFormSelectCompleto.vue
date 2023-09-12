@@ -195,15 +195,19 @@
 		},
 		watch: {
 			options(valor) {
-				if (this.value !== null && this.value !== "") {
-					let op = valor.find((o) => o.id === this.value)
-					this.texto = op.nome
-				} else {
-					this.texto = "Selecione"
-				}
+        if(valor && valor.length > 0){
+          if (this.value !== null && this.value !== "") {
+            let op = valor.find((o) => o.id === this.value)
+            if(op){
+              this.texto = op.nome
+            }
+          } else {
+            this.texto = "Selecione"
+          }
+        }
 			},
 			value(valor) {
-				if (valor !== null && valor !== "") {
+				if (valor && valor !== "") {
 					let op = this.options.find((o) => o.id === valor)
           if(op){
 					  this.texto = op.nome
