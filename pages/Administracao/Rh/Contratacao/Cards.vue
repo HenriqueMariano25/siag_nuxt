@@ -465,7 +465,7 @@
 						centralizar: true,
 						tipoFiltro: "data",
 					},
-					{ nome: "Responsável", valor: "responsavel.nome" },
+					{ nome: "Responsável", valor: "responsavel.nome", filtro: true },
 					{ nome: "Comentários", valor: "comentarios" },
 				]
 
