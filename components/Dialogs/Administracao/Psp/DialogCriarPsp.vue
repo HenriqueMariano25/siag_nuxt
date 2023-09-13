@@ -471,6 +471,7 @@
 				opcoesMeioTransporte: [
 					{ label: "Rodoviário", valor: "Rodoviário" },
 					{ label: "Aérea", valor: "Aérea" },
+					{ label: "Carro", valor: "Carro" },
 				],
 				centrosCusto: [],
 				cadastrou: false,
