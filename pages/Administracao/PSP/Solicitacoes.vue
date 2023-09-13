@@ -153,10 +153,10 @@
 			:selecionados="selecionados" />
 		<DialogDetalhesPsp
 			v-if="mostrarDialogDetalhesPsp"
-			@cancelar="mostrarDialogDetalhesPsp = false"
+			@cancelar="mostrarDialogDetalhesPsp = false; psp_id = null"
 			:psp_id="psp_id" />
 		<DialogHistoricoPsp
-			@cancelar="mostrarDialogHistoricoPsp = false"
+			@cancelar="mostrarDialogHistoricoPsp = false; psp_id = null"
 			v-if="mostrarDialogHistoricoPsp"
 			:psp_id="psp_id" />
 		<AppAlerta

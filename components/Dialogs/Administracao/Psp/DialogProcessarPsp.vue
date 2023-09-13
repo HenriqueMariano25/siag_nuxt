@@ -82,7 +82,7 @@
 		},
     created(){
       if(this.selecionados.length > 0){
-        this.etapa_id = this.selecionados[0].etapa_id
+        this.etapa_id = this.selecionados[0].etapa_psp_id
       }
     },
     computed: {
@@ -117,7 +117,6 @@
         let comentario = this.comentario
 
         let resp = await this.$axios.$post("/psp/rejeitar", { usuario_id, psps, comentario })
-        console.log(resp)
 
         if(!resp.falha){
           this.$emit("rejeitado", psps)
