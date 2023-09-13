@@ -30,11 +30,11 @@
 			</AppTooltip>
 		</div>
 		<div
-			class="btn-selecionar"
+			class="btn-selecionar cursor-pointer allo"
 			:id="'btn-selecionar-' + id"
 			:class="{
 				'!border-red-400 !bg-red-100': invalido,
-				'!bg-gray-300': disabled || readonly,
+				'!bg-gray-300 !cursor-not-allowed': disabled || readonly,
 			}">
 			<span>{{ texto }}</span>
 			<div class="icone">
@@ -133,7 +133,6 @@
 		data() {
 			return {
 				busca: "",
-				mostrar: false,
 				texto: "Selecione",
 				// altura: "200px",
 			}
@@ -176,7 +175,7 @@
         const wrapper = document.getElementById("wrapper-" + this.id)
         const conteudo = document.getElementById("conteudo-" + this.id)
 
-        if (!this.disabled || !this.readonly) {
+        if (!this.disabled && !this.readonly) {
           const selectCompleto = document.getElementById("btn-selecionar-" + this.id)
 
           selectCompleto.addEventListener("click", () => {
