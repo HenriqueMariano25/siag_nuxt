@@ -146,6 +146,7 @@
 			@editado="editado"
 			@cadastrado="cadastrado" />
 		<DialogProcessarPsp
+      @rejeitado="rejeitado"
 			v-if="mostrarDialogProcessarPsp"
 			@cancelar="mostrarDialogProcessarPsp = false"
 			@processado="processado"
@@ -252,7 +253,8 @@
 					{ nome: "Histórico", valor: "historico", filtro: true, largura: "w-[150px]" },
 				]
 
-				if (this.etapa_psp_id >= 1 && this.etapa_psp_id <= 4) {
+				if ((this.etapa_psp_id >= 1 && this.etapa_psp_id <= 4) ||
+        this.etapa_psp_id === 10) {
 					cabecalho.unshift({ nome: "", valor: "acao" })
 				}
 
@@ -354,6 +356,20 @@
 				this.mostrarAlerta = true
 				this.mostrarDialogProcessarPsp = false
 			},
+
+      rejeitado(psps){
+        for (let psp of psps) {
+          let idx = this.dados.findIndex((o) => o.id === psp)
+
+          if (idx >= 0) {
+            this.dados.splice(idx, 1)
+          }
+        }
+
+        this.textoAlerta = "PSPs rejeitadas com sucesso!"
+        this.mostrarAlerta = true
+        this.mostrarDialogProcessarPsp = false
+      },
 
 			editarPsp(item) {
 				this.psp_id = item.id

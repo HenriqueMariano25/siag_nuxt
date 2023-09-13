@@ -90,7 +90,7 @@
 						</span>
 						<span class="grow">
 							<strong>Data: </strong>
-							{{ $dayjs(psp.data_aprovacao_gaf).format("DD/MM/YYYY") }}
+							{{ psp.data_aprovacao_gaf }}
 						</span>
 					</div>
 					<div
@@ -102,7 +102,7 @@
 						</span>
 						<span class="grow">
 							<strong>Data: </strong>
-							{{ $dayjs(psp.data_aprovacao_rh).format("DD/MM/YYYY") }}
+							{{ psp.data_aprovacao_rh }}
 						</span>
 					</div>
 					<div
@@ -114,7 +114,7 @@
 						</span>
 						<span class="grow">
 							<strong>Data: </strong>
-							{{ $dayjs(psp.data_aprovacao_coordenador).format("DD/MM/YYYY") }}
+							{{ psp.data_aprovacao_coordenador }}
 						</span>
 					</div>
 					<div
@@ -126,7 +126,7 @@
 						</span>
 						<span class="grow">
 							<strong>Data: </strong>
-							{{ $dayjs(psp.aprovacao_gerente_area).format("DD/MM/YYYY") }}
+							{{ psp.data_aprovacao_gerente_area }}
 						</span>
 					</div>
 				</div>

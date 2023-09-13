@@ -143,11 +143,11 @@
 							</div>
 						</div>
 						<div class="flex flex-col gap-1 bg-blue-100 border border-blue-300">
-							<div class="p-1">
+							<div class="">
 								<div class="w-full bg-blue-300 flex text-xl px-1">
 									<span>PSP</span>
 								</div>
-								<div class="grid grid-cols-2 gap-2 pt-1">
+								<div class="grid grid-cols-2 gap-2 p-1">
 									<div class="flex gap-1 flex-col">
 										<AppFormInput
 											id="origem"

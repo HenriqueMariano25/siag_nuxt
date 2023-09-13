@@ -44,7 +44,10 @@
 				</div>
 			</template>
 			<template v-slot:rodape-btn-direito>
-				<div>
+				<div class="flex gap-2">
+          <BotaoPadrao texto="Rejeitar" cor="bg-red-400 hover:bg-red-500" @clique="rejeitarPsp()" :disabled="!podeRejeitar" v-if="etapa_id === 5">
+            <img src="@/assets/icons/close-b.svg" alt="" class="w-7 h-7">
+          </BotaoPadrao>
 					<BotaoPadrao
 						texto="Processar"
 						@clique="processar()">
@@ -74,8 +77,21 @@
 		data() {
 			return {
 				comentario: null,
+        etapa_id: null,
 			}
 		},
+    created(){
+      if(this.selecionados.length > 0){
+        this.etapa_id = this.selecionados[0].etapa_id
+      }
+    },
+    computed: {
+      podeRejeitar() {
+        let comentarioFormatado = this.comentario ? this.comentario.trim() : null;
+
+        return comentarioFormatado && comentarioFormatado !== "" ;
+      }
+    },
 		methods: {
 			cancelar() {
 				this.$emit("cancelar")
@@ -90,12 +106,24 @@
 					comentario: this.comentario,
 				})
 
-
-				console.log(resp)
         if(!resp.falha){
           this.$emit("processado", psps)
         }
 			},
+
+      async rejeitarPsp(){
+        let usuario_id = this.$auth.user.id
+        let psps = this.selecionados.map( o => o.id)
+        let comentario = this.comentario
+
+        let resp = await this.$axios.$post("/psp/rejeitar", { usuario_id, psps, comentario })
+        console.log(resp)
+
+        if(!resp.falha){
+          this.$emit("rejeitado", psps)
+        }
+
+      }
 		},
 	}
 </script>
