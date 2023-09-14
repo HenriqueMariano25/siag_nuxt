@@ -140,6 +140,33 @@
 										obrigatorio
 										v-model="psp.prazo" />
 								</div>
+                <div class="bg-sky-200 border border-sky-500" v-if="funcionario && funcionario.Psp && funcionario.Psp.length > 0">
+                  <div class="flex w-full bg-sky-500 px-1 text-lg ">
+                    <span>PSP anterior</span>
+                  </div>
+                  <div class="grid grid-cols-2 px-1">
+                    <span><strong>Data de ida: </strong>{{ $dayjs(funcionario.Psp[0].data_ida).format("DD/MM/YYYY") }}</span>
+                    <span><strong>Data de volta: </strong>{{ $dayjs(funcionario.Psp[0].data_volta).format("DD/MM/YYYY") }}</span>
+<!--                    <span><strong>Motivo: </strong>{{ funcionario.Psp[0].motivo }}</span>-->
+<!--                    <span><strong>Meio de Transporte: </strong>{{ funcionario.Psp[0].meio_transporte }}</span>-->
+<!--                    <span><strong>Origem: </strong>{{ funcionario.Psp[0].origem }}</span>-->
+<!--                    <span><strong>Destino: </strong>{{ funcionario.Psp[0].destino }}</span>-->
+                  </div>
+                  <div class="flex w-full bg-sky-500 px-1 text-lg mt-1">
+                    <span>Previsão próxima PSP</span>
+                  </div>
+                  <div class="grid grid-cols-2 px-1">
+                    <span><strong>Data prevista de ida: </strong>{{ $dayjs(funcionario.Psp[0].data_volta).add(funcionario.prazo, "day").format("DD/MM/YYYY") }}</span>
+                    <span
+                      v-if="psp.data_ida"><strong>Dias da última volta até a próxima ida: </strong>{{ $dayjs(psp.data_ida).diff(funcionario.Psp[0].data_volta, 'day') }} dias</span>
+                  </div>
+                  <div class="w-full flex justify-center mt-0.5 bg-red-200 border-t-2 border-red-500"
+                       v-if="$dayjs(psp.data_ida).diff(funcionario.Psp[0].data_volta, 'day') < funcionario.prazo">
+                    <img src="@/assets/icons/alert-triangle-r.svg" alt="" class="w-7 h-7 flex">
+                    <span class="flex  text-red-500 text-lg px-1"
+                          ><strong>DATA DE IDA É MENOR DOQUE A DATA PRESVISTA</strong></span>
+                  </div>
+                </div>
 							</div>
 						</div>
 						<div class="flex flex-col gap-1 bg-blue-100 border border-blue-300">
@@ -174,6 +201,7 @@
 											:invalido="erros.includes('data_ida')"
 											placeholder="Ex: Grussai, São João da Barra, RJ"
 											obrigatorio
+                      :texto-invalido="textoErroDataIda"
 											v-model="psp.data_ida" />
 										<AppFormInput
 											id="volta"
@@ -182,6 +210,7 @@
 											:invalido="erros.includes('data_volta')"
 											placeholder="Ex: Grussai, São João da Barra, RJ"
 											obrigatorio
+                      :texto-invalido="textoErroDataVolta"
 											v-model="psp.data_volta" />
 									</div>
 									<AppFormSelectCompleto
@@ -333,11 +362,12 @@
 						v-if="cadastrou"
 						class="flex flex-col gap-0.5">
 						<!--          <span class="">PSP criada com sucesso</span>-->
+						<span class="text-xl">
+              Código da PSP: <strong>{{ ("00000" + psp.id).slice(-5) }}</strong>
+            </span>
 						<span class="text-xl"
-							>Código da PSP: <strong>{{ ("00000" + psp.id).slice(-5) }}</strong></span
-						>
-						<span class="text-xl"
-							>Motivo: <strong>{{ psp.motivo }}</strong></span
+							>
+              Motivo: <strong>{{ psp.motivo }}</strong></span
 						>
 						<span class="text-xl"
 							>Data de ida: <strong>{{ $dayjs(psp.data_ida).format("DD/MM/YYYY") }}</strong></span
@@ -487,7 +517,10 @@
 				dependentes: [],
 				errosDependentes: [],
 				erroSemDependente: false,
-        editandoPsp: false
+        editandoPsp: false,
+        funcionario: null,
+        textoErroDataIda: null,
+        textoErroDataVolta: null
 			}
 		},
     props: {
@@ -559,8 +592,12 @@
 
 				if (!resp.falha) {
 					let funcionario = resp.dados.funcionario
+          this.funcionario = funcionario
+
+          console.log(funcionario)
 					let prazo = resp.dados.prazo
           let ultimaPsp = resp.dados.ultimaPsp
+          this.funcionario.prazo = prazo.prazo
 
 					this.psp.cargo = funcionario.cargo
 					this.psp.chapa = funcionario.chapa
@@ -634,9 +671,32 @@
           camposObrigatorio.push('outros_motivo')
         }
 
+        // console.log(this.$dayjs().diff(this.psp.data_ida, "day") < 0)
+        // console.log(this.$dayjs(this.psp.data_ida).diff(this.$dayjs(), "day"))
+
+        if (this.$dayjs(this.psp.data_ida).diff(this.$dayjs(), "day") < 0) {
+          this.erros.push("data_ida")
+          this.textoErroDataIda = "Data de ida não pode ser inferior a data atual"
+        }
+
+        console.log(this.$dayjs(this.psp.data_volta).isBefore(this.$dayjs(), "day"))
+
+        if (this.$dayjs(this.psp.data_volta).isBefore(this.$dayjs(), "day")) {
+          this.textoErroDataVolta = "Data de volta não pode ser inferior a data atual"
+          this.erros.push("data_volta")
+        }else{
+          if(this.psp.data_ida) {
+            if (this.$dayjs(this.psp.data_volta).isBefore(this.$dayjs(this.psp.data_ida), "day")) {
+              this.erros.push("data_volta")
+              this.textoErroDataVolta = "Data de volta não pode ser inferior a data de ida"
+            }
+          }
+        }
+
 				for (let campo of camposObrigatorio) {
 					if (this.psp[`${campo}`] === null || this.psp[`${campo}`] === "") this.erros.push(campo)
 				}
+
 			},
 
 			async cadastrarPsp() {

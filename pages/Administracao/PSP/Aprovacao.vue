@@ -27,12 +27,38 @@
 				altura="calc(100vh - 104px)"
 				@atualizar="buscarPsps"
 				selecionar
+        @dblclick="verDetalhesPsp"
         :tem-rodape="false"
 				@selecionados="selecionados = $event"
 				:limparSelecionar="true"
 				:carregando="carregandoTabela"
         :dados-sql="true"
 				:temDetalhes="false">
+        <template v-slot:[`body.status`]="{ item }">
+          <div class="w-[30px] justify-center flex">
+            <AppTooltip v-if="item.status ==='fora do prazo'">
+              <template v-slot:corpo>
+                <img src="@/assets/icons/alert-triangle-r.svg" alt="" class="w-8 h-8">
+              </template>
+              <template v-slot:tooltip>
+                <div class="w-[300px] text-sm">
+                  <span><strong>Intervalo entre PSPs menor do que previsto !</strong></span>
+                  <span><strong>Data prevista para PSP: {{ item['data_previsao_psp'] }}</strong></span>
+                </div>
+              </template>
+            </AppTooltip>
+            <AppTooltip v-if="item.status ==='no prazo'">
+              <template v-slot:corpo>
+                <img src="@/assets/icons/check-green.svg" alt="" class="w-7 h-7">
+              </template>
+              <template v-slot:tooltip>
+                <div class="w-[300px] text-sm">
+                  <span><strong>Dentro do intervalo previsto !</strong></span>
+                </div>
+              </template>
+            </AppTooltip>
+          </div>
+        </template>
 				<template v-slot:[`body.EtapaPsp.id`]="{ item }">
 					<span class="whitespace-nowrap">
 						{{ item.EtapaPsp ? item.EtapaPsp.nome : "" }}
@@ -131,6 +157,10 @@
 			@escondeu="mostrarAlerta = false">
 			{{ textoAlerta }}
 		</AppAlerta>
+    <DialogDetalhesPsp
+      v-if="mostrarDialogDetalhesPsp"
+      @cancelar="mostrarDialogDetalhesPsp = false; psp_id = null"
+      :psp_id="psp_id" />
 	</div>
 </template>
 
@@ -140,14 +170,17 @@
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import DialogAprovarPsp from "~/components/Dialogs/Administracao/Psp/DialogAprovarPsp.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
+  import AppTooltip from "~/components/Ui/AppTooltip.vue";
+  import DialogDetalhesPsp from "~/components/Dialogs/Administracao/Psp/DialogDetalhesPsp.vue";
 
 	export default {
 		name: "Aprovacao",
-		components: { AppAlerta, DialogAprovarPsp, BotaoPadrao, RodapePagina, TabelaPadrao },
+		components: { DialogDetalhesPsp, AppTooltip, AppAlerta, DialogAprovarPsp, BotaoPadrao, RodapePagina, TabelaPadrao },
 		data() {
 			return {
 				etapa_psp_id: null,
 				cabecalho: [
+          { nome: "", valor: "status", largura: "w-14"},
 					{
 						nome: "Cód.",
 						valor: "id",
@@ -178,6 +211,8 @@
 				mostrarDialogAprovarPsp: false,
 				mostrarAlerta: false,
 				textoAlerta: null,
+        mostrarDialogDetalhesPsp: false,
+        psp_id: null,
 			}
 		},
 		computed: {
@@ -252,6 +287,11 @@
 				this.mostrarAlerta = true
 				this.mostrarDialogAprovarPsp = false
 			},
+
+      verDetalhesPsp(dados) {
+        this.psp_id = dados.id
+        this.mostrarDialogDetalhesPsp = true
+      },
 		},
 		watch: {
 			async etapa_psp_id() {
