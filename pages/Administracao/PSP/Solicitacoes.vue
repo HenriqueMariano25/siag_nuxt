@@ -320,11 +320,17 @@
 				}
 			},
 
-			async editado(psp) {
+			async editado({ psp, mudaEtapa}) {
+
+        console.log(psp, mudaEtapa)
 				let idx = this.dados.findIndex((o) => o.id === psp.id)
 
 				if (idx >= 0) {
-					this.dados[idx] = Object.assign(this.dados[idx], psp)
+          if(mudaEtapa){
+            this.dados.splice(idx, 1)
+          }else{
+					  this.dados[idx] = Object.assign(this.dados[idx], psp)
+          }
 				}
 
 				this.mostrarDialogCriarPsp = false

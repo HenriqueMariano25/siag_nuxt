@@ -164,7 +164,7 @@
                        v-if="$dayjs(psp.data_ida).diff(funcionario.Psp[0].data_volta, 'day') < funcionario.prazo">
                     <img src="@/assets/icons/alert-triangle-r.svg" alt="" class="w-7 h-7 flex">
                     <span class="flex  text-red-500 text-lg px-1"
-                          ><strong>DATA DE IDA É MENOR DOQUE A DATA PRESVISTA</strong></span>
+                          ><strong>DATA DE IDA É MENOR DO QUE A DATA PRESVISTA</strong></span>
                   </div>
                 </div>
 							</div>
@@ -671,15 +671,10 @@
           camposObrigatorio.push('outros_motivo')
         }
 
-        // console.log(this.$dayjs().diff(this.psp.data_ida, "day") < 0)
-        // console.log(this.$dayjs(this.psp.data_ida).diff(this.$dayjs(), "day"))
-
         if (this.$dayjs(this.psp.data_ida).diff(this.$dayjs(), "day") < 0) {
           this.erros.push("data_ida")
           this.textoErroDataIda = "Data de ida não pode ser inferior a data atual"
         }
-
-        console.log(this.$dayjs(this.psp.data_volta).isBefore(this.$dayjs(), "day"))
 
         if (this.$dayjs(this.psp.data_volta).isBefore(this.$dayjs(), "day")) {
           this.textoErroDataVolta = "Data de volta não pode ser inferior a data atual"
@@ -733,6 +728,7 @@
         let usuario_id = this.$auth.user.id
         let dependentes = []
         let psp_id = this.psp_id
+        let etapa_psp_id = this.psp.etapa_psp_id
 
         if (psp.motivo === "Mobilização familiar") {
           if (this.dependentes.length <= 0) {
@@ -749,7 +745,13 @@
 
           if (!resp.falha) {
             let pspEncontrada = resp.dados.psp
-            this.$emit("editado", pspEncontrada)
+            let mudaEtapa = false
+
+            if(etapa_psp_id === 10){
+              mudaEtapa = true
+            }
+
+            this.$emit("editado", { psp: pspEncontrada , mudaEtapa})
           }
         }
       },
