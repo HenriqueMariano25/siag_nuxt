@@ -415,115 +415,23 @@
 				}
 			},
 
-			async funcionarioEditado({ funcionarios, nomes }) {
-				for (let id of funcionarios) {
-					let idx = this.dados.findIndex((o) => o.id === id)
-
-					if (idx >= 0) {
-						nomes.responsavelNome
-							? this.dados[idx].encarregado_lider_id !== null
-								? (this.dados[idx].EncarregadoLider.nome = nomes.responsavelNome)
-								: (this.dados[idx].EncarregadoLider = { nome: nomes.responsavelNome })
-							: null
-
-						nomes.engenheiroNome
-							? this.dados[idx].engenheiro_id !== null
-								? (this.dados[idx].Engenheiro.nome = nomes.engenheiroNome)
-								: (this.dados[idx].Engenheiro = { nome: nomes.engenheiroNome })
-							: null
-
-						nomes.supervisorNome
-							? this.dados[idx].supervisor_id !== null
-								? (this.dados[idx].Supervisor.nome = nomes.supervisorNome)
-								: (this.dados[idx].Supervisor = { nome: nomes.supervisorNome })
-							: null
-
-						nomes.coordenadorNome
-							? this.dados[idx].coordenador_id !== null
-								? (this.dados[idx].Coordenador.nome = nomes.coordenadorNome)
-								: (this.dados[idx].Coordenador = { nome: nomes.coordenadorNome })
-							: null
-
-						nomes.gestorNome
-							? this.dados[idx].gestor_id !== null
-								? (this.dados[idx].Gestor.nome = nomes.gestorNome)
-								: (this.dados[idx].Gestor = { nome: nomes.gestorNome })
-							: null
-
-						nomes.disciplinaDescricaoNome
-							? this.dados[idx].disciplina_id !== null
-								? (this.dados[idx].Disciplina.descricao = nomes.disciplinaDescricaoNome)
-								: (this.dados[idx].Disciplina = { descricao: nomes.disciplinaDescricaoNome })
-							: null
-
-            if(nomes.disciplinaSiglaNome){
-              if(this.dados[idx].disciplina_id !== null){
-                this.dados[idx].Disciplina.sigla = nomes.disciplinaSiglaNome
-                this.dados[idx].Disciplina.descricao = nomes.disciplinaDescricaoNome
-              }else{
-                this.dados[idx].Disciplina = { sigla: nomes.disciplinaSiglaNome, descricao: nomes.disciplinaDescricaoNome }
-              }
-            }
-
-						nomes.subDisciplinaNome
-							? this.dados[idx].sub_disciplina_id !== null
-								? (this.dados[idx].SubDisciplina.descricao = nomes.subDisciplinaNome)
-								: (this.dados[idx].SubDisciplina = { descricao: nomes.subDisciplinaNome })
-							: null
-
-						nomes.turnoNome
-							? this.dados[idx].turno_id !== null
-								? (this.dados[idx].Turno.descricao = nomes.turnoNome)
-								: (this.dados[idx].Turno = { descricao: nomes.turnoNome })
-							: null
-
-						nomes.jornadaTrabalhoNome
-							? this.dados[idx].jornada_trabalho_id !== null
-								? (this.dados[idx].JornadaTrabalho.descricao = nomes.jornadaTrabalhoNome)
-								: (this.dados[idx].JornadaTrabalho = { descricao: nomes.jornadaTrabalhoNome })
-							: null
-
-						nomes.setorNome
-							? this.dados[idx].setor_id
-								? (this.dados[idx].setor.nome = nomes.setorNome)
-								: (this.dados[idx].setor = { nome: nomes.setorNome })
-							: null
-					}
-				}
-
+			async funcionarioEditado() {
+        await this.buscarEfetivo()
 				this.mostrarDialogEditarEfetivo = false
 				this.mostrarAlerta = true
 				this.funcSelecionados = []
 				this.textoAlerta = "Funcionários editados com sucesso!"
 			},
 
-			async rotaEditada({ funcionarios, rota }) {
-				for (let id of funcionarios) {
-					let idx = this.dados.findIndex((o) => o.id === id)
-
-					if (idx >= 0) {
-						rota.numero ? (this.dados[idx].rota.numero = rota.numero) : null
-						rota.local ? (this.dados[idx].rota.local = rota.local) : null
-						rota.ponto_embarque ? (this.dados[idx].ponto_embarque = rota.ponto_embarque) : null
-					}
-				}
-
+			async rotaEditada() {
+        await this.buscarEfetivo()
 				this.mostrarDialogEditarEfetivo = false
 				this.mostrarAlerta = true
 				this.textoAlerta = "Rotas dos funcinários editadas com sucesso!"
 			},
 
-			async equipePlanEditada({ funcionarios, equipePlanejamento }) {
-				for (let id of funcionarios) {
-					let idx = this.dados.findIndex((o) => o.id === id)
-
-					if (idx >= 0) {
-						this.dados[idx].EquipePlanejamento
-							? (this.dados[idx]["EquipePlanejamento"]["descricao"] = equipePlanejamento)
-							: (this.dados[idx]["EquipePlanejamento"] = { descricao: equipePlanejamento })
-					}
-				}
-
+			async equipePlanEditada() {
+        await this.buscarEfetivo()
 				this.mostrarDialogEditarEfetivo = false
 				this.mostrarAlerta = true
 				this.textoAlerta = "Equipe planejamento editadas com sucesso!"

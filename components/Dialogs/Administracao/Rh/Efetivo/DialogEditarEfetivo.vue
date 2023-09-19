@@ -135,6 +135,13 @@
 											v-model="campos.jornada_trabalho_id"
 											id="jornadaTrabalho"
 											:invalido="erros.includes('jornada_trabalho_id')" />
+                    <AppFormSelect
+                      id="permanencia"
+                      label="Permanência"
+                      :options="tiposPermanencia"
+                      v-model="campos.permanencia"
+                      obrigatorio
+                      :invalido="erros.includes('permanencia')" />
 
 									</div>
 								</div>
@@ -176,13 +183,6 @@
                     :options="equipesPlanejamento"
                     v-model="planejamento.equipe_planejamento_id"
                     :invalido="erros.includes('equipe_planejamento_id')" />
-                  <AppFormSelect
-                    id="permanencia"
-                    label="Permanência"
-                    :options="tiposPermanencia"
-                    v-model="planejamento.permanencia"
-                    obrigatorio
-                    :invalido="erros.includes('permanencia')" />
                 </div>
               </div>
             </template>
@@ -322,6 +322,7 @@
         this.campos.turno_id = funcionario.turno_id
         this.campos.jornada_trabalho_id = funcionario.jornada_trabalho_id
         this.campos.setor_id = funcionario.setor ? funcionario.setor.id : null
+        this.campos.permanencia = funcionario.permanencia ? funcionario.permanencia : null
 
         this.transporte.rota_id = funcionario.rota ? funcionario.rota.id : null
         this.transporte.poltrona = funcionario.poltrona ? funcionario.poltrona : null
@@ -508,7 +509,7 @@
 
 					let ids = funcionarios.map((o) => o.id)
 
-					this.$emit("editado", { funcionarios: ids, nomes })
+					this.$emit("editado")
 				}
 			},
 
@@ -564,7 +565,7 @@
 
 				let chapas = funcionarios.map((o) => o.id)
 
-				this.$emit("rotaEditada", { funcionarios: chapas, rota })
+				this.$emit("rotaEditada")
 			},
 
 			async buscarRotas() {
@@ -585,10 +586,9 @@
       async editarPlanejamento(){
         this.erros = []
 
-        let { equipe_planejamento_id, permanencia } = this.planejamento
+        let { equipe_planejamento_id } = this.planejamento
 
         if(equipe_planejamento_id === null || equipe_planejamento_id === "") this.erros.push('equipe_planejamento_id')
-        if(permanencia === null || permanencia === "") this.erros.push('permanencia')
 
         if(this.erros.length === 0){
 
@@ -603,10 +603,6 @@
 
           if (equipe_planejamento_id !== null && equipe_planejamento_id !== "") {
             campos["equipe_planejamento_id"] = equipe_planejamento_id
-          }
-
-          if (permanencia !== null && permanencia !== "") {
-            campos["permanencia"] = permanencia
           }
 
           let equipePlanejamento
@@ -632,7 +628,7 @@
 
           let chapas = funcionarios.map((o) => o.id)
 
-          this.$emit("equipePlanEditada", { funcionarios: chapas, equipePlanejamento })
+          this.$emit("equipePlanEditada")
         }
       }
 		},
