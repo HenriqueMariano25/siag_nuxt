@@ -10,6 +10,7 @@
 				:itensPorPagina="itensPorPagina"
         @itensPorPagina="itensPorPagina = $event"
 				:pagina="pagina"
+        :dados-redis="true"
 				:totalItens="totalItens"
 				:carregando="carregando"
 				@atualizar="buscarEfetivo"
@@ -132,15 +133,15 @@
                   <span>EXPORTAR JSON</span>
                 </button>
               </vue-blob-json-csv>
-							<BotaoPadrao
-								:texto="gerandoExcel === true ? 'Gerando...' : 'Gerar EXCEL'"
-								@clique="gerarExcel"
-								:disabled="gerandoExcel">
-								<img
-									src="@/assets/icons/excel-b.svg"
-									alt=""
-									class="w-7 h-7" />
-							</BotaoPadrao>
+<!--							<BotaoPadrao-->
+<!--								:texto="gerandoExcel === true ? 'Gerando...' : 'Gerar EXCEL'"-->
+<!--								@clique="gerarExcel"-->
+<!--								:disabled="gerandoExcel">-->
+<!--								<img-->
+<!--									src="@/assets/icons/excel-b.svg"-->
+<!--									alt=""-->
+<!--									class="w-7 h-7" />-->
+<!--							</BotaoPadrao>-->
 						</div>
 						<div class="flex gap-2">
               <BotaoPadrao
@@ -219,7 +220,7 @@
 			return {
 				dados: [],
 				filtros: {},
-				ordem: null,
+				ordem: {},
 				itensPorPagina: 200,
 				pagina: 1,
 				totalItens: 0,
@@ -249,7 +250,7 @@
 						centralizar: true,
 						fixa: false,
 					},
-					{ nome: "Nome", valor: "nome", filtro: true, fixa: false },
+					{ nome: "Nome", valor: "nome", filtro: true, fixa: false, ordenar: true },
 					{ nome: "Hora Extra", valor: "hora_extra", centralizar: true, ordenar: true },
 					{ nome: "Cargo", valor: "cargo", filtro: true },
 					{ nome: "Disciplina", valor: "Disciplina.descricao", filtro: true },
@@ -352,8 +353,8 @@
 				return cabecalho
 			},
 		},
-		async created() {
-			await this.buscarRotas()
+		async mounted() {
+      await this.buscarRotas()
 			await this.buscarEfetivo()
       await this.buscarResponsaveis()
 		},
@@ -380,9 +381,9 @@
 				}
 			},
 
-			recebendoFiltro(filtros) {
-				this.filtros = filtros
-			},
+			// recebendoFiltro(filtros) {
+			// 	this.filtros = filtros
+			// },
 			async buscarEfetivo() {
 				this.carregando = true
 
@@ -412,24 +413,6 @@
 					this.dados = funcionarios
 					this.carregando = false
 				}
-
-				// let funcionarios = await this.$store.state.funcionarios.funcionarios
-				//
-				// if (Object.keys(this.filtros).length > 0) {
-				//   for (let filtro of Object.keys(this.filtros)) {
-				//     let rgx = new RegExp(`${this.filtros[filtro]}`, "gi");
-				//
-				//     funcionarios = this.$lodash.filter(funcionarios, o => {
-				//       return rgx.test(o[filtro])
-				//     })
-				//   }
-				// }
-				//
-				// let off = (this.pagina - 1) * this.itensPorPagina
-				// let pagedItems = this.$lodash.drop(funcionarios, off).slice(0, this.itensPorPagina);
-				//
-				// this.totalItens = funcionarios.length
-				// this.dados = pagedItems
 			},
 
 			async funcionarioEditado({ funcionarios, nomes }) {
@@ -531,8 +514,6 @@
 			},
 
 			async equipePlanEditada({ funcionarios, equipePlanejamento }) {
-				console.log(equipePlanejamento)
-
 				for (let id of funcionarios) {
 					let idx = this.dados.findIndex((o) => o.id === id)
 
@@ -617,8 +598,6 @@
 			},
 
       dadosExportarJson() {
-        console.log("Aqui")
-
         let dados = this.dados.map((funcionario) => {
           let id_cargo = funcionario.id_cargo
           if (funcionario.id_cargo) {
