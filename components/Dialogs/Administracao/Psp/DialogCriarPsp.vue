@@ -557,8 +557,8 @@
         if (!resp.falha) {
           let psp = resp.dados.psp
           this.psp.funcionario_id = psp.funcionario_id
-          await this.buscarFuncionario()
           this.psp = Object.assign(this.psp, resp.dados.psp)
+          await this.buscarFuncionario()
           this.carregando = false
         }
       },
@@ -588,7 +588,7 @@
 				let funcionario_id = this.psp.funcionario_id
 
 				let resp = await this.$axios.$get("/psp/buscar/funcionario", {
-					params: { id: funcionario_id },
+					params: { id: funcionario_id, data_ida: this.psp.data_ida, psp_id: this.psp.id },
 				})
 
 				if (!resp.falha) {
