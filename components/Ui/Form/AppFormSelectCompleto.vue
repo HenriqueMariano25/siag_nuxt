@@ -1,7 +1,7 @@
 <template>
 	<div
 		:id="'wrapper-' + id"
-		class="wrapper relative ">
+		class="wrapper relative">
 		<div class="flex text-xs ml-1.5 mt-1 font-medium">
 			<span :class="{ 'text-red-600': invalido }">
 				{{ label }}
@@ -12,7 +12,6 @@
 				</span>
 			</span>
 			<AppTooltip
-
 				v-if="dica"
 				:posicao="dicaPosicao">
 				<template v-slot:corpo>
@@ -30,7 +29,7 @@
 			</AppTooltip>
 		</div>
 		<div
-			class="btn-selecionar cursor-pointer allo"
+			class="btn-selecionar cursor-pointer"
 			:id="'btn-selecionar-' + id"
 			:class="{
 				'!border-red-400 !bg-red-100': invalido,
@@ -61,8 +60,9 @@
 						@input="busca = $event.target.value" />
 				</div>
 				<div>
-
-					<ul class="lista z-20" :style="{ maxHeight: altura }">
+					<ul
+						class="lista z-20"
+						:style="{ maxHeight: altura }">
 						<li
 							v-for="op of opcoesFiltradas"
 							@click="selecionarOpcao(op, $event)"
@@ -125,10 +125,10 @@
 				type: String,
 				default: "left-0",
 			},
-      altura:{
-        type: String,
-        defaut: "170px"
-      }
+			altura: {
+				type: String,
+				defaut: "170px",
+			},
 		},
 		data() {
 			return {
@@ -164,6 +164,8 @@
 		},
 		methods: {
 			selecionarOpcao(opcao, event) {
+				console.log("To aqui")
+
 				this.$emit("input", opcao.id)
 				this.texto = opcao.nome
 
@@ -171,56 +173,55 @@
 				wrapper.classList.toggle("active")
 				event.stopPropagation() // Evita que o evento de clique seja propagado para o elemento pai
 			},
-      podeMostrarOpcoes(){
-        const wrapper = document.getElementById("wrapper-" + this.id)
-        const conteudo = document.getElementById("conteudo-" + this.id)
+			podeMostrarOpcoes() {
+				const wrapper = document.getElementById("wrapper-" + this.id)
+				const conteudo = document.getElementById("conteudo-" + this.id)
+				const selectCompleto = document.getElementById("btn-selecionar-" + this.id)
 
-        if (!this.disabled && !this.readonly) {
-          const selectCompleto = document.getElementById("btn-selecionar-" + this.id)
+				selectCompleto.addEventListener("click", () => {
+					if (!this.disabled && !this.readonly) {
+						wrapper.classList.toggle("active")
 
-          selectCompleto.addEventListener("click", () => {
-            wrapper.classList.toggle("active")
+						let posicaoY = conteudo.getBoundingClientRect().top
+						let altura = conteudo.getBoundingClientRect().height
+						let foraDaPagina = posicaoY + altura >= window.innerHeight
 
-            let posicaoY = conteudo.getBoundingClientRect().top
-            let altura = conteudo.getBoundingClientRect().height
-            let foraDaPagina = posicaoY + altura >= window.innerHeight
-
-            if (foraDaPagina) {
-              conteudo.classList.add("reverso")
-            }
-          })
-        }
-      }
+						if (foraDaPagina) {
+							conteudo.classList.add("reverso")
+						}
+					}
+				})
+			},
 		},
 		watch: {
 			options(valor) {
-        if(valor && valor.length > 0){
-          if (this.value !== null && this.value !== "") {
-            let op = valor.find((o) => o.id === this.value)
-            if(op){
-              this.texto = op.nome
-            }
-          } else {
-            this.texto = "Selecione"
-          }
-        }
+				if (valor && valor.length > 0) {
+					if (this.value !== null && this.value !== "") {
+						let op = valor.find((o) => o.id === this.value)
+						if (op) {
+							this.texto = op.nome
+						}
+					} else {
+						this.texto = "Selecione"
+					}
+				}
 			},
 			value(valor) {
 				if (valor && valor !== "") {
 					let op = this.options.find((o) => o.id === valor)
-          if(op){
-					  this.texto = op.nome
-          }
+					if (op) {
+						this.texto = op.nome
+					}
 				} else {
 					this.texto = "Selecione"
 				}
 			},
-      disabled(){
-        this.podeMostrarOpcoes()
-      },
-      readonly(){
-        this.podeMostrarOpcoes()
-      }
+			disabled() {
+				this.podeMostrarOpcoes()
+			},
+			readonly() {
+				this.podeMostrarOpcoes()
+			},
 		},
 	})
 </script>
@@ -230,14 +231,13 @@
 		margin-top: -7px;
 	}
 
-
 	.wrapper.active .btn-selecionar .icone {
 		transform: rotate(-180deg);
-    transition: .1s;
+		transition: 0.1s;
 	}
 
-  .icone {
-    transition: .1s;
+	.icone {
+		transition: 0.1s;
 	}
 
 	.wrapper.active .conteudo {

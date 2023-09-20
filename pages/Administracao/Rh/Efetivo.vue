@@ -133,15 +133,15 @@
                   <span>EXPORTAR JSON</span>
                 </button>
               </vue-blob-json-csv>
-<!--							<BotaoPadrao-->
-<!--								:texto="gerandoExcel === true ? 'Gerando...' : 'Gerar EXCEL'"-->
-<!--								@clique="gerarExcel"-->
-<!--								:disabled="gerandoExcel">-->
-<!--								<img-->
-<!--									src="@/assets/icons/excel-b.svg"-->
-<!--									alt=""-->
-<!--									class="w-7 h-7" />-->
-<!--							</BotaoPadrao>-->
+							<BotaoPadrao
+								:texto="gerandoExcel === true ? 'Gerando...' : 'Gerar EXCEL'"
+								@clique="gerarExcel"
+								:disabled="gerandoExcel">
+								<img
+									src="@/assets/icons/excel-b.svg"
+									alt=""
+									class="w-7 h-7" />
+							</BotaoPadrao>
 						</div>
 						<div class="flex gap-2">
               <BotaoPadrao

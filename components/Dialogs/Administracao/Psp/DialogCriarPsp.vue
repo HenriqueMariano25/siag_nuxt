@@ -24,6 +24,7 @@
 										:options="funcionarios"
 										v-model="psp.funcionario_id"
                     :disabled="editandoPsp"
+                    :readonly="editandoPsp"
 										class="grow" />
 									<div class="flex self-end">
 										<BotaoPadrao
@@ -594,7 +595,6 @@
 					let funcionario = resp.dados.funcionario
           this.funcionario = funcionario
 
-          console.log(funcionario)
 					let prazo = resp.dados.prazo
           let ultimaPsp = resp.dados.ultimaPsp
           this.funcionario.prazo = prazo.prazo
