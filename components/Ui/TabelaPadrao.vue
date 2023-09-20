@@ -678,7 +678,14 @@ export default {
           this.filtros.push(filtro)
         }
       } else if(this.dadosRedis){
-        this.filtros[item] = event.target.value
+
+        if (item.includes(".")){
+          let [tabela, valor] = item.split(".")
+          this.filtros = Object.assign(this.filtros, {  [tabela]: { [valor]: event.target.value}})
+        }else{
+          this.filtros[item] = event.target.value
+        }
+
       }else {
         if (item.includes(".")) item = `$${item}$`
         let idxFiltroEncontrado = this.filtros.findIndex((o) =>
@@ -711,10 +718,13 @@ export default {
           let idx = this.filtrosAtivos.findIndex((o) => o === item)
           this.filtrosAtivos.splice(idx, 1)
         }
+        let key = item
+        if (item.includes(".")){
+          [key] = item.split(".")
+        }
 
-        let idx = Object.keys(this.filtros).findIndex( o => o === item)
-        if (idx >= 0) {
-          this.filtros = this.filtros.splice(idx, 1)
+        if(key){
+          delete this.filtros[key]
         }
       } else {
         if (this.filtrosAtivos.includes(item)) {
