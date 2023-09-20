@@ -256,7 +256,6 @@
 					{ nome: "Disciplina", valor: "Disciplina.descricao", filtro: true },
 					{ nome: "Sub Disciplina", valor: "SubDisciplina.descricao", filtro: true },
 					{ nome: "Setor", valor: "setor.nome", filtro: true },
-					{ nome: "Encarregado/Lider SAPO", valor: "encarregado_sapo", filtro: true },
 					{ nome: "Encarregado/Lider", valor: "EncarregadoLider.id", filtro: true,
            mostrarVazio: true,
             opcoes:
@@ -343,8 +342,8 @@
 					{ nome: "Jornada", valor: "JornadaTrabalho.descricao", filtro: true },
 					{ nome: "Equipe Planejamento", valor: "EquipePlanejamento.descricao", filtro: true },
 					{ nome: "Permanência", valor: "permanencia", filtro: true },
-					{ nome: "Data Admissão", valor: "data_admissao", filtro: true, centralizar: true },
-					{ nome: "Data Demissão", valor: "data_demissao", filtro: true, centralizar: true },
+					{ nome: "Data Admissão", valor: "data_admissao", centralizar: true },
+					{ nome: "Data Demissão", valor: "data_demissao", centralizar: true },
 					{ nome: "CPF", valor: "cpf", filtro: true },
 					{ nome: "D/I", valor: "direto_indireto", filtro: true, centralizar: true },
 					{ nome: "His. Mudanças", valor: "historico_mudanca", largura: "w-30" },
@@ -447,7 +446,6 @@
 					"Disciplina",
 					"Sub Disciplina",
 					"Setor",
-					"Encarregado/Lider SAPO",
 					"Encarregado/Lider",
 					"Supervisor",
 					"Engenheiro",
@@ -480,7 +478,6 @@
 					)
 					temp.push(item.SubDisciplina ? item.SubDisciplina.descricao : "")
 					temp.push(item.setor ? item.setor.nome : "")
-					temp.push(item.encarregado_sapo ? item.encarregado_sapo : "")
 					temp.push(item.EncarregadoLider ? item.EncarregadoLider.nome : "")
 					temp.push(item.Supervisor ? item.Supervisor.nome : "")
 					temp.push(item.Engenheiro ? item.Engenheiro.nome : "")
