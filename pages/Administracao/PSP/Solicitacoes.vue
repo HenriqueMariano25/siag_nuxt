@@ -321,8 +321,6 @@
 			},
 
 			async editado({ psp, mudaEtapa}) {
-
-        console.log(psp, mudaEtapa)
 				let idx = this.dados.findIndex((o) => o.id === psp.id)
 
 				if (idx >= 0) {
@@ -332,6 +330,8 @@
 					  this.dados[idx] = Object.assign(this.dados[idx], psp)
           }
 				}
+
+        this.psp_id = null
 
 				this.mostrarDialogCriarPsp = false
 				this.textoAlerta = "PSP editado com sucesso!"

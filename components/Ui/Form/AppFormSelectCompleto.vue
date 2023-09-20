@@ -162,9 +162,6 @@
 		},
 		methods: {
       abriOpcoes(){
-        console.log("Aqui")
-
-
         if (!this.disabled && !this.readonly) {
           const wrapper = document.getElementById("wrapper-" + this.id)
           const conteudo = document.getElementById("conteudo-" + this.id)
@@ -183,8 +180,6 @@
       },
 
 			selecionarOpcao(opcao, event) {
-				console.log("To aqui")
-
 				this.$emit("input", opcao.id)
 				this.texto = opcao.nome
 
