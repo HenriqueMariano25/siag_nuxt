@@ -29,6 +29,7 @@
 			</AppTooltip>
 		</div>
 		<div
+      @click="abriOpcoes()"
 			class="btn-selecionar cursor-pointer"
 			:id="'btn-selecionar-' + id"
 			:class="{
@@ -137,9 +138,6 @@
 				// altura: "200px",
 			}
 		},
-		mounted() {
-			this.podeMostrarOpcoes()
-		},
 		computed: {
 			opcoesFiltradas() {
 				let busca = this.busca
@@ -163,6 +161,27 @@
 			},
 		},
 		methods: {
+      abriOpcoes(){
+        console.log("Aqui")
+
+
+        if (!this.disabled && !this.readonly) {
+          const wrapper = document.getElementById("wrapper-" + this.id)
+          const conteudo = document.getElementById("conteudo-" + this.id)
+          // const selectCompleto = document.getElementById("btn-selecionar-" + this.id)
+
+          wrapper.classList.toggle("active")
+
+          let posicaoY = conteudo.getBoundingClientRect().top
+          let altura = conteudo.getBoundingClientRect().height
+          let foraDaPagina = posicaoY + altura >= window.innerHeight
+
+          if (foraDaPagina) {
+            conteudo.classList.add("reverso")
+          }
+        }
+      },
+
 			selecionarOpcao(opcao, event) {
 				console.log("To aqui")
 
@@ -172,25 +191,6 @@
 				const wrapper = document.getElementById("wrapper-" + this.id)
 				wrapper.classList.toggle("active")
 				event.stopPropagation() // Evita que o evento de clique seja propagado para o elemento pai
-			},
-			podeMostrarOpcoes() {
-				const wrapper = document.getElementById("wrapper-" + this.id)
-				const conteudo = document.getElementById("conteudo-" + this.id)
-				const selectCompleto = document.getElementById("btn-selecionar-" + this.id)
-
-				selectCompleto.addEventListener("click", () => {
-					if (!this.disabled && !this.readonly) {
-						wrapper.classList.toggle("active")
-
-						let posicaoY = conteudo.getBoundingClientRect().top
-						let altura = conteudo.getBoundingClientRect().height
-						let foraDaPagina = posicaoY + altura >= window.innerHeight
-
-						if (foraDaPagina) {
-							conteudo.classList.add("reverso")
-						}
-					}
-				})
 			},
 		},
 		watch: {
@@ -215,12 +215,6 @@
 				} else {
 					this.texto = "Selecione"
 				}
-			},
-			disabled() {
-				this.podeMostrarOpcoes()
-			},
-			readonly() {
-				this.podeMostrarOpcoes()
 			},
 		},
 	})
