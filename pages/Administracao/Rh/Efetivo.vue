@@ -510,6 +510,7 @@
               id_cargo = '9' + id_cargo.slice(1)
             }
           }
+          console.log(funcionario.id_cargo)
 
           return {
             'CPF': parseInt(funcionario.cpf),
@@ -517,8 +518,8 @@
             'MATRICULA': parseInt(funcionario.chapa),
             'FUNCAO_NOME': funcionario.cargo,
             'FUNCAO_ID': id_cargo,
-            'EQUIPE_NOME': funcionario.encarregado_sapo,
-            'EQUIPE_ID': parseInt(funcionario.id_encarregado_sapo),
+            'EQUIPE_NOME': funcionario.EncarregadoLider ? funcionario.EncarregadoLider.nome : null,
+            'EQUIPE_ID': parseInt(funcionario.encarregado_lider_id),
             'DATA_ADMISSAO': funcionario.data_admissao ? this.$dayjs(funcionario.data_admissao).format("YYYY-MM-DD") : "",
             'DATA_DEMISSAO': funcionario.data_demissao ? this.$dayjs(funcionario.data_demissao).format("YYYY-MM-DD") : "",
             'ATIVO': funcionario.data_demissao === null ? true : false,
