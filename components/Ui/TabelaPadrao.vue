@@ -535,6 +535,8 @@ export default {
 
     // tabela.addEventListener("resize", this.getColumnWidths)
 
+    this.renderizarDados()
+
     let container = document.querySelector(".tabela-container")
     container.addEventListener("scroll", this.rolando)
   },
@@ -556,18 +558,18 @@ export default {
 
     // Comentado: 18/09/2023
     // getColumnWidths() {
-      // console.log("Aqui")
-      // const table = this.$refs.myTable;
-      // const headerCells = table.querySelectorAll('th');
-      // const columnWidths = [];
-      //
-      // headerCells.forEach((cell) => {
-      //   const width = cell.offsetWidth;
-      //   columnWidths.push(width);
-      // });
-      //
-      // console.log(columnWidths);
-      // Faça o que desejar com os valores das larguras das colunas
+    //   console.log("Aqui")
+    //   const table = this.$refs.myTable;
+    //   const headerCells = table.querySelectorAll('th');
+    //   const columnWidths = [];
+    //
+    //   headerCells.forEach((cell) => {
+    //     const width = cell.offsetWidth;
+    //     columnWidths.push(width);
+    //   });
+    //
+    //   console.log(columnWidths);
+    //   Faça o que desejar com os valores das larguras das colunas
     // },
     valorFiltro(valor) {
       if (this.dadosSql) {
@@ -964,6 +966,15 @@ export default {
         this.selecionados = []
       }
     },
+
+    renderizarDados(){
+      this.dadosPrMostrar = []
+
+      this.indexFim = 50
+      if (this.dados.length > 0) {
+        this.dadosPrMostrar = [...this.dados].splice(0, this.indexFim)
+      }
+    }
   },
   watch: {
     pagina(valor) {
@@ -972,19 +983,13 @@ export default {
     selecionados(valor) {
       this.$emit("selecionados", this.selecionados)
     },
-    dados(valor) {
+    dados() {
       if (this.limparSelecionar === true) {
         this.selecionados = []
       }
       if (this.selecionandoTodos === true) this.selecionandoTodos = false
 
-      this.dadosPrMostrar = []
-
-      this.indexFim = 50
-      if (this.dados.length > 0) {
-        this.dadosPrMostrar = [...this.dados].splice(0, this.indexFim)
-      }
-
+      this.renderizarDados()
     },
     limparSelecionar(valor) {
       this.selecionados = []
