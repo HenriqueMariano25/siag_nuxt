@@ -103,23 +103,23 @@
 										<template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
 											<span class="whitespace-nowrap">{{ item.Funcionario.encarregado_sapo }}</span>
 										</template>
-                    <template v-slot:[`body.Funcionario.EncarregadoLider`]="{ item }">
+                    <template v-slot:[`body.Funcionario.EncarregadoLider.nome`]="{ item }">
                       <span
                         class="whitespace-nowrap">{{ item.Funcionario && item.Funcionario.EncarregadoLider ? item.Funcionario.EncarregadoLider.nome : "" }}</span>
                     </template>
-                    <template v-slot:[`body.Funcionario.Supervisor`]="{ item }">
+                    <template v-slot:[`body.Funcionario.Supervisor.nome`]="{ item }">
                       <span
                         class="whitespace-nowrap">{{ item.Funcionario && item.Funcionario.Supervisor ? item.Funcionario.Supervisor.nome : "" }}</span>
                     </template>
-                    <template v-slot:[`body.Funcionario.Engenheiro`]="{ item }">
+                    <template v-slot:[`body.Funcionario.Engenheiro.nome`]="{ item }">
                       <span
                         class="whitespace-nowrap">{{ item.Funcionario && item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.nome : "" }}</span>
                     </template>
-                    <template v-slot:[`body.Funcionario.Coordenador`]="{ item }">
+                    <template v-slot:[`body.Funcionario.Coordenador.nome`]="{ item }">
                       <span
                         class="whitespace-nowrap">{{ item.Funcionario && item.Funcionario.Coordenador ? item.Funcionario.Coordenador.nome : "" }}</span>
                     </template>
-                    <template v-slot:[`body.Funcionario.Gestor`]="{ item }">
+                    <template v-slot:[`body.Funcionario.Gestor.nome`]="{ item }">
                       <span
                         class="whitespace-nowrap">{{ item.Funcionario && item.Funcionario.Gestor ? item.Funcionario.Gestor.nome : "" }}</span>
                     </template>
@@ -239,23 +239,23 @@
                     <template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
                       <span class="whitespace-nowrap">{{ item.Funcionario.encarregado_sapo }}</span>
                     </template>
-                    <template v-slot:[`body.Funcionario.EncarregadoLider`]="{ item }">
+                    <template v-slot:[`body.Funcionario.EncarregadoLider.nome`]="{ item }">
                       <span
                         class="whitespace-nowrap">{{ item.Funcionario && item.Funcionario.EncarregadoLider ? item.Funcionario.EncarregadoLider.nome : "" }}</span>
                     </template>
-                    <template v-slot:[`body.Funcionario.Supervisor`]="{ item }">
+                    <template v-slot:[`body.Funcionario.Supervisor.nome`]="{ item }">
                       <span
                         class="whitespace-nowrap">{{ item.Funcionario && item.Funcionario.Supervisor ? item.Funcionario.Supervisor.nome : "" }}</span>
                     </template>
-                    <template v-slot:[`body.Funcionario.Engenheiro`]="{ item }">
+                    <template v-slot:[`body.Funcionario.Engenheiro.nome`]="{ item }">
                       <span
                         class="whitespace-nowrap">{{ item.Funcionario && item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.nome : "" }}</span>
                     </template>
-                    <template v-slot:[`body.Funcionario.Coordenador`]="{ item }">
+                    <template v-slot:[`body.Funcionario.Coordenador.nome`]="{ item }">
                       <span
                         class="whitespace-nowrap">{{ item.Funcionario && item.Funcionario.Coordenador ? item.Funcionario.Coordenador.nome : "" }}</span>
                     </template>
-                    <template v-slot:[`body.Funcionario.Gestor`]="{ item }">
+                    <template v-slot:[`body.Funcionario.Gestor.nome`]="{ item }">
                       <span
                         class="whitespace-nowrap">{{ item.Funcionario && item.Funcionario.Gestor ? item.Funcionario.Gestor.nome : "" }}</span>
                     </template>
@@ -412,12 +412,11 @@
           { nome: "Matricula", valor: "chapa", ordenar: true, filtro: true, centralizar: true },
           { nome: "Nome", valor: "Funcionario.nome", filtro: true, ordenar: true },
           { nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
-          { nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
-          { nome: "Encarregado/Lider Produção", valor: "Funcionario.EncarregadoLider", filtro: true },
-          { nome: "Supervisor", valor: "Funcionario.Supervisor", filtro: true },
-          { nome: "Engenheiro", valor: "Funcionario.Engenheiro", filtro: true },
-          { nome: "Coordenador", valor: "Funcionario.Coordenador", filtro: true },
-          { nome: "Gestor", valor: "Funcionario.Gestor", filtro: true },
+          { nome: "Encarregado/Lider", valor: "Funcionario.EncarregadoLider.nome", filtro: true },
+          { nome: "Supervisor", valor: "Funcionario.Supervisor.nome", filtro: true },
+          { nome: "Engenheiro", valor: "Funcionario.Engenheiro.nome", filtro: true },
+          { nome: "Coordenador", valor: "Funcionario.Coordenador.nome", filtro: true },
+          { nome: "Gestor", valor: "Funcionario.Gestor.nome", filtro: true },
           { nome: "Agendado por", valor: "agendado_por.nome", filtro: true },
           { nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
           { nome: "Turno", valor: "turno", filtro: true, centralizar: true },
@@ -547,8 +546,6 @@
 				let resp = await this.$axios.$get("/hora_extra/aprovacao/gestor_area", {
 					params: { data, setor_id, ordem: ordem, filtros: this.filtrosGestor },
 				})
-
-        console.log(resp)
 
 				if (!resp.falha) {
 					this.dadosGestor = resp.dados.aprovacoes
