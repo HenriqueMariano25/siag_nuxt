@@ -59,6 +59,7 @@
 								</div>
 								<div>
 									<TabelaPadrao
+                    id="aprovacaoHe"
 										:cabecalho="cabecalho"
 										:dados="dadosFiltradoGestor"
                     @filtros="filtrosGestor = $event"
