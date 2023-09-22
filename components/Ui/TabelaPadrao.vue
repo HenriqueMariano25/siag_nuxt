@@ -8,7 +8,8 @@
       <slot name="overlay"></slot>
     </div>
     <div
-      class="tabela-container"
+      :class="`tabela-container-${this.id}`"
+      class="tabela-container "
       :style="'height:' + altura"
       style="overflow-y: auto; overflow-x: auto; max-width: 100%">
       <table
@@ -397,6 +398,10 @@ export default {
   mixins: [prepararFiltro],
   name: "Tabela",
   props: {
+    id: {
+      type: String,
+      default: 'local'
+    },
     cabecalho: {
       type: Array,
       default: () => [],
@@ -531,18 +536,14 @@ export default {
     },
   },
   mounted() {
-    // let tabela = document.querySelector(".table")
+      this.renderizarDados()
 
-    // tabela.addEventListener("resize", this.getColumnWidths)
-
-    this.renderizarDados()
-
-    let container = document.querySelector(".tabela-container")
-    container.addEventListener("scroll", this.rolando)
+      let container = document.querySelector(`.tabela-container-${this.id}`)
+      container.addEventListener("scroll", this.rolando)
   },
   methods: {
     rolando() {
-      const listElm = document.querySelector('.tabela-container');
+      const listElm = document.querySelector(`.tabela-container-${this.id}`);
 
       if (Math.ceil((listElm.scrollTop + listElm.clientHeight) + 5) >= listElm.scrollHeight) {
         this.carregarMais();
@@ -961,7 +962,7 @@ export default {
 
     selecionarTodosDados() {
       if (!this.selecionandoTodos) {
-        this.selecionados = this.dados
+        this.selecionados = this.dados.filter( o => o.ativo !== true)
       } else {
         this.selecionados = []
       }
