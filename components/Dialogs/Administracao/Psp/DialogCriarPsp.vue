@@ -2,8 +2,8 @@
 	<div class="w-full">
 		<BaseDialog
 			:titulo="psp_id ? 'Editar PSP' : cadastrou ? 'PSP cadastrada' : 'Criar PSP'"
-      :btnDeletar="psp_id !== null && psp_id !== ''"
-      @deletar="deletarPsp()"
+			:btnDeletar="psp_id !== null && psp_id !== ''"
+			@deletar="deletarPsp()"
 			:carregando="carregando"
 			@cancelar="cancelar()">
 			<template v-slot:corpo>
@@ -23,15 +23,17 @@
 										label="Funcionário"
 										:options="funcionarios"
 										v-model="psp.funcionario_id"
-                    :disabled="editandoPsp"
-                    :readonly="editandoPsp"
+										:disabled="editandoPsp"
+										:readonly="editandoPsp"
 										class="grow" />
 									<div class="flex self-end">
 										<BotaoPadrao
 											texto="buscar"
 											cor="bg-primaria-200 hover:bg-primaria-500 text-white"
 											@clique="buscarFuncionario"
-											:disabled="(psp.funcionario_id === null || psp.funcionario_id === '') || editandoPsp">
+											:disabled="
+												psp.funcionario_id === null || psp.funcionario_id === '' || editandoPsp
+											">
 											<img
 												src="@/assets/icons/magnifier-w.svg"
 												alt=""
@@ -141,33 +143,57 @@
 										obrigatorio
 										v-model="psp.prazo" />
 								</div>
-                <div class="bg-sky-200 border border-sky-500" v-if="funcionario && funcionario.Psp && funcionario.Psp.length > 0">
-                  <div class="flex w-full bg-sky-500 px-1 text-lg ">
-                    <span>PSP anterior</span>
-                  </div>
-                  <div class="grid grid-cols-2 px-1">
-                    <span><strong>Data de ida: </strong>{{ $dayjs(funcionario.Psp[0].data_ida).format("DD/MM/YYYY") }}</span>
-                    <span><strong>Data de volta: </strong>{{ $dayjs(funcionario.Psp[0].data_volta).format("DD/MM/YYYY") }}</span>
-<!--                    <span><strong>Motivo: </strong>{{ funcionario.Psp[0].motivo }}</span>-->
-<!--                    <span><strong>Meio de Transporte: </strong>{{ funcionario.Psp[0].meio_transporte }}</span>-->
-<!--                    <span><strong>Origem: </strong>{{ funcionario.Psp[0].origem }}</span>-->
-<!--                    <span><strong>Destino: </strong>{{ funcionario.Psp[0].destino }}</span>-->
-                  </div>
-                  <div class="flex w-full bg-sky-500 px-1 text-lg mt-1">
-                    <span>Previsão próxima PSP</span>
-                  </div>
-                  <div class="grid grid-cols-2 px-1">
-                    <span><strong>Data prevista de ida: </strong>{{ $dayjs(funcionario.Psp[0].data_volta).add(funcionario.prazo, "day").format("DD/MM/YYYY") }}</span>
-                    <span
-                      v-if="psp.data_ida"><strong>Dias da última volta até a próxima ida: </strong>{{ $dayjs(psp.data_ida).diff(funcionario.Psp[0].data_volta, 'day') }} dias</span>
-                  </div>
-                  <div class="w-full flex justify-center mt-0.5 bg-red-200 border-t-2 border-red-500"
-                       v-if="$dayjs(psp.data_ida).diff(funcionario.Psp[0].data_volta, 'day') < funcionario.prazo">
-                    <img src="@/assets/icons/alert-triangle-r.svg" alt="" class="w-7 h-7 flex">
-                    <span class="flex  text-red-500 text-lg px-1"
-                          ><strong>DATA DE IDA É MENOR DO QUE A DATA PRESVISTA</strong></span>
-                  </div>
-                </div>
+								<div
+									class="bg-sky-200 border border-sky-500"
+									v-if="funcionario && funcionario.Psp && funcionario.Psp.length > 0">
+									<div class="flex w-full bg-sky-500 px-1 text-lg">
+										<span>PSP anterior</span>
+									</div>
+									<div class="grid grid-cols-2 px-1">
+										<span
+											><strong>Data de ida: </strong
+											>{{ $dayjs(funcionario.Psp[0].data_ida).format("DD/MM/YYYY") }}</span
+										>
+										<span
+											><strong>Data de volta: </strong
+											>{{ $dayjs(funcionario.Psp[0].data_volta).format("DD/MM/YYYY") }}</span
+										>
+									</div>
+									<div class="flex w-full bg-sky-500 px-1 text-lg mt-1">
+										<span>Previsão próxima PSP</span>
+									</div>
+									<div class="grid grid-cols-2 px-1">
+										<span
+											><strong>Data prevista de ida: </strong
+											>{{
+												$dayjs(funcionario.Psp[0].data_volta)
+													.add(funcionario.prazo, "day")
+													.format("DD/MM/YYYY")
+											}}</span
+										>
+										<span v-if="psp.data_ida"
+											><strong>Dias da última volta até a próxima ida: </strong
+											>{{
+												$dayjs(psp.data_ida).diff(funcionario.Psp[0].data_volta, "day")
+											}}
+											dias</span
+										>
+									</div>
+									<div
+										class="w-full flex justify-center mt-0.5 bg-red-200 border-t-2 border-red-500"
+										v-if="
+											$dayjs(psp.data_ida).diff(funcionario.Psp[0].data_volta, 'day') <
+											funcionario.prazo
+										">
+										<img
+											src="@/assets/icons/alert-triangle-r.svg"
+											alt=""
+											class="w-7 h-7 flex" />
+										<span class="flex text-red-500 text-lg px-1"
+											><strong>DATA DE IDA É MENOR DO QUE A DATA PRESVISTA</strong></span
+										>
+									</div>
+								</div>
 							</div>
 						</div>
 						<div class="flex flex-col gap-1 bg-blue-100 border border-blue-300">
@@ -202,7 +228,7 @@
 											:invalido="erros.includes('data_ida')"
 											placeholder="Ex: Grussai, São João da Barra, RJ"
 											obrigatorio
-                      :texto-invalido="textoErroDataIda"
+											:texto-invalido="textoErroDataIda"
 											v-model="psp.data_ida" />
 										<AppFormInput
 											id="volta"
@@ -211,7 +237,7 @@
 											:invalido="erros.includes('data_volta')"
 											placeholder="Ex: Grussai, São João da Barra, RJ"
 											obrigatorio
-                      :texto-invalido="textoErroDataVolta"
+											:texto-invalido="textoErroDataVolta"
 											v-model="psp.data_volta" />
 									</div>
 									<AppFormSelectCompleto
@@ -221,6 +247,7 @@
 										:invalido="erros.includes('centro_custo_pep_id')"
 										v-model="psp.centro_custo_pep_id"
 										class="grow" />
+									<div></div>
 									<AppFormRadio
 										:itens="opcoesMeioTransporte"
 										titulo="Meio de Transporte"
@@ -242,7 +269,7 @@
 											type="text"
 											label="Descrição do motivo"
 											obrigatorio
-                      :invalido="erros.includes('outros_motivo')"
+											:invalido="erros.includes('outros_motivo')"
 											placeholder="Ex: Descreva o motivo"
 											v-model="psp.outros_motivo" />
 									</div>
@@ -364,11 +391,10 @@
 						class="flex flex-col gap-0.5">
 						<!--          <span class="">PSP criada com sucesso</span>-->
 						<span class="text-xl">
-              Código da PSP: <strong>{{ ("00000" + psp.id).slice(-5) }}</strong>
-            </span>
-						<span class="text-xl"
-							>
-              Motivo: <strong>{{ psp.motivo }}</strong></span
+							Código da PSP: <strong>{{ ("00000" + psp.id).slice(-5) }}</strong>
+						</span>
+						<span class="text-xl">
+							Motivo: <strong>{{ psp.motivo }}</strong></span
 						>
 						<span class="text-xl"
 							>Data de ida: <strong>{{ $dayjs(psp.data_ida).format("DD/MM/YYYY") }}</strong></span
@@ -387,7 +413,9 @@
 									<span><strong>Gerente GAF</strong></span>
 									<span>Validação do Prazo</span>
 								</div>
-								<div class="">
+								<div
+									class=""
+									v-if="menor35dias">
 									<img
 										src="@/assets/icons/arrow-right-blue.svg"
 										alt=""
@@ -407,7 +435,7 @@
 								<div class="flex flex-col justify-center items-center">
 									<div class="bg-blue-400 w-7 h-7 rounded-full"></div>
 									<span><strong>Coordenador</strong></span>
-									<span>Henrique Mariano</span>
+									<span>{{ funcionario.Coordenador ? funcionario.Coordenador.nome : "" }}</span>
 								</div>
 								<div class="">
 									<img
@@ -418,7 +446,7 @@
 								<div class="flex flex-col justify-center items-center">
 									<div class="bg-blue-400 w-7 h-7 rounded-full"></div>
 									<span><strong>Gestor da Área</strong></span>
-									<span>Jorge Eduardo</span>
+									<span>{{ funcionario.Gestor ? funcionario.Gestor.nome : "" }}</span>
 								</div>
 							</div>
 						</div>
@@ -518,23 +546,31 @@
 				dependentes: [],
 				errosDependentes: [],
 				erroSemDependente: false,
-        editandoPsp: false,
-        funcionario: null,
-        textoErroDataIda: null,
-        textoErroDataVolta: null
+				editandoPsp: false,
+				funcionario: null,
+				textoErroDataIda: null,
+				textoErroDataVolta: null,
 			}
 		},
-    props: {
-      psp_id: {
-        type: [Object, Number],
-      }
-    },
+		props: {
+			psp_id: {
+				type: [Object, Number],
+			},
+		},
 		computed: {
 			motivoOutro() {
 				return this.psp.motivo === "outros"
 			},
 			menor35dias() {
-				return this.$dayjs(this.psp.data_ida).diff(this.$dayjs(), "day") < 35
+				if (this.psp.meio_transporte === "Rodoviário") {
+					return this.$dayjs(this.psp.data_ida).diff(this.$dayjs(), "day") < 15
+				}
+
+				if (this.psp.meio_transporte === "Aérea") {
+					this.$dayjs(this.psp.data_ida).diff(this.$dayjs(), "day") < 35
+				}
+
+				return false
 			},
 		},
 		async created() {
@@ -542,26 +578,26 @@
 			await this.buscarTurnos()
 			await this.buscarCentrosCusto()
 
-      if(this.psp_id){
-        this.editandoPsp = true
-        await this.buscarPsp()
-      }
+			if (this.psp_id) {
+				this.editandoPsp = true
+				await this.buscarPsp()
+			}
 		},
 		methods: {
 			cancelar() {
 				this.$emit("cancelar")
 			},
-      async buscarPsp() {
-        let resp = await this.$axios.$get(`/psp/buscar/${this.psp_id}`)
+			async buscarPsp() {
+				let resp = await this.$axios.$get(`/psp/buscar/${this.psp_id}`)
 
-        if (!resp.falha) {
-          let psp = resp.dados.psp
-          this.psp.funcionario_id = psp.funcionario_id
-          this.psp = Object.assign(this.psp, resp.dados.psp)
-          await this.buscarFuncionario()
-          this.carregando = false
-        }
-      },
+				if (!resp.falha) {
+					let psp = resp.dados.psp
+					this.psp.funcionario_id = psp.funcionario_id
+					this.psp = Object.assign(this.psp, resp.dados.psp)
+					await this.buscarFuncionario()
+					this.carregando = false
+				}
+			},
 			async buscarFuncionarios() {
 				let resp = await this.$axios.$get("/efetivo/buscar_responsaveis")
 
@@ -593,11 +629,11 @@
 
 				if (!resp.falha) {
 					let funcionario = resp.dados.funcionario
-          this.funcionario = funcionario
+					this.funcionario = funcionario
 
 					let prazo = resp.dados.prazo
-          let ultimaPsp = resp.dados.ultimaPsp
-          this.funcionario.prazo = prazo.prazo
+					let ultimaPsp = resp.dados.ultimaPsp
+					this.funcionario.prazo = prazo.prazo
 
 					this.psp.cargo = funcionario.cargo
 					this.psp.chapa = funcionario.chapa
@@ -615,24 +651,24 @@
 					this.psp.prazo = `${prazo.prazo} dias`
 					this.psp.setor = funcionario.setor ? funcionario.setor.nome : null
 
-          if(ultimaPsp){
-            this.psp.origem = ultimaPsp.origem
-            this.psp.destino = ultimaPsp.destino
-            this.psp.centro_custo_pep_id = ultimaPsp.centro_custo_pep_id
-            this.psp.meio_transporte = ultimaPsp.meio_transporte
-          }
+					if (ultimaPsp) {
+						this.psp.origem = ultimaPsp.origem
+						this.psp.destino = ultimaPsp.destino
+						this.psp.centro_custo_pep_id = ultimaPsp.centro_custo_pep_id
+						this.psp.meio_transporte = ultimaPsp.meio_transporte
+					}
 				}
 			},
-      async deletarPsp(){
-        let usuario_id = this.$auth.user.id
-        let psp_id = this.psp_id
+			async deletarPsp() {
+				let usuario_id = this.$auth.user.id
+				let psp_id = this.psp_id
 
-        let resp = await this.$axios.$post("/psp/deletar", { usuario_id, psp_id})
+				let resp = await this.$axios.$post("/psp/deletar", { usuario_id, psp_id })
 
-        if(!resp.falha){
-          this.$emit("deletado", psp_id )
-        }
-      },
+				if (!resp.falha) {
+					this.$emit("deletado", psp_id)
+				}
+			},
 			async buscarCentrosCusto() {
 				let resp = await this.$axios.$get("/suprimentos/ss/centro_custo/buscarTodos")
 
@@ -667,31 +703,30 @@
 					"centro_custo_pep_id",
 				]
 
-        if(this.psp.motivo === 'outros'){
-          camposObrigatorio.push('outros_motivo')
-        }
+				if (this.psp.motivo === "outros") {
+					camposObrigatorio.push("outros_motivo")
+				}
 
-        if (this.$dayjs(this.psp.data_ida).diff(this.$dayjs(), "day") < 0) {
-          this.erros.push("data_ida")
-          this.textoErroDataIda = "Data de ida não pode ser inferior a data atual"
-        }
+				if (this.$dayjs(this.psp.data_ida).diff(this.$dayjs(), "day") < 0) {
+					this.erros.push("data_ida")
+					this.textoErroDataIda = "Data de ida não pode ser inferior a data atual"
+				}
 
-        if (this.$dayjs(this.psp.data_volta).isBefore(this.$dayjs(), "day")) {
-          this.textoErroDataVolta = "Data de volta não pode ser inferior a data atual"
-          this.erros.push("data_volta")
-        }else{
-          if(this.psp.data_ida) {
-            if (this.$dayjs(this.psp.data_volta).isBefore(this.$dayjs(this.psp.data_ida), "day")) {
-              this.erros.push("data_volta")
-              this.textoErroDataVolta = "Data de volta não pode ser inferior a data de ida"
-            }
-          }
-        }
+				if (this.$dayjs(this.psp.data_volta).isBefore(this.$dayjs(), "day")) {
+					this.textoErroDataVolta = "Data de volta não pode ser inferior a data atual"
+					this.erros.push("data_volta")
+				} else {
+					if (this.psp.data_ida) {
+						if (this.$dayjs(this.psp.data_volta).isBefore(this.$dayjs(this.psp.data_ida), "day")) {
+							this.erros.push("data_volta")
+							this.textoErroDataVolta = "Data de volta não pode ser inferior a data de ida"
+						}
+					}
+				}
 
 				for (let campo of camposObrigatorio) {
 					if (this.psp[`${campo}`] === null || this.psp[`${campo}`] === "") this.erros.push(campo)
 				}
-
 			},
 
 			async cadastrarPsp() {
@@ -703,58 +738,63 @@
 				if (psp.motivo === "Mobilização familiar") {
 					if (this.dependentes.length <= 0) {
 						this.erroSemDependente = true
-					}else{
-            dependentes = this.dependentes
-          }
-				}else{
-          this.erroSemDependente = false
-        }
+					} else {
+						dependentes = this.dependentes
+					}
+				} else {
+					this.erroSemDependente = false
+				}
 
 				if (this.erros.length === 0 && this.erroSemDependente === false) {
 					let resp = await this.$axios.$post("/psp/criar", { ...psp, usuario_id, dependentes })
 					if (!resp.falha) {
-            let pspEncontrada = resp.dados.psp
+						let pspEncontrada = resp.dados.psp
 
 						this.cadastrou = true
-            this.psp.id = pspEncontrada.id
+						this.psp.id = pspEncontrada.id
 						this.$emit("cadastrado", pspEncontrada)
 					}
 				}
 			},
 
-      async editarPsp(){
-        this.validarFormulario()
-        let psp = this.psp
-        let usuario_id = this.$auth.user.id
-        let dependentes = []
-        let psp_id = this.psp_id
-        let etapa_psp_id = this.psp.etapa_psp_id
+			async editarPsp() {
+				this.validarFormulario()
+				let psp = this.psp
+				let usuario_id = this.$auth.user.id
+				let dependentes = []
+				let psp_id = this.psp_id
+				let etapa_psp_id = this.psp.etapa_psp_id
 
-        if (psp.motivo === "Mobilização familiar") {
-          if (this.dependentes.length <= 0) {
-            this.erroSemDependente = true
-          } else {
-            dependentes = this.dependentes
-          }
-        } else {
-          this.erroSemDependente = false
-        }
+				if (psp.motivo === "Mobilização familiar") {
+					if (this.dependentes.length <= 0) {
+						this.erroSemDependente = true
+					} else {
+						dependentes = this.dependentes
+					}
+				} else {
+					this.erroSemDependente = false
+				}
 
-        if (this.erros.length === 0 && this.erroSemDependente === false) {
-          let resp = await this.$axios.$post("/psp/editar", { ...psp, usuario_id, dependentes, psp_id })
+				if (this.erros.length === 0 && this.erroSemDependente === false) {
+					let resp = await this.$axios.$post("/psp/editar", {
+						...psp,
+						usuario_id,
+						dependentes,
+						psp_id,
+					})
 
-          if (!resp.falha) {
-            let pspEncontrada = resp.dados.psp
-            let mudaEtapa = false
+					if (!resp.falha) {
+						let pspEncontrada = resp.dados.psp
+						let mudaEtapa = false
 
-            if(etapa_psp_id === 10){
-              mudaEtapa = true
-            }
+						if (etapa_psp_id === 10) {
+							mudaEtapa = true
+						}
 
-            this.$emit("editado", { psp: pspEncontrada , mudaEtapa})
-          }
-        }
-      },
+						this.$emit("editado", { psp: pspEncontrada, mudaEtapa })
+					}
+				}
+			},
 
 			validarDependente() {
 				this.errosDependentes = []
