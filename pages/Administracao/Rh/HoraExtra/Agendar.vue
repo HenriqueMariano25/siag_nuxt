@@ -2,9 +2,9 @@
 	<div class="w-full grow gap-y-2 flex flex-col">
 		<div class="flex flex-col p-1 bg-white gap-2 border border-gray-300 shadow print:hidden">
 			<div class="text-gray-600">
-				<span
-					>Selecione uma data abaixo e preencha todos os campos para realizar o agendamento:</span
-				>
+				<span>
+					Selecione uma data abaixo e preencha todos os campos para realizar o agendamento:
+				</span>
 			</div>
 			<div class="flex gap-2">
 				<div class="flex items-center">
@@ -41,7 +41,9 @@
 						</template>
 					</AppTooltip>
 				</div>
-				<div v-for="dia of diasPrAgendamento">
+				<div
+					v-for="dia of diasPrAgendamento"
+					:key="dia">
 					<AppTag
 						@click="buscarPorTagDia(dia.data)"
 						cor="text-black bg-gray-200 hover:bg-gray-300 border border-gray-300"
@@ -162,6 +164,38 @@
 			selecionar
 			@selecionados="funcionariosSelecionados = $event"
 			:overlay="agendamento.data === null || agendamento.data === ''">
+			<template v-slot:[`body.selecione`]="{ item }">
+				<AppTooltip
+					alinhamento="direita"
+					v-if="temCamposVazio(item)"
+					:id="item.id">
+					<template v-slot:corpo>
+						<div
+							class="w-6 h-6"
+							v-if="temCamposVazio(item)">
+							<img
+								src="@/assets/icons/information-circle-g.svg"
+								alt=""
+								class="w-6 h-6" />
+						</div>
+					</template>
+					<template v-slot:tooltip>
+						<div class="w-[500px] text-start text-md">
+							<span>
+								Para poder agendar esse colaborador é preciso preencher
+								<strong> Encarregado e Turno </strong>
+							</span>
+						</div>
+					</template>
+				</AppTooltip>
+				<div v-else>
+					<AppFormCheckbox
+						:id="'checkTabela' + parseInt(item.id)"
+						:disabled="item.ativo"
+						:valor="item"
+						v-model="funcionariosSelecionados" />
+				</div>
+			</template>
 			<template v-slot:[`overlay`]="{ item }">
 				<div class="text-white flex items-center justify-center h-full w-full text-3xl">
 					<div class="bg-gray-800 p-2 rounded bg-">
@@ -212,6 +246,21 @@
 					{{ horaExtra(item.hora_extra_projetada) }}
 				</span>
 			</template>
+			<template v-slot:[`body.tur.descricao`]="{ item }">
+				<span v-if="item['turno.descricao']">
+					{{ item["turno.descricao"] }}
+				</span>
+			</template>
+			<template v-slot:[`body.acoes`]="{ item }">
+				<div
+					class="w-6 h-6 hover:bg-gray-200 rounded"
+					@click="editarFuncionario(item)">
+					<img
+						src="@/assets/icons/edit-b.svg"
+						alt=""
+						class="w-6 h-6" />
+				</div>
+			</template>
 		</TabelaPadrao>
 		<div class="bg-red-500 flex">
 			<RodapePagina
@@ -247,7 +296,7 @@
 					</div>
 				</template>
 				<div class="flex w-full justify-between">
-					<div class="flex gap-2">
+					<div class="flex gap-2 items-center">
 						<AppBadge
 							cor="!bg-red-400"
 							corFonte="bg-white"
@@ -301,6 +350,14 @@
 			:liberado="podeAprovar()"
 			v-if="mostrarDialogAprovarHe"
 			@cancelar="mostrarDialogAprovarHe = false" />
+		<DialogEditarFuncionario
+			v-if="mostrarDialogEditarFuncionario"
+			@cancelar="
+				mostrarDialogEditarFuncionario = false
+				funcionario = null
+			"
+			:funcionario="funcionario"
+			@editado="editadoFuncionario" />
 	</div>
 </template>
 
@@ -318,11 +375,14 @@
 	import AppTag from "~/components/Ui/AppTag.vue"
 	import AppBadge from "~/components/Ui/AppBadge.vue"
 	import AppTooltip from "~/components/Ui/AppTooltip.vue"
+	import DialogEditarEfetivo from "~/components/Dialogs/Administracao/Rh/Efetivo/DialogEditarEfetivo.vue"
+	import DialogEditarFuncionario from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogEditarFuncionario.vue"
 
 	export default {
 		mixins: [horaExtra],
 		name: "HoraExtra",
 		components: {
+			DialogEditarFuncionario,
 			AppTooltip,
 			AppBadge,
 			AppTag,
@@ -354,10 +414,12 @@
 					{ nome: "Matrícula", valor: "chapa", filtro: true, centralizar: true },
 					{ nome: "Nome", valor: "nome", filtro: true, colunaTabela: "fun.nome" },
 					{ nome: "Cargo", valor: "cargo", filtro: true },
-					{ nome: "Encar./Lider SAPO", valor: "fun.encarregado_sapo", filtro: true },
+					// { nome: "Encar./Lider SAPO", valor: "fun.encarregado_sapo", filtro: true },
 					{ nome: "Encarregado/Lider", valor: "encar.nome", filtro: true },
 					{ nome: "Rota", valor: "rota" },
 					{ nome: "Ponto de embarque", valor: "ponto_embarque", filtro: true },
+					{ nome: "Turno", valor: "turno.descricao", filtro: true },
+					{ nome: "", valor: "acoes", filtro: true },
 				],
 				dados: [],
 				filtros: [],
@@ -379,6 +441,8 @@
 				mostrarSelecionados: false,
 				limparSelecionar: false,
 				agendamentosPorDia: {},
+				mostrarDialogEditarFuncionario: false,
+				funcionario: null,
 			}
 		},
 		computed: {
@@ -406,7 +470,7 @@
 					.hour(horaInicio.split(":")[0])
 					.minute(horaInicio.split(":")[1])
 				let diaHoraFim = hoje.day(diaFim).hour(horaFim.split(":")[0]).minute(horaFim.split(":")[1])
-        return hoje.isBetween(diaHoraInicio, diaHoraFim, null, "[]")
+				return hoje.isBetween(diaHoraInicio, diaHoraFim, null, "[]")
 			},
 
 			horarioAgendamento() {
@@ -428,37 +492,71 @@
 			},
 		},
 		async mounted() {
-      await this.buscarDiasPrAgendamento()
-      await this.buscarConfiguracao()
-      await this.buscarFuncionarios()
+			await this.buscarDiasPrAgendamento()
+			await this.buscarConfiguracao()
+			await this.buscarFuncionarios()
 			await this.podeAprovar()
 		},
 
 		methods: {
+			editarFuncionario(item) {
+				this.funcionario = item
+				this.mostrarDialogEditarFuncionario = true
+			},
+
+			editadoFuncionario({ id, encarregadoLider, turno }) {
+				let idx = this.dados.findIndex((o) => o.id === id)
+
+				if (idx >= 0) {
+					this.dados[idx]["turno.descricao"] = turno
+					this.dados[idx]["encarregado_lider.nome"] = encarregadoLider
+					this.dados[idx].ativo = false
+				}
+
+				this.textoAlerta = "Funcionário editado com sucesso!"
+				this.mostrarAlerta = true
+				this.mostrarDialogEditarFuncionario = false
+			},
+
+			temCamposVazio(item) {
+				let campos = ["encarregado_lider.nome", "turno.descricao"]
+
+				if (campos.some((o) => item[o] === null)) {
+					item["ativo"] = true
+					return true
+				}
+
+				return false
+			},
+
 			podeAprovar() {
-				console.log("pode aprovar")
-				console.log(this.$auth.user)
 				let {
 					data_liberacao_aprovacao,
 					hora_inicio_liberacao_aprovacao,
 					hora_fim_liberacao_aprovacao,
 				} = this.$auth.user
 
-        if(this.$dayjs().format("YYYY-MM-DD") === data_liberacao_aprovacao){
-          let diaLiberacao = this.$dayjs(data_liberacao_aprovacao).get("date")
-          let inicioIntLiberacao = this.$dayjs().date(diaLiberacao).hour(hora_inicio_liberacao_aprovacao.split(":")[0]).minute(hora_inicio_liberacao_aprovacao.split(":")[1])
+				if (this.$dayjs().format("YYYY-MM-DD") === data_liberacao_aprovacao) {
+					let diaLiberacao = this.$dayjs(data_liberacao_aprovacao).get("date")
+					let inicioIntLiberacao = this.$dayjs()
+						.date(diaLiberacao)
+						.hour(hora_inicio_liberacao_aprovacao.split(":")[0])
+						.minute(hora_inicio_liberacao_aprovacao.split(":")[1])
 
-          let fimIntLiberacao = this.$dayjs().date(diaLiberacao).hour(hora_fim_liberacao_aprovacao.split(":")[0]).minute(hora_fim_liberacao_aprovacao.split(":")[1])
+					let fimIntLiberacao = this.$dayjs()
+						.date(diaLiberacao)
+						.hour(hora_fim_liberacao_aprovacao.split(":")[0])
+						.minute(hora_fim_liberacao_aprovacao.split(":")[1])
 
-          let estaEntre = this.$dayjs().isBetween(inicioIntLiberacao, fimIntLiberacao, null, "[]")
-          if(estaEntre){
-            return true
-          }else{
-            return this.estaNoIntevaloAprovacao
-          }
-        }else{
-          return this.estaNoIntevaloAprovacao
-        }
+					let estaEntre = this.$dayjs().isBetween(inicioIntLiberacao, fimIntLiberacao, null, "[]")
+					if (estaEntre) {
+						return true
+					} else {
+						return this.estaNoIntevaloAprovacao
+					}
+				} else {
+					return this.estaNoIntevaloAprovacao
+				}
 			},
 
 			verificaSeAberto() {
