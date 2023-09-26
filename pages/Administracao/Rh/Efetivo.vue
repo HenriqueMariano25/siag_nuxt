@@ -8,9 +8,9 @@
 				@pagina="pagina = $event"
 				@ordem="ordem = $event"
 				:itensPorPagina="itensPorPagina"
-        @itensPorPagina="itensPorPagina = $event"
+				@itensPorPagina="itensPorPagina = $event"
 				:pagina="pagina"
-        :dados-redis="true"
+				:dados-redis="true"
 				:totalItens="totalItens"
 				:carregando="carregando"
 				@atualizar="buscarEfetivo"
@@ -121,18 +121,21 @@
 				<template v-slot>
 					<div class="flex items-center justify-between w-full">
 						<div class="flex gap-2">
-
-              <vue-blob-json-csv
-                file-type="json"
-                file-name="efetivo"
-                :data="dadosJson"
-                v-if="$auth.user.permissoes.includes('exportar_efetivo_json')"
-              >
-                <button class="bg-white flex rounded-sm px-2 items-center py-2 gap-1.5" @click="dadosExportarJson()">
-                  <img src="@/assets/icons/json-b.svg" alt="" class="w-7 h-7">
-                  <span>EXPORTAR JSON</span>
-                </button>
-              </vue-blob-json-csv>
+							<vue-blob-json-csv
+								file-type="json"
+								file-name="efetivo"
+								:data="dadosJson"
+								v-if="$auth.user.permissoes.includes('exportar_efetivo_json')">
+								<button
+									class="bg-white flex rounded-sm px-2 items-center py-2 gap-1.5"
+									@click="dadosExportarJson()">
+									<img
+										src="@/assets/icons/json-b.svg"
+										alt=""
+										class="w-7 h-7" />
+									<span>EXPORTAR JSON</span>
+								</button>
+							</vue-blob-json-csv>
 							<BotaoPadrao
 								:texto="gerandoExcel === true ? 'Gerando...' : 'Gerar EXCEL'"
 								@clique="gerarExcel"
@@ -144,21 +147,30 @@
 							</BotaoPadrao>
 						</div>
 						<div class="flex gap-2">
-              <BotaoPadrao
-                @clique="mostrarDialogAtualizarHe = true"
-                v-if="$auth.user.permissoes.includes('atualizar_he_efetivo')"
-                texto="importar he">
-                <img
-                  src="@/assets/icons/upload-b.svg"
-                  alt=""
-                  class="w-7 h-7" />
-              </BotaoPadrao>
+							<BotaoPadrao
+								@clique="mostrarDialogAtualizarHe = true"
+								v-if="$auth.user.permissoes.includes('atualizar_he_efetivo')"
+								texto="importar he">
+								<img
+									src="@/assets/icons/upload-b.svg"
+									alt=""
+									class="w-7 h-7" />
+							</BotaoPadrao>
 							<BotaoPadrao
 								@clique="mostrarDialogEditarEfetivo = true"
 								texto="editar"
 								:disabled="funcSelecionados.length === 0">
 								<img
 									src="@/assets/icons/edit-b.svg"
+									alt=""
+									class="w-7 h-7" />
+							</BotaoPadrao>
+							<BotaoPadrao
+								@clique="mostrarDialogCadastrarFuncionario = true"
+								v-if="$auth.user.permissoes.includes('efetivo_cadastrar_funcionario')"
+								texto="cadastrar">
+								<img
+									src="@/assets/icons/add-b.svg"
 									alt=""
 									class="w-7 h-7" />
 							</BotaoPadrao>
@@ -173,11 +185,18 @@
 				@rotaEditada="rotaEditada"
 				@equipePlanEditada="equipePlanEditada"
 				@editado="funcionarioEditado" />
-      <DialogAtualizarHe v-if="mostrarDialogAtualizarHe" @cancelar="mostrarDialogAtualizarHe = false" @atualizado="atualizadoHe"/>
+			<DialogAtualizarHe
+				v-if="mostrarDialogAtualizarHe"
+				@cancelar="mostrarDialogAtualizarHe = false"
+				@atualizado="atualizadoHe" />
 			<DialogHistoricoMudanca
 				:funcionario_id="funcionario_id"
 				v-if="mostrarDialogHistoricoMudanca"
 				@cancelar="mostrarDialogHistoricoMudanca = false" />
+			<DialogCadastrarFuncionario
+				@cadastrado="funcionarioCadastrado"
+				v-if="mostrarDialogCadastrarFuncionario"
+				@cancelar="mostrarDialogCadastrarFuncionario = false" />
 			<AppAlerta
 				tipo="sucesso"
 				:mostrar="mostrarAlerta"
@@ -192,7 +211,6 @@
 	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
 	import RodapePagina from "~/components/Shared/RodapePagina.vue"
 	import BotaoExcel from "~/components/Ui/Buttons/BotaoExcel.vue"
-
 	import gerarExcel from "~/functions/gerarExcel"
 	import { horaExtra } from "@/mixins/horaExtra"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
@@ -200,13 +218,14 @@
 	import DialogHistoricoMudanca from "~/components/Dialogs/Administracao/Rh/Efetivo/DialogHistoricoMudanca.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import AppFormSwitch from "~/components/Ui/AppFormSwitch.vue"
-  import DialogAtualizarHe from "~/components/Dialogs/Administracao/Rh/Efetivo/DialogAtualizarHe.vue";
+	import DialogAtualizarHe from "~/components/Dialogs/Administracao/Rh/Efetivo/DialogAtualizarHe.vue"
+	import DialogCadastrarFuncionario from "~/components/Dialogs/Administracao/Rh/Efetivo/DialogCadastrarFuncionario.vue"
 
 	export default {
 		name: "index",
 		mixins: [horaExtra],
 		components: {
-      DialogAtualizarHe,
+			DialogAtualizarHe,
 			AppFormSwitch,
 			AppAlerta,
 			DialogHistoricoMudanca,
@@ -215,6 +234,7 @@
 			TabelaPadrao,
 			RodapePagina,
 			BotaoExcel,
+			DialogCadastrarFuncionario,
 		},
 		data() {
 			return {
@@ -234,9 +254,10 @@
 				carregando: false,
 				rotas: [],
 				gerandoExcel: false,
-        responsaveis: [],
-        dadosJson: [],
-        mostrarDialogAtualizarHe: false
+				responsaveis: [],
+				dadosJson: [],
+				mostrarDialogAtualizarHe: false,
+				mostrarDialogCadastrarFuncionario: false,
 			}
 		},
 		computed: {
@@ -256,72 +277,91 @@
 					{ nome: "Disciplina", valor: "Disciplina.descricao", filtro: true },
 					{ nome: "Sub Disciplina", valor: "SubDisciplina.descricao", filtro: true },
 					{ nome: "Setor", valor: "setor.nome", filtro: true },
-					{ nome: "Encarregado/Lider", valor: "EncarregadoLider.id", filtro: true,
-           mostrarVazio: true,
-            opcoes:
-              this.responsaveis.length > 0
-                ? Array.from(
-                  new Set(
-                    this.responsaveis
-                      .map((item) => {
-                        return { id: item.id, texto: item.nome }
-                      }),
-                  ),
-                )
-                : [], },
-					{ nome: "Supervisor", valor: "Supervisor.id", filtro: true, mostrarVazio: true,
-            opcoes:
-              this.responsaveis.length > 0
-                ? Array.from(
-                  new Set(
-                    this.responsaveis
-                      .map((item) => {
-                        return { id: item.id, texto: item.nome }
-                      }),
-                  ),
-                )
-                : [], },
-					{ nome: "Engenheiro", valor: "Engenheiro.id", filtro: true, mostrarVazio: true,
-            opcoes:
-              this.responsaveis.length > 0
-                ? Array.from(
-                  new Set(
-                    this.responsaveis
-                      .map((item) => {
-                        return { id: item.id, texto: item.nome }
-                      }),
-                  ),
-                )
-                : [], },
-					{ nome: "Coordenador", valor: "Coordenador.id", filtro: true, mostrarVazio: true,
-            opcoes:
-              this.responsaveis.length > 0
-                ? Array.from(
-                  new Set(
-                    this.responsaveis
-                      .map((item) => {
-                        return { id: item.id, texto: item.nome }
-                      }),
-                  ),
-                )
-                : [], },
-					{ nome: "Gestor", valor: "Gestor.id", filtro: true, mostrarVazio: true,
-            opcoes:
-              this.responsaveis.length > 0
-                ? Array.from(
-                  new Set(
-                    this.responsaveis
-                      .map((item) => {
-                        return { id: item.id, texto: item.nome }
-                      }),
-                  ),
-                )
-                : [], },
+					{
+						nome: "Encarregado/Lider",
+						valor: "EncarregadoLider.id",
+						filtro: true,
+						mostrarVazio: true,
+						opcoes:
+							this.responsaveis.length > 0
+								? Array.from(
+										new Set(
+											this.responsaveis.map((item) => {
+												return { id: item.id, texto: item.nome }
+											}),
+										),
+								  )
+								: [],
+					},
+					{
+						nome: "Supervisor",
+						valor: "Supervisor.id",
+						filtro: true,
+						mostrarVazio: true,
+						opcoes:
+							this.responsaveis.length > 0
+								? Array.from(
+										new Set(
+											this.responsaveis.map((item) => {
+												return { id: item.id, texto: item.nome }
+											}),
+										),
+								  )
+								: [],
+					},
+					{
+						nome: "Engenheiro",
+						valor: "Engenheiro.id",
+						filtro: true,
+						mostrarVazio: true,
+						opcoes:
+							this.responsaveis.length > 0
+								? Array.from(
+										new Set(
+											this.responsaveis.map((item) => {
+												return { id: item.id, texto: item.nome }
+											}),
+										),
+								  )
+								: [],
+					},
+					{
+						nome: "Coordenador",
+						valor: "Coordenador.id",
+						filtro: true,
+						mostrarVazio: true,
+						opcoes:
+							this.responsaveis.length > 0
+								? Array.from(
+										new Set(
+											this.responsaveis.map((item) => {
+												return { id: item.id, texto: item.nome }
+											}),
+										),
+								  )
+								: [],
+					},
+					{
+						nome: "Gestor",
+						valor: "Gestor.id",
+						filtro: true,
+						mostrarVazio: true,
+						opcoes:
+							this.responsaveis.length > 0
+								? Array.from(
+										new Set(
+											this.responsaveis.map((item) => {
+												return { id: item.id, texto: item.nome }
+											}),
+										),
+								  )
+								: [],
+					},
 					{
 						nome: "Rota",
 						valor: "rota.id",
 						filtro: true,
-            mostrarVazio: true,
+						mostrarVazio: true,
 						opcoes:
 							this.rotas.length > 0
 								? Array.from(
@@ -353,22 +393,22 @@
 			},
 		},
 		async mounted() {
-      await this.buscarRotas()
+			await this.buscarRotas()
 			await this.buscarEfetivo()
-      await this.buscarResponsaveis()
+			await this.buscarResponsaveis()
 		},
 		methods: {
-      async buscarResponsaveis() {
-        let resp = await this.$axios.$get("/efetivo/buscar_responsaveis")
+			async buscarResponsaveis() {
+				let resp = await this.$axios.$get("/efetivo/buscar_responsaveis")
 
-        if (!resp.falha) {
-          let responsaveis = resp.dados.responsaveis
+				if (!resp.falha) {
+					let responsaveis = resp.dados.responsaveis
 
-          this.responsaveis = responsaveis.map((o) => {
-            return { id: o.id, nome: o.nome }
-          })
-        }
-      },
+					this.responsaveis = responsaveis.map((o) => {
+						return { id: o.id, nome: o.nome }
+					})
+				}
+			},
 
 			async buscarRotas() {
 				let resp = await this.$axios.$get("/efetivo/buscar/rotas")
@@ -415,7 +455,7 @@
 			},
 
 			async funcionarioEditado() {
-        await this.buscarEfetivo()
+				await this.buscarEfetivo()
 				this.mostrarDialogEditarEfetivo = false
 				this.mostrarAlerta = true
 				this.funcSelecionados = []
@@ -423,14 +463,14 @@
 			},
 
 			async rotaEditada() {
-        await this.buscarEfetivo()
+				await this.buscarEfetivo()
 				this.mostrarDialogEditarEfetivo = false
 				this.mostrarAlerta = true
 				this.textoAlerta = "Rotas dos funcinários editadas com sucesso!"
 			},
 
 			async equipePlanEditada() {
-        await this.buscarEfetivo()
+				await this.buscarEfetivo()
 				this.mostrarDialogEditarEfetivo = false
 				this.mostrarAlerta = true
 				this.textoAlerta = "Equipe planejamento editadas com sucesso!"
@@ -502,40 +542,50 @@
 				gerarExcel(cabecalho, itens, nomeArquivo)
 			},
 
-      dadosExportarJson() {
-        let dados = this.dados.map((funcionario) => {
-          let id_cargo = funcionario.id_cargo
-          if (funcionario.id_cargo) {
-            if (/^[a-zA-Z]+$/.test(funcionario.id_cargo.charAt(0))) {
-              id_cargo = '9' + id_cargo.slice(1)
-            }
-          }
-          console.log(funcionario.id_cargo)
+			dadosExportarJson() {
+				let dados = this.dados.map((funcionario) => {
+					let id_cargo = funcionario.id_cargo
+					if (funcionario.id_cargo) {
+						if (/^[a-zA-Z]+$/.test(funcionario.id_cargo.charAt(0))) {
+							id_cargo = "9" + id_cargo.slice(1)
+						}
+					}
 
-          return {
-            'CPF': parseInt(funcionario.cpf),
-            'NOME': funcionario.nome,
-            'MATRICULA': parseInt(funcionario.chapa),
-            'FUNCAO_NOME': funcionario.cargo,
-            'FUNCAO_ID': id_cargo,
-            'EQUIPE_NOME': funcionario.EncarregadoLider ? funcionario.EncarregadoLider.nome : null,
-            'EQUIPE_ID': parseInt(funcionario.encarregado_lider_id),
-            'DATA_ADMISSAO': funcionario.data_admissao ? this.$dayjs(funcionario.data_admissao).format("YYYY-MM-DD") : "",
-            'DATA_DEMISSAO': funcionario.data_demissao ? this.$dayjs(funcionario.data_demissao).format("YYYY-MM-DD") : "",
-            'ATIVO': funcionario.data_demissao === null ? true : false,
-            'CREATED_AT': this.$dayjs(funcionario.createdAt).format("YYYY-MM-DD HH:mm:ss"),
-            'UPDATED_AT': this.$dayjs(funcionario.updatedAt).format("YYYY-MM-DD HH:mm:ss"),
-          }
-        });
+					return {
+						CPF: parseInt(funcionario.cpf),
+						NOME: funcionario.nome,
+						MATRICULA: parseInt(funcionario.chapa),
+						FUNCAO_NOME: funcionario.cargo,
+						FUNCAO_ID: id_cargo,
+						EQUIPE_NOME: funcionario.EncarregadoLider ? funcionario.EncarregadoLider.nome : null,
+						EQUIPE_ID: parseInt(funcionario.encarregado_lider_id),
+						DATA_ADMISSAO: funcionario.data_admissao
+							? this.$dayjs(funcionario.data_admissao).format("YYYY-MM-DD")
+							: "",
+						DATA_DEMISSAO: funcionario.data_demissao
+							? this.$dayjs(funcionario.data_demissao).format("YYYY-MM-DD")
+							: "",
+						ATIVO: funcionario.data_demissao === null ? true : false,
+						CREATED_AT: this.$dayjs(funcionario.createdAt).format("YYYY-MM-DD HH:mm:ss"),
+						UPDATED_AT: this.$dayjs(funcionario.updatedAt).format("YYYY-MM-DD HH:mm:ss"),
+					}
+				})
 
-        this.dadosJson = dados
-      },
+				this.dadosJson = dados
+			},
 
-      async atualizadoHe(){
-        this.mostrarDialogAtualizarHe = false
-        this.textoAlerta = "Atualização de Hora Extra realizada com sucesso!"
-        this.mostrarAlerta = true
-      }
+			async atualizadoHe() {
+				this.mostrarDialogAtualizarHe = false
+				this.textoAlerta = "Atualização de Hora Extra realizada com sucesso!"
+				this.mostrarAlerta = true
+			},
+
+			funcionarioCadastrado() {
+				this.mostrarDialogCadastrarFuncionario = false
+				this.textoAlerta = "Funcionário cadastrado manualmente com sucesso!"
+				this.mostrarAlerta = true
+				this.buscarEfetivo()
+			},
 		},
 		watch: {
 			mostrarDemitidos(valor) {

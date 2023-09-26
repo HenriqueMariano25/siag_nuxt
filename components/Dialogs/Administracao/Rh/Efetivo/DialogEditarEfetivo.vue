@@ -96,53 +96,52 @@
 										</span>
 									</div>
 									<div class="grid grid-cols-3 p-1 gap-2">
-                    <AppFormSelectCompleto
-                      obrigatorio
-                      id="disciplina"
-                      label="Disciplina"
-                      :options="disciplinas"
-                      v-model="campos.disciplina_id"
-                      :invalido="erros.includes('disciplina_id')" />
-                    <AppFormSelectCompleto
-                      obrigatorio
-                      id="subDisciplina"
-                      label="Sub Disciplina"
-                      :options="subDisciplinas"
-                      :disabled="!campos.disciplina_id"
-                      dica="Para habilitar esse campo, primeiro selecione uma Disciplina."
-                      v-model="campos.sub_disciplina_id"
-                      :invalido="erros.includes('sub_disciplina_id')" />
+										<AppFormSelectCompleto
+											obrigatorio
+											id="disciplina"
+											label="Disciplina"
+											:options="disciplinas"
+											v-model="campos.disciplina_id"
+											:invalido="erros.includes('disciplina_id')" />
+										<AppFormSelectCompleto
+											obrigatorio
+											id="subDisciplina"
+											label="Sub Disciplina"
+											:options="subDisciplinas"
+											:disabled="!campos.disciplina_id"
+											dica="Para habilitar esse campo, primeiro selecione uma Disciplina."
+											v-model="campos.sub_disciplina_id"
+											:invalido="erros.includes('sub_disciplina_id')" />
 										<AppFormSelectCompleto
 											obrigatorio
 											id="setor"
 											label="Setor"
 											:options="setores"
-                      :disabled="!campos.disciplina_id"
+											:disabled="!campos.disciplina_id"
 											readonly
 											v-model="campos.setor_id"
 											:invalido="erros.includes('setor_id')" />
 										<AppFormSelect
 											label="Turno"
 											:options="turnos"
-                      obrigatorio
+											obrigatorio
 											v-model="campos.turno_id"
 											id="turno"
 											:invalido="erros.includes('turno_id')" />
 										<AppFormSelect
 											label="Jornada de trabalho"
-                      obrigatorio
+											obrigatorio
 											:options="jornadasTrabalho"
 											v-model="campos.jornada_trabalho_id"
 											id="jornadaTrabalho"
 											:invalido="erros.includes('jornada_trabalho_id')" />
-                    <AppFormSelect
-                      id="permanencia"
-                      label="Permanência"
-                      :options="tiposPermanencia"
-                      v-model="campos.permanencia"
-                      obrigatorio
-                      :invalido="erros.includes('permanencia')" />
-
+										<AppFormSelect
+											id="permanencia"
+											label="Permanência"
+											:options="tiposPermanencia"
+											v-model="campos.permanencia"
+											obrigatorio
+											:invalido="erros.includes('permanencia')" />
 									</div>
 								</div>
 							</div>
@@ -173,19 +172,19 @@
 								</div>
 							</div>
 						</template>
-            <template v-slot:[`tab.planejamento`]="{ item }">
-              <div class="flex flex-col gap-2">
-                <div class="grid grid-cols-2 gap-2">
-                  <AppFormSelectCompleto
-                    obrigatorio
-                    id="equipePlanejamento"
-                    label="Equipe Planejamento"
-                    :options="equipesPlanejamento"
-                    v-model="planejamento.equipe_planejamento_id"
-                    :invalido="erros.includes('equipe_planejamento_id')" />
-                </div>
-              </div>
-            </template>
+						<template v-slot:[`tab.planejamento`]="{ item }">
+							<div class="flex flex-col gap-2">
+								<div class="grid grid-cols-2 gap-2">
+									<AppFormSelectCompleto
+										obrigatorio
+										id="equipePlanejamento"
+										label="Equipe Planejamento"
+										:options="equipesPlanejamento"
+										v-model="planejamento.equipe_planejamento_id"
+										:invalido="erros.includes('equipe_planejamento_id')" />
+								</div>
+							</div>
+						</template>
 					</AppTabs>
 					<!--          {{ funcionarios}}-->
 				</div>
@@ -193,7 +192,13 @@
 			<template v-slot:rodape-btn-direito>
 				<BotaoPadrao
 					texto="Salvar"
-					@clique="tab === 'transporte' ? editarRota() : tab === 'planejamento' ? editarPlanejamento() :  editarFuncionarios()">
+					@clique="
+						tab === 'transporte'
+							? editarRota()
+							: tab === 'planejamento'
+							? editarPlanejamento()
+							: editarFuncionarios()
+					">
 					<img
 						src="@/assets/icons/save-b.svg"
 						alt=""
@@ -254,10 +259,10 @@
 					ponto_embarque: null,
 					poltrona: null,
 				},
-        planejamento:{
-          permanencia: null,
-          equipe_planejamento_id: null,
-        },
+				planejamento: {
+					permanencia: null,
+					equipe_planejamento_id: null,
+				},
 				responsaveis: [],
 				erros: [],
 				disciplinas: [],
@@ -271,31 +276,28 @@
 				buscouRotas: false,
 				rotasOriginais: [],
 				carregando: false,
-        tiposPermanencia: [
-          { id: 'permanência', nome: "Permanência"},
-          { id: 'produtivo', nome: "Produtivo"},
-        ]
+				tiposPermanencia: [
+					{ id: "permanência", nome: "Permanência" },
+					{ id: "produtivo", nome: "Produtivo" },
+				],
 			}
 		},
 
-    computed: {
-      tabs() {
+		computed: {
+			tabs() {
+				let tabs = [{ nome: "Inf. Principais", valor: "informacoes" }]
 
-       let tabs =   [
-          { nome: "Inf. Principais", valor: "informacoes" },
-        ]
+				if (this.$auth.user.permissoes.includes("efetivo_transporte"))
+					tabs.push({ nome: "Transporte", valor: "transporte" })
 
-        if(this.$auth.user.permissoes.includes("efetivo_transporte"))
-          tabs.push({ nome: "Transporte", valor: "transporte" })
+				if (this.$auth.user.permissoes.includes("efetivo_planejamento"))
+					tabs.push({ nome: "Planejamento", valor: "planejamento" })
 
-        if (this.$auth.user.permissoes.includes("efetivo_planejamento"))
-          tabs.push({ nome: "Planejamento", valor: "planejamento" })
-
-        return tabs
-      },
-    },
+				return tabs
+			},
+		},
 		async mounted() {
-      await this.buscarResponsaveis()
+			await this.buscarResponsaveis()
 			await this.buscarDisciplinas()
 			// await this.buscarSubDisciplinas()
 			await this.buscarEquipesPlanejamento()
@@ -303,82 +305,88 @@
 			await this.buscarJornadaTrabalho()
 
 			let setores = await this.buscarSetores()
-      this.setores = setores.map((o) => {
+			this.setores = setores.map((o) => {
 				return { id: o.id, nome: o.nome }
 			})
 
-      if (this.funcionarios.length === 1) {
+			if (this.funcionarios.length === 1) {
+				this.carregando = true
+				let funcionario = Object.assign({}, this.funcionarios[0])
 
-        this.carregando = true
-        let funcionario = Object.assign({}, this.funcionarios[0])
+				this.campos.disciplina_id = funcionario.disciplina_id
+				this.campos.encarregado_lider_id = funcionario.encarregado_lider_id
+				this.campos.supervisor_id = funcionario.supervisor_id
+				this.campos.coordenador_id = funcionario.coordenador_id
+				this.campos.engenheiro_id = funcionario.engenheiro_id
+				this.campos.gestor_id = funcionario.gestor_id
+				this.campos.sub_disciplina_id = funcionario.sub_disciplina_id
+				this.campos.turno_id = funcionario.turno_id
+				this.campos.jornada_trabalho_id = funcionario.jornada_trabalho_id
+				this.campos.setor_id = funcionario.setor ? funcionario.setor.id : null
+				this.campos.permanencia = funcionario.permanencia ? funcionario.permanencia : null
 
-        this.campos.disciplina_id = funcionario.disciplina_id
-        this.campos.encarregado_lider_id = funcionario.encarregado_lider_id
-        this.campos.supervisor_id = funcionario.supervisor_id
-        this.campos.coordenador_id = funcionario.coordenador_id
-        this.campos.engenheiro_id = funcionario.engenheiro_id
-        this.campos.gestor_id = funcionario.gestor_id
-        this.campos.sub_disciplina_id = funcionario.sub_disciplina_id
-        this.campos.turno_id = funcionario.turno_id
-        this.campos.jornada_trabalho_id = funcionario.jornada_trabalho_id
-        this.campos.setor_id = funcionario.setor ? funcionario.setor.id : null
-        this.campos.permanencia = funcionario.permanencia ? funcionario.permanencia : null
+				this.transporte.rota_id = funcionario.rota ? funcionario.rota.id : null
+				this.transporte.poltrona = funcionario.poltrona ? funcionario.poltrona : null
+				this.transporte.ponto_embarque = funcionario.ponto_embarque
+					? funcionario.ponto_embarque
+					: null
 
-        this.transporte.rota_id = funcionario.rota ? funcionario.rota.id : null
-        this.transporte.poltrona = funcionario.poltrona ? funcionario.poltrona : null
-        this.transporte.ponto_embarque = funcionario.ponto_embarque
-          ? funcionario.ponto_embarque
-          : null
+				this.planejamento.equipe_planejamento_id = funcionario.equipe_planejamento_id
+					? funcionario.equipe_planejamento_id
+					: null
+			} else {
+				if ([...new Set(this.funcionarios.map((o) => o.disciplina_id))].length === 1) {
+					this.campos.disciplina_id = this.funcionarios[0].disciplina_id
+				}
 
-        this.planejamento.equipe_planejamento_id = funcionario.equipe_planejamento_id ? funcionario.equipe_planejamento_id : null
-      } else {
-        if ([...new Set(this.funcionarios.map(o => o.disciplina_id))].length === 1) {
-          this.campos.disciplina_id = this.funcionarios[0].disciplina_id
-        }
+				if ([...new Set(this.funcionarios.map((o) => o.encarregado_lider_id))].length === 1) {
+					this.campos.encarregado_lider_id = this.funcionarios[0].encarregado_lider_id
+				}
 
-        if ([...new Set(this.funcionarios.map(o => o.encarregado_lider_id))].length === 1) {
-          this.campos.encarregado_lider_id = this.funcionarios[0].encarregado_lider_id
-        }
+				if ([...new Set(this.funcionarios.map((o) => o.supervisor_id))].length === 1) {
+					this.campos.supervisor_id = this.funcionarios[0].supervisor_id
+				}
 
-        if ([...new Set(this.funcionarios.map(o => o.supervisor_id))].length === 1) {
-          this.campos.supervisor_id = this.funcionarios[0].supervisor_id
-        }
+				if ([...new Set(this.funcionarios.map((o) => o.coordenador_id))].length === 1) {
+					this.campos.coordenador_id = this.funcionarios[0].coordenador_id
+				}
 
-        if ([...new Set(this.funcionarios.map(o => o.coordenador_id))].length === 1) {
-          this.campos.coordenador_id = this.funcionarios[0].coordenador_id
-        }
+				if ([...new Set(this.funcionarios.map((o) => o.engenheiro_id))].length === 1) {
+					this.campos.engenheiro_id = this.funcionarios[0].engenheiro_id
+				}
 
-        if ([...new Set(this.funcionarios.map(o => o.engenheiro_id))].length === 1) {
-          this.campos.engenheiro_id = this.funcionarios[0].engenheiro_id
-        }
+				if ([...new Set(this.funcionarios.map((o) => o.gestor_id))].length === 1) {
+					this.campos.gestor_id = this.funcionarios[0].gestor_id
+				}
 
-        if ([...new Set(this.funcionarios.map(o => o.gestor_id))].length === 1) {
-          this.campos.gestor_id = this.funcionarios[0].gestor_id
-        }
+				if ([...new Set(this.funcionarios.map((o) => o.sub_disciplina_id))].length === 1) {
+					this.campos.sub_disciplina_id = this.funcionarios[0].sub_disciplina_id
+				}
 
-        if ([...new Set(this.funcionarios.map(o => o.sub_disciplina_id))].length === 1) {
-          this.campos.sub_disciplina_id = this.funcionarios[0].sub_disciplina_id
-        }
+				if ([...new Set(this.funcionarios.map((o) => o.equipe_planejamento_id))].length === 1) {
+					this.campos.equipe_planejamento_id = this.funcionarios[0].equipe_planejamento_id
+				}
 
-        if ([...new Set(this.funcionarios.map(o => o.equipe_planejamento_id))].length === 1) {
-          this.campos.equipe_planejamento_id = this.funcionarios[0].equipe_planejamento_id
-        }
+				if ([...new Set(this.funcionarios.map((o) => o.turno_id))].length === 1) {
+					this.campos.turno_id = this.funcionarios[0].turno_id
+				}
 
-        if ([...new Set(this.funcionarios.map(o => o.turno_id))].length === 1) {
-          this.campos.turno_id = this.funcionarios[0].turno_id
-        }
+				if ([...new Set(this.funcionarios.map((o) => o.jornada_trabalho_id))].length === 1) {
+					this.campos.jornada_trabalho_id = this.funcionarios[0].jornada_trabalho_id
+				}
 
-        if ([...new Set(this.funcionarios.map(o => o.jornada_trabalho_id))].length === 1) {
-          this.campos.jornada_trabalho_id = this.funcionarios[0].jornada_trabalho_id
-        }
-
-        if ([...new Set(this.funcionarios.map(o => {
-          return o.setor ? o.setor.id : null
-        }))].length === 1) {
-          this.campos.setor_id = this.funcionarios[0].setor ? this.funcionarios[0].setor.id : null
-        }
-
-      }
+				if (
+					[
+						...new Set(
+							this.funcionarios.map((o) => {
+								return o.setor ? o.setor.id : null
+							}),
+						),
+					].length === 1
+				) {
+					this.campos.setor_id = this.funcionarios[0].setor ? this.funcionarios[0].setor.id : null
+				}
+			}
 			this.carregando = false
 		},
 		methods: {
@@ -391,7 +399,7 @@
 				if (!resp.falha) {
 					let responsaveis = resp.dados.responsaveis
 
-          this.responsaveis = responsaveis.map((o) => {
+					this.responsaveis = responsaveis.map((o) => {
 						return { id: o.id, nome: o.nome }
 					})
 				}
@@ -401,7 +409,7 @@
 				await this.buscarDisciplina()
 				let disciplinas = this.$store.state.disciplina.disciplinas
 
-        this.disciplinas = disciplinas.map((o) => {
+				this.disciplinas = disciplinas.map((o) => {
 					return {
 						id: o.id,
 						nome: `${o.sigla} - ${o.descricao}`,
@@ -412,11 +420,11 @@
 			},
 
 			async buscarSubDisciplinas() {
-        let disciplina_id = this.campos.disciplina_id
+				let disciplina_id = this.campos.disciplina_id
 
-				await this.buscarSubDisciplina(true,{ disciplina_id })
+				await this.buscarSubDisciplina(true, { disciplina_id })
 				let subDisciplinas = this.$store.state.subDisciplina.subDisciplinas
-        this.subDisciplinas = subDisciplinas.map((o) => {
+				this.subDisciplinas = subDisciplinas.map((o) => {
 					return { id: o.id, nome: o.descricao }
 				})
 			},
@@ -424,7 +432,7 @@
 			async buscarEquipesPlanejamento() {
 				await this.buscarEquipePlanejamento()
 				let equipesPlanejamento = this.$store.state.equipePlanejamento.equipesPlanejamento
-        this.equipesPlanejamento = equipesPlanejamento.map((o) => {
+				this.equipesPlanejamento = equipesPlanejamento.map((o) => {
 					return { id: o.id, nome: o.descricao }
 				})
 			},
@@ -435,7 +443,7 @@
 				if (!resp.falha) {
 					let turnos = resp.dados.turnos
 
-          this.turnos = turnos.map((o) => {
+					this.turnos = turnos.map((o) => {
 						return { id: o.id, nome: o.descricao }
 					})
 				}
@@ -447,7 +455,7 @@
 				if (!resp.falha) {
 					let jornadasTrabalho = resp.dados.jornadasTrabalho
 
-          this.jornadasTrabalho = jornadasTrabalho.map((o) => {
+					this.jornadasTrabalho = jornadasTrabalho.map((o) => {
 						return { id: o.id, nome: o.descricao }
 					})
 				}
@@ -583,54 +591,54 @@
 				}
 			},
 
-      async editarPlanejamento(){
-        this.erros = []
+			async editarPlanejamento() {
+				this.erros = []
 
-        let { equipe_planejamento_id } = this.planejamento
+				let { equipe_planejamento_id } = this.planejamento
 
-        if(equipe_planejamento_id === null || equipe_planejamento_id === "") this.erros.push('equipe_planejamento_id')
+				if (equipe_planejamento_id === null || equipe_planejamento_id === "")
+					this.erros.push("equipe_planejamento_id")
 
-        if(this.erros.length === 0){
+				if (this.erros.length === 0) {
+					let funcionarios = this.funcionarios
+					let usuario_id = this.$auth.user.id
 
-          let funcionarios = this.funcionarios
-          let usuario_id = this.$auth.user.id
+					let cont = 0
+					let contTotal = 0
+					let funcPrEnviar = []
 
-          let cont = 0
-          let contTotal = 0
-          let funcPrEnviar = []
+					let campos = {}
 
-          let campos = {}
+					if (equipe_planejamento_id !== null && equipe_planejamento_id !== "") {
+						campos["equipe_planejamento_id"] = equipe_planejamento_id
+					}
 
-          if (equipe_planejamento_id !== null && equipe_planejamento_id !== "") {
-            campos["equipe_planejamento_id"] = equipe_planejamento_id
-          }
+					let equipePlanejamento
 
-          let equipePlanejamento
+					for (let fun of funcionarios) {
+						cont++
+						contTotal++
+						funcPrEnviar.push(fun.id)
+						if (cont === 5 || contTotal === funcionarios.length) {
+							let resp = await this.$axios.$put("/efetivo/funcionario/editar/planejamento", {
+								campos,
+								funcionarios: funcPrEnviar,
+								usuario_id,
+							})
 
-          for (let fun of funcionarios) {
-            cont++
-            contTotal++
-            funcPrEnviar.push(fun.id)
-            if (cont === 5 || contTotal === funcionarios.length) {
-              let resp = await this.$axios.$put("/efetivo/funcionario/editar/planejamento", {
-                campos,
-                funcionarios: funcPrEnviar,
-                usuario_id,
-              })
+							if (!resp.falha) {
+								funcPrEnviar = []
+								cont = 0
+								equipePlanejamento = resp.dados.equipePlanejamento
+							}
+						}
+					}
 
-              if (!resp.falha) {
-                funcPrEnviar = []
-                cont = 0
-                equipePlanejamento = resp.dados.equipePlanejamento
-              }
-            }
-          }
+					let chapas = funcionarios.map((o) => o.id)
 
-          let chapas = funcionarios.map((o) => o.id)
-
-          this.$emit("equipePlanEditada")
-        }
-      }
+					this.$emit("equipePlanEditada")
+				}
+			},
 		},
 		watch: {
 			async "campos.disciplina_id"(valor) {
@@ -641,7 +649,7 @@
 
 					if (disciplina) this.campos.setor_id = disciplina.setor_id
 
-          await this.buscarSubDisciplinas()
+					await this.buscarSubDisciplinas()
 				}
 			},
 			tab(valor) {
@@ -649,12 +657,12 @@
 					if (this.buscouRotas === false) {
 						this.buscarRotas()
 					}
-				}else if(valor === "planejamento"){
-          if(this.funcionarios.length === 1){
-            this.planejamento.equipe_planejamento_id = this.funcionarios[0].EquipePlanejamento.id
-            this.planejamento.permanencia = this.funcionarios[0].permanencia
-          }
-        }
+				} else if (valor === "planejamento") {
+					if (this.funcionarios.length === 1) {
+						this.planejamento.equipe_planejamento_id = this.funcionarios[0].EquipePlanejamento.id
+						this.planejamento.permanencia = this.funcionarios[0].permanencia
+					}
+				}
 			},
 		},
 	})

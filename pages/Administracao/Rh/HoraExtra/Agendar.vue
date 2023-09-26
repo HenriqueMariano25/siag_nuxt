@@ -196,7 +196,7 @@
 						v-model="funcionariosSelecionados" />
 				</div>
 			</template>
-			<template v-slot:[`overlay`]="{ item }">
+			<template v-slot:[`overlay`]="{}">
 				<div class="text-white flex items-center justify-center h-full w-full text-3xl">
 					<div class="bg-gray-800 p-2 rounded bg-">
 						<h1><strong>Selecione uma data para desbloquear a tabela</strong></h1>
@@ -336,7 +336,6 @@
 		</div>
 
 		<AppAlerta
-			tipo="sucesso"
 			:mostrar="mostrarAlerta"
 			:tipo="tipoAlerta"
 			@escondeu="mostrarAlerta = false">
