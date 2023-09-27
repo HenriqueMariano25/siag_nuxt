@@ -19,6 +19,7 @@
 							<tbody>
 								<tr
 									v-for="funcionario of funcionarios"
+									:key="funcionario.id"
 									class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white">
 									<td>{{ funcionario.chapa }}</td>
 									<td>{{ funcionario.nome }}</td>
@@ -43,7 +44,7 @@
 					<AppTabs
 						:tabs="tabs"
 						@tab="tab = $event">
-						<template v-slot:[`tab.informacoes`]="{ item }">
+						<template v-slot:[`tab.informacoes`]="{}">
 							<div class="flex flex-col gap-2">
 								<div class="flex flex-col bg-gray-200 border border-gray-300 rounded">
 									<div class="flex">
@@ -146,7 +147,7 @@
 								</div>
 							</div>
 						</template>
-						<template v-slot:[`tab.transporte`]="{ item }">
+						<template v-slot:[`tab.transporte`]="{}">
 							<div class="flex flex-col gap-2">
 								<div class="grid grid-cols-2 gap-2">
 									<AppFormSelectCompleto
@@ -172,7 +173,7 @@
 								</div>
 							</div>
 						</template>
-						<template v-slot:[`tab.planejamento`]="{ item }">
+						<template v-slot:[`tab.planejamento`]="{}">
 							<div class="flex flex-col gap-2">
 								<div class="grid grid-cols-2 gap-2">
 									<AppFormSelectCompleto
@@ -183,6 +184,66 @@
 										v-model="planejamento.equipe_planejamento_id"
 										:invalido="erros.includes('equipe_planejamento_id')" />
 								</div>
+							</div>
+						</template>
+						<template v-slot:[`tab.rh`]="{}">
+							<div class="grid gap-2 grid-cols-2">
+								<AppFormInput
+									id="nome"
+									type="text"
+									placeholder="Ex: HENRIQUE MARIANO DA SILVA"
+									sem-especiais
+									uppercase
+									obrigatorio
+									v-model="funcionario.nome"
+									:invalido="erros.includes('nome')"
+									label="Nome" />
+								<AppFormInput
+									id="chapa"
+									type="text"
+									placeholder="Ex: 1950000001"
+									obrigatorio
+									mask="##########"
+									v-model="funcionario.chapa"
+									:invalido="erros.includes('chapa')"
+									label="Chapa" />
+								<AppFormInput
+									id="cargo"
+									type="text"
+									uppercase
+									placeholder="Ex: Cargo"
+									v-model="funcionario.cargo"
+									obrigatorio
+									:invalido="erros.includes('cargo')"
+									label="Cargo" />
+								<AppFormInput
+									id="data_admissao"
+									type="date"
+									v-model="funcionario.data_admissao"
+									obrigatorio
+									:invalido="erros.includes('data_admissao')"
+									label="Data de admissão" />
+								<AppFormInput
+									id="cpf"
+									type="text"
+									placeholder="Ex: 123.456.789-10"
+									obrigatorio
+									mask="###.###.###-##"
+									v-model="funcionario.cpf"
+									label="CPF"
+									:invalido="erros.includes('cpf')" />
+								<AppFormSelect
+									label="Mão de Obra"
+									obrigatorio
+									:options="maosObra"
+									v-model="funcionario.direto_indireto"
+									id="direto_indireto"
+									:invalido="erros.includes('direto_indireto')" />
+							</div>
+							<div class="text-center bg-red-200 text-red-700 text-xl mt-2">
+								<span v-if="erroEdicao">
+									<strong>{{ mensagemEdicao }}</strong>
+								</span>
 							</div>
 						</template>
 					</AppTabs>
@@ -197,6 +258,8 @@
 							? editarRota()
 							: tab === 'planejamento'
 							? editarPlanejamento()
+							: tab === 'rh'
+							? editarRh()
 							: editarFuncionarios()
 					">
 					<img
@@ -280,6 +343,24 @@
 					{ id: "permanência", nome: "Permanência" },
 					{ id: "produtivo", nome: "Produtivo" },
 				],
+
+				//RH
+				funcionario: {
+					nome: null,
+					chapa: null,
+					cargo: null,
+					setor_id: null,
+					direto_indireto: null,
+					data_admissao: null,
+					cpf: null,
+				},
+				maosObra: [
+					{ id: "D", nome: "MOD - Mão de Obra Direta" },
+					{ id: "I", nome: "MOI - Mão de Obra Indireta" },
+				],
+				erroEdicao: false,
+				mensagemEdicao: null,
+				errosFuncionario: [],
 			}
 		},
 
@@ -292,6 +373,13 @@
 
 				if (this.$auth.user.permissoes.includes("efetivo_planejamento"))
 					tabs.push({ nome: "Planejamento", valor: "planejamento" })
+
+				if (this.funcionarios.length === 1) {
+					if (this.funcionarios[0].tipo_cadastro === "manual") {
+						if (this.$auth.user.permissoes.includes("efetivo_cadastrar_funcionario"))
+							tabs.push({ nome: "RH", valor: "rh" })
+					}
+				}
 
 				return tabs
 			},
@@ -639,6 +727,58 @@
 					this.$emit("equipePlanEditada")
 				}
 			},
+
+			validarFormRH() {
+				this.erros = []
+
+				let camposObrigatorio = [
+					"nome",
+					"chapa",
+					"cargo",
+					"direto_indireto",
+					"data_admissao",
+					"cpf",
+				]
+
+				for (let campo of camposObrigatorio) {
+					if (this.funcionario[`${campo}`] === null || this.funcionario[`${campo}`] === "")
+						this.errosFunciona.push(campo)
+				}
+			},
+
+			limparCampos(campos) {
+				for (let key of Object.keys(campos)) {
+					if (typeof campos[key] === "string") {
+						campos[key] = campos[key].trim()
+					}
+				}
+
+				return campos
+			},
+
+			async editarRh() {
+				let usuario_id = this.$auth.user.id
+				this.erroEdicao = false
+				this.validarFormRH()
+
+				if (this.errosFuncionario.length === 0) {
+					let funcionario = this.limparCampos(this.funcionario)
+					try {
+						let resp = await this.$axios.$post("/efetivo/editar_funcionario_manual", {
+							...funcionario,
+							usuario_id,
+						})
+
+						if (!resp.falha) {
+							this.$emit("editadoFuncionario")
+						}
+					} catch (error) {
+						let { dados } = error.response.data
+						this.erroEdicao = true
+						this.mensagemEdicao = dados.mensagem
+					}
+				}
+			},
 		},
 		watch: {
 			async "campos.disciplina_id"(valor) {
@@ -662,6 +802,19 @@
 						this.planejamento.equipe_planejamento_id = this.funcionarios[0].EquipePlanejamento.id
 						this.planejamento.permanencia = this.funcionarios[0].permanencia
 					}
+				} else if (valor === "rh") {
+					let func = Object.assign({}, this.funcionarios[0])
+
+					let funcionario = {
+						nome: func.nome,
+						chapa: func.chapa,
+						cargo: func.chapa,
+						data_admissao: func.data_admissao,
+						direto_indireto: func.direto_indireto,
+						cpf: func.cpf,
+						id: func.id,
+					}
+					this.funcionario = funcionario
 				}
 			},
 		},

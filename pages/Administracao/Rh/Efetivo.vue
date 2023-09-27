@@ -29,11 +29,6 @@
 						{{ horaExtra(item.hora_extra) }}
 					</span>
 				</template>
-				<template v-slot:[`body.data_demissao`]="{ item }">
-					<span
-						v-if="item.data_demissao"
-						class="whitespace-nowrap"></span>
-				</template>
 				<template v-slot:[`body.Turno.descricao`]="{ item }">
 					<span class="whitespace-nowrap">{{ item.Turno ? item.Turno.descricao : "" }}</span>
 				</template>
@@ -184,6 +179,7 @@
 				:funcionarios="funcSelecionados"
 				@rotaEditada="rotaEditada"
 				@equipePlanEditada="equipePlanEditada"
+				@editadoFuncionario="funcionarioEditadoRH"
 				@editado="funcionarioEditado" />
 			<DialogAtualizarHe
 				v-if="mostrarDialogAtualizarHe"
@@ -583,6 +579,15 @@
 			funcionarioCadastrado() {
 				this.mostrarDialogCadastrarFuncionario = false
 				this.textoAlerta = "Funcionário cadastrado manualmente com sucesso!"
+				this.mostrarAlerta = true
+				this.buscarEfetivo()
+			},
+
+			funcionarioEditadoRH() {
+				console.log("aqui")
+
+				this.mostrarDialogEditarEfetivo = false
+				this.textoAlerta = "Funcionário editado com sucesso!"
 				this.mostrarAlerta = true
 				this.buscarEfetivo()
 			},
