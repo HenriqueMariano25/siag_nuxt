@@ -144,6 +144,21 @@
 										v-model="psp.prazo" />
 								</div>
 								<div
+									class="bg-red-300 px-2 flex flex-col"
+									v-if="funcionario && (!funcionario.Coordenador || !funcionario.Gestor)">
+									<span> Campos necessário no cadastro do Funcionário: </span>
+									<span
+										class="pl-2"
+										v-if="funcionario && !funcionario.Coordenador">
+										<strong>Coordenador</strong>
+									</span>
+									<span
+										class="pl-2"
+										v-if="funcionario && !funcionario.Gestor">
+										<strong>Gestor da Área</strong>
+									</span>
+								</div>
+								<div
 									class="bg-sky-200 border border-sky-500"
 									v-if="funcionario && funcionario.Psp && funcionario.Psp.length > 0">
 									<div class="flex w-full bg-sky-500 px-1 text-lg">
@@ -162,7 +177,9 @@
 									<div class="flex w-full bg-sky-500 px-1 text-lg mt-1">
 										<span>Previsão próxima PSP</span>
 									</div>
-									<div class="grid grid-cols-2 px-1">
+									<div
+										class="grid grid-cols-2 px-1"
+										v-if="funcionario.prazo">
 										<span
 											><strong>Data prevista de ida: </strong
 											>{{
@@ -196,7 +213,15 @@
 								</div>
 							</div>
 						</div>
-						<div class="flex flex-col gap-1 bg-blue-100 border border-blue-300">
+						<div class="flex flex-col gap-1 bg-blue-100 border border-blue-300 relative">
+							<div
+								class="absolute w-full h-full bg-gray-800/80 z-50 text-center justify-center text-4xl text-white items-center flex"
+								v-if="!funcionario || !funcionario.Coordenador || !funcionario.Gestor">
+								<span v-if="!funcionario"><strong> Selecione um funcionário </strong></span>
+								<span v-else-if="!funcionario.Coordenador || !funcionario.Gestor">
+									<strong>Funcionário com informação pendente </strong>
+								</span>
+							</div>
 							<div class="">
 								<div class="w-full bg-blue-300 flex text-xl px-1">
 									<span>PSP</span>
@@ -457,6 +482,7 @@
 				<div class="flex">
 					<BotaoPadrao
 						texto="salvar"
+						:disabled="!podeSalvar"
 						@clique="psp_id ? editarPsp() : cadastrarPsp()"
 						v-if="!cadastrou">
 						<img
@@ -550,6 +576,7 @@
 				funcionario: null,
 				textoErroDataIda: null,
 				textoErroDataVolta: null,
+				podeSalvar: false,
 			}
 		},
 		props: {
@@ -656,6 +683,12 @@
 						this.psp.destino = ultimaPsp.destino
 						this.psp.centro_custo_pep_id = ultimaPsp.centro_custo_pep_id
 						this.psp.meio_transporte = ultimaPsp.meio_transporte
+					}
+
+					if (funcionario.Coordenador === null || funcionario.Gestor === null) {
+						this.podeSalvar = false
+					} else {
+						this.podeSalvar = true
 					}
 				}
 			},
