@@ -180,6 +180,7 @@
 				@rotaEditada="rotaEditada"
 				@equipePlanEditada="equipePlanEditada"
 				@editadoFuncionario="funcionarioEditadoRH"
+				@deletadoFuncionario="funcionarioDeletadoRH"
 				@editado="funcionarioEditado" />
 			<DialogAtualizarHe
 				v-if="mostrarDialogAtualizarHe"
@@ -584,10 +585,15 @@
 			},
 
 			funcionarioEditadoRH() {
-				console.log("aqui")
-
 				this.mostrarDialogEditarEfetivo = false
 				this.textoAlerta = "Funcionário editado com sucesso!"
+				this.mostrarAlerta = true
+				this.buscarEfetivo()
+			},
+
+			funcionarioDeletadoRH() {
+				this.mostrarDialogEditarEfetivo = false
+				this.textoAlerta = "Funcionário deletado com sucesso!"
 				this.mostrarAlerta = true
 				this.buscarEfetivo()
 			},
