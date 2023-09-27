@@ -215,12 +215,14 @@
 						</div>
 						<div class="flex flex-col gap-1 bg-blue-100 border border-blue-300 relative">
 							<div
-								class="absolute w-full h-full bg-gray-800/80 z-50 text-center justify-center text-4xl text-white items-center flex"
+								class="absolute w-full h-full bg-gray-700/70 z-50 text-center justify-center text-4xl text-white items-center flex"
 								v-if="!funcionario || !funcionario.Coordenador || !funcionario.Gestor">
-								<span v-if="!funcionario"><strong> Selecione um funcionário </strong></span>
-								<span v-else-if="!funcionario.Coordenador || !funcionario.Gestor">
-									<strong>Funcionário com informação pendente </strong>
-								</span>
+								<div class="p-3 bg-gray-800 rounded">
+									<span v-if="!funcionario"><strong> Selecione um funcionário </strong></span>
+									<span v-else-if="!funcionario.Coordenador || !funcionario.Gestor">
+										<strong>Funcionário com informação pendente </strong>
+									</span>
+								</div>
 							</div>
 							<div class="">
 								<div class="w-full bg-blue-300 flex text-xl px-1">
@@ -660,7 +662,7 @@
 
 					let prazo = resp.dados.prazo
 					let ultimaPsp = resp.dados.ultimaPsp
-					this.funcionario.prazo = prazo.prazo
+					prazo.prazo ? (this.funcionario.prazo = prazo.prazo) : null
 
 					this.psp.cargo = funcionario.cargo
 					this.psp.chapa = funcionario.chapa
