@@ -43,7 +43,7 @@
 				</div>
 				<div
 					v-for="dia of diasPrAgendamento"
-					:key="dia">
+					:key="dia.data">
 					<AppTag
 						@click="buscarPorTagDia(dia.data)"
 						cor="text-black bg-gray-200 hover:bg-gray-300 border border-gray-300"
@@ -156,7 +156,7 @@
 			@ordem="ordem = $event"
 			classPersonalizada="!bg-gray-400"
 			altura="calc(100vh - 277px)"
-			:dadosSql="true"
+			:dados-redis="true"
 			@atualizar="buscarFuncionarios()"
 			:carregando="carregandoTabela"
 			corOverlay="!bg-gray-600/70"
@@ -205,23 +205,16 @@
 			</template>
 			<template v-slot:[`body.rota`]="{ item }">
 				<span
-					v-if="item.numero || item.local"
+					v-if="item.rota"
 					class="whitespace-nowrap">
-					{{ item.numero }} - {{ item.local }}
+					{{ item.rota.numero }} - {{ item.rota.local }}
 				</span>
 			</template>
-			<template v-slot:[`body.fun.encarregado_sapo`]="{ item }">
+			<template v-slot:[`body.EncarregadoLider.nome`]="{ item }">
 				<span
-					v-if="item['fun.encarregado_sapo']"
+					v-if="item.EncarregadoLider"
 					class="whitespace-nowrap">
-					{{ item["fun.encarregado_sapo"] }}
-				</span>
-			</template>
-			<template v-slot:[`body.encar.nome`]="{ item }">
-				<span
-					v-if="item['encarregado_lider.nome']"
-					class="whitespace-nowrap">
-					{{ item["encarregado_lider.nome"] }}
+					{{ item.EncarregadoLider.nome }}
 				</span>
 			</template>
 			<template v-slot:[`body.hora_extra`]="{ item }">
@@ -246,9 +239,9 @@
 					{{ horaExtra(item.hora_extra_projetada) }}
 				</span>
 			</template>
-			<template v-slot:[`body.tur.descricao`]="{ item }">
-				<span v-if="item['turno.descricao']">
-					{{ item["turno.descricao"] }}
+			<template v-slot:[`body.Turno.descricao`]="{ item }">
+				<span v-if="item.Turno">
+					{{ item.Turno.descricao }}
 				</span>
 			</template>
 			<template v-slot:[`body.acoes`]="{ item }">
@@ -288,7 +281,7 @@
 									<td class="border border-slate-500 pl-1">{{ funcionario.nome }}</td>
 									<td class="border border-slate-500 pl-1">{{ funcionario.cargo }}</td>
 									<td class="border border-slate-500 pl-1">
-										{{ funcionario["fun.encarregado_producao"] }}
+										{{ funcionario.EncarregadoLider ? funcionario.EncarregadoLider.nome : null }}
 									</td>
 								</tr>
 							</tbody>
@@ -408,22 +401,21 @@
 					{ id: "3° turno", nome: "3° turno" },
 				],
 				cabecalho: [
-					{ nome: "HE atual", valor: "hora_extra", centralizar: true },
+					{ nome: "HE atual", valor: "hora_extra", centralizar: true, ordenar: true },
 					{ nome: "HE projetada", valor: "hora_extra_projetada", centralizar: true },
 					{ nome: "Matrícula", valor: "chapa", filtro: true, centralizar: true },
 					{ nome: "Nome", valor: "nome", filtro: true, colunaTabela: "fun.nome" },
 					{ nome: "Cargo", valor: "cargo", filtro: true },
-					// { nome: "Encar./Lider SAPO", valor: "fun.encarregado_sapo", filtro: true },
-					{ nome: "Encarregado/Lider", valor: "encar.nome", filtro: true },
+					{ nome: "Encarregado/Lider", valor: "EncarregadoLider.nome", filtro: true },
 					{ nome: "Rota", valor: "rota" },
 					{ nome: "Ponto de embarque", valor: "ponto_embarque", filtro: true },
-					{ nome: "Turno", valor: "turno.descricao", filtro: true },
+					{ nome: "Turno", valor: "Turno.descricao", filtro: true },
 					{ nome: "", valor: "acoes", filtro: true },
 				],
 				dados: [],
-				filtros: [],
+				filtros: {},
 				ordem: null,
-				itensPorPagina: 50,
+				itensPorPagina: 200,
 				totalItens: 0,
 				pagina: 1,
 				funcionariosSelecionados: [],
@@ -647,23 +639,19 @@
 			},
 
 			async buscarFuncionarios() {
-				this.carregandoTabela = true
 				let setorId = this.$auth.user.setor_id
 
-				let filtros = [...this.filtros]
-
-				let filtrosFinais
-
-				if (filtros !== "") {
-					filtrosFinais = filtros.join("")
-				}
+				let filtros = this.filtros
+				filtros = Object.assign({ ...filtros, setor_id: setorId })
+				let ordem = this.ordem
 
 				let resp = await this.$axios.$get("/hora_extra/buscar/funcionarios", {
 					params: {
 						setorId,
 						page: this.pagina - 1,
 						size: this.itensPorPagina,
-						filtros: filtrosFinais,
+						filtros,
+						ordem,
 					},
 				})
 
@@ -686,17 +674,17 @@
 				}
 			},
 
-			async atualizarDados(parametros) {
-				let { itensPorPagina, pagina, filtros, ordem } = parametros
+			// async atualizarDados(parametros) {
+			// 	let { itensPorPagina, pagina, filtros, ordem } = parametros
 
-				if (itensPorPagina) this.itensPorPagina = itensPorPagina
+			// 	if (itensPorPagina) this.itensPorPagina = itensPorPagina
 
-				if (pagina) this.pagina = pagina
+			// 	if (pagina) this.pagina = pagina
 
-				if (filtros) this.filtros = filtros
+			// 	if (filtros) this.filtros = filtros
 
-				await this.buscarFuncionarios()
-			},
+			// 	await this.buscarFuncionarios()
+			// },
 
 			async buscarPorTagDia(data) {
 				this.agendamento.data = data
