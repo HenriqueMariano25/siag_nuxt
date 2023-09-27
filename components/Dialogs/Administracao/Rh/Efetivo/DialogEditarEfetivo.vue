@@ -3,6 +3,8 @@
 		<BaseDialog
 			largura="w-11/12"
 			:carregando="carregando"
+			:btn-deletar="tab === 'rh'"
+			@deletar="deletarFuncionario()"
 			titulo="Editar funcionários"
 			@cancelar="cancelar()">
 			<template v-slot:corpo>
@@ -251,22 +253,32 @@
 				</div>
 			</template>
 			<template v-slot:rodape-btn-direito>
-				<BotaoPadrao
-					texto="Salvar"
-					@clique="
-						tab === 'transporte'
-							? editarRota()
-							: tab === 'planejamento'
-							? editarPlanejamento()
-							: tab === 'rh'
-							? editarRh()
-							: editarFuncionarios()
-					">
-					<img
-						src="@/assets/icons/save-b.svg"
-						alt=""
-						class="w-7 h-7" />
-				</BotaoPadrao>
+				<div class="flex gap-2">
+					<!-- <BotaoPadrao
+						texto="deletar"
+						cor="bg-red-400 hover:bg-red-500">
+						<img
+							src="@/assets/icons/delete-b.svg"
+							alt=""
+							class="w-7 h-7" />
+					</BotaoPadrao> -->
+					<BotaoPadrao
+						texto="Salvar"
+						@clique="
+							tab === 'transporte'
+								? editarRota()
+								: tab === 'planejamento'
+								? editarPlanejamento()
+								: tab === 'rh'
+								? editarRh()
+								: editarFuncionarios()
+						">
+						<img
+							src="@/assets/icons/save-b.svg"
+							alt=""
+							class="w-7 h-7" />
+					</BotaoPadrao>
+				</div>
 			</template>
 		</BaseDialog>
 	</div>
@@ -777,6 +789,24 @@
 						this.erroEdicao = true
 						this.mensagemEdicao = dados.mensagem
 					}
+				}
+			},
+
+			async deletarFuncionario() {
+				let usuario_id = this.$auth.user.id
+				let { id } = this.funcionario
+
+				try {
+					let resp = await this.$axios.$post(`/efetivo/deletar_funcionario_manual`, {
+						usuario_id,
+						id,
+					})
+
+					if (!resp.falha) {
+						this.$emit("deletadoFuncionario")
+					}
+				} catch (error) {
+					console.log(error)
 				}
 			},
 		},
