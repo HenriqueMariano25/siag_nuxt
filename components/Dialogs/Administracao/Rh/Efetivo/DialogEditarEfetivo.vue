@@ -817,9 +817,18 @@
 				} else {
 					let disciplina = this.disciplinas.find((o) => o.id === valor)
 
-					if (disciplina) this.campos.setor_id = disciplina.setor_id
+					if (disciplina) {
+						this.campos.setor_id = disciplina.setor_id
+					}
 
 					await this.buscarSubDisciplinas()
+
+					let temSubDiscNaDisciplina = this.subDisciplinas.some(
+						(o) => o.id === this.campos.sub_disciplina_id,
+					)
+					if (!temSubDiscNaDisciplina) {
+						this.campos.sub_disciplina_id = null
+					}
 				}
 			},
 			tab(valor) {
