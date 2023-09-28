@@ -158,6 +158,14 @@
 										<strong>Gestor da Área</strong>
 									</span>
 								</div>
+								<div v-if="funcionario && !funcionario.prazo">
+									<span class="bg-red-300 px-2 flex flex-col">
+										<strong>
+											Funcionário sem intervalo entre folgas de campo, favor procurar o responsável
+											pela compra de passagem.
+										</strong>
+									</span>
+								</div>
 								<div
 									class="bg-sky-200 border border-sky-500"
 									v-if="funcionario && funcionario.Psp && funcionario.Psp.length > 0">
@@ -216,10 +224,18 @@
 						<div class="flex flex-col gap-1 bg-blue-100 border border-blue-300 relative">
 							<div
 								class="absolute w-full h-full bg-gray-700/70 z-50 text-center justify-center text-4xl text-white items-center flex"
-								v-if="!funcionario || !funcionario.Coordenador || !funcionario.Gestor">
+								v-if="
+									!funcionario ||
+									!funcionario.Coordenador ||
+									!funcionario.Gestor ||
+									!funcionario.prazo
+								">
 								<div class="p-3 bg-gray-800 rounded">
 									<span v-if="!funcionario"><strong> Selecione um funcionário </strong></span>
-									<span v-else-if="!funcionario.Coordenador || !funcionario.Gestor">
+									<span
+										v-else-if="
+											!funcionario.Coordenador || !funcionario.Gestor || !funcionario.prazo
+										">
 										<strong>Funcionário com informação pendente </strong>
 									</span>
 								</div>
@@ -662,7 +678,7 @@
 
 					let prazo = resp.dados.prazo
 					let ultimaPsp = resp.dados.ultimaPsp
-					prazo.prazo ? (this.funcionario.prazo = prazo.prazo) : null
+					prazo && prazo.prazo ? (this.funcionario.prazo = prazo.prazo) : null
 
 					this.psp.cargo = funcionario.cargo
 					this.psp.chapa = funcionario.chapa
@@ -677,7 +693,7 @@
 						? this.$dayjs(funcionario.data_admissao).format("YYYY-MM-DD")
 						: null
 					this.psp.turno = funcionario.Turno ? funcionario.Turno.descricao : null
-					this.psp.prazo = `${prazo.prazo} dias`
+					prazo ? (this.psp.prazo = `${prazo.prazo} dias`) : (this.psp.prazo = null)
 					this.psp.setor = funcionario.setor ? funcionario.setor.nome : null
 
 					if (ultimaPsp) {
