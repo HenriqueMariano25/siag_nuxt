@@ -99,8 +99,10 @@
 						<BotaoPadrao
 							texto="Historico"
 							class="!py-0.5 border border-gray-500"
-							@clique="mostrarDialogHistoricoPsp = true; psp_id = item.id "
-							>
+							@clique="
+								mostrarDialogHistoricoPsp = true
+								psp_id = item.id
+							">
 							<img
 								src="@/assets/icons/history-b.svg"
 								alt=""
@@ -146,17 +148,23 @@
 			@editado="editado"
 			@cadastrado="cadastrado" />
 		<DialogProcessarPsp
-      @rejeitado="rejeitado"
+			@rejeitado="rejeitado"
 			v-if="mostrarDialogProcessarPsp"
 			@cancelar="mostrarDialogProcessarPsp = false"
 			@processado="processado"
 			:selecionados="selecionados" />
 		<DialogDetalhesPsp
 			v-if="mostrarDialogDetalhesPsp"
-			@cancelar="mostrarDialogDetalhesPsp = false; psp_id = null"
+			@cancelar="
+				mostrarDialogDetalhesPsp = false
+				psp_id = null
+			"
 			:psp_id="psp_id" />
 		<DialogHistoricoPsp
-			@cancelar="mostrarDialogHistoricoPsp = false; psp_id = null"
+			@cancelar="
+				mostrarDialogHistoricoPsp = false
+				psp_id = null
+			"
 			v-if="mostrarDialogHistoricoPsp"
 			:psp_id="psp_id" />
 		<AppAlerta
@@ -253,8 +261,7 @@
 					{ nome: "Histórico", valor: "historico", filtro: true, largura: "w-[150px]" },
 				]
 
-				if ((this.etapa_psp_id >= 1 && this.etapa_psp_id <= 4) ||
-        this.etapa_psp_id === 10) {
+				if ((this.etapa_psp_id >= 1 && this.etapa_psp_id <= 4) || this.etapa_psp_id === 10) {
 					cabecalho.unshift({ nome: "", valor: "acao" })
 				}
 
@@ -296,6 +303,10 @@
 					delete filtros.etapa_psp_id
 				}
 
+				if (!this.$auth.user.permissoes.includes("gerenciamento_psp")) {
+					filtros["$Funcionario.setor.id$"] = this.$auth.user.setor_id
+				}
+
 				let page = this.pagina
 				let size = this.itensPorPagina
 
@@ -320,18 +331,18 @@
 				}
 			},
 
-			async editado({ psp, mudaEtapa}) {
+			async editado({ psp, mudaEtapa }) {
 				let idx = this.dados.findIndex((o) => o.id === psp.id)
 
 				if (idx >= 0) {
-          if(mudaEtapa){
-            this.dados.splice(idx, 1)
-          }else{
-					  this.dados[idx] = Object.assign(this.dados[idx], psp)
-          }
+					if (mudaEtapa) {
+						this.dados.splice(idx, 1)
+					} else {
+						this.dados[idx] = Object.assign(this.dados[idx], psp)
+					}
 				}
 
-        this.psp_id = null
+				this.psp_id = null
 
 				this.mostrarDialogCriarPsp = false
 				this.textoAlerta = "PSP editado com sucesso!"
@@ -363,19 +374,19 @@
 				this.mostrarDialogProcessarPsp = false
 			},
 
-      rejeitado(psps){
-        for (let psp of psps) {
-          let idx = this.dados.findIndex((o) => o.id === psp)
+			rejeitado(psps) {
+				for (let psp of psps) {
+					let idx = this.dados.findIndex((o) => o.id === psp)
 
-          if (idx >= 0) {
-            this.dados.splice(idx, 1)
-          }
-        }
+					if (idx >= 0) {
+						this.dados.splice(idx, 1)
+					}
+				}
 
-        this.textoAlerta = "PSPs rejeitadas com sucesso!"
-        this.mostrarAlerta = true
-        this.mostrarDialogProcessarPsp = false
-      },
+				this.textoAlerta = "PSPs rejeitadas com sucesso!"
+				this.mostrarAlerta = true
+				this.mostrarDialogProcessarPsp = false
+			},
 
 			editarPsp(item) {
 				this.psp_id = item.id
