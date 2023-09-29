@@ -22,196 +22,219 @@
 			</div>
 		</div>
 		<div class="print:hidden">
-<!--			<div class="flex">-->
-				<TabelaPadrao
-					:cabecalho="cabecalho"
-					:dados="dados"
-					@filtros="filtros = $event"
-					:itensPorPagina="itensPorPagina"
-					@itensPorPagina="itensPorPagina = $event"
-					:pagina="pagina"
-          @pagina="pagina = $event"
-					altura="calc(100vh - 194px)"
-					:totalItens="totalItens"
-					@atualizar="buscarSolicitacoes()"
-					@dblclick="verDetalhesSS"
-					:carregando="carregandoTabela"
-					:temDetalhes="false">
-					<template v-slot:[`body.selecione`]="{ item }">
-						<div class="flex justify-center">
-							<AppFormCheckbox
-								:id="parseInt(item.id)"
-								:valor="item"
-								v-model="selecionados" />
+			<!--			<div class="flex">-->
+			<TabelaPadrao
+				:cabecalho="cabecalho"
+				:dados="dados"
+				@filtros="filtros = $event"
+				:itensPorPagina="itensPorPagina"
+				@itensPorPagina="itensPorPagina = $event"
+				:pagina="pagina"
+				@pagina="pagina = $event"
+				altura="calc(100vh - 194px)"
+				:totalItens="totalItens"
+				@atualizar="buscarSolicitacoes()"
+				@dblclick="verDetalhesSS"
+				:carregando="carregandoTabela"
+				:temDetalhes="false">
+				<template v-slot:[`body.selecione`]="{ item }">
+					<div class="flex justify-center">
+						<AppFormCheckbox
+							:id="parseInt(item.id)"
+							:valor="item"
+							v-model="selecionados" />
+					</div>
+				</template>
+				<template v-slot:[`body.situacao`]="{ item }">
+					<div class="flex justify-center">
+						<div v-if="item.etapa_ss_id === 6 || item.etapa_ss_id === 5">
+							<div
+								class="bg-green-400 text-black px-2 rounded"
+								v-if="item.etapa_ss_id === 6">
+								Finalizado
+							</div>
+							<div
+								class="bg-red-700 text-white px-2 rounded"
+								v-if="item.etapa_ss_id === 5">
+								Cancelado
+							</div>
 						</div>
-					</template>
-					<template v-slot:[`body.situacao`]="{ item }">
-						<div class="flex justify-center">
-              <div v-if="item.etapa_ss_id === 6 || item.etapa_ss_id === 5" >
-                <div class="bg-green-400 text-black px-2 rounded" v-if="item.etapa_ss_id === 6">
-                  Finalizado
-                </div>
-                <div class="bg-red-700 text-white px-2 rounded" v-if="item.etapa_ss_id === 5">
-                  Cancelado
-                </div>
-              </div>
-              <div v-else>
-                <template v-if="calcularPrevisao(item)">
-                  <div
-                    v-if="!$dayjs().isAfter(calcularPrevisao(item), 'day')"
-                    class="bg-blue-400 text-black px-2 rounded">
-                    No prazo
-                  </div>
-                  <div
-                    v-if="$dayjs().isAfter(calcularPrevisao(item), 'day')"
-                    class="bg-red-400 text-black px-2 rounded">
-                    Atrasado
-                  </div>
-                </template>
-                <template v-else>
-                  <div class="bg-yellow-400 text-black px-2 rounded">Pendente</div>
-<!--                  <div-->
-<!--                    v-if="!$dayjs().isAfter(item.data_necessidade, 'day')"-->
-<!--                    class="bg-blue-400 text-black px-2 rounded">-->
-<!--                    No prazo-->
-<!--                  </div>-->
-<!--                  <div-->
-<!--                    v-if="$dayjs().isAfter(item.data_necessidade, 'day')"-->
-<!--                    class="bg-red-400 text-black px-2 rounded">-->
-<!--                    Atrasado-->
-<!--                  </div>-->
-                </template>
-              </div>
+						<div v-else>
+							<template v-if="calcularPrevisao(item)">
+								<div
+									v-if="!$dayjs().isAfter(calcularPrevisao(item), 'day')"
+									class="bg-blue-400 text-black px-2 rounded">
+									No prazo
+								</div>
+								<div
+									v-if="$dayjs().isAfter(calcularPrevisao(item), 'day')"
+									class="bg-red-400 text-black px-2 rounded">
+									Atrasado
+								</div>
+							</template>
+							<template v-else>
+								<div class="bg-yellow-400 text-black px-2 rounded">Pendente</div>
+								<!--                  <div-->
+								<!--                    v-if="!$dayjs().isAfter(item.data_necessidade, 'day')"-->
+								<!--                    class="bg-blue-400 text-black px-2 rounded">-->
+								<!--                    No prazo-->
+								<!--                  </div>-->
+								<!--                  <div-->
+								<!--                    v-if="$dayjs().isAfter(item.data_necessidade, 'day')"-->
+								<!--                    class="bg-red-400 text-black px-2 rounded">-->
+								<!--                    Atrasado-->
+								<!--                  </div>-->
+							</template>
 						</div>
-					</template>
-					<template v-slot:[`body.acoes`]="{ item }">
-						<BotaoIconeEditar
-							v-if="etapa_id !== 1 && etapa_id !== 2  && etapa_id !== 7"
-							@click="
-								mostrarDialogProcessarSS = true
-								ss = item
-							" />
-            <template v-if="etapa_id === 1 || etapa_id === 2">
-              <BotaoPadrao icone v-if="item.Usuario.id === $auth.user.id" @clique="
+					</div>
+				</template>
+				<template v-slot:[`body.acoes`]="{ item }">
+					<BotaoIconeEditar
+						v-if="etapa_id !== 1 && etapa_id !== 2 && etapa_id !== 7"
+						@click="
+							mostrarDialogProcessarSS = true
+							ss = item
+						" />
+					<template v-if="etapa_id === 1 || etapa_id === 2">
+						<BotaoPadrao
+							icone
+							v-if="item.Usuario.id === $auth.user.id"
+							@clique="
 								mostrarDialogCriarSolicitacao = true
 								ss_id = item.id
 							">
-                <img src="@/assets/icons/edit-b.svg" alt="" class="w-6 h-6">
-              </BotaoPadrao>
-              <div v-else-if="item.Usuario.id !== $auth.user.id" class="flex justify-center">
-                <AppTooltip largura="w-[200px]" fundo>
-                  <template v-slot:corpo>
-                    <div class="flex justify-center">
-                      <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7 flex">
-                    </div>
-                  </template>
-                  <template v-slot:tooltip>
-                    <div>
-                      <span>
-                        Solicitação criada por outro <strong>SOLICITANTE</strong>, somente o solicitante pode editar essa SS.
-                      </span>
-                    </div>
-                  </template>
-                </AppTooltip>
-              </div>
-            </template>
-
-            <BotaoIconeEditar
-              v-if="etapa_id === 7 && $auth.user.permissoes.includes('ss_gerenciamento')"
-              @click="
-								mostrarDialogAnaliseDemanda = true
-								ss = item
-							"/>
-					</template>
-					<template v-slot:[`body.prazo_execucao`]="{ item }">
-						<span v-if="item">
-							{{ $dayjs(item.data_fim).diff(item.data_inicio, "day") }} dias
-						</span>
-					</template>
-					<template v-slot:[`body.data_necessidade`]="{ item }">
-						<span v-if="item">
-							{{ $dayjs(item.data_necessidade).format("DD/MM/YYYY") }}
-						</span>
-					</template>
-          <template v-slot:[`body.data_previsao`]="{ item }">
-						<span v-if="item">
-							{{ calcularPrevisao(item) ? $dayjs(calcularPrevisao(item)).format("DD/MM/YYYY") : "" }}
-						</span>
-					</template>
-					<template v-slot:[`body.EtapaSS.nome`]="{ item }">
-						<span v-if="item.EtapaSS && item.EtapaSS.nome">
-							<span class="whitespace-nowrap">{{ item.EtapaSS.nome }}</span>
-						</span>
-					</template>
-					<template v-slot:[`body.Usuario.nome`]="{ item }">
-						<span
-							v-if="item.Usuario"
-							class="whitespace-nowrap">
-							{{ item.Usuario.nome }}
-						</span>
-					</template>
-          <template v-slot:[`body.comprador.nome`]="{ item }">
-						<span
-              v-if="item.comprador"
-              class="whitespace-nowrap">
-							{{ item.comprador.nome }}
-						</span>
-          </template>
-					<template v-slot:[`body.comentarios`]="{ item }">
-						<button
-							class="flex hover:bg-gray-400 min-w-[235px] p-1"
-							v-if="item.ComentarioSS.length > 0"
-							@click="
-								ss_id = item.id
-								mostrarDialogComentariosSS = true
-								usuario_ss_id = item.usuario_id
-							">
 							<img
-								src="@/assets/icons/comentarios-b.svg"
-								alt="close"
-								class="w-6 h-6 mr-2" />
-							<span v-if="item.ComentarioSS.at(0).descricao" class="whitespace-nowrap">
-								{{ item.ComentarioSS.at(0).descricao.substr(0, 25)
-								}}{{ item.ComentarioSS.at(0).descricao.length > 25 ? "..." : "" }}
-							</span>
-						</button>
+								src="@/assets/icons/edit-b.svg"
+								alt=""
+								class="w-6 h-6" />
+						</BotaoPadrao>
+						<div
+							v-else-if="item.Usuario.id !== $auth.user.id"
+							class="flex justify-center">
+							<AppTooltip
+								largura="w-[200px]"
+								fundo>
+								<template v-slot:corpo>
+									<div class="flex justify-center">
+										<img
+											src="@/assets/icons/information-circle-g.svg"
+											alt=""
+											class="w-7 h-7 flex" />
+									</div>
+								</template>
+								<template v-slot:tooltip>
+									<div>
+										<span>
+											Solicitação criada por outro <strong>SOLICITANTE</strong>, somente o
+											solicitante pode editar essa SS.
+										</span>
+									</div>
+								</template>
+							</AppTooltip>
+						</div>
 					</template>
-				</TabelaPadrao>
-<!--			</div>-->
+
+					<BotaoIconeEditar
+						v-if="etapa_id === 7 && $auth.user.permissoes.includes('ss_gerenciamento')"
+						@click="
+							mostrarDialogAnaliseDemanda = true
+							ss = item
+						" />
+				</template>
+				<template v-slot:[`body.prazo_execucao`]="{ item }">
+					<span v-if="item"> {{ $dayjs(item.data_fim).diff(item.data_inicio, "day") }} dias </span>
+				</template>
+				<template v-slot:[`body.data_necessidade`]="{ item }">
+					<span v-if="item">
+						{{ $dayjs(item.data_necessidade).format("DD/MM/YYYY") }}
+					</span>
+				</template>
+				<template v-slot:[`body.data_previsao`]="{ item }">
+					<span v-if="item">
+						{{ calcularPrevisao(item) ? $dayjs(calcularPrevisao(item)).format("DD/MM/YYYY") : "" }}
+					</span>
+				</template>
+				<template v-slot:[`body.EtapaSS.nome`]="{ item }">
+					<span v-if="item.EtapaSS && item.EtapaSS.nome">
+						<span class="whitespace-nowrap">{{ item.EtapaSS.nome }}</span>
+					</span>
+				</template>
+				<template v-slot:[`body.Usuario.nome`]="{ item }">
+					<span
+						v-if="item.Usuario"
+						class="whitespace-nowrap">
+						{{ item.Usuario.nome }}
+					</span>
+				</template>
+				<template v-slot:[`body.comprador.nome`]="{ item }">
+					<span
+						v-if="item.comprador"
+						class="whitespace-nowrap">
+						{{ item.comprador.nome }}
+					</span>
+				</template>
+				<template v-slot:[`body.comentarios`]="{ item }">
+					<button
+						class="flex hover:bg-gray-400 min-w-[235px] p-1"
+						v-if="item.ComentarioSS.length > 0"
+						@click="
+							ss_id = item.id
+							mostrarDialogComentariosSS = true
+							usuario_ss_id = item.usuario_id
+						">
+						<img
+							src="@/assets/icons/comentarios-b.svg"
+							alt="close"
+							class="w-6 h-6 mr-2" />
+						<span
+							v-if="item.ComentarioSS.at(0).descricao"
+							class="whitespace-nowrap">
+							{{ item.ComentarioSS.at(0).descricao.substr(0, 25)
+							}}{{ item.ComentarioSS.at(0).descricao.length > 25 ? "..." : "" }}
+						</span>
+					</button>
+				</template>
+			</TabelaPadrao>
+			<!--			</div>-->
 		</div>
 		<RodapePagina class="print:hidden">
 			<template v-slot>
 				<div class="flex items-center w-full">
-					<div class="flex w-full justify-between ">
-            <div class="flex">
-              <BotaoPadrao texto="Excel" @clique="gerarExcel()">
-                <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
-              </BotaoPadrao>
-            </div>
-            <div class="flex gap-3">
-              <BotaoPadrao
-                texto="Criar SS"
-                @clique="mostrarDialogCriarSolicitacao = true">
-                <template v-slot>
-                  <img
-                    src="@/assets/icons/add-b.svg"
-                    alt="close"
-                    class="w-7 h-7" />
-                </template>
-              </BotaoPadrao>
-              <BotaoPadrao
-                v-if="listaSelect.includes(etapa_id)"
-                texto="Processar SS"
-                :disabled="selecionados.length === 0"
-                @clique="escolherProcessar()">
-                <template v-slot>
-                  <img
-                    src="@/assets/icons/check-circle-b.svg"
-                    alt="close"
-                    class="w-6 h-6" />
-                </template>
-              </BotaoPadrao>
-            </div>
+					<div class="flex w-full justify-between">
+						<div class="flex">
+							<BotaoPadrao
+								texto="Excel"
+								@clique="gerarExcel()">
+								<img
+									src="@/assets/icons/excel-b.svg"
+									alt=""
+									class="w-7 h-7" />
+							</BotaoPadrao>
+						</div>
+						<div class="flex gap-3">
+							<BotaoPadrao
+								texto="Criar SS"
+								@clique="mostrarDialogCriarSolicitacao = true">
+								<template v-slot>
+									<img
+										src="@/assets/icons/add-b.svg"
+										alt="close"
+										class="w-7 h-7" />
+								</template>
+							</BotaoPadrao>
+							<BotaoPadrao
+								v-if="listaSelect.includes(etapa_id)"
+								texto="Processar SS"
+								:disabled="selecionados.length === 0"
+								@clique="escolherProcessar()">
+								<template v-slot>
+									<img
+										src="@/assets/icons/check-circle-b.svg"
+										alt="close"
+										class="w-6 h-6" />
+								</template>
+							</BotaoPadrao>
+						</div>
 					</div>
 				</div>
 			</template>
@@ -223,13 +246,13 @@
 				ss_id = null
 			"
 			:ss_id="ss_id"
-      @cancelado="canceladoSS"
+			@cancelado="canceladoSS"
 			@adicionado="ssAdicionado"
 			@editado="ssEditado" />
 		<DialogComentariosSS
 			:ss_id="ss_id"
 			v-if="mostrarDialogComentariosSS"
-      :podeComentar="podeComentar"
+			:podeComentar="podeComentar"
 			@cancelar="
 				mostrarDialogComentariosSS = false
 				ss_id = null
@@ -243,10 +266,8 @@
 		<DialogAnaliseDemanda
 			:solicitacao="ss"
 			v-if="mostrarDialogAnaliseDemanda"
-      @negado="negadoSS"
-			@cancelar="
-				mostrarDialogAnaliseDemanda = false;
-			"
+			@negado="negadoSS"
+			@cancelar="mostrarDialogAnaliseDemanda = false"
 			@definido="definidoComprador" />
 
 		<DialogProcessarSS
@@ -256,9 +277,9 @@
 			:ss="ss"
 			v-if="mostrarDialogProcessarSS"
 			@processado="processadoSS"
-      @retornado="retornadoSS"
+			@retornado="retornadoSS"
 			@negado="negadoSS"
-      @compradorAlterado="compradorAlterado"
+			@compradorAlterado="compradorAlterado"
 			:typeInput="typeInputDialog"
 			:etapa_id="etapa_id"
 			@cancelar="
@@ -269,10 +290,10 @@
 		<DialogProcessarMultSS
 			:solicitacoes="selecionados"
 			v-if="mostrarDialogProcessarMultSS"
-      :etapa_id="etapa_id"
+			:etapa_id="etapa_id"
 			@processado="processadoSS"
-      @retornado="retornadoSS"
-      @negado="negadoSS"
+			@retornado="retornadoSS"
+			@negado="negadoSS"
 			@cancelar="mostrarDialogProcessarMultSS = false"
 			:pularProxEtapa="pularProxEtapa" />
 
@@ -292,7 +313,7 @@
 	import DialogCriarSS from "~/components/Dialogs/Suprimentos/SS/DialogCriarSS.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	// import AppTabela from "~/components/Ui/AppTabela.vue"
-  import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
+	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
 	import DialogComentariosSS from "~/components/Dialogs/Suprimentos/SS/DialogComentariosSS.vue"
 	import BotaoIconeEditar from "~/components/Ui/Buttons/BotaoIconeEditar.vue"
 	import DialogAnaliseDemanda from "~/components/Dialogs/Suprimentos/SS/DialogAnaliseDemanda.vue"
@@ -302,18 +323,18 @@
 	import DialogDetalhesSS from "~/components/Dialogs/Suprimentos/SS/DialogDetalhesSS.vue"
 
 	import { buscarEtapaSS } from "@/mixins/buscarInformacoes"
-  import gerarExcel from "~/functions/gerarExcel";
-  import AppTooltip from "~/components/Ui/AppTooltip.vue";
+	import gerarExcel from "~/functions/gerarExcel"
+	import AppTooltip from "~/components/Ui/AppTooltip.vue"
 	export default {
 		mixins: [buscarEtapaSS],
 		name: "Solicitacoes",
 		components: {
-      AppTooltip,
+			AppTooltip,
 			RodapePagina,
 			BotaoPadrao,
 			DialogCriarSS,
 			AppAlerta,
-      TabelaPadrao,
+			TabelaPadrao,
 			DialogComentariosSS,
 			BotaoIconeEditar,
 			DialogAnaliseDemanda,
@@ -348,7 +369,7 @@
 				typeInputDialog: "text",
 				mostrarDialogDetalhesSS: false,
 				carregandoTabela: false,
-        usuario_ss_id: false,
+				usuario_ss_id: false,
 			}
 		},
 		computed: {
@@ -374,7 +395,7 @@
 				return []
 			},
 			listaSelect() {
-        let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
+				let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
 
 				if (permissoes.includes("ss_gerenciamento")) {
 					return [9, 11, 12, 18, 19, 20, 21, 22]
@@ -414,7 +435,7 @@
 					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-8" })
 				}
 
-        if (this.listaSelect.includes(this.etapa_id)) {
+				if (this.listaSelect.includes(this.etapa_id)) {
 					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true, largura: "w-10" })
 				}
 
@@ -423,18 +444,16 @@
 				}
 				return cabecalho
 			},
-      podeComentar(){
-        let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
+			podeComentar() {
+				let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
 
-        let permEspeciais = [
-          "ss_comprador",
-          "ss_gerenciamento",
-          "ss_sap",
-          "ss_juridico",
-        ]
+				let permEspeciais = ["ss_comprador", "ss_gerenciamento", "ss_sap", "ss_juridico"]
 
-        return permEspeciais.some(i => permissoes.includes(i)) || this.usuario_ss_id == this.$auth.user.id
-      }
+				return (
+					permEspeciais.some((i) => permissoes.includes(i)) ||
+					this.usuario_ss_id == this.$auth.user.id
+				)
+			},
 		},
 		async mounted() {
 			this.etapas = await this.buscarEtapaSS()
@@ -455,8 +474,7 @@
 
 				let index = this.dados.findIndex((o) => (o.id = solicitacao.id))
 
-        if(solicitacao.etapa_ss_id === 1)
-				  this.dados.splice(index, 1)
+				if (solicitacao.etapa_ss_id === 1) this.dados.splice(index, 1)
 			},
 			cancelar() {
 				this.card_id = null
@@ -467,7 +485,8 @@
 			},
 			escolherProcessar() {
 				if (this.etapa_id === 7) this.mostrarDialogAnaliseDemanda = true
-				if (this.listaSelect.includes(this.etapa_id) && this.etapa_id !== 7 ) this.mostrarDialogProcessarMultSS = true
+				if (this.listaSelect.includes(this.etapa_id) && this.etapa_id !== 7)
+					this.mostrarDialogProcessarMultSS = true
 			},
 			async buscarSolicitacoes() {
 				this.carregandoTabela = true
@@ -484,19 +503,18 @@
 
 				let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
 
-        let permEspeciais = [
-          "ss_comprador",
-          "ss_gerenciamento",
-          "ss_sap",
-          "ss_juridico",
-          "aprovar_ss_site_manager",
-          "aprovar_ss_controle"
-        ]
+				let permEspeciais = [
+					"ss_comprador",
+					"ss_gerenciamento",
+					"ss_sap",
+					"ss_juridico",
+					"aprovar_ss_site_manager",
+					"aprovar_ss_controle",
+				]
 
-        let temPermissao = permEspeciais.some(i => permissoes.includes(i))
+				let temPermissao = permEspeciais.some((i) => permissoes.includes(i))
 
-        if(!temPermissao)
-          filtros['setor_id'] = this.$auth.user.setor_id
+				if (!temPermissao) filtros["setor_id"] = this.$auth.user.setor_id
 
 				let resp = await this.$axios.$get("/suprimentos/ss/buscar_todas", {
 					params: {
@@ -508,7 +526,7 @@
 
 				if (!resp.falha) {
 					let SSs = resp.dados.SSs
-          let total = resp.dados.total
+					let total = resp.dados.total
 
 					this.dados = SSs
 					this.totalItens = total
@@ -517,10 +535,10 @@
 			},
 			async definidoComprador(ss) {
 				// for (let ss of SSs) {
-					let index = this.dados.findIndex((obj) => {
-						return (obj.id = ss)
-					})
-					this.dados.splice(index, 1)
+				let index = this.dados.findIndex((obj) => {
+					return (obj.id = ss)
+				})
+				this.dados.splice(index, 1)
 				// }
 
 				this.mostrarDialogAnaliseDemanda = false
@@ -544,143 +562,186 @@
 				this.selecionados = []
 			},
 
-      async retornadoSS(solicitacoes){
-        for (let ss of solicitacoes) {
-          let index = this.dados.findIndex((obj) => {
-            return (obj.id = ss)
-          })
-          this.dados.splice(index, 1)
-        }
+			async retornadoSS(solicitacoes) {
+				for (let ss of solicitacoes) {
+					let index = this.dados.findIndex((obj) => {
+						return (obj.id = ss)
+					})
+					this.dados.splice(index, 1)
+				}
 
-        this.mostrarDialogProcessarSS = false
-        this.mostrarDialogProcessarMultSS = false
-        this.mostrarAlerta = true
-        this.textoAlerta = "Solicitação voltou etapa com sucesso!"
-        this.ss = null
-        this.selecionados = []
-      },
+				this.mostrarDialogProcessarSS = false
+				this.mostrarDialogProcessarMultSS = false
+				this.mostrarAlerta = true
+				this.textoAlerta = "Solicitação voltou etapa com sucesso!"
+				this.ss = null
+				this.selecionados = []
+			},
 
-      async negadoSS(solicitacoes){
-        for (let ss of solicitacoes) {
-          let index = this.dados.findIndex((obj) => (obj.id = ss))
-          this.dados.splice(index, 1)
+			async negadoSS(solicitacoes) {
+				for (let ss of solicitacoes) {
+					let index = this.dados.findIndex((obj) => (obj.id = ss))
+					this.dados.splice(index, 1)
 
-          this.mostrarDialogProcessarSS = false
-          this.mostrarDialogAnaliseDemanda = false
-          this.mostrarDialogProcessarMultSS = false
-          this.mostrarAlerta = true
-          this.textoAlerta = "Solicitação negada com sucesso!"
-          this.ss = null
-          this.selecionados = []
-        }
-      },
+					this.mostrarDialogProcessarSS = false
+					this.mostrarDialogAnaliseDemanda = false
+					this.mostrarDialogProcessarMultSS = false
+					this.mostrarAlerta = true
+					this.textoAlerta = "Solicitação negada com sucesso!"
+					this.ss = null
+					this.selecionados = []
+				}
+			},
 
-      async compradorAlterado({ comprador, solicitacoes}){
-        for(let id of solicitacoes){
-          let idx = this.dados.findIndex(o => o.id === id)
+			async compradorAlterado({ comprador, solicitacoes }) {
+				for (let id of solicitacoes) {
+					let idx = this.dados.findIndex((o) => o.id === id)
 
-          if(idx >= 0){
-            this.dados[idx].comprador.nome = comprador
-          }
-        }
-      },
+					if (idx >= 0) {
+						this.dados[idx].comprador.nome = comprador
+					}
+				}
+			},
 
-      async canceladoSS(id){
-        this.mostrarDialogCriarSolicitacao = false
-        this.mostrarAlerta = true
-        this.textoAlerta = "Solicitação cancelada com sucesso!"
+			async canceladoSS(id) {
+				this.mostrarDialogCriarSolicitacao = false
+				this.mostrarAlerta = true
+				this.textoAlerta = "Solicitação cancelada com sucesso!"
 
-        let index = this.dados.findIndex((o) => (o.id = id))
+				let index = this.dados.findIndex((o) => (o.id = id))
 
-        this.dados.splice(index, 1)
-      },
+				this.dados.splice(index, 1)
+			},
 
 			verDetalhesSS(dados) {
 				this.ss_id = dados.id
 				this.mostrarDialogDetalhesSS = true
 			},
 
-      async gerarExcel(){
-        let dados = this.dados
+			async gerarExcel() {
+				let dados = this.dados
 
-        let cabecalho = [
-          "Acompanhamento",
-          "Situação",
-          "Nat. Operação",
-          "Tipo Solicitação",
-          "Prazo de Execução",
-          "Emissão",
-          "Necessidade",
-          "Etapa",
-          "Comprador",
-          "Solicitante",
-          "Aprov. Controle",
-          "Aprov. Gestor",
-          "Aprov. Site Manager",
-          "Fornecedores",
-          "Data PATEC",
-          "Data Negociação",
-          "Data MCO",
-          "Data Envio Handover",
-          "Data de Finalização",
-          "Abrangência Escopo"
-        ]
-        let nomeArquivo
+				let cabecalho = [
+					"Acompanhamento",
+					"Situação",
+					"Nat. Operação",
+					"Tipo Solicitação",
+					"Prazo de Execução",
+					"Emissão",
+					"Necessidade",
+					"Etapa",
+					"Comprador",
+					"Solicitante",
+					"Aprov. Controle",
+					"Aprov. Gestor",
+					"Aprov. Site Manager",
+					"Análise demanda",
+					"Fornecedores",
+					"Data PATEC",
+					"Data Negociação",
+					"Data MCO",
+					"Data Envio Handover",
+					"Data de Finalização",
+					"Abrangência Escopo",
+				]
+				let nomeArquivo
 
-        nomeArquivo = "solicitacoes_servico"
+				nomeArquivo = "solicitacoes_servico"
 
-        let itens = []
-        for (let item of dados) {
-          let temp = []
+				let itens = []
+				for (let item of dados) {
+					let temp = []
 
-          let data_finalizacao = null
-          if(item.etapa_ss_id === 5 || item.etapa_ss_id === 6){
-            if (item.ComentarioSS) {
-              let finalizado = item.ComentarioSS.find(o => o.etapa_ss_destino_id === 6 || o.etapa_ss_destino_id === 5)
-              if (finalizado) {
-                data_finalizacao = finalizado.createdAt
-              }
-            }
-          }
+					let data_finalizacao = null
+					if (item.etapa_ss_id === 5 || item.etapa_ss_id === 6) {
+						if (item.ComentarioSS) {
+							let finalizado = item.ComentarioSS.find(
+								(o) => o.etapa_ss_destino_id === 6 || o.etapa_ss_destino_id === 5,
+							)
+							if (finalizado) {
+								data_finalizacao = finalizado.createdAt
+							}
+						}
+					}
 
-          temp.push(item.numero_acompanhamento ? item.numero_acompanhamento : "")
-          temp.push(item.etapa_ss_id === 6 ? 'Finalizado' : !this.$dayjs().isAfter(item.data_necessidade, 'day') ? 'No prazo' : 'Atrasado')
-          temp.push(item.natureza_operacao ? item.natureza_operacao : "")
-          temp.push(item.tipo_solicitacao ? item.tipo_solicitacao : "")
-          temp.push(item.data_fim ? `${this.$dayjs(item.data_fim).diff(item.data_inicio, "day")} dias` : "")
-          temp.push(item.createdAt ? this.$dayjs(item.createdAt).format("DD/MM/YYYY") : "")
-          temp.push(item.data_necessidade ? this.$dayjs(item.data_necessidade).format("DD/MM/YYYY") : "")
-          temp.push(item.EtapaSS ? item.EtapaSS.nome : "")
-          temp.push(item.comprador ? item.comprador.nome : "")
-          temp.push(item.Usuario ? item.Usuario.nome : "")
-          temp.push(item.data_aprov_controle ? this.$dayjs(item.data_aprov_controle).format("DD/MM/YYYY") : "")
-          temp.push(item.data_aprov_setor ? this.$dayjs(item.data_aprov_setor).format("DD/MM/YYYY") : "")
-          temp.push(item.data_aprov_site_manager ? this.$dayjs(item.data_aprov_site_manager).format("DD/MM/YYYY") : "")
-          temp.push(item.FornecedorSS.length > 0 ? item.FornecedorSS.map(o => o.nome).join("; ") : "")
-          temp.push(item.data_patec ? this.$dayjs(item.data_patec).format("DD/MM/YYYY") : "")
-          temp.push(item.data_negociacao ? this.$dayjs(item.data_negociacao).format("DD/MM/YYYY") : "")
-          temp.push(item.data_mco ? this.$dayjs(item.data_mco).format("DD/MM/YYYY") : "")
-          temp.push(item.data_envio_handover ? this.$dayjs(item.data_envio_handover).format("DD/MM/YYYY") : "")
-          temp.push(data_finalizacao ? this.$dayjs(data_finalizacao).format("DD/MM/YYYY") : "")
-          temp.push(item.abrangencia_escopo ? item.abrangencia_escopo : "")
-          itens.push(temp)
-        }
+					let dataAnaliseDemanda = null
+					if (item.ComentarioSS.length > 0) {
+						let todasAnaliseDemanda = item.ComentarioSS.filter((o) => {
+							return o.etapa_ss_origem_id === 7 && o.etapa_ss_destino_id === 8
+						})
 
-        gerarExcel(cabecalho, itens, nomeArquivo)
-        this.gerandoExcelMeusAgendamentos = false
-      },
+						if (todasAnaliseDemanda.length > 0) {
+							let analiseDemanda = todasAnaliseDemanda.pop()
+							dataAnaliseDemanda = this.$dayjs(analiseDemanda.createdAt).format("DD/MM/YYYY")
+						}
+					}
 
+					temp.push(item.numero_acompanhamento ? item.numero_acompanhamento : "")
+					temp.push(
+						item.etapa_ss_id === 6
+							? "Finalizado"
+							: !this.$dayjs().isAfter(item.data_necessidade, "day")
+							? "No prazo"
+							: "Atrasado",
+					)
+					temp.push(item.natureza_operacao ? item.natureza_operacao : "")
+					temp.push(item.tipo_solicitacao ? item.tipo_solicitacao : "")
+					temp.push(
+						item.data_fim ? `${this.$dayjs(item.data_fim).diff(item.data_inicio, "day")} dias` : "",
+					)
+					temp.push(item.createdAt ? this.$dayjs(item.createdAt).format("DD/MM/YYYY") : "")
+					temp.push(
+						item.data_necessidade ? this.$dayjs(item.data_necessidade).format("DD/MM/YYYY") : "",
+					)
+					temp.push(item.EtapaSS ? item.EtapaSS.nome : "")
+					temp.push(item.comprador ? item.comprador.nome : "")
+					temp.push(item.Usuario ? item.Usuario.nome : "")
+					temp.push(
+						item.data_aprov_controle
+							? this.$dayjs(item.data_aprov_controle).format("DD/MM/YYYY")
+							: "",
+					)
+					temp.push(dataAnaliseDemanda ? dataAnaliseDemanda : "")
+					temp.push(
+						item.data_aprov_setor ? this.$dayjs(item.data_aprov_setor).format("DD/MM/YYYY") : "",
+					)
+					temp.push(
+						item.data_aprov_site_manager
+							? this.$dayjs(item.data_aprov_site_manager).format("DD/MM/YYYY")
+							: "",
+					)
+					temp.push(
+						item.FornecedorSS.length > 0 ? item.FornecedorSS.map((o) => o.nome).join("; ") : "",
+					)
+					temp.push(item.data_patec ? this.$dayjs(item.data_patec).format("DD/MM/YYYY") : "")
+					temp.push(
+						item.data_negociacao ? this.$dayjs(item.data_negociacao).format("DD/MM/YYYY") : "",
+					)
+					temp.push(item.data_mco ? this.$dayjs(item.data_mco).format("DD/MM/YYYY") : "")
+					temp.push(
+						item.data_envio_handover
+							? this.$dayjs(item.data_envio_handover).format("DD/MM/YYYY")
+							: "",
+					)
+					temp.push(data_finalizacao ? this.$dayjs(data_finalizacao).format("DD/MM/YYYY") : "")
+					temp.push(item.abrangencia_escopo ? item.abrangencia_escopo : "")
+					itens.push(temp)
+				}
 
-      calcularPrevisao(item) {
-        if(item.natureza_operacao === 'urgente' && item.data_aprov_site_manager)
-          return `${this.$dayjs(item.data_aprov_site_manager).add(28, 'day')}`
-        else if(item.natureza_operacao === 'maquina parada' && item.data_aprov_setor)
-          return `${this.$dayjs(item.data_aprov_setor).add(14, 'day')}`
-        else if (item.natureza_operacao === 'normal' && item.data_aprov_setor)
-          return `${this.$dayjs(item.data_aprov_setor).add(45, 'day')}`
+				gerarExcel(cabecalho, itens, nomeArquivo)
+				this.gerandoExcelMeusAgendamentos = false
+			},
 
-        return ""
-      },
+			calcularPrevisao(item) {
+				if (item.natureza_operacao === "urgente" && item.data_aprov_site_manager)
+					return `${this.$dayjs(item.data_aprov_site_manager).add(28, "day")}`
+				else if (item.natureza_operacao === "maquina parada" && item.data_aprov_setor)
+					return `${this.$dayjs(item.data_aprov_setor).add(14, "day")}`
+				else if (item.natureza_operacao === "normal" && item.data_aprov_setor)
+					return `${this.$dayjs(item.data_aprov_setor).add(45, "day")}`
+
+				return ""
+			},
 		},
 		watch: {
 			etapa_id(valor) {
@@ -727,7 +788,7 @@
 					this.typeInputDialog = "text"
 				}
 
-        this.selecionados = []
+				this.selecionados = []
 			},
 		},
 	}
