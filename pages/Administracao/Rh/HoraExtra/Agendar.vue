@@ -499,8 +499,8 @@
 				let idx = this.dados.findIndex((o) => o.id === id)
 
 				if (idx >= 0) {
-					this.dados[idx]["turno.descricao"] = turno
-					this.dados[idx]["encarregado_lider.nome"] = encarregadoLider
+					this.dados[idx].Turno = turno
+					this.dados[idx].EncarregadoLider = encarregadoLider
 					this.dados[idx].ativo = false
 				}
 
@@ -510,9 +510,7 @@
 			},
 
 			temCamposVazio(item) {
-				let campos = ["encarregado_lider.nome", "turno.descricao"]
-
-				if (campos.some((o) => item[o] === null)) {
+				if (!item.EncarregadoLider || !item.Turno) {
 					item["ativo"] = true
 					return true
 				}
@@ -657,6 +655,7 @@
 
 				if (!resp.falha) {
 					let funcionarios = resp.dados.funcionarios
+					console.log(funcionarios)
 					this.totalItens = parseInt(resp.dados.totalItens)
 					this.dados = funcionarios
 					this.carregandoTabela = false

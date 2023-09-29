@@ -129,8 +129,8 @@
 						let { encarregadoLider, turno } = resp.dados
 						this.$emit("editado", {
 							id,
-							encarregadoLider: encarregadoLider.nome,
-							turno: turno.descricao,
+							encarregadoLider: { id: encarregado_lider_id, nome: encarregadoLider.nome },
+							turno: { id: turno_id, descricao: turno.descricao },
 						})
 					}
 				}
