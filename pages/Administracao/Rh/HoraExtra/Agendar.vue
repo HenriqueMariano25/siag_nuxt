@@ -655,7 +655,6 @@
 
 				if (!resp.falha) {
 					let funcionarios = resp.dados.funcionarios
-					console.log(funcionarios)
 					this.totalItens = parseInt(resp.dados.totalItens)
 					this.dados = funcionarios
 					this.carregandoTabela = false

@@ -847,7 +847,7 @@
 					let funcionario = {
 						nome: func.nome,
 						chapa: func.chapa,
-						cargo: func.chapa,
+						cargo: func.cargo,
 						data_admissao: func.data_admissao,
 						direto_indireto: func.direto_indireto,
 						cpf: func.cpf,
