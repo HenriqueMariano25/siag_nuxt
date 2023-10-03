@@ -701,7 +701,7 @@
 							? this.$dayjs(item.data_aprov_controle).format("DD/MM/YYYY")
 							: "",
 					)
-					temp.push(dataAnaliseDemanda ? dataAnaliseDemanda : "")
+
 					temp.push(
 						item.data_aprov_setor ? this.$dayjs(item.data_aprov_setor).format("DD/MM/YYYY") : "",
 					)
@@ -710,6 +710,7 @@
 							? this.$dayjs(item.data_aprov_site_manager).format("DD/MM/YYYY")
 							: "",
 					)
+          temp.push(dataAnaliseDemanda ? dataAnaliseDemanda : "")
 					temp.push(
 						item.FornecedorSS.length > 0 ? item.FornecedorSS.map((o) => o.nome).join("; ") : "",
 					)
