@@ -2,44 +2,67 @@
 	<div class="w-full">
 		<CabecalhoPagina titulo="CARROS" />
 		<div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11">
-      <TabelaPadrao
-        :cabecalho="cabecalho"
-        :dados="dados"
-        :itensPorPagina="itensPorPagina"
-        :pagina="pagina"
-        @pagina="pagina = $event"
-        @filtros="filtros = $event"
-        @ordem="ordem = $event"
-        :totalItens="totalItens"
-        altura="calc(100vh - 179px)"
-        @atualizar="buscarRota"
-        :temDetalhes="false">
-        <template v-slot:[`body.acoes`]="{ item }">
-          <div class="flex gap-2">
-            <BotaoPadrao icone>
-              <img src="@/assets/icons/edit-b.svg" alt="" class="w-7 h-7">
-            </BotaoPadrao>
-            <BotaoPadrao icone @clique="carro = item; mostrarDialogChecklist = true">
-              <img src="@/assets/icons/checklist-b.svg" alt="" class="w-7 h-7">
-            </BotaoPadrao>
-          </div>
-        </template>
-        <template v-slot:[`body.checklist`]="{ item }">
-          <div>
-            <div class="bg-orange-400 text-md text-center rounded px-2 text-black font-bold">
-              Em aberto
-            </div>
-          </div>
-        </template>
-        <template v-slot:[`body.Setor.nome`]="{ item }">
+			<TabelaPadrao
+				:cabecalho="cabecalho"
+				:dados="dados"
+				:itensPorPagina="itensPorPagina"
+				:pagina="pagina"
+				@pagina="pagina = $event"
+				@filtros="filtros = $event"
+				@ordem="ordem = $event"
+				:totalItens="totalItens"
+				altura="calc(100vh - 179px)"
+				@atualizar="buscarCarros"
+				:temDetalhes="false">
+				<template v-slot:[`body.acoes`]="{ item }">
+					<div class="flex gap-2">
+						<BotaoPadrao
+							icone
+							@clique="
+								carro = item
+								mostrarDialogCriarCarro = true
+							">
+							<img
+								src="@/assets/icons/edit-b.svg"
+								alt=""
+								class="w-7 h-7" />
+						</BotaoPadrao>
+						<BotaoPadrao
+							icone
+							@clique="
+								carro = item
+								mostrarDialogChecklist = true
+							">
+							<img
+								src="@/assets/icons/checklist-b.svg"
+								alt=""
+								class="w-7 h-7" />
+						</BotaoPadrao>
+					</div>
+				</template>
+				<template v-slot:[`body.checklist`]="{ item }">
+					<div>
+						<div class="bg-orange-400 text-md text-center rounded px-2 text-black font-bold">
+							Em aberto
+						</div>
+					</div>
+				</template>
+				<template v-slot:[`body.Setor.nome`]="{ item }">
 					<span
-            class="whitespace-nowrap"
-            v-if="item.Setor">
+						class="whitespace-nowrap"
+						v-if="item.Setor">
 						{{ item.Setor.nome }}
 					</span>
-        </template>
-      </TabelaPadrao>
-    </div>
+				</template>
+				<template v-slot:[`body.StatusCarro.descricao`]="{ item }">
+					<span
+						class="whitespace-nowrap"
+						v-if="item.StatusCarro">
+						{{ item.StatusCarro.descricao }}
+					</span>
+				</template>
+			</TabelaPadrao>
+		</div>
 		<RodapePagina>
 			<template v-slot>
 				<div class="flex justify-end w-full">
@@ -56,23 +79,30 @@
 					</div>
 				</div>
 			</template>
-
 		</RodapePagina>
 		<DialogCriarCarro
 			v-if="mostrarDialogCriarCarro"
-      :carro="null"
-      @cadastrado="carroCadastrado"
+			:carro="carro"
+			@cadastrado="carroCadastrado"
+			@editado="carroEditado"
+			@deletado="carroDeletado"
 			@cancelar="
 				mostrarDialogCriarCarro = false
 				carro = null
 			" />
-    <DialogChecklist v-if="mostrarDialogChecklist" @cancelar="mostrarDialogChecklist = false; carro = null" :carro="carro"></DialogChecklist>
-    <AppAlerta
-      tipo="sucesso"
-      :mostrar="mostrarAlerta"
-      @escondeu="mostrarAlerta = false">
-      {{ textoAlerta }}
-    </AppAlerta>
+		<DialogChecklist
+			v-if="mostrarDialogChecklist"
+			@cancelar="
+				mostrarDialogChecklist = false
+				carro = null
+			"
+			:carro="carro"></DialogChecklist>
+		<AppAlerta
+			tipo="sucesso"
+			:mostrar="mostrarAlerta"
+			@escondeu="mostrarAlerta = false">
+			{{ textoAlerta }}
+		</AppAlerta>
 	</div>
 </template>
 
@@ -81,15 +111,15 @@
 	import RodapePagina from "~/components/Shared/RodapePagina.vue"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import DialogCriarCarro from "~/components/Dialogs/Administracao/Transporte/Carros/DialogCriarCarro.vue"
-  import AppAlerta from "~/components/Ui/AppAlerta.vue";
-  import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
-  import DialogChecklist from "~/components/Dialogs/Administracao/Transporte/Carros/DialogChecklist.vue";
+	import AppAlerta from "~/components/Ui/AppAlerta.vue"
+	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
+	import DialogChecklist from "~/components/Dialogs/Administracao/Transporte/Carros/DialogChecklist.vue"
 
 	export default {
 		components: {
-      DialogChecklist,
-      TabelaPadrao,
-      AppAlerta,
+			DialogChecklist,
+			TabelaPadrao,
+			AppAlerta,
 			CabecalhoPagina,
 			RodapePagina,
 			BotaoPadrao,
@@ -99,41 +129,68 @@
 			return {
 				mostrarDialogCriarCarro: false,
 				carro: null,
-        mostrarAlerta: false,
-        textoAlerta: null,
-        cabecalho: [
-          { nome: "", valor: "acoes", largura: "w-24" },
-          { nome: "Checklist", valor: "checklist", largura: "w-[150px]" },
-          { nome: "Marca/Modelo", valor: "marca_modelo", filtro: true, ordenar: true },
-          { nome: "Placa", valor: "placa", filtro: true, ordenar: true },
-          { nome: "CGA", valor: "cga", ordenar: true },
-          { nome: "Setor", valor: "Setor.nome", filtro: true, ordenar: true },
-        ],
-        filtros: {},
-        ordem: null,
-        totalItens: 0,
-        itensPorPagina: 100,
-        pagina: 1,
-        dados: [
-          { id: 1,
-            marca_modelo: 'volks/fusca',
-            placa: 'ABC1D23',
-            cga: '1234',
-            Setor: {
-            nome: "Administração"
-            }
-          }
-        ],
-        mostrarDialogChecklist: false
+				mostrarAlerta: false,
+				textoAlerta: null,
+				cabecalho: [
+					{ nome: "", valor: "acoes", largura: "w-24" },
+					{ nome: "Checklist", valor: "checklist", largura: "w-[150px]" },
+					{ nome: "Marca/Modelo", valor: "marca_modelo", filtro: true, ordenar: true },
+					{ nome: "Placa", valor: "placa", filtro: true, ordenar: true },
+					{ nome: "CGA", valor: "cga", ordenar: true },
+					{ nome: "Setor", valor: "Setor.nome", filtro: true, ordenar: true },
+					{ nome: "Status", valor: "StatusCarro.descricao", filtro: true, ordenar: true },
+				],
+				filtros: {},
+				ordem: null,
+				totalItens: 0,
+				itensPorPagina: 100,
+				pagina: 1,
+				dados: [],
+				mostrarDialogChecklist: false,
 			}
 		},
-    methods: {
-      carroCadastrado(){
+		mounted() {
+			this.buscarCarros()
+		},
+		methods: {
+			carroCadastrado(carro) {
+				this.dados.push(carro)
+
+				this.mostrarDialogCriarCarro = false
+				this.textoAlerta = "Carro cadastrado com sucesso!"
+				this.mostrarAlerta = true
+			},
+      carroEditado(carro){
+
+        let idx = this.dados.findIndex( o => o.id === carro.id)
+
+        if(idx >= 0){
+          this.dados[idx] = Object.assign(this.dados[idx], carro)
+
+          this.mostrarDialogCriarCarro = false
+          this.textoAlerta = "Carro editado com sucesso!"
+          this.mostrarAlerta = true
+        }
+      },
+      carroDeletado(id){
+        let idx = this.dados.findIndex(o => o.id === id)
+
+        this.dados.splice(idx, 1)
+
         this.mostrarDialogCriarCarro = false
-        this.textoAlerta = "Carro cadastrado com sucesso!"
+        this.textoAlerta = "Carro deletado com sucesso!"
         this.mostrarAlerta = true
-      }
-    }
+      },
+			async buscarCarros() {
+				let resp = await this.$axios.$get("/transporte/carros/buscar_todos")
+
+				console.log(resp)
+				if (!resp.falha) {
+					this.dados = resp.dados.carros
+				}
+			},
+
+		},
 	}
 </script>
 

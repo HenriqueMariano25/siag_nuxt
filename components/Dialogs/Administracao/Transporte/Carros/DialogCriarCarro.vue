@@ -2,6 +2,8 @@
 	<div>
 		<BaseDialog
 			:titulo="carro === null ? 'Criar carro' : `Editando carro`"
+      btn-deletar
+      @deletar="deletarCarro"
 			@cancelar="cancelar()">
 			<template v-slot:corpo>
 				<div class="px-2 grid grid-cols-2 gap-2">
@@ -33,10 +35,16 @@
 						:options="setores"
 						obrigatorio
 						v-model="carroLocal.setor_id" />
+          <AppFormSelectCompleto
+            id="status"
+            label="Status"
+            :options="statusCarro"
+            obrigatorio
+            v-model="carroLocal.status_carro_id" />
 				</div>
 			</template>
       <template v-slot:rodape-btn-direito>
-        <BotaoPadrao texto="salvar" @clique="cadastrarCarro()">
+        <BotaoPadrao texto="salvar" @clique="carro ? editarCarro() : cadastrarCarro()">
           <img src="../../../../../assets/icons/save-b.svg" alt="" class="w-7 h-7">
         </BotaoPadrao>
       </template>
@@ -66,8 +74,10 @@
 					placa: null,
 					cga: null,
 					setor_id: null,
+          status_carro_id: 1,
 				},
 				setores: [],
+        statusCarro: []
 			}
 		},
 		async mounted() {
@@ -75,22 +85,81 @@
 			this.setores = setores.map((o) => {
 				return { id: o.id, nome: o.nome }
 			})
+      await this.buscarStatus()
+
+      if(this.carro){
+        this.carroLocal = Object.assign({}, this.carro)
+      }
 		},
 		methods: {
       cancelar(){
         this.$emit("cancelar")
       },
-      async cadastrarCarro(){
-        // let { marca_modelo, placa, cga, setor_id } = this.carroLocal
-        //
-        // try {
-        //
-        // }catch (e){
-        //
-        // }
+      async buscarStatus(){
+        let resp = await this.$axios.$get('/transporte/status_carro/buscar')
 
-        this.$emit("cadastrado")
+        if(!resp.falha){
+          let status = resp.dados.status
+
+          this.statusCarro = status.map((o) => {
+            return { id: o.id, nome: o.descricao }
+          })
+        }
       },
+      async cadastrarCarro(){
+        let { marca_modelo, placa, cga, setor_id, status_carro_id
+        } = this.carroLocal
+
+        try {
+          let resp = await this.$axios.$post("/transporte/carro/cadastrar", {
+            marca_modelo,
+            placa,
+            cga,
+            setor_id,
+            status_carro_id })
+
+          if(!resp.falha){
+            let carro = resp.dados.carro
+
+            this.$emit("cadastrado", carro)
+          }
+
+        }catch (e){
+          console.log(e);
+        }
+      },
+      async editarCarro(){
+        let {
+          marca_modelo, placa, cga, setor_id, status_carro_id, id
+        } = this.carroLocal
+
+        let resp = await this.$axios.$post("/transporte/carro/editar", {
+          id,
+          marca_modelo,
+          placa,
+          cga,
+          setor_id,
+          status_carro_id
+        })
+
+        if (!resp.falha) {
+          let carro = resp.dados.carro
+
+          this.$emit("editado", carro)
+        }
+      },
+
+      async deletarCarro(){
+        let { id } = this.carro
+
+        let resp = await this.$axios.$post("/transporte/carro/deletar", {
+          id,
+        })
+
+        if (!resp.falha) {
+          this.$emit("deletado", id )
+        }
+      }
     },
 	}
 </script>
