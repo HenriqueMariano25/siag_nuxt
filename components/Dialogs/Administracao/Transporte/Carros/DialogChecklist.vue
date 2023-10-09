@@ -2,6 +2,7 @@
 	<div>
 		<BaseDialog
 			largura="w-10/12"
+			:carregando="carregando"
 			titulo="CHECKLIST"
 			@cancelar="cancelar()">
 			<template v-slot:corpo>
@@ -15,134 +16,229 @@
 					:tabs="tabs"
 					@tab="tab = $event">
 					<template v-slot:[`tab.diario`]="{ item }">
-						<div class="flex flex-col gap-2 p-2 border border-gray-400 bg-gray-200 mx-1" v-if="!mostrarFechamento">
-              <div class="bg-gray-800 -m-2 px-2 text-white text-lg mb-0">
-                <span>ABERTURA</span>
-              </div>
-							<div class="grid grid-cols-3 gap-2">
-								<AppFormInput
-									label="Data de abertura"
-									type="date"
-									obrigatorio
-									id="data_abertura"
-									v-model="checklist.data_abertura" />
-								<AppFormInput
-									label="KM inicial"
-									type="number"
-									obrigatorio
-									id="km_inicial"
-									placeholder="Ex: 123456"
-									v-model="checklist.km_inicial" />
-								<div class="flex gap-2 items-center">
-									<span class="ml-2">Gasolina</span>
-									<input
-										type="range"
-										id="gasolina"
-										class="w-full"
-										min="0"
-										max="80"
-										step="20"
-										v-model="checklist.gasolina" />
+						<div class="max-h-[500px] overflow-y-auto">
+							<div
+								class="flex flex-col"
+								v-if="!mostrarConcluido">
+								<div class="bg-gray-800 px-2 text-white text-lg mx-1 justify-between">
 									<div
-										class="w-[150px] text-center rounded border px-2"
-										:class="[corGasolina]">
-										<span>{{ descricaoGasolina }}</span>
+										v-if="mostrarFechamento"
+										:class="{ 'cursor-pointer': mostrarFechamento }"
+										@click="formAberturaFechado = !formAberturaFechado"
+										class="flex justify-between">
+										<span>ABERTURA</span>
+										<img
+											src="@/assets/icons/down-chevron-w.svg"
+											alt=""
+											class="w-7 h-7"
+											v-if="formAberturaFechado" />
+										<img
+											src="@/assets/icons/up-chevron-w.svg"
+											alt=""
+											class="w-7 h-7"
+											v-if="!formAberturaFechado" />
+									</div>
+									<span v-else>ABERTURA</span>
+								</div>
+								<div :class="{ 'esconder-abertura': formAberturaFechado }">
+									<div
+										class="flex flex-col gap-2 p-2 border border-gray-400 bg-gray-200 mx-1"
+										v-if="">
+										<div class="grid grid-cols-3 gap-2">
+											<AppFormInput
+												label="Data de abertura"
+												type="date"
+												obrigatorio
+                        readonly
+                        disabled
+												id="data_abertura"
+												v-model="checklist.data_abertura" />
+											<AppFormInput
+												label="KM inicial"
+												type="number"
+												obrigatorio
+												id="km_inicial"
+												placeholder="Ex: 123456"
+												:invalido="erros.includes('km_inicial')"
+												v-model="checklist.km_inicial" />
+											<div class="flex gap-2 items-center">
+												<span class="ml-2">Gasolina</span>
+												<input
+													type="range"
+													id="gasolina"
+													class="w-full"
+													min="0"
+													max="80"
+													step="20"
+													v-model="checklist.gasolina" />
+												<div
+													class="w-[150px] text-center rounded border px-2"
+													:class="[corGasolina]">
+													<span>{{ descricaoGasolina }}</span>
+												</div>
+											</div>
+											<div class="col-span-3">
+												<div class="bg-gray-400 w-full px-2 mb-1 text-lg">
+													<span>AVARIAS</span>
+												</div>
+												<div class="grid grid-cols-5 gap-2">
+													<div class="flex flex-col border-2 border-slate-600">
+														<div class="h-[160px] bg-white flex items-center w-full justify-center">
+															<img
+																src="@/assets/img/carro-frente.png"
+																alt="" />
+														</div>
+														<span class="bg-primaria-900 text-white text-center">FRENTE</span>
+														<textarea
+															placeholder="Observação FRENTE"
+															v-model="checklist.observacao_frente"
+															class="px-1"></textarea>
+													</div>
+													<div class="flex flex-col border-2 border-slate-600">
+														<div class="h-[160px] bg-white flex items-center w-full justify-center">
+															<img
+																src="@/assets/img/carro-traseira.png"
+																alt="" />
+														</div>
+														<span class="bg-primaria-900 text-white text-center">TRASEIRA</span>
+														<textarea
+															placeholder="Observação TRASEIRA"
+															v-model="checklist.observacao_traseira"
+															class="px-1"></textarea>
+													</div>
+													<div class="flex flex-col border-2 border-slate-600">
+														<div class="h-[160px] bg-white flex items-center w-full justify-center">
+															<img
+																src="@/assets/img/carro-lateral-e.png"
+																alt="" />
+														</div>
+														<span class="bg-primaria-900 text-white text-center"
+															>LATERAL ESQUERDA</span
+														>
+														<textarea
+															placeholder="Observação LATERAL ESQUERDA"
+															v-model="checklist.observacao_lateral_esquerda"
+															class="px-1"></textarea>
+													</div>
+													<div class="flex flex-col border-2 border-slate-600">
+														<div class="h-[160px] bg-white flex items-center w-full justify-center">
+															<img
+																src="@/assets/img/carro-lateral-d.png"
+																alt="" />
+														</div>
+														<span class="bg-primaria-900 text-white text-center"
+															>LATERAL DIREITA</span
+														>
+														<textarea
+															placeholder="Observação LATERAL DIREITA"
+															v-model="checklist.observacao_lateral_direita"
+															class="px-1"></textarea>
+													</div>
+													<div class="flex flex-col border-2 border-slate-600">
+														<div class="h-[160px] bg-white flex items-center w-full justify-center">
+															<img
+																src="@/assets/img/carro-topo.png"
+																alt="" />
+														</div>
+														<span class="bg-primaria-900 text-white text-center">TETO</span>
+														<textarea
+															v-model="checklist.observacao_teto"
+															placeholder="Observação TETO"
+															class="px-1"></textarea>
+													</div>
+												</div>
+											</div>
+											<div class="col-span-3">
+												<AppFormTextarea
+													id="observacao geral"
+													label="Observação Geral"
+													v-model="checklist.observacao_geral"
+													placeholder="Observação"
+													linhas="2" />
+											</div>
+										</div>
+										<div class="w-full justify-end flex" v-if="mostrarFechamento">
+											<BotaoPadrao
+                        @clique="atualizarChecklist"
+												texto="Atualizar checklist"
+												cor="bg-blue-400">
+												<img
+													src="@/assets/icons/edit-b.svg"
+													alt=""
+													class="w-6 h-6" />
+											</BotaoPadrao>
+										</div>
 									</div>
 								</div>
-								<div class="col-span-3">
-									<div class="bg-gray-400 w-full px-2 mb-1 text-lg">
-										<span>AVARIAS</span>
+
+								<div
+									class="flex flex-col gap-2 p-2 border border-gray-400 bg-gray-200 mx-1 mt-1"
+									v-if="mostrarFechamento">
+									<div class="bg-gray-800 -m-2 px-2 text-white text-lg mb-0">
+										<span>FECHAMENTO</span>
 									</div>
-									<div class="grid grid-cols-5 gap-2">
-										<div class="flex flex-col border-2 border-slate-600">
-											<div class="h-[160px] bg-white flex items-center w-full justify-center">
-												<img
-													src="@/assets/img/carro-frente.png"
-													alt="" />
-											</div>
-											<span class="bg-primaria-900 text-white text-center">FRENTE</span>
-											<textarea
-												placeholder="Observação FRENTE"
-												class="px-1"></textarea>
-										</div>
-										<div class="flex flex-col border-2 border-slate-600">
-											<div class="h-[160px] bg-white flex items-center w-full justify-center">
-												<img
-													src="@/assets/img/carro-traseira.png"
-													alt="" />
-											</div>
-											<span class="bg-primaria-900 text-white text-center">TRASEIRA</span>
-											<textarea
-												placeholder="Observação TRASEIRA"
-												class="px-1"></textarea>
-										</div>
-										<div class="flex flex-col border-2 border-slate-600">
-											<div class="h-[160px] bg-white flex items-center w-full justify-center">
-												<img
-													src="@/assets/img/carro-lateral-e.png"
-													alt="" />
-											</div>
-											<span class="bg-primaria-900 text-white text-center">LATERAL ESQUERDA</span>
-											<textarea
-												placeholder="Observação LATERAL ESQUERDA"
-												class="px-1"></textarea>
-										</div>
-										<div class="flex flex-col border-2 border-slate-600">
-											<div class="h-[160px] bg-white flex items-center w-full justify-center">
-												<img
-													src="@/assets/img/carro-lateral-d.png"
-													alt="" />
-											</div>
-											<span class="bg-primaria-900 text-white text-center">LATERAL DIREITA</span>
-											<textarea
-												placeholder="Observação LATERAL DIREITA"
-												class="px-1"></textarea>
-										</div>
-										<div class="flex flex-col border-2 border-slate-600">
-											<div class="h-[160px] bg-white flex items-center w-full justify-center">
-												<img
-													src="@/assets/img/carro-topo.png"
-													alt="" />
-											</div>
-											<span class="bg-primaria-900 text-white text-center">TETO</span>
-											<textarea
-												placeholder="Observação TETO"
-												class="px-1"></textarea>
-										</div>
-									</div>
+									<AppFormInput
+										label="KM final"
+										type="number"
+										placeholder="Ex: 321654"
+										obrigatorio
+										id="km_final"
+										v-model="checklist.km_final" />
+									<AppFormTextarea
+										id="observacao_fechamento"
+										label="Observação de fechamento"
+										placeholder="Observação" />
 								</div>
-                <div class="col-span-3">
-                  <AppFormTextarea id="observacao geral" label="Observação Geral" placeholder="Observação" linhas="2" />
+							</div>
+							<div v-if="mostrarConcluido">
+<!--								<div>Checklist finalizado</div>-->
+                <div class="w-full bg-green-400 text-center my-1 py-1 text-xl">
+                  CHECKLIST FINALIZADO
+                </div>
+                <div class="bg-gray-800 px-2 text-white text-lg mb-0 w-full">
+                  <span>DADOS</span>
+                </div>
+                <div class="grid grid-cols-2 px-1 ">
+                  <span>Data abertura: <strong>{{ $dayjs(checklist.data_abertura_completa).format("DD/MM/YYYY HH:mm:ss") }}</strong></span>
+                  <span>Data fechamento: <strong>{{ $dayjs(checklist.data_fechamento).format("DD/MM/YYYY HH:mm:ss") }}</strong></span>
+                  <span>KM inicial: <strong>{{ checklist.km_inicial }}</strong></span>
+                  <span>KM final: <strong>{{ checklist.km_final }}</strong></span>
+                  <span v-if="checklist.AbertoPor">Aberto por: <strong>{{ checklist.AbertoPor.nome}}</strong></span>
+                  <span v-if="checklist.FechadoPor">Fechado por: <strong>{{ checklist.FechadoPor.nome}}</strong></span>
+                  <span>Gasolina: <strong>{{ checklist.gasolina }}</strong></span>
+                  <span>Observação Frente: <strong>{{ checklist.observacao_frente }}</strong></span>
+                  <span>Observação Traseira: <strong>{{ checklist.observacao_traseira }}</strong></span>
+                  <span>Observação Lateral Esquerda: <strong>{{ checklist.observacao_lateral_esquerda }}</strong></span>
+                  <span>Observação Lateral Direita: <strong>{{ checklist.observacao_lateral_direita }}</strong></span>
+                  <span>Observação Teto: <strong>{{ checklist.observacao_teto }}</strong></span>
+                  <span>Observação Geral: <strong>{{ checklist.observacao_geral }}</strong></span>
+                  <span>Observação Fechamento: <strong>{{ checklist.observacao_fechamento }}</strong></span>
                 </div>
 							</div>
 						</div>
-            <div class="flex flex-col gap-2 p-2 border border-gray-400 bg-gray-200 mx-1" v-if="mostrarFechamento">
-              <div class="bg-gray-800 -m-2 px-2 text-white text-lg mb-0">
-                <span>FECHAMENTO</span>
-              </div>
-              <AppFormInput
-                label="KM final"
-                type="text"
-                placeholder="Ex: 321654"
-                obrigatorio
-                id="km_final"
-                v-model="checklist.km_final" />
-              <AppFormTextarea id="observacao_fechamento" label="Observação de fechamento" placeholder="Observação" />
-            </div>
 					</template>
-          <template v-slot:[`tab.historico`]>
-            <div>
-
-            </div>
-          </template>
+					<template v-slot:[`tab.historico`]>
+						<div></div>
+					</template>
 				</AppTabs>
 			</template>
-      <template v-slot:rodape-btn-direito>
-        <BotaoPadrao texto="salvar" @clique="cadastrarCheckList()">
-          <img src="@/assets/icons/save-b.svg" alt="" class="w-7 h-7">
-        </BotaoPadrao>
-      </template>o
+			<template v-slot:rodape-btn-direito>
+				<BotaoPadrao
+					:texto="mostrarFechamento ? 'Finalizar' : 'salvar'"
+					@clique="mostrarFechamento ? finalizarChecklist() : cadastrarCheckList()">
+					<img
+						src="@/assets/icons/save-b.svg"
+						alt=""
+						class="w-7 h-7" />
+				</BotaoPadrao>
+			</template>
 		</BaseDialog>
+    <AppAlerta
+      tipo="sucesso"
+      :mostrar="mostrarAlerta"
+      @escondeu="mostrarAlerta = false">
+      {{ textoAlerta }}
+    </AppAlerta>
 	</div>
 </template>
 
@@ -150,7 +246,8 @@
 	import AppTabs from "~/components/Ui/AppTabs.vue"
 	import AppFormInput from "~/components/Ui/AppFormInput.vue"
 	import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue"
-  import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
+	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
+  import AppAlerta from "~/components/Ui/AppAlerta.vue";
 </script>
 
 <script>
@@ -182,19 +279,34 @@
 					km_inicial: null,
 					km_final: null,
 					gasolina: "40",
+					observacao_frente: null,
+					observacao_traseira: null,
+					observacao_lateral_esquerda: null,
+					observacao_lateral_direita: null,
+					observacao_teto: null,
+					observacao_geral: null,
+					observacao_fechamento: null,
 				},
-        mostrarFechamento: false,
-        cabecalho: [
-          { nome: "Data", valor: "data" },
-          { nome: "Data", valor: "data" },
-          { nome: "Data", valor: "data" },
-        ]
+				mostrarFechamento: false,
+				cabecalho: [
+					{ nome: "Data", valor: "data" },
+					{ nome: "Data", valor: "data" },
+					{ nome: "Data", valor: "data" },
+				],
+				erros: [],
+				carregando: false,
+				formAberturaFechado: false,
+				mostrarConcluido: false,
+        mostrarAlerta: false,
+        textoAlerta: null,
 			}
 		},
 		mounted() {
 			if (!this.checklist.data_abertura) {
 				this.checklist.data_abertura = this.$dayjs().format("YYYY-MM-DD")
 			}
+
+			this.buscarChecklist()
 		},
 		computed: {
 			descricaoGasolina() {
@@ -229,11 +341,136 @@
 				this.$emit("cancelar")
 			},
 
-      async cadastrarCheckList(){
-        this.mostrarFechamento = true
-      }
+			validarFormulario() {
+				this.erros = []
+
+				let camposObrigatorio
+
+				if (!this.mostrarFechamento) {
+					camposObrigatorio = ["km_inicial"]
+				} else {
+					camposObrigatorio = ["km_final"]
+				}
+			},
+
+			async cadastrarCheckList() {
+				let {
+					km_inicial,
+					gasolina,
+					observacao_frente,
+					observacao_traseira,
+					observacao_lateral_direita,
+					observacao_lateral_esquerda,
+					observacao_teto,
+					observacao_geral,
+				} = this.checklist
+
+				let aberto_por_id = this.$auth.user.id
+				let carro_id = this.carro.id
+
+				let resp = await this.$axios.$post("/transporte/checklist/cadastrar", {
+					km_inicial,
+					gasolina,
+					observacao_frente,
+					observacao_traseira,
+					observacao_lateral_direita,
+					observacao_lateral_esquerda,
+					observacao_teto,
+					observacao_geral,
+					aberto_por_id,
+					carro_id,
+				})
+
+				if (!resp.falha) {
+					let { checklist } = resp.dados
+					this.$emit("checklistCadastrado", this.carro.id, checklist)
+				}
+			},
+
+			async buscarChecklist() {
+				let carro_id = this.carro.id
+				this.carregando = true
+
+				let resp = await this.$axios.$get("/transporte/checklist/buscar", { params: { carro_id } })
+
+				if (!resp.falha) {
+					let { checklist } = resp.dados
+					if (checklist) {
+						if (checklist.data_fechamento !== null) {
+							this.mostrarConcluido = true
+						} else {
+							this.mostrarFechamento = true
+							this.formAberturaFechado = true
+						}
+
+            this.checklist = Object.assign(this.checklist, checklist)
+            let data_abetura = checklist.data_abertura.split(" ")
+            this.checklist.data_abertura = data_abetura[0]
+            this.checklist.data_abertura_completa = checklist.data_abertura
+					} else {
+						this.formAberturaFechado = false
+						this.mostrarFechamento = false
+					}
+					this.carregando = false
+				}
+			},
+
+      async atualizarChecklist(){
+        let {
+          km_inicial,
+          gasolina,
+          observacao_frente,
+          observacao_traseira,
+          observacao_lateral_direita,
+          observacao_lateral_esquerda,
+          observacao_teto,
+          observacao_geral,
+          id
+        } = this.checklist
+
+        let resp = await this.$axios.$post("/transporte/checklist/atualizar", {
+          km_inicial,
+          gasolina,
+          observacao_frente,
+          observacao_traseira,
+          observacao_lateral_direita,
+          observacao_lateral_esquerda,
+          observacao_teto,
+          observacao_geral,
+          id
+        })
+
+        if (!resp.falha) {
+          this.formAberturaFechado = true
+          this.textoAlerta = "Checklist atualizado com sucesso!"
+          this.mostrarAlerta = true
+        }
+
+      },
+
+			async finalizarChecklist() {
+				let { id, km_final, observacao_fechamento } = this.checklist
+				let fechado_por_id = this.$auth.user.id
+
+				let resp = await this.$axios.$post("/transporte/checklist/finalizar", {
+					id,
+					km_final,
+					observacao_fechamento,
+					fechado_por_id,
+				})
+
+				if (!resp.falha) {
+					this.$emit("checklistFechado", this.carro.id)
+				}
+			},
 		},
 	}
 </script>
 
-<style scoped></style>
+<style scoped>
+	.esconder-abertura {
+		max-height: 0;
+		height: 0;
+		overflow: hidden;
+	}
+</style>

@@ -41,10 +41,27 @@
 					</div>
 				</template>
 				<template v-slot:[`body.checklist`]="{ item }">
-					<div>
-						<div class="bg-orange-400 text-md text-center rounded px-2 text-black font-bold">
-							Em aberto
+					<div v-if="item.ChecklistCarro.length > 0">
+						<div v-if="item.ChecklistCarro[0].data_fechamento === null">
+							<div
+								class="bg-orange-400 tag-checklist"
+								v-if="item.ChecklistCarro[0].data_abertura.includes($dayjs().format('YYYY-MM-DD'))">
+								<span>Em aberto</span>
+							</div>
+							<div
+								v-else
+								class="bg-red-500 tag-checklist">
+								<span>Atrasado</span>
+							</div>
 						</div>
+						<div
+							class="bg-green-400 tag-checklist"
+							v-if="item.ChecklistCarro[0].data_fechamento !== null">
+							Concluido
+						</div>
+					</div>
+					<div v-else>
+						<div class="bg-blue-300 tag-checklist">Não aberto</div>
 					</div>
 				</template>
 				<template v-slot:[`body.Setor.nome`]="{ item }">
@@ -92,6 +109,8 @@
 			" />
 		<DialogChecklist
 			v-if="mostrarDialogChecklist"
+			@checklistCadastrado="checklistCadastrado"
+			@checklistFechado="checklistFechado"
 			@cancelar="
 				mostrarDialogChecklist = false
 				carro = null
@@ -160,38 +179,67 @@
 				this.textoAlerta = "Carro cadastrado com sucesso!"
 				this.mostrarAlerta = true
 			},
-      carroEditado(carro){
+			carroEditado(carro) {
+				let idx = this.dados.findIndex((o) => o.id === carro.id)
 
-        let idx = this.dados.findIndex( o => o.id === carro.id)
+				if (idx >= 0) {
+					this.dados[idx] = Object.assign(this.dados[idx], carro)
 
-        if(idx >= 0){
-          this.dados[idx] = Object.assign(this.dados[idx], carro)
+					this.mostrarDialogCriarCarro = false
+					this.textoAlerta = "Carro editado com sucesso!"
+					this.mostrarAlerta = true
+				}
+			},
+			carroDeletado(id) {
+				let idx = this.dados.findIndex((o) => o.id === id)
 
-          this.mostrarDialogCriarCarro = false
-          this.textoAlerta = "Carro editado com sucesso!"
-          this.mostrarAlerta = true
-        }
-      },
-      carroDeletado(id){
-        let idx = this.dados.findIndex(o => o.id === id)
+				this.dados.splice(idx, 1)
 
-        this.dados.splice(idx, 1)
-
-        this.mostrarDialogCriarCarro = false
-        this.textoAlerta = "Carro deletado com sucesso!"
-        this.mostrarAlerta = true
-      },
+				this.mostrarDialogCriarCarro = false
+				this.textoAlerta = "Carro deletado com sucesso!"
+				this.mostrarAlerta = true
+			},
 			async buscarCarros() {
 				let resp = await this.$axios.$get("/transporte/carros/buscar_todos")
 
-				console.log(resp)
 				if (!resp.falha) {
 					this.dados = resp.dados.carros
 				}
 			},
+			async checklistCadastrado(carro_id, checklist) {
+				let idx = this.dados.findIndex( o => o.id === carro_id)
 
+        if(idx >= 0){
+          this.dados[idx].ChecklistCarro[0].ChecklistCarro = checklist
+        }
+				// this.mostrarDialogCriarCarro = false
+				this.mostrarDialogChecklist = false
+				this.textoAlerta = "Checklist cadastrado com sucesso!"
+				this.mostrarAlerta = true
+			},
+			async checklistFechado(carro_id) {
+				// let
+				// this.mostrarDialogCriarCarro = false
+				let idx = this.dados.findIndex((o) => o.id === carro_id)
+				if (idx >= 0) {
+					this.dados[idx].ChecklistCarro[0].data_fechamento = this.$dayjs().format("YYYY-MM-DD HH:mm:ss")
+				}
+
+				this.mostrarDialogChecklist = false
+				this.textoAlerta = "Checklist finalizado com sucesso!"
+				this.mostrarAlerta = true
+			},
 		},
 	}
 </script>
 
-<style></style>
+<style scoped>
+	.tag-checklist {
+		color: black;
+		font-weight: 700;
+		text-align: center;
+		padding-left: 0.5rem;
+		padding-right: 0.5rem;
+		border-radius: 0.25rem;
+	}
+</style>
