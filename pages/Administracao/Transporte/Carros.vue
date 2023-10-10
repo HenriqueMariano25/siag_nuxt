@@ -210,16 +210,13 @@
 				let idx = this.dados.findIndex( o => o.id === carro_id)
 
         if(idx >= 0){
-          this.dados[idx].ChecklistCarro[0].ChecklistCarro = checklist
+          this.dados[idx].ChecklistCarro[0] = checklist
         }
-				// this.mostrarDialogCriarCarro = false
 				this.mostrarDialogChecklist = false
 				this.textoAlerta = "Checklist cadastrado com sucesso!"
 				this.mostrarAlerta = true
 			},
 			async checklistFechado(carro_id) {
-				// let
-				// this.mostrarDialogCriarCarro = false
 				let idx = this.dados.findIndex((o) => o.id === carro_id)
 				if (idx >= 0) {
 					this.dados[idx].ChecklistCarro[0].data_fechamento = this.$dayjs().format("YYYY-MM-DD HH:mm:ss")

@@ -194,7 +194,6 @@
 								</div>
 							</div>
 							<div v-if="mostrarConcluido">
-<!--								<div>Checklist finalizado</div>-->
                 <div class="w-full bg-green-400 text-center my-1 py-1 text-xl">
                   CHECKLIST FINALIZADO
                 </div>
@@ -208,7 +207,7 @@
                   <span>KM final: <strong>{{ checklist.km_final }}</strong></span>
                   <span v-if="checklist.AbertoPor">Aberto por: <strong>{{ checklist.AbertoPor.nome}}</strong></span>
                   <span v-if="checklist.FechadoPor">Fechado por: <strong>{{ checklist.FechadoPor.nome}}</strong></span>
-                  <span>Gasolina: <strong>{{ checklist.gasolina }}</strong></span>
+                  <span>Gasolina: <strong>{{ descricaoGasolina }}</strong></span>
                   <span>Observação Frente: <strong>{{ checklist.observacao_frente }}</strong></span>
                   <span>Observação Traseira: <strong>{{ checklist.observacao_traseira }}</strong></span>
                   <span>Observação Lateral Esquerda: <strong>{{ checklist.observacao_lateral_esquerda }}</strong></span>
