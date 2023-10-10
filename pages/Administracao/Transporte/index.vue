@@ -12,20 +12,30 @@
 					alt=""
 					class="w-8 h-8" />
 			</ButtonNavegacao>
-      <ButtonNavegacao
-        titulo="Veículos"
-        cor="bg-[#264653]"
-        link="transporte/veiculos"
-        v-if="$auth.user.permissoes.includes('transporte')">
-        <img
-          src="@/assets/icons/vehicle-w.svg"
-          alt=""
-          class="w-8 h-8" />
-      </ButtonNavegacao>
+			<ButtonNavegacao
+				titulo="Carros"
+				cor="bg-[#264653]"
+				link="transporte/carros"
+				v-if="$auth.user.permissoes.includes('transporte_carro')">
+				<img
+					src="@/assets/icons/vehicle-w.svg"
+					alt=""
+					class="w-8 h-8" />
+			</ButtonNavegacao>
+			<ButtonNavegacao
+				titulo="Veículos"
+				cor="bg-[#264653]"
+				link="transporte/veiculos"
+				v-if="$auth.user.permissoes.includes('transporte')">
+				<img
+					src="@/assets/icons/cog-w.svg"
+					alt=""
+					class="w-8 h-8" />
+			</ButtonNavegacao>
 		</div>
 		<div>
-      <GraficoRotas :dados="dados"></GraficoRotas>
-    </div>
+			<GraficoRotas :dados="dados"></GraficoRotas>
+		</div>
 	</div>
 </template>
 
@@ -35,14 +45,12 @@
 
 	export default {
 		components: { ButtonNavegacao, GraficoRotas },
-    data() {
-      return {
-        dados: { "01": 46, "02": 45, "03": 30}
-      };
-    },
-    created(){
-
-    }
+		data() {
+			return {
+				dados: { "01": 46, "02": 45, "03": 30 },
+			}
+		},
+		created() {},
 	}
 </script>
 
