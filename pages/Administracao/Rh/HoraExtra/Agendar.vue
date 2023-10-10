@@ -6,14 +6,17 @@
 					Selecione uma data abaixo e preencha todos os campos para realizar o agendamento:
 				</span>
 			</div>
-			<div class="flex gap-2">
+			<div class="flex gap-1">
 				<div class="flex items-center">
 					<AppTooltip>
 						<template v-slot:corpo>
-							<img
-								src="../../../../assets/icons/information-circle-g.svg"
-								alt=""
-								class="w-7 h-7" />
+              <div class="w-8 h-7">
+                <img
+                  src="../../../../assets/icons/information-circle-g.svg"
+                  alt=""
+                  class="w-7 h-7" />
+              </div>
+
 						</template>
 						<template v-slot:tooltip>
 							<div class="w-[300px]">
@@ -41,52 +44,56 @@
 						</template>
 					</AppTooltip>
 				</div>
-				<div
-					v-for="dia of diasPrAgendamento"
-					:key="dia.data">
-					<AppTag
-						@click="buscarPorTagDia(dia.data)"
-						cor="text-black bg-gray-200 hover:bg-gray-300 border border-gray-300"
-						:class="{ 'bg-gray-800 hover:bg-gray-900 text-white': agendamento.data === dia.data }"
-						:texto="$dayjs(dia.data).format('DD/MM') + ' - ' + dia.diaSemana.toUpperCase()"
-						fonte="text-xl"
-						v-if="dia.tipo === 'normal'"
-						:clicavel="true">
-						<template v-slot:preTexto>
-							<div class="flex items-center">
-								<div class="h-4 w-4 bg-green-500 rounded-full mr-1 border border-green-700"></div>
-							</div>
-						</template>
-					</AppTag>
-					<AppTag
-						@click="buscarPorTagDia(dia.data)"
-						cor="bg-gray-200 hover:bg-gray-300 border border-gray-300"
-						:class="{ 'bg-gray-800 hover:bg-gray-900 text-white': agendamento.data === dia.data }"
-						:texto="$dayjs(dia.data).format('DD/MM') + ' - ' + dia.diaSemana.toUpperCase()"
-						fonte="text-xl"
-						v-if="dia.tipo === 'sabado'"
-						:clicavel="true">
-						<template v-slot:preTexto>
-							<div class="flex items-center">
-								<div class="h-4 w-4 bg-yellow-400 rounded-full mr-1 border border-yellow-600"></div>
-							</div>
-						</template>
-					</AppTag>
-					<AppTag
-						@click="buscarPorTagDia(dia.data)"
-						cor="bg-gray-200 hover:bg-gray-300 border border-gray-300"
-						:class="{ 'bg-gray-800 hover:bg-gray-900 text-white': agendamento.data === dia.data }"
-						:texto="$dayjs(dia.data).format('DD/MM') + ' - ' + dia.diaSemana.toUpperCase()"
-						fonte="text-xl"
-						v-if="dia.tipo === 'feriadoDomingo'"
-						:clicavel="true">
-						<template v-slot:preTexto>
-							<div class="flex items-center">
-								<div class="h-4 w-4 bg-orange-500 rounded-full mr-1 border border-orange-700"></div>
-							</div>
-						</template>
-					</AppTag>
-				</div>
+        <div class="flex gap-2 overflow-x-auto">
+          <div
+            class=""
+            v-for="dia of diasPrAgendamento"
+            :key="dia.data">
+            <AppTag
+              @click="buscarPorTagDia(dia.data)"
+              cor="text-black bg-gray-200 hover:bg-gray-300 border border-gray-300"
+              :class="{ 'bg-gray-800 hover:bg-gray-900 text-white': agendamento.data === dia.data }"
+              :texto="$dayjs(dia.data).format('DD/MM') + ' - ' + dia.diaSemana.toUpperCase()"
+              fonte="text-xl"
+              v-if="dia.tipo === 'normal'"
+              :clicavel="true">
+              <template v-slot:preTexto>
+                <div class="flex items-center">
+                  <div class="h-4 w-4 bg-green-500 rounded-full mr-1 border border-green-700"></div>
+                </div>
+              </template>
+            </AppTag>
+            <AppTag
+              @click="buscarPorTagDia(dia.data)"
+              cor="bg-gray-200 hover:bg-gray-300 border border-gray-300"
+              :class="{ 'bg-gray-800 hover:bg-gray-900 text-white': agendamento.data === dia.data }"
+              :texto="$dayjs(dia.data).format('DD/MM') + ' - ' + dia.diaSemana.toUpperCase()"
+              fonte="text-xl"
+              v-if="dia.tipo === 'sabado'"
+              :clicavel="true">
+              <template v-slot:preTexto>
+                <div class="flex items-center">
+                  <div class="h-4 w-4 bg-yellow-400 rounded-full mr-1 border border-yellow-600"></div>
+                </div>
+              </template>
+            </AppTag>
+            <AppTag
+              @click="buscarPorTagDia(dia.data)"
+              cor="bg-gray-200 hover:bg-gray-300 border border-gray-300"
+              :class="{ 'bg-gray-800 hover:bg-gray-900 text-white': agendamento.data === dia.data }"
+              :texto="$dayjs(dia.data).format('DD/MM') + ' - ' + dia.diaSemana.toUpperCase()"
+              fonte="text-xl"
+              v-if="dia.tipo === 'feriadoDomingo'"
+              :clicavel="true">
+              <template v-slot:preTexto>
+                <div class="flex items-center">
+                  <div class="h-4 w-4 bg-orange-500 rounded-full mr-1 border border-orange-700"></div>
+                </div>
+              </template>
+            </AppTag>
+          </div>
+        </div>
+
 			</div>
 			<div class="flex gap-1">
 				<!--        {{ agendamento.data }}-->
@@ -609,8 +616,12 @@
 
 					const hoje = this.$dayjs()
 					const diaSemana = hoje.day()
-					let diasAteProximoDomingo = (7 - diaSemana) % 7
-					if (diasAteProximoDomingo > 5) diasAteProximoDomingo = 5
+
+          console.log(diaSemana);
+
+					let diasAteProximoDomingo = (8 - diaSemana) % 8
+          console.log(diasAteProximoDomingo);
+					if (diasAteProximoDomingo > 6) diasAteProximoDomingo = 6
 
 					let data = this.$dayjs().format("YYYY-MM-DD")
 					const diaFinal = hoje.add(diasAteProximoDomingo, "day").format("YYYY-MM-DD")
