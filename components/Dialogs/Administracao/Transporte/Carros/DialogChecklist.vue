@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<BaseDialog
+      class="print:hidden"
 			largura="w-10/12"
 			:carregando="carregando"
 			titulo="CHECKLIST"
@@ -13,6 +14,7 @@
 					<span v-if="carro">Marca/Modelo: {{ carro.marca_modelo }}</span>
 				</div>
 				<AppTabs
+          class=""
 					:tabs="tabs"
 					@tab="tab = $event">
 					<template v-slot:[`tab.diario`]="{ item }">
@@ -44,6 +46,7 @@
 									<div
 										class="flex flex-col gap-2 p-2 border border-gray-400 bg-gray-200 mx-1"
 										v-if="">
+
 										<div class="grid grid-cols-3 gap-2">
 											<AppFormInput
 												label="Data de abertura"
@@ -218,7 +221,45 @@
 						</div>
 					</template>
 					<template v-slot:[`tab.historico`]>
-						<div></div>
+						<div>
+              <TabelaPadrao
+                :cabecalho="cabecalho"
+                :dados="checklists"
+                altura="calc(100vh - 219px)"
+                :tem-rodape="false"
+                @dblclick="verDetalhesChecklist"
+                @atualizar="buscarTodosChecklists"
+                :temDetalhes="false">
+                <template v-slot:[`body.data_abertura`]="{ item }">
+                  <span
+                    class="whitespace-nowrap"
+                    v-if="item.data_abertura">
+                    {{ $dayjs(item.data_abertura).format("DD/MM/YYYY HH:mm:ss") }}
+                  </span>
+                        </template>
+                <template v-slot:[`body.data_fechamento`]="{ item }">
+                  <span
+                    class="whitespace-nowrap"
+                    v-if="item.data_fechamento">
+                    {{ $dayjs(item.data_fechamento).format("DD/MM/YYYY HH:mm:ss") }}
+                  </span>
+                </template>
+                <template v-slot:[`body.AbertoPor.nome`]="{ item }">
+                  <span
+                    class="whitespace-nowrap"
+                    v-if="item.AbertoPor">
+                    {{ item.AbertoPor.nome }}
+                  </span>
+                </template>
+                <template v-slot:[`body.FechadoPor.nome`]="{ item }">
+                  <span
+                    class="whitespace-nowrap"
+                    v-if="item.FechadoPor">
+                    {{ item.FechadoPor.nome }}
+                  </span>
+                </template>
+              </TabelaPadrao>
+            </div>
 					</template>
 				</AppTabs>
 			</template>
@@ -239,6 +280,8 @@
       @escondeu="mostrarAlerta = false">
       {{ textoAlerta }}
     </AppAlerta>
+
+    <DialogDetalhesChecklist v-if="mostrarDialogDetalhesChecklist" @cancelar="mostrarDialogDetalhesChecklist = false" :checklist_id="checklistPrVisualizar"/>
 	</div>
 </template>
 
@@ -248,6 +291,9 @@
 	import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
   import AppAlerta from "~/components/Ui/AppAlerta.vue";
+  import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
+  import DialogDetalhesChecklist
+    from "~/components/Dialogs/Administracao/Transporte/Carros/DialogDetalhesChecklist.vue";
 </script>
 
 <script>
@@ -268,9 +314,10 @@
 					{ nome: "Diário", valor: "diario" },
 					{
 						nome: "Histórico",
-						valor: "historcio",
+						valor: "historico",
 					},
 				],
+        tab: "diario",
 				checklist: {
 					data_abertura: null,
 					data_fechamento: null,
@@ -288,17 +335,24 @@
 					observacao_fechamento: null,
 				},
 				mostrarFechamento: false,
-				cabecalho: [
-					{ nome: "Data", valor: "data" },
-					{ nome: "Data", valor: "data" },
-					{ nome: "Data", valor: "data" },
-				],
 				erros: [],
 				carregando: false,
 				formAberturaFechado: false,
 				mostrarConcluido: false,
         mostrarAlerta: false,
         textoAlerta: null,
+
+        //Historico
+        cabecalho: [
+          { nome: "Data abertura", valor: "data_abertura"},
+          { nome: "Data fechamento", valor: "data_fechamento"},
+          { nome: "Aberto por", valor: "AbertoPor.nome", filtro: true, ordenar: true },
+          { nome: "Fechado por", valor: "FechadoPor.nome", filtro: true, ordenar: true },
+          { nome: "Obs. Geral", valor: "observacao_geral"},
+        ],
+        checklists: [],
+        mostrarDialogDetalhesChecklist: false,
+        checklistPrVisualizar: null
 			}
 		},
 		mounted() {
@@ -463,7 +517,32 @@
 					this.$emit("checklistFechado", this.carro.id)
 				}
 			},
+
+      async buscarTodosChecklists(){
+        let carro_id  = this.carro.id
+
+        let resp = await this.$axios.$get("/transporte/checklist/historico", { params: { carro_id}})
+
+        if(!resp.falha){
+          this.checklists = resp.dados.checklists
+        }
+      },
+
+      verDetalhesChecklist(dados) {
+        this.checklistPrVisualizar = dados.id
+        this.mostrarDialogDetalhesChecklist = true
+      },
 		},
+    watch: {
+      tab(valor) {
+        console.log(valor)
+        if(valor === 'historico'){
+          if(this.checklists.length === 0){
+            this.buscarTodosChecklists()
+          }
+        }
+      }
+    }
 	}
 </script>
 

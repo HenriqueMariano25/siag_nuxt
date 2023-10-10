@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="w-full h-full absolute top-0 left-0 bg-black/50 justify-center items-center flex print:bg-black/0 print:relative"
+		class="w-full h-full absolute top-0 left-0 bg-black/50 justify-center items-center flex print:bg-black/0 print:relative "
 		style="z-index: 110">
 		<div
 			class="bg-white flex flex-col rounded print:w-full print:absolute print:bg-red-500"
@@ -18,13 +18,13 @@
 						class="w-7 h-7" />
 				</button>
 			</div>
-			<div class=" flex w-full print:py-0 relative print:absolute print:top-0">
+			<div class=" flex w-full print:py-0 relative print:absolute print:top-0 print:w-[100vw]">
         <div class="absolute z-50 bg-gray-700/70 flex w-full h-full justify-center" v-if="carregando">
           <div class="flex items-center justify-center">
             <span class="flex text-4xl bg-white p-2 rounded">Carregando... Favor aguarde!</span>
           </div>
         </div>
-        <div class="py-2 w-full h-full">
+        <div class="py-2 w-full h-full ">
 				  <slot name="corpo"></slot>
         </div>
 			</div>

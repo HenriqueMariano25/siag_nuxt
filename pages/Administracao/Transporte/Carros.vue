@@ -1,7 +1,7 @@
 <template>
 	<div class="w-full">
 		<CabecalhoPagina titulo="CARROS" />
-		<div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11">
+		<div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11 print:hidden">
 			<TabelaPadrao
 				:cabecalho="cabecalho"
 				:dados="dados"
