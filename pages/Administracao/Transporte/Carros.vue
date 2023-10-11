@@ -82,10 +82,17 @@
 		</div>
 		<RodapePagina>
 			<template v-slot>
-				<div class="flex justify-end w-full">
+				<div class="flex justify-between w-full">
+					<div class="flex">
+            <BotaoPadrao texto="checklists" @clique="irParaChecklists()">
+              <img
+                src="@/assets/icons/checklist-b.svg"
+                alt=""
+                class="w-7 h-7" />
+            </BotaoPadrao>
+					</div>
 					<div class="flex">
 						<BotaoPadrao
-							class="flex"
 							@clique="mostrarDialogCriarCarro = true"
 							texto="Adicionar">
 							<img
@@ -207,11 +214,11 @@
 				}
 			},
 			async checklistCadastrado(carro_id, checklist) {
-				let idx = this.dados.findIndex( o => o.id === carro_id)
+				let idx = this.dados.findIndex((o) => o.id === carro_id)
 
-        if(idx >= 0){
-          this.dados[idx].ChecklistCarro[0] = checklist
-        }
+				if (idx >= 0) {
+					this.dados[idx].ChecklistCarro[0] = checklist
+				}
 				this.mostrarDialogChecklist = false
 				this.textoAlerta = "Checklist cadastrado com sucesso!"
 				this.mostrarAlerta = true
@@ -219,13 +226,17 @@
 			async checklistFechado(carro_id) {
 				let idx = this.dados.findIndex((o) => o.id === carro_id)
 				if (idx >= 0) {
-					this.dados[idx].ChecklistCarro[0].data_fechamento = this.$dayjs().format("YYYY-MM-DD HH:mm:ss")
+					this.dados[idx].ChecklistCarro[0].data_fechamento =
+						this.$dayjs().format("YYYY-MM-DD HH:mm:ss")
 				}
 
 				this.mostrarDialogChecklist = false
 				this.textoAlerta = "Checklist finalizado com sucesso!"
 				this.mostrarAlerta = true
 			},
+      irParaChecklists(){
+        this.$router.push("checklists")
+      }
 		},
 	}
 </script>
