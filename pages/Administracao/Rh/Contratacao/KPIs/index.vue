@@ -5,6 +5,9 @@
       <BotaoPadrao texto="Excel" @clique="buscarKpiDuracao" cor="bg-blue-300 hover:!bg-blue-400">
         <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
       </BotaoPadrao>
+      <BotaoPadrao texto="KPI" cor="bg-blue-300 hover:!bg-blue-400">
+        <img src="@/assets/icons/graph-b.svg" alt="" class="w-7 h-7">
+      </BotaoPadrao>
     </div>
     <div class="bg-white p-1 flex items-center gap-2">
       <h1 class="text-xl font-bold">Quantitativo por motivo de desistencia</h1>
