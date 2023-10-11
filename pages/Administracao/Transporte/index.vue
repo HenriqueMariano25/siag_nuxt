@@ -16,7 +16,7 @@
 				titulo="Carros"
 				cor="bg-[#264653]"
 				link="transporte/carros"
-				v-if="$auth.user.permissoes.includes('transporte_carro')">
+				v-if="$auth.user.permissoes.includes('transporte')">
 				<img
 					src="@/assets/icons/vehicle-w.svg"
 					alt=""

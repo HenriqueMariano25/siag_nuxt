@@ -185,6 +185,7 @@
 										type="number"
 										placeholder="Ex: 321654"
 										obrigatorio
+                    :invalido="erros.includes('km_final')"
 										id="km_final"
 										v-model="checklist.km_final" />
 									<AppFormTextarea
@@ -194,7 +195,6 @@
 								</div>
 							</div>
 							<div v-if="mostrarConcluido">
-<!--								<div>Checklist finalizado</div>-->
                 <div class="w-full bg-green-400 text-center my-1 py-1 text-xl">
                   CHECKLIST FINALIZADO
                 </div>
@@ -208,7 +208,7 @@
                   <span>KM final: <strong>{{ checklist.km_final }}</strong></span>
                   <span v-if="checklist.AbertoPor">Aberto por: <strong>{{ checklist.AbertoPor.nome}}</strong></span>
                   <span v-if="checklist.FechadoPor">Fechado por: <strong>{{ checklist.FechadoPor.nome}}</strong></span>
-                  <span>Gasolina: <strong>{{ checklist.gasolina }}</strong></span>
+                  <span>Gasolina: <strong>{{ descricaoGasolina }}</strong></span>
                   <span>Observação Frente: <strong>{{ checklist.observacao_frente }}</strong></span>
                   <span>Observação Traseira: <strong>{{ checklist.observacao_traseira }}</strong></span>
                   <span>Observação Lateral Esquerda: <strong>{{ checklist.observacao_lateral_esquerda }}</strong></span>
@@ -265,6 +265,7 @@
 			</template>
 			<template v-slot:rodape-btn-direito>
 				<BotaoPadrao
+          v-if="!mostrarConcluido"
 					:texto="mostrarFechamento ? 'Finalizar' : 'salvar'"
 					@clique="mostrarFechamento ? finalizarChecklist() : cadastrarCheckList()">
 					<img
@@ -341,6 +342,7 @@
 				mostrarConcluido: false,
         mostrarAlerta: false,
         textoAlerta: null,
+        camposObrigatorio: [],
 
         //Historico
         cabecalho: [
@@ -398,47 +400,51 @@
 			validarFormulario() {
 				this.erros = []
 
-				let camposObrigatorio
+				let camposObrigatorio = this.camposObrigatorio
 
-				if (!this.mostrarFechamento) {
-					camposObrigatorio = ["km_inicial"]
-				} else {
-					camposObrigatorio = ["km_final"]
-				}
+        for (let campo of camposObrigatorio) {
+          if (this.checklist[`${campo}`] === null || this.checklist[`${campo}`] === "")
+            this.erros.push(campo)
+        }
 			},
 
 			async cadastrarCheckList() {
-				let {
-					km_inicial,
-					gasolina,
-					observacao_frente,
-					observacao_traseira,
-					observacao_lateral_direita,
-					observacao_lateral_esquerda,
-					observacao_teto,
-					observacao_geral,
-				} = this.checklist
+        this.camposObrigatorio = ["km_inicial"]
+        this.validarFormulario()
 
-				let aberto_por_id = this.$auth.user.id
-				let carro_id = this.carro.id
+        if(this.erros.length === 0){
+          let {
+            km_inicial,
+            gasolina,
+            observacao_frente,
+            observacao_traseira,
+            observacao_lateral_direita,
+            observacao_lateral_esquerda,
+            observacao_teto,
+            observacao_geral,
+          } = this.checklist
 
-				let resp = await this.$axios.$post("/transporte/checklist/cadastrar", {
-					km_inicial,
-					gasolina,
-					observacao_frente,
-					observacao_traseira,
-					observacao_lateral_direita,
-					observacao_lateral_esquerda,
-					observacao_teto,
-					observacao_geral,
-					aberto_por_id,
-					carro_id,
-				})
+          let aberto_por_id = this.$auth.user.id
+          let carro_id = this.carro.id
 
-				if (!resp.falha) {
-					let { checklist } = resp.dados
-					this.$emit("checklistCadastrado", this.carro.id, checklist)
-				}
+          let resp = await this.$axios.$post("/transporte/checklist/cadastrar", {
+            km_inicial,
+            gasolina,
+            observacao_frente,
+            observacao_traseira,
+            observacao_lateral_direita,
+            observacao_lateral_esquerda,
+            observacao_teto,
+            observacao_geral,
+            aberto_por_id,
+            carro_id,
+          })
+
+          if (!resp.falha) {
+            let { checklist } = resp.dados
+            this.$emit("checklistCadastrado", this.carro.id, checklist)
+          }
+        }
 			},
 
 			async buscarChecklist() {
@@ -470,52 +476,63 @@
 			},
 
       async atualizarChecklist(){
-        let {
-          km_inicial,
-          gasolina,
-          observacao_frente,
-          observacao_traseira,
-          observacao_lateral_direita,
-          observacao_lateral_esquerda,
-          observacao_teto,
-          observacao_geral,
-          id
-        } = this.checklist
+        this.camposObrigatorio = ["km_inicial"]
+        this.validarFormulario()
 
-        let resp = await this.$axios.$post("/transporte/checklist/atualizar", {
-          km_inicial,
-          gasolina,
-          observacao_frente,
-          observacao_traseira,
-          observacao_lateral_direita,
-          observacao_lateral_esquerda,
-          observacao_teto,
-          observacao_geral,
-          id
-        })
+        if (this.erros.length === 0) {
 
-        if (!resp.falha) {
-          this.formAberturaFechado = true
-          this.textoAlerta = "Checklist atualizado com sucesso!"
-          this.mostrarAlerta = true
+          let {
+            km_inicial,
+            gasolina,
+            observacao_frente,
+            observacao_traseira,
+            observacao_lateral_direita,
+            observacao_lateral_esquerda,
+            observacao_teto,
+            observacao_geral,
+            id
+          } = this.checklist
+
+          let resp = await this.$axios.$post("/transporte/checklist/atualizar", {
+            km_inicial,
+            gasolina,
+            observacao_frente,
+            observacao_traseira,
+            observacao_lateral_direita,
+            observacao_lateral_esquerda,
+            observacao_teto,
+            observacao_geral,
+            id
+          })
+
+          if (!resp.falha) {
+            this.formAberturaFechado = true
+            this.textoAlerta = "Checklist atualizado com sucesso!"
+            this.mostrarAlerta = true
+          }
         }
 
       },
 
 			async finalizarChecklist() {
-				let { id, km_final, observacao_fechamento } = this.checklist
-				let fechado_por_id = this.$auth.user.id
+        this.camposObrigatorio = ["km_final"]
+        this.validarFormulario()
 
-				let resp = await this.$axios.$post("/transporte/checklist/finalizar", {
-					id,
-					km_final,
-					observacao_fechamento,
-					fechado_por_id,
-				})
+        if (this.erros.length === 0) {
+          let { id, km_final, observacao_fechamento } = this.checklist
+          let fechado_por_id = this.$auth.user.id
 
-				if (!resp.falha) {
-					this.$emit("checklistFechado", this.carro.id)
-				}
+          let resp = await this.$axios.$post("/transporte/checklist/finalizar", {
+            id,
+            km_final,
+            observacao_fechamento,
+            fechado_por_id,
+          })
+
+          if (!resp.falha) {
+            this.$emit("checklistFechado", this.carro.id)
+          }
+        }
 			},
 
       async buscarTodosChecklists(){

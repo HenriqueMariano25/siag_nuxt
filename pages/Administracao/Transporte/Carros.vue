@@ -6,6 +6,7 @@
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
+        @itensPorPagina="itensPorPagina = $event"
 				:pagina="pagina"
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
@@ -82,10 +83,17 @@
 		</div>
 		<RodapePagina>
 			<template v-slot>
-				<div class="flex justify-end w-full">
+				<div class="flex justify-between w-full">
+					<div class="flex">
+            <BotaoPadrao texto="checklists" @clique="irParaChecklists()">
+              <img
+                src="@/assets/icons/checklist-b.svg"
+                alt=""
+                class="w-7 h-7" />
+            </BotaoPadrao>
+					</div>
 					<div class="flex">
 						<BotaoPadrao
-							class="flex"
 							@clique="mostrarDialogCriarCarro = true"
 							texto="Adicionar">
 							<img
@@ -153,9 +161,9 @@
 				cabecalho: [
 					{ nome: "", valor: "acoes", largura: "w-24" },
 					{ nome: "Checklist", valor: "checklist", largura: "w-[150px]" },
-					{ nome: "Marca/Modelo", valor: "marca_modelo", filtro: true, ordenar: true },
+					{ nome: "CGA", valor: "cga", filtro: true, ordenar: true },
 					{ nome: "Placa", valor: "placa", filtro: true, ordenar: true },
-					{ nome: "CGA", valor: "cga", ordenar: true },
+					{ nome: "Marca/Modelo", valor: "marca_modelo", filtro: true, ordenar: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true, ordenar: true },
 					{ nome: "Status", valor: "StatusCarro.descricao", filtro: true, ordenar: true },
 				],
@@ -200,35 +208,42 @@
 				this.mostrarAlerta = true
 			},
 			async buscarCarros() {
-				let resp = await this.$axios.$get("/transporte/carros/buscar_todos")
+        let filtros = this.filtros
+        let ordem = this.ordem
+        let page = this.pagina - 1
+        let size = this.itensPorPagina
+
+				let resp = await this.$axios.$get("/transporte/carros/buscar_todos", { params: { filtros, ordem, page, size }})
 
 				if (!resp.falha) {
 					this.dados = resp.dados.carros
+          this.totalItens = resp.dados.total
 				}
 			},
 			async checklistCadastrado(carro_id, checklist) {
-				let idx = this.dados.findIndex( o => o.id === carro_id)
+				let idx = this.dados.findIndex((o) => o.id === carro_id)
 
-        if(idx >= 0){
-          this.dados[idx].ChecklistCarro[0].ChecklistCarro = checklist
-        }
-				// this.mostrarDialogCriarCarro = false
+				if (idx >= 0) {
+					this.dados[idx].ChecklistCarro[0] = checklist
+				}
 				this.mostrarDialogChecklist = false
 				this.textoAlerta = "Checklist cadastrado com sucesso!"
 				this.mostrarAlerta = true
 			},
 			async checklistFechado(carro_id) {
-				// let
-				// this.mostrarDialogCriarCarro = false
 				let idx = this.dados.findIndex((o) => o.id === carro_id)
 				if (idx >= 0) {
-					this.dados[idx].ChecklistCarro[0].data_fechamento = this.$dayjs().format("YYYY-MM-DD HH:mm:ss")
+					this.dados[idx].ChecklistCarro[0].data_fechamento =
+						this.$dayjs().format("YYYY-MM-DD HH:mm:ss")
 				}
 
 				this.mostrarDialogChecklist = false
 				this.textoAlerta = "Checklist finalizado com sucesso!"
 				this.mostrarAlerta = true
 			},
+      irParaChecklists(){
+        this.$router.push("checklists")
+      }
 		},
 	}
 </script>
