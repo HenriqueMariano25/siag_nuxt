@@ -6,6 +6,7 @@
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
+        @itensPorPagina="itensPorPagina = $event"
 				:pagina="pagina"
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
@@ -160,9 +161,9 @@
 				cabecalho: [
 					{ nome: "", valor: "acoes", largura: "w-24" },
 					{ nome: "Checklist", valor: "checklist", largura: "w-[150px]" },
-					{ nome: "Marca/Modelo", valor: "marca_modelo", filtro: true, ordenar: true },
+					{ nome: "CGA", valor: "cga", filtro: true, ordenar: true },
 					{ nome: "Placa", valor: "placa", filtro: true, ordenar: true },
-					{ nome: "CGA", valor: "cga", ordenar: true },
+					{ nome: "Marca/Modelo", valor: "marca_modelo", filtro: true, ordenar: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true, ordenar: true },
 					{ nome: "Status", valor: "StatusCarro.descricao", filtro: true, ordenar: true },
 				],
@@ -207,10 +208,16 @@
 				this.mostrarAlerta = true
 			},
 			async buscarCarros() {
-				let resp = await this.$axios.$get("/transporte/carros/buscar_todos")
+        let filtros = this.filtros
+        let ordem = this.ordem
+        let page = this.pagina - 1
+        let size = this.itensPorPagina
+
+				let resp = await this.$axios.$get("/transporte/carros/buscar_todos", { params: { filtros, ordem, page, size }})
 
 				if (!resp.falha) {
 					this.dados = resp.dados.carros
+          this.totalItens = resp.dados.total
 				}
 			},
 			async checklistCadastrado(carro_id, checklist) {
