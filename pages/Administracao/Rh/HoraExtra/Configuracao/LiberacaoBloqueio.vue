@@ -58,12 +58,10 @@
 								<TabelaPadrao
 									:cabecalho="cabecalhoAgendamento"
 									:dados="usuariosAgendamento"
-									:itensPorPagina="itensPorPaginaAgendamento"
-									:pagina="paginaAgendamento"
-									:totalItens="totalItensAgendamento"
+                  :tem-rodape="false"
 									classPersonalizada="!bg-gray-400"
-									altura="calc(100vh - 240px)"
-									@atualizar="">
+									altura="calc(100vh - 176px)"
+									@atualizar="buscarUsuariosAgendamento">
 									<template v-slot:[`header.checkbox`]>
 										<AppFormCheckbox
 											id="checkbox-selecionar-todos"
@@ -353,7 +351,7 @@ import AppTooltip from "~/components/Ui/AppTooltip.vue";
           { nome: "Última liberação", valor: "ultima_liberacao", filtro: true },
         ],
         filtrosAgendamento: {},
-        itensPorPaginaAgendamento: 50,
+        itensPorPaginaAgendamento: 2,
         totalItensAgendamento: 0,
         paginaAgendamento: 1,
 
@@ -421,12 +419,11 @@ import AppTooltip from "~/components/Ui/AppTooltip.vue";
       // LIBERAR AGENDAMENTO
       async buscarUsuariosAgendamento() {
         let filtros = this.filtrosAgendamento
-
         let resp = await this.$axios.$get("/usuarios/ativos", { params: { filtros }})
 
         if (!resp.falha) {
           this.usuariosAgendamento = resp.dados.usuarios
-          this.totalItens = this.usuariosAgendamento.length
+          this.totalItensAgendamento = this.usuariosAgendamento.length
         }
       },
       selecionarTodosLiberacaoAgendamento() {
@@ -523,8 +520,6 @@ import AppTooltip from "~/components/Ui/AppTooltip.vue";
 
         if (!resp.falha) {
           let dados = resp.dados
-
-          console.log(dados)
 
           this.buscouBloqueio = true
 
