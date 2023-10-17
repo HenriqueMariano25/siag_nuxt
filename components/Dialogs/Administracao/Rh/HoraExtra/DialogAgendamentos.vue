@@ -75,34 +75,36 @@
 											<template v-slot:[`body.Funcionario.cargo`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
-												<span class="whitespace-nowrap">{{
-													item.Funcionario.encarregado_sapo
-												}}</span>
-											</template>
-											<template v-slot:[`body.Funcionario.EncarregadoLider`]="{ item }">
+                      <template v-slot:[`body.Funcionario.SubDisciplina.descricao`]="{ item }">
+                        <span class="whitespace-nowrap">{{ item.Funcionario.SubDisciplina ? item.Funcionario.SubDisciplina.descricao : "" }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Disciplina.descricao`]="{ item }">
+                        <span
+                          class="whitespace-nowrap">{{ item.Funcionario.Disciplina ? item.Funcionario.Disciplina.descricao : "" }}</span>
+                      </template>
+											<template v-slot:[`body.Funcionario.EncarregadoLider.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.EncarregadoLider
 														? item.Funcionario.EncarregadoLider.nome
 														: ""
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.Supervisor`]="{ item }">
+											<template v-slot:[`body.Funcionario.Supervisor.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.Supervisor ? item.Funcionario.Supervisor.nome : ""
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.Engenheiro`]="{ item }">
+											<template v-slot:[`body.Funcionario.Engenheiro.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.nome : ""
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.Coordenador`]="{ item }">
+											<template v-slot:[`body.Funcionario.Coordenador.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.Coordenador ? item.Funcionario.Coordenador.nome : ""
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.Gestor`]="{ item }">
+											<template v-slot:[`body.Funcionario.Gestor.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.Gestor ? item.Funcionario.Gestor.nome : ""
 												}}</span>
@@ -196,34 +198,37 @@
 											<template v-slot:[`body.Funcionario.cargo`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
-												<span class="whitespace-nowrap">{{
-													item.Funcionario.encarregado_sapo
-												}}</span>
-											</template>
-											<template v-slot:[`body.Funcionario.EncarregadoLider`]="{ item }">
+                      <template v-slot:[`body.Funcionario.SubDisciplina.descricao`]="{ item }">
+                        <span
+                          class="whitespace-nowrap">{{ item.Funcionario.SubDisciplina ? item.Funcionario.SubDisciplina.descricao : "" }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Disciplina.descricao`]="{ item }">
+                        <span
+                          class="whitespace-nowrap">{{ item.Funcionario.Disciplina ? item.Funcionario.Disciplina.descricao : "" }}</span>
+                      </template>
+											<template v-slot:[`body.Funcionario.EncarregadoLider.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.EncarregadoLider
 														? item.Funcionario.EncarregadoLider.nome
 														: ""
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.Supervisor`]="{ item }">
+											<template v-slot:[`body.Funcionario.Supervisor.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.Supervisor ? item.Funcionario.Supervisor.nome : ""
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.Engenheiro`]="{ item }">
+											<template v-slot:[`body.Funcionario.Engenheiro.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.nome : ""
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.Coordenador`]="{ item }">
+											<template v-slot:[`body.Funcionario.Coordenador.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.Coordenador ? item.Funcionario.Coordenador.nome : ""
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.Gestor`]="{ item }">
+											<template v-slot:[`body.Funcionario.Gestor.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.Gestor ? item.Funcionario.Gestor.nome : ""
 												}}</span>
@@ -324,34 +329,37 @@
 											<template v-slot:[`body.Funcionario.cargo`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
-												<span class="whitespace-nowrap">{{
-													item.Funcionario.encarregado_sapo
-												}}</span>
-											</template>
-											<template v-slot:[`body.Funcionario.EncarregadoLider`]="{ item }">
+                      <template v-slot:[`body.Funcionario.SubDisciplina.descricao`]="{ item }">
+                        <span
+                          class="whitespace-nowrap">{{ item.Funcionario.SubDisciplina ? item.Funcionario.SubDisciplina.descricao : "" }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Disciplina.descricao`]="{ item }">
+                        <span
+                          class="whitespace-nowrap">{{ item.Funcionario.Disciplina ? item.Funcionario.Disciplina.descricao : "" }}</span>
+                      </template>
+											<template v-slot:[`body.Funcionario.EncarregadoLider.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.EncarregadoLider
 														? item.Funcionario.EncarregadoLider.nome
 														: ""
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.Supervisor`]="{ item }">
+											<template v-slot:[`body.Funcionario.Supervisor.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.Supervisor ? item.Funcionario.Supervisor.nome : ""
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.Engenheiro`]="{ item }">
+											<template v-slot:[`body.Funcionario.Engenheiro.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.nome : ""
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.Coordenador`]="{ item }">
+											<template v-slot:[`body.Funcionario.Coordenador.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.Coordenador ? item.Funcionario.Coordenador.nome : ""
 												}}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.Gestor`]="{ item }">
+											<template v-slot:[`body.Funcionario.Gestor.nome`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.Gestor ? item.Funcionario.Gestor.nome : ""
 												}}</span>
@@ -454,11 +462,14 @@
 											<template v-slot:[`body.Funcionario.cargo`]="{ item }">
 												<span class="whitespace-nowrap">{{ item.Funcionario.cargo }}</span>
 											</template>
-											<template v-slot:[`body.Funcionario.encarregado_sapo`]="{ item }">
-												<span class="whitespace-nowrap">{{
-													item.Funcionario.encarregado_sapo
-												}}</span>
-											</template>
+                      <template v-slot:[`body.Funcionario.SubDisciplina.descricao`]="{ item }">
+                        <span
+                          class="whitespace-nowrap">{{ item.Funcionario.SubDisciplina ? item.Funcionario.SubDisciplina.descricao : "" }}</span>
+                      </template>
+                      <template v-slot:[`body.Funcionario.Disciplina.descricao`]="{ item }">
+                        <span
+                          class="whitespace-nowrap">{{ item.Funcionario.Disciplina ? item.Funcionario.Disciplina.descricao : "" }}</span>
+                      </template>
 											<template v-slot:[`body.Funcionario.encarregado_producao`]="{ item }">
 												<span class="whitespace-nowrap">{{
 													item.Funcionario.encarregado_producao
@@ -577,21 +588,21 @@
 			@cancelar="mostrarDialogPDFAgendamentoAprov = false"
 			:dados="dadosAprovados"
 			:data="dataAprovados" />
-    <DialogPDFAgendamentoPend
-      v-if="mostrarDialogPDFAgendamentoPend"
-      @cancelar="mostrarDialogPDFAgendamentoPend = false"
-      :dados="dadosPendentes"
-      :data="dataPendentes" />
-    <DialogPDFAgendamentoNega
-      v-if="mostrarDialogPDFAgendamentoNega"
-      @cancelar="mostrarDialogPDFAgendamentoNega = false"
-      :dados="dadosNegados"
-      :data="dataNegados" />
-    <DialogPDFAgendamentoMeus
-      v-if="mostrarDialogPDFAgendamentoMeus"
-      @cancelar="mostrarDialogPDFAgendamentoMeus = false"
-      :dados="dadosMeusAgendamentos"
-      :data="dataMeusAgendamentos" />
+		<DialogPDFAgendamentoPend
+			v-if="mostrarDialogPDFAgendamentoPend"
+			@cancelar="mostrarDialogPDFAgendamentoPend = false"
+			:dados="dadosPendentes"
+			:data="dataPendentes" />
+		<DialogPDFAgendamentoNega
+			v-if="mostrarDialogPDFAgendamentoNega"
+			@cancelar="mostrarDialogPDFAgendamentoNega = false"
+			:dados="dadosNegados"
+			:data="dataNegados" />
+		<DialogPDFAgendamentoMeus
+			v-if="mostrarDialogPDFAgendamentoMeus"
+			@cancelar="mostrarDialogPDFAgendamentoMeus = false"
+			:dados="dadosMeusAgendamentos"
+			:data="dataMeusAgendamentos" />
 	</div>
 </template>
 
@@ -619,8 +630,8 @@
 		components: {
 			DialogPDFAgendamentoAprov,
 			DialogPDFAgendamentoPend,
-      DialogPDFAgendamentoNega,
-      DialogPDFAgendamentoMeus,
+			DialogPDFAgendamentoNega,
+			DialogPDFAgendamentoMeus,
 			AppAlerta,
 			AppBadge,
 			AppTag,
@@ -651,28 +662,29 @@
 					{ nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
 					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
-					{ nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
+					{ nome: "Disciplina", valor: "Funcionario.Disciplina.descricao", filtro: true },
+					{ nome: "SubDisciplina", valor: "Funcionario.SubDisciplina.descricao", filtro: true },
 					{
 						nome: "Encarregado/Lider",
-						valor: "Funcionario.EncarregadoLider",
+						valor: "Funcionario.EncarregadoLider.nome",
 						filtro: true,
 					},
 					{
 						nome: "Supervisor",
-						valor: "Funcionario.Supervisor",
+						valor: "Funcionario.Supervisor.nome",
 						filtro: true,
 					},
 					{
 						nome: "Engenheiro",
-						valor: "Funcionario.Engenheiro",
+						valor: "Funcionario.Engenheiro.nome",
 						filtro: true,
 					},
 					{
 						nome: "Coordenador",
-						valor: "Funcionario.Coordenador",
+						valor: "Funcionario.Coordenador.nome",
 						filtro: true,
 					},
-					{ nome: "Gestor", valor: "Funcionario.Gestor", filtro: true },
+					{ nome: "Gestor", valor: "Funcionario.Gestor.nome", filtro: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
 					{ nome: "HE atual", valor: "Funcionario.hora_extra", centralizar: true },
 					{
@@ -704,28 +716,29 @@
 					{ nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
 					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
-					{ nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
+          { nome: "Disciplina", valor: "Funcionario.Disciplina.descricao", filtro: true },
+          { nome: "SubDisciplina", valor: "Funcionario.SubDisciplina.descricao", filtro: true },
 					{
 						nome: "Encarregado/Lider",
-						valor: "Funcionario.EncarregadoLider",
+						valor: "Funcionario.EncarregadoLider.nome",
 						filtro: true,
 					},
 					{
 						nome: "Supervisor",
-						valor: "Funcionario.Supervisor",
+						valor: "Funcionario.Supervisor.nome",
 						filtro: true,
 					},
 					{
 						nome: "Engenheiro",
-						valor: "Funcionario.Engenheiro",
+						valor: "Funcionario.Engenheiro.nome",
 						filtro: true,
 					},
 					{
 						nome: "Coordenador",
-						valor: "Funcionario.Coordenador",
+						valor: "Funcionario.Coordenador.nome",
 						filtro: true,
 					},
-					{ nome: "Gestor", valor: "Funcionario.Gestor", filtro: true },
+					{ nome: "Gestor", valor: "Funcionario.Gestor.nome", filtro: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
 					{ nome: "HE atual", valor: "Funcionario.hora_extra", centralizar: true },
 					{
@@ -749,7 +762,7 @@
 				diasPendentes: [],
 				ordemPendentes: null,
 				gerandoExcelPendentes: false,
-        mostrarDialogPDFAgendamentoPend: false,
+				mostrarDialogPDFAgendamentoPend: false,
 
 				//Negados
 				cabecalhoNegados: [
@@ -757,28 +770,29 @@
 					{ nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
 					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
-					{ nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
+          { nome: "Disciplina", valor: "Funcionario.Disciplina.descricao", filtro: true },
+          { nome: "SubDisciplina", valor: "Funcionario.SubDisciplina.descricao", filtro: true },
 					{
 						nome: "Encarregado/Lider",
-						valor: "Funcionario.EncarregadoLider",
+						valor: "Funcionario.EncarregadoLider.nome",
 						filtro: true,
 					},
 					{
 						nome: "Supervisor",
-						valor: "Funcionario.Supervisor",
+						valor: "Funcionario.Supervisor.nome",
 						filtro: true,
 					},
 					{
 						nome: "Engenheiro",
-						valor: "Funcionario.Engenheiro",
+						valor: "Funcionario.Engenheiro.nome",
 						filtro: true,
 					},
 					{
 						nome: "Coordenador",
-						valor: "Funcionario.Coordenador",
+						valor: "Funcionario.Coordenador.nome",
 						filtro: true,
 					},
-					{ nome: "Gestor", valor: "Funcionario.Gestor", filtro: true },
+					{ nome: "Gestor", valor: "Funcionario.Gestor.nome", filtro: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true, centralizar: true },
 					{ nome: "HE atual", valor: "Funcionario.hora_extra", centralizar: true },
 					{
@@ -803,7 +817,7 @@
 				ordemNegados: null,
 				gerandoExcelNegados: false,
 				dataNegados: null,
-        mostrarDialogPDFAgendamentoNega: false,
+				mostrarDialogPDFAgendamentoNega: false,
 
 				//Meus agendamentos
 				cabecalhoMeusAgendamentos: [
@@ -811,7 +825,8 @@
 					{ nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
 					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
-					{ nome: "Encarregado/Lider Sapo", valor: "Funcionario.encarregado_sapo", filtro: true },
+          { nome: "Disciplina", valor: "Funcionario.Disciplina.descricao", filtro: true },
+          { nome: "SubDisciplina", valor: "Funcionario.SubDisciplina.descricao", filtro: true },
 					{
 						nome: "Encarregado/Lider Produção",
 						valor: "Funcionario.encarregado_producao",
@@ -841,7 +856,7 @@
 				selecionadosMeusAgendamentos: [],
 				mostrarDialogDesagendar: false,
 				gerandoExcelMeusAgendamentos: false,
-        mostrarDialogPDFAgendamentoMeus: false,
+				mostrarDialogPDFAgendamentoMeus: false,
 			}
 		},
 		computed: {
@@ -1291,11 +1306,11 @@
 					"Nome",
 					"Cargo",
 					"Encarregado/Lider SAPO",
-          "Encarregado/Lider",
-          "Supervisor",
-          "Engenheiro",
-          "Coordenador",
-          "Gestor",
+					"Encarregado/Lider",
+					"Supervisor",
+					"Engenheiro",
+					"Coordenador",
+					"Gestor",
 					"Setor",
 					"HE Atual",
 					"HE Projetada",
@@ -1323,23 +1338,23 @@
 							? item.Funcionario.encarregado_sapo
 							: "",
 					)
-          temp.push(
-            item.Funcionario && item.Funcionario.EncarregadoLider
-              ? item.Funcionario.EncarregadoLider.nome
-              : "",
-          )
-          temp.push(
-            item.Funcionario && item.Funcionario.Supervisor ? item.Funcionario.Supervisor.nome : "",
-          )
-          temp.push(
-            item.Funcionario && item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.nome : "",
-          )
-          temp.push(
-            item.Funcionario && item.Funcionario.Coordenador
-              ? item.Funcionario.Coordenador.nome
-              : "",
-          )
-          temp.push(item.Funcionario && item.Funcionario.Gestor ? item.Funcionario.Gestor.nome : "")
+					temp.push(
+						item.Funcionario && item.Funcionario.EncarregadoLider
+							? item.Funcionario.EncarregadoLider.nome
+							: "",
+					)
+					temp.push(
+						item.Funcionario && item.Funcionario.Supervisor ? item.Funcionario.Supervisor.nome : "",
+					)
+					temp.push(
+						item.Funcionario && item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.nome : "",
+					)
+					temp.push(
+						item.Funcionario && item.Funcionario.Coordenador
+							? item.Funcionario.Coordenador.nome
+							: "",
+					)
+					temp.push(item.Funcionario && item.Funcionario.Gestor ? item.Funcionario.Gestor.nome : "")
 					temp.push(item.Setor ? item.Setor.nome : "")
 					temp.push(item.Funcionario ? this.horaExtra(item.Funcionario.hora_extra) : "")
 					temp.push(item.hora_extra_projetada ? this.horaExtra(item.hora_extra_projetada) : "")
