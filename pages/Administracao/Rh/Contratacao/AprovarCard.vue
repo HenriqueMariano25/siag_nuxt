@@ -16,14 +16,6 @@
 				:class="{ 'border-b-4 border-b-white': tipoAprovacao === 'gestor_area' }">
 				Gestor Área
 			</button>
-
-			<button
-				@click="tipoAprovacao = 'site_manager'"
-				class="px-4 hover:bg-blue-600"
-				v-if="$auth.user && $auth.user.permissoes.includes('aprovar_card_site_manager')"
-				:class="{ 'border-b-4 border-b-white': tipoAprovacao === 'site_manager' }">
-				Site Manager
-			</button>
 		</div>
 		<div class="">
 			<TabelaPadrao
@@ -313,11 +305,6 @@
 				if (todasPermissoes.includes("aprovar_card_gerente_area")) {
 					this.tiposAprovacao.push("gestor_area")
 					this.tipoAprovacao === null ? (this.tipoAprovacao = "gestor_area") : false
-				}
-
-				if (todasPermissoes.includes("aprovar_card_site_manager")) {
-					this.tiposAprovacao.push("site_manager")
-					this.tipoAprovacao === null ? (this.tipoAprovacao = "site_manager") : false
 				}
 			}
 			await this.buscarCards()
