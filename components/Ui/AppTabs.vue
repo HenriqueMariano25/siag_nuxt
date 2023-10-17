@@ -18,7 +18,7 @@
     </div>
     <div
       class=""
-      v-for="tab of tabs">
+      v-for="tab of tabs" :style="'height:' + altura">
       <slot :name="'tab.' + tab.valor" v-if="tabAtual === tab.valor" ></slot>
     </div>
   </div>
@@ -31,6 +31,9 @@ export default {
     tabs: {
       type: [Array],
       required: true,
+    },
+    altura: {
+      type: String,
     },
   },
   mounted() {

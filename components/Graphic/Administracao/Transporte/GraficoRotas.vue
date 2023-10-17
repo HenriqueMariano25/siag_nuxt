@@ -23,19 +23,7 @@
 				</BotaoPadrao>
 			</div>
 		</div>
-		<!--    <D3BarChart-->
-		<!--      v-if="buscouDados"-->
-		<!--      :config="chart_config"-->
-		<!--      :datum="chart_data"-->
-		<!--      :title="chart_title"-->
-		<!--    ></D3BarChart>-->
 		<div class="bg-white w-full relative" style="height: calc(100vh - 231px)">
-<!--			<div class="flex flex-col p-1.5">-->
-<!--				<div class="w-[150px] flex flex-col bg-gray-100 border border-gray-300 text-center rounded py-3">-->
-<!--					<span class="text-xl whitespace-pre"><strong>Total</strong></span>-->
-<!--					<span class="text-3xl">97,5%</span>-->
-<!--				</div>-->
-<!--			</div>-->
       <div class="mt-0 h-full" >
         <client-only>
           <div
@@ -281,7 +269,6 @@
         await chart.render()
 
         await chart.updateOptions({
-
         })
       }
 		},
