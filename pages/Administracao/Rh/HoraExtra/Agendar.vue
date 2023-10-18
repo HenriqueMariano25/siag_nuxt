@@ -98,6 +98,7 @@
 			<div class="flex gap-1">
 				<!--        {{ agendamento.data }}-->
 				<AppFormSelect
+          obrigatorio
 					label="Turno"
 					:options="turnos"
 					v-model="agendamento.turno"
