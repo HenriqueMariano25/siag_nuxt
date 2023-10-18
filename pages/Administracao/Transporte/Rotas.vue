@@ -160,6 +160,7 @@
         this.dados[idx].horario_saida = rota.horario_saida
         this.dados[idx].Veiculo.nome = rota.Veiculo.nome
         this.dados[idx].turno = rota.turno
+        this.dados[idx].mostrar_grafico = rota.mostrar_grafico
 
         this.rota = null
         this.mostrarDialogCriarRota = false
