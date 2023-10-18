@@ -5,8 +5,8 @@
 			largura="w-10/12"
 			@cancelar="cancelar()">
 			<template v-slot:corpo>
-				<div class="grid w-full">
-					<div class="flex w-full">
+				<div class="grid w-full ">
+					<div class="flex w-full max-h-[32vh] overflow-y-auto">
 						<table class="flex-col w-full">
 							<thead class="">
 								<tr class="uppercase px-2 py-1 text-sm text-white relative">
