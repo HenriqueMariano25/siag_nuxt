@@ -1,6 +1,7 @@
 <template>
 	<div class="ml-2">
 		<div class="flex">
+
 			<span :class="{ 'text-red-600': invalido }">
 				<strong>
 					{{ titulo
@@ -30,6 +31,7 @@
 				class="flex flex-row items-center gap-1"
 				:for="'inputRadio' + item.valor">
 				<input
+          :class="{'input-invalido':invalido}"
 					class="cursor-pointer mr-2"
 					type="radio"
 					:id="'inputRadio' + item.valor"
@@ -182,6 +184,10 @@
 		display: grid;
 		place-content: center;
 	}
+
+  .input-invalido {
+    border: 0.15em solid #c50000 !important;
+  }
 
 	input[type="radio"]::before {
 		content: "";

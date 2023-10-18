@@ -171,9 +171,10 @@
 						</span>
 						<div class="flex items-end space-x-2">
 							<AppFormRadio
+                obrigatorio
 								class="w-2/12 self-start"
 								:itens="opcoesLocalPrestacao"
-								titulo=""
+								titulo="Local"
 								v-model="ss.local_prestacao_obra"
 								id="local_prestacao_obra"
 								:invalido="erro.includes('local_prestacao_obra')" />
