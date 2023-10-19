@@ -182,7 +182,7 @@
 							class="w-6 h-6"
 							v-if="temCamposVazio(item)">
 							<img
-								src="@/assets/icons/information-circle-g.svg"
+								src="@/assets/icons/information-circle-yellow.svg"
 								alt=""
 								class="w-6 h-6" />
 						</div>
@@ -225,6 +225,28 @@
 					{{ item.EncarregadoLider.nome }}
 				</span>
 			</template>
+      <template v-slot:[`body.situacao`]="{ item }">
+        <div
+          v-if="temCamposVazio(item)"
+          class="bg-sky-300 text-black text-center px-2 rounded whitespace-nowrap border border-slate-700">
+          Sem dados
+        </div>
+        <div
+          v-if="item.jaAgendado"
+          class=" bg-orange-400 text-black text-center px-2 rounded whitespace-nowrap border border-slate-700">
+          Já agendado
+        </div>
+        <div
+          v-if="item.aprovado"
+          class="bg-green-400 text-black text-center px-2 rounded whitespace-nowrap border border-slate-700">
+          Aprovado
+        </div>
+        <div
+          v-if="item.negado"
+          class="bg-red-500 text-black text-center px-2 rounded whitespace-nowrap border border-slate-700">
+          Negado
+        </div>
+      </template>
 			<template v-slot:[`body.hora_extra`]="{ item }">
 				<span
 					class="whitespace-nowrap"
@@ -409,6 +431,7 @@
 					{ id: "3° turno", nome: "3° turno" },
 				],
 				cabecalho: [
+					{ nome: "Situação", valor: "situacao"},
 					{ nome: "HE atual", valor: "hora_extra", centralizar: true, ordenar: true },
 					{ nome: "HE projetada", valor: "hora_extra_projetada", centralizar: true },
 					{ nome: "Matrícula", valor: "chapa", filtro: true, centralizar: true },
@@ -618,10 +641,7 @@
 					const hoje = this.$dayjs()
 					const diaSemana = hoje.day()
 
-          console.log(diaSemana);
-
 					let diasAteProximoDomingo = (8 - diaSemana) % 8
-          console.log(diasAteProximoDomingo);
 					if (diasAteProximoDomingo > 6) diasAteProximoDomingo = 6
 
 					let data = this.$dayjs().format("YYYY-MM-DD")
@@ -710,6 +730,9 @@
 
 				for (let agA of agendAtivos) {
 					agA["ativo"] = false
+					agA["jaAgendado"] = false
+					agA["negado"] = false
+					agA["aprovado"] = false
 				}
 
 				let agendamentos = []
@@ -735,6 +758,24 @@
 						novosDados[idx]["precisa_aprovacao_situacao"] = ag.precisa_aprovacao_situacao
 						novosDados[idx]["aprovacao_situacao"] = ag.aprovacao_situacao
 						novosDados[idx]["ativo"] = true
+
+            if(ag.aprovacao_he === false){
+						  novosDados[idx]["negado"] = true
+            }else if(ag.aprovacao_he === true){
+              if(ag.precisa_aprovacao_situacao === true){
+                if (ag.aprovacao_situacao === false) {
+                  novosDados[idx]["negado"] = true
+                } else if (ag.aprovacao_situacao === true) {
+                  novosDados[idx]["aprovado"] = true
+                } else {
+                  novosDados[idx]["jaAgendado"] = true
+                }
+              }else{
+                novosDados[idx]["aprovado"] = true
+              }
+            }else{
+              novosDados[idx]["jaAgendado"] = true
+            }
 					}
 				}
 				this.limparSelecionar = false
