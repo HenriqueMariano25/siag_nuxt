@@ -44,13 +44,14 @@
 				@atualizar="buscarCards"
 				@dblclick="verDetalhesSS"
 				:selecionar="
+				$auth.user.permissoes.includes('rh_contratacoes') &&
 					!this.etapasAprovacao.includes(etapa_id) &&
 					etapa_id !== null &&
 					etapa_id !== 0 &&
 					!this.etapasFinalização.includes(etapa_id)
 				"
 				@selecionados="selecionados = $event"
-        :limparSelecionar="true"
+				:limparSelecionar="true"
 				:carregando="carregandoTabela"
 				:temDetalhes="false">
 				<template v-slot:[`body.acoes`]="{ item }">
@@ -65,7 +66,7 @@
 					<span
 						v-if="item['Etapa.nome']"
 						class="whitespace-nowrap">
-						{{ item['Etapa.nome'] }}
+						{{ item["Etapa.nome"] }}
 					</span>
 				</template>
 				<template v-slot:[`body.Setor.nome`]="{ item }">
@@ -91,42 +92,47 @@
 				</template>
 				<template v-slot:[`body.situacao`]="{ item }">
 					<div class="flex justify-center gap-1.5">
-            <template v-if="item['Etapa.conclui_processo'] === true || item['Etapa.rejeita_processo'] === true || item['Etapa.standby_processo'] === true">
-              <div
-                v-if="item['Etapa.conclui_processo'] === true"
-                class="text-black bg-green-400 px-2 rounded whitespace-nowrap">
-                Finalizado
-              </div>
-              <div
-                v-if="item['Etapa.rejeita_processo'] === true"
-                class="text-white bg-red-800 px-2 rounded whitespace-nowrap">
-                Rejeitado
-              </div>
-              <div
-                v-if="item['Etapa.standby_processo'] === true"
-                class="text-black bg-yellow-500 px-2 rounded whitespace-nowrap">
-                Stand by
-              </div>
-            </template>
-            <template v-else>
-              <template v-if="item['Etapa.conclui_processo'] === false">
-                <div
-                  v-if="!($dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime'])"
-                  class="bg-blue-400 text-black px-2 rounded whitespace-nowrap">
-                  No prazo
-                </div>
-                <div
-                  v-if="$dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime']"
-                  class="bg-red-400 text-black px-2 rounded whitespace-nowrap">
-                  Atrasado
-                </div>
-              </template>
-              <div
-                v-if="item.confidencial === true"
-                class="bg-gray-600 text-white px-2 rounded whitespace-nowrap">
-                Confidencial
-              </div>
-            </template>
+						<template
+							v-if="
+								item['Etapa.conclui_processo'] === true ||
+								item['Etapa.rejeita_processo'] === true ||
+								item['Etapa.standby_processo'] === true
+							">
+							<div
+								v-if="item['Etapa.conclui_processo'] === true"
+								class="text-black bg-green-400 px-2 rounded whitespace-nowrap">
+								Finalizado
+							</div>
+							<div
+								v-if="item['Etapa.rejeita_processo'] === true"
+								class="text-white bg-red-800 px-2 rounded whitespace-nowrap">
+								Rejeitado
+							</div>
+							<div
+								v-if="item['Etapa.standby_processo'] === true"
+								class="text-black bg-yellow-500 px-2 rounded whitespace-nowrap">
+								Stand by
+							</div>
+						</template>
+						<template v-else>
+							<template v-if="item['Etapa.conclui_processo'] === false">
+								<div
+									v-if="!($dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime'])"
+									class="bg-blue-400 text-black px-2 rounded whitespace-nowrap">
+									No prazo
+								</div>
+								<div
+									v-if="$dayjs().diff(item.ultima_data, 'day') > item['Etapa.leadtime']"
+									class="bg-red-400 text-black px-2 rounded whitespace-nowrap">
+									Atrasado
+								</div>
+							</template>
+							<div
+								v-if="item.confidencial === true"
+								class="bg-gray-600 text-white px-2 rounded whitespace-nowrap">
+								Confidencial
+							</div>
+						</template>
 					</div>
 				</template>
 				<template v-slot:[`body.FuncaoCard.nome`]="{ item }">
@@ -218,15 +224,15 @@
 								alt="excel"
 								class="w-6 h-6" />
 						</BotaoPadrao>
-<!--						<BotaoPadrao-->
-<!--							:texto="gerandoExcel ? 'Gerando Excel' : 'Excel por etapa'"-->
-<!--							@click="gerarExcelEtapa()"-->
-<!--							:disabled="gerandoExcel">-->
-<!--							<img-->
-<!--								src="@/assets/icons/excel-b.svg"-->
-<!--								alt="excel"-->
-<!--								class="w-6 h-6" />-->
-<!--						</BotaoPadrao>-->
+						<!--						<BotaoPadrao-->
+						<!--							:texto="gerandoExcel ? 'Gerando Excel' : 'Excel por etapa'"-->
+						<!--							@click="gerarExcelEtapa()"-->
+						<!--							:disabled="gerandoExcel">-->
+						<!--							<img-->
+						<!--								src="@/assets/icons/excel-b.svg"-->
+						<!--								alt="excel"-->
+						<!--								class="w-6 h-6" />-->
+						<!--						</BotaoPadrao>-->
 					</div>
 					<div class="flex w-full justify-end gap-4">
 						<BotaoPadrao
@@ -258,8 +264,9 @@
 							</template>
 						</BotaoPadrao>
 						<BotaoPadrao
-							texto="Processar Card"
-							:disabled="selecionados.length === 0"
+              texto="Processar Card"
+              :disabled="selecionados.length === 0"
+              v-if="$auth.user.permissoes.includes('rh_contratacoes')"
 							@clique="mostrarDialogProcessarCard = true">
 							<template v-slot>
 								<img
@@ -267,6 +274,16 @@
 									alt="close"
 									class="w-6 h-6" />
 							</template>
+						</BotaoPadrao>
+						<BotaoPadrao
+              v-if="$auth.user.permissoes.includes('rh_contratacoes_editar_funcao')"
+							texto="Editar função"
+							@clique="mostrarDialogEditarFuncao = true"
+							:disabled="podeEditarFuncao">
+							<img
+								src="@/assets/icons/edit-b.svg"
+								alt=""
+								class="w-7 h-7" />
 						</BotaoPadrao>
 					</div>
 				</div>
@@ -277,7 +294,7 @@
 			:card_id="card_id"
 			@editado="cardEditado"
 			@cadastrado="cardCadastrado"
-      @deletado="cardDeletado"
+			@deletado="cardDeletado"
 			@cancelar="cancelar" />
 		<DialogProcessarCard
 			:cards="selecionados"
@@ -292,6 +309,11 @@
 			@standby="standby"
 			@retornouStandby="retornouStandby"
 			@processado="processado" />
+		<DialogEditarFuncao
+			v-if="mostrarDialogEditarFuncao"
+			@cancelar="mostrarDialogEditarFuncao = false"
+      @funcaoEditada="funcaoEditada"
+			:cards="selecionados" />
 		<AppAlerta
 			tipo="sucesso"
 			:mostrar="mostrarAlerta"
@@ -336,10 +358,12 @@
 	import { prepararFiltro } from "~/mixins/prepararFiltro"
 	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
 	import gerarExcel from "~/functions/gerarExcel"
+	import DialogEditarFuncao from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogEditarFuncao.vue"
 	export default {
 		mixins: [buscarEtapa, prepararFiltro, buscarSetores, buscarDisciplinaCard],
 		name: "Cards",
 		components: {
+			DialogEditarFuncao,
 			RodapePagina,
 			BotaoPadrao,
 			DialogCriarCard,
@@ -380,7 +404,8 @@
 				anteriorEtapa: null,
 				etapasAprovacao: [],
 				etapasFinalização: [],
-        limparSelecionar: 1
+				limparSelecionar: 1,
+				mostrarDialogEditarFuncao: false,
 			}
 		},
 
@@ -400,14 +425,16 @@
 						nome: "Etapa",
 						valor: "Etapa.id",
 						filtro: true,
-            // mostrarVazio: true,
+						// mostrarVazio: true,
 						opcoes: Array.from(
 							new Set(
 								this.etapas
 									.filter((item) => {
 										return item.nome
 									})
-									.map((item) => { return { id: item.id, texto: item.nome} }),
+									.map((item) => {
+										return { id: item.id, texto: item.nome }
+									}),
 							),
 						),
 					},
@@ -492,6 +519,12 @@
 			isAdminCardRH() {
 				return this.$auth.user.permissoes.includes("editar_card_adm_contratacao")
 			},
+
+      podeEditarFuncao(){
+        let setores = [...new Set(this.selecionados.map( o => o.setor_id))]
+
+        return setores.length !== 1
+      }
 		},
 		async mounted() {
 			await this.buscarEtapas()
@@ -524,9 +557,6 @@
 
 			podeEditarCard(item) {
 				let listaEdicao = [1, 2, 3, 4, 5, 6]
-
-				// console.log(item)
-				// console.log(listaEdicao.some(o => { return o === item.etapa_id }))
 
 				if (this.isAdminCardRH) {
 					return this.isAdminCardRH
@@ -595,13 +625,11 @@
 
 					this.carregandoTabela = false
 					this.totalItens = resp.dados.totalItens
-					// console.log(cards)
 					this.dados = cards
 				}
 			},
 
 			async atualizarDados(parametros) {
-				console.log(parametros)
 				let { itensPorPagina, pagina, filtros } = parametros
 
 				if (itensPorPagina) this.itensPorPagina = itensPorPagina
@@ -621,8 +649,8 @@
 			cardEditado(dados) {
 				let idx = this.dados.findIndex((o) => o.id === dados.card_id)
 
-        this.dados[idx] = Object.assign(this.dados[idx], dados.card)
-        this.dados[idx]["Comentarios.descricao"] = dados.comentario
+				this.dados[idx] = Object.assign(this.dados[idx], dados.card)
+				this.dados[idx]["Comentarios.descricao"] = dados.comentario
 
 				this.mostrarDialogCriarCard = false
 				this.mostrarAlerta = true
@@ -637,17 +665,17 @@
 				this.card_id = null
 			},
 
-      cardDeletado(card_id){
-        let idx = this.dados.findIndex( o => o.id === card_id)
+			cardDeletado(card_id) {
+				let idx = this.dados.findIndex((o) => o.id === card_id)
 
-        if(idx >= 0){
-          this.mostrarDialogCriarCard = false
-          this.mostrarAlerta = true
-          this.textoAlerta = "Card deletado com sucesso!"
-          this.card_id = null
-          this.dados.splice(idx, 1)
-        }
-      },
+				if (idx >= 0) {
+					this.mostrarDialogCriarCard = false
+					this.mostrarAlerta = true
+					this.textoAlerta = "Card deletado com sucesso!"
+					this.card_id = null
+					this.dados.splice(idx, 1)
+				}
+			},
 
 			async processado(dados) {
 				let { cards, etapa_id } = dados
@@ -664,7 +692,7 @@
 				this.mostrarAlerta = true
 				this.textoAlerta = "Cards processados com sucesso!"
 				this.selecionados = []
-        this.limparSelecionar += 1
+				this.limparSelecionar += 1
 			},
 
 			async concluido(cards) {
@@ -680,56 +708,56 @@
 				this.mostrarAlerta = true
 				this.textoAlerta = "Cards finalizados com sucesso!"
 				this.selecionados = []
-        this.limparSelecionar += 1
+				this.limparSelecionar += 1
 			},
 
-      async rejeitado(cards) {
-        this.mostrarDialogProcessarCard = false
-        for (let card of cards) {
-          let index = this.dados.findIndex((obj) => {
-            return obj.id === card
-          })
+			async rejeitado(cards) {
+				this.mostrarDialogProcessarCard = false
+				for (let card of cards) {
+					let index = this.dados.findIndex((obj) => {
+						return obj.id === card
+					})
 
-          this.dados.splice(index, 1)
-          this.totalItens -= 1
-        }
-        this.mostrarAlerta = true
-        this.textoAlerta = "Cards rejeitados com sucesso!"
-        this.selecionados = []
-        this.limparSelecionar += 1
-      },
+					this.dados.splice(index, 1)
+					this.totalItens -= 1
+				}
+				this.mostrarAlerta = true
+				this.textoAlerta = "Cards rejeitados com sucesso!"
+				this.selecionados = []
+				this.limparSelecionar += 1
+			},
 
-      async standby(cards) {
-        this.mostrarDialogProcessarCard = false
-        for (let card of cards) {
-          let index = this.dados.findIndex((obj) => {
-            return obj.id === card
-          })
+			async standby(cards) {
+				this.mostrarDialogProcessarCard = false
+				for (let card of cards) {
+					let index = this.dados.findIndex((obj) => {
+						return obj.id === card
+					})
 
-          this.dados.splice(index, 1)
-          this.totalItens -= 1
-        }
-        this.mostrarAlerta = true
-        this.textoAlerta = "Cards movidos para Standby com sucesso!"
-        this.selecionados = []
-        this.limparSelecionar += 1
-      },
+					this.dados.splice(index, 1)
+					this.totalItens -= 1
+				}
+				this.mostrarAlerta = true
+				this.textoAlerta = "Cards movidos para Standby com sucesso!"
+				this.selecionados = []
+				this.limparSelecionar += 1
+			},
 
-      async retornouStandby(cards) {
-        this.mostrarDialogProcessarCard = false
-        for (let card of cards) {
-          let index = this.dados.findIndex((obj) => {
-            return obj.id === card
-          })
+			async retornouStandby(cards) {
+				this.mostrarDialogProcessarCard = false
+				for (let card of cards) {
+					let index = this.dados.findIndex((obj) => {
+						return obj.id === card
+					})
 
-          this.dados.splice(index, 1)
-          this.totalItens -= 1
-        }
-        this.mostrarAlerta = true
-        this.textoAlerta = "Cards retornados e movidos com sucesso!"
-        this.selecionados = []
-        this.limparSelecionar += 1
-      },
+					this.dados.splice(index, 1)
+					this.totalItens -= 1
+				}
+				this.mostrarAlerta = true
+				this.textoAlerta = "Cards retornados e movidos com sucesso!"
+				this.selecionados = []
+				this.limparSelecionar += 1
+			},
 
 			async alterouCandidato(cards) {
 				this.mostrarDialogProcessarCard = false
@@ -744,6 +772,20 @@
 					}
 				}
 			},
+
+      async funcaoEditada(cards){
+        this.mostrarDialogEditarFuncao = false
+        this.textoAlerta = "Alteração de função realizado com sucesso!"
+        this.mostrarAlerta = true
+
+        for (let card of cards) {
+          let idx = this.dados.findIndex((o) => o.id === card)
+
+          if (idx >= 0) {
+            this.dados.splice(idx, 1)
+          }
+        }
+      },
 
 			async filtrarAvancado(filtros) {
 				this.mostrarDialogFiltroAvancado = false
@@ -817,8 +859,6 @@
 					},
 				})
 
-				// console.log(resp)
-
 				if (!resp.falha) {
 					this.gerandoExcel = true
 					let dados = resp.dados.cards
@@ -843,8 +883,8 @@
 						"Treinamentos",
 						"PEP",
 						"Mobilização",
-            "Criado por",
-            "Turno",
+						"Criado por",
+						"Turno",
 						"Último Comentário",
 					]
 					let nomeArquivo
@@ -863,7 +903,11 @@
 								: "Atrasado",
 						)
 						temp.push(item["Setor.nome"] ? item["Setor.nome"] : "")
-						temp.push(item["DisciplinaCard.sigla"] ? `${item["DisciplinaCard.sigla"]} - ${item["DisciplinaCard.descricao"]}` : "")
+						temp.push(
+							item["DisciplinaCard.sigla"]
+								? `${item["DisciplinaCard.sigla"]} - ${item["DisciplinaCard.descricao"]}`
+								: "",
+						)
 						temp.push(item["Indicacao.nome"] ? item["Indicacao.nome"] : "")
 						temp.push(item["Indicacao.cpf"] ? item["Indicacao.cpf"].replace(/[^\w\s]/gi, "") : "")
 						temp.push(item["FuncaoCard.nome"] ? item["FuncaoCard.nome"].trim() : "")
@@ -899,8 +943,6 @@
 			async gerarExcelEtapa() {
 				let resp = await this.$axios.$get("/contratacao/cards/relatorio_tempo_etapa")
 
-				console.log(resp)
-
 				if (!resp.falha) {
 					let cards = resp.dados.cards
 					let etapas = resp.dados.etapas
@@ -918,9 +960,6 @@
 						temp.push(("000000" + item.id).slice(-6))
 						for (let etapa of Object.keys(etapas)) {
 							if (item.etapas[etapa]) {
-								console.log("Card", item.id)
-								console.log(item.etapas[etapa])
-								console.log(item.etapas[etapa] === 0)
 								temp.push((parseFloat(item.etapas[etapa]) / 24).toFixed(2))
 							} else if (item.etapas[etapa] === 0) {
 								temp.push("0.04")

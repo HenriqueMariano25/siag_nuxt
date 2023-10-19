@@ -130,6 +130,9 @@
 							class="bg-gray-600 text-white px-2 rounded whitespace-nowrap">
 							Confidencial
 						</div>
+            <div v-if="item.etapa_retornar_id" class="bg-[#3a0ca3] text-white px-2 rounded whitespace-nowrap">
+              Troca função
+            </div>
 					</div>
 				</template>
 				<template v-slot:[`body.Usuario.nome`]="{ item }">
