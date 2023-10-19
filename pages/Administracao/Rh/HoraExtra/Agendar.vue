@@ -262,11 +262,11 @@
 				<span
 					class="whitespace-nowrap"
 					:class="{
-						'font-bold  text-yellow-500': item.hora_extra >= 24 && item.hora_extra < 33.99,
-						'font-bold  text-amber-700': item.hora_extra >= 34 && item.hora_extra < 39.99,
-						'font-bold  text-red-600': item.hora_extra >= 40,
+						'font-bold  text-yellow-500': item.hora_extra_projetada >= 24 && item.hora_extra_projetada < 33.99,
+						'font-bold  text-amber-700': item.hora_extra_projetada >= 34 && item.hora_extra_projetada < 39.99,
+						'font-bold  text-red-600': item.hora_extra_projetada >= 40,
 					}">
-					{{ horaExtra(item.hora_extra_projetada) }}
+					{{ item.hora_extra_projetada ? horaExtra(item.hora_extra_projetada) : horaExtra(item.hora_extra ) }}
 				</span>
 			</template>
 			<template v-slot:[`body.Turno.descricao`]="{ item }">
