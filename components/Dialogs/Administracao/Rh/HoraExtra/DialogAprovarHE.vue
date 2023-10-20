@@ -226,6 +226,7 @@
 										@atualizar="buscarAgendamentosSiteManager()"
 										:carregando="carregandoTabelaSiteManager"
 										selecionar
+                    :limparSelecionar="limparSelecionados"
 										@selecionados="selecionadosSiteManager = $event"
 										:temRodape="false">
 										<template v-slot:[`body.status`]="{ item }">
@@ -730,8 +731,8 @@
 
 			async buscarAgendamentosSiteManager() {
 				let data = this.dataSiteManager
-        if (data !== this.dataAtualGestorArea) {
-          this.dataAtualGestorArea = data
+        if (data !== this.dataAtualSiteManager) {
+          this.dataAtualSiteManager = data
           this.limparSelecionados = true
         }
 				let ordem = this.ordemSiteManager
