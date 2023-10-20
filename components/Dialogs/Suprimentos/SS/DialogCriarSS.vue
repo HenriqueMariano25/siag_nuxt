@@ -120,6 +120,7 @@
 								placeholder="Descrição mais detalhada do escopo selecionado a cima"
 								v-model="ss.abrangencia_escopo"
 								:invalido="erro.includes('abrangencia_escopo')"
+                :totalCaracteres="2000"
 								class="mt-1" />
 						</div>
 						<div class="grid grid-cols-4 gap-y-1">
@@ -1193,6 +1194,7 @@
 							label="Observações"
 							placeholder="Observações opcionais"
 							v-model="ss.observacoes_matriz"
+              :total-caracteres="1000"
 							class="mt-1" />
 					</div>
 					<div class="grid grid-cols-2 gap-3">
@@ -1278,6 +1280,7 @@
 								label="Observações"
 								placeholder="Observações opcionais"
 								v-model="ss.observacoes_condicao"
+                :total-caracteres="1000"
 								class="mt-1" />
 						</div>
 						<div class="bg-blue-100 p-2 border border-blue-200">
@@ -1287,6 +1290,7 @@
 								label="Exames e requisitos do SMS necessários"
 								placeholder="Exames e requisitos do SMS necessários"
 								v-model="ss.exames_necessarios"
+                :total-caracteres="1000"
 								class="mt-2" />
 							<AppFormInput
 								class="mt-2"
@@ -1355,6 +1359,7 @@
 						<AppFormTextarea
 							id="observacoes_condicao"
 							label="Observações"
+              :total-caracteres="1000"
 							placeholder="Observações opcionais"
 							v-model="ss.observacoes_geral"
 							class="mt-1" />

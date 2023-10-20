@@ -15,6 +15,9 @@
         v-on="inputListeners"
       >
       </textarea>
+      <div class="-mt-1.5 w-full flex justify-end">
+        <span class=" mr-1.5 text-xs" v-if="value" :class="{'text-red-600 font-bold': value.length >= totalCaracteres}">{{ value.length }}/{{ totalCaracteres }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -58,6 +61,10 @@ export default {
     linhas: {
       type: [Number, String],
       default: 3
+    },
+    totalCaracteres:{
+      type: [Number],
+      default: 255
     }
   },
   data() {
@@ -71,15 +78,23 @@ export default {
       return {
         ...this.$listeners,
         input(event) {
-
-          vm.$emit('input',event.target.value);
+          let valor = event.target.value
+          if (valor && valor.length > vm.totalCaracteres) {
+            valor = valor.substring(0, vm.totalCaracteres);
+          }
+          event.target.value = valor
+          vm.$emit('input',valor);
         },
       };
     },
   },
   watch: {
     value(value) {
-      this.localValue = value;
+      let valor = value
+      if(value && value.length > this.totalCaracteres){
+        valor = value.substring(0, this.totalCaracteres);
+      }
+      this.localValue = valor;
     },
   },
 }

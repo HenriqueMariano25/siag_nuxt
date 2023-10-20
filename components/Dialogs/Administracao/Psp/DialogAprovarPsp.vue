@@ -36,6 +36,7 @@
 					</table>
 					<div class="mt-1">
 						<AppFormTextarea
+              :total-caracteres="255"
 							id="comentario"
 							label="Comentario"
 							v-model="comentario" />

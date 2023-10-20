@@ -32,6 +32,7 @@
 						label="Comentário"
 						placeholder="Comentário opcional"
 						v-model="processo.comentario"
+            :total-caracteres="255"
 						class="" />
 				</div>
 			</div>

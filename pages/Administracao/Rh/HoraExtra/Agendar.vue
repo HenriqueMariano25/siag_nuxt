@@ -107,6 +107,7 @@
 					class="grow"
 					id="data"
 					type="text"
+          :total-caracteres="255"
 					v-model="agendamento.motivo"
 					obrigatorio
 					label="Motivo"

@@ -29,6 +29,7 @@
 								<AppFormTextarea
 									class="col-span-2"
 									id="descricao"
+                  :total-caracteres="255"
 									type="text"
 									label="Descrição"
 									v-model="etapa.descricao"

@@ -38,6 +38,7 @@
 					<div>
 						<AppFormTextarea
 							id="comentario"
+              :total-caracteres="255"
 							label="Comentário"
 							v-model="comentario" />
 					</div>

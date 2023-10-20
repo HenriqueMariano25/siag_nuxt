@@ -15,6 +15,7 @@
             type="text"
             label="Abragência do escopo"
             v-model="processo.abrangencia_escopo"
+            :total-caracteres="2000"
             id="escopo_servico"/>
           <AppFormSelect
             label="Comprador"
@@ -23,6 +24,7 @@
             id="pep"/>
           <AppFormTextarea
             id="comentario"
+            :total-caracteres="255"
             label="Comentário"
             placeholder="Comentário opcional"
             v-model="processo.comentario"
