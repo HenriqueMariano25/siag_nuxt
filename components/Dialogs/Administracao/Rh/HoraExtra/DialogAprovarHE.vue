@@ -420,7 +420,9 @@
 		data() {
 			return {
 				dataGestorArea: null,
+				dataAtualGestorArea: null,
 				dataSiteManager: null,
+				dataAtualSiteManager: null,
 				dadosGestor: [],
 				filtrosGestor: {},
 				itensPorPaginaGestor: 50,
@@ -448,7 +450,7 @@
 				ordemSiteManager: null,
 				mostrarDialogConfirmarAprovacaoSiteManager: false,
 				textoErro: "",
-				limparSelecionados: 1,
+				limparSelecionados: false,
 			}
 		},
 		props: {
@@ -512,10 +514,6 @@
 
 			desaBotaoAprovarNegar() {
 				let hoje = this.$dayjs().format("YYYY-MM-DD")
-
-
-
-
 				if (this.tab === "gestorArea") {
           if (!this.liberado) return !this.liberado
 
@@ -599,6 +597,10 @@
 
 			async buscarAgendamentosGestor() {
 				let data = this.dataGestorArea
+        if(data !== this.dataAtualGestorArea){
+          this.dataAtualGestorArea = data
+          this.limparSelecionados = true
+        }
 				let setor_id = this.$auth.user.setor_id
 				let ordem = this.ordemGestor
 
@@ -608,16 +610,17 @@
 
 				if (!resp.falha) {
 					this.dadosGestor = resp.dados.aprovacoes
-					this.selecionadosGestor = []
+          this.limparSelecionados = false
 				}
 			},
 
 			async buscarPorTagGestor(data) {
 				this.dataGestorArea = data
-				this.buscarAgendamentosGestor()
+				await this.buscarAgendamentosGestor()
 			},
 
 			async aprovado($event) {
+        this.limparSelecionados = true
 				let { aprovacao, agendamentos } = $event
 
 				this.selecionadosGestor = []
@@ -636,7 +639,7 @@
 					}
 				}
 
-				this.limparSelecionados += 1
+				this.limparSelecionados = false
 			},
 
 			async gerarExcelGestor() {
@@ -727,7 +730,10 @@
 
 			async buscarAgendamentosSiteManager() {
 				let data = this.dataSiteManager
-				let setor_id = this.$auth.user.setor_id
+        if (data !== this.dataAtualGestorArea) {
+          this.dataAtualGestorArea = data
+          this.limparSelecionados = true
+        }
 				let ordem = this.ordemSiteManager
 
 				let resp = await this.$axios.$get("/hora_extra/aprovacao/site_manager", {
@@ -736,14 +742,13 @@
 
 				if (!resp.falha) {
 					this.dadosSiteManager = resp.dados.aprovacoes
-
-					this.selecionadosGestor = []
+          this.limparSelecionados = false
 				}
 			},
 
 			async buscarPorTagSiteManager(data) {
 				this.dataSiteManager = data
-				this.buscarAgendamentosSiteManager()
+				await this.buscarAgendamentosSiteManager()
 			},
 
 			async aprovadoSiteManager({ aprovacao, agendamentos }) {
@@ -763,7 +768,7 @@
 
 				this.mostrarAlerta = true
 				this.selecionadosSiteManager = []
-				this.limparSelecionados += 1
+				this.limparSelecionados = true
 			},
 
 			async gerarExcelSiteManager() {
@@ -791,7 +796,6 @@
 				let itens = []
 				for (let item of dados) {
 					let temp = []
-					console.log(dados)
 					temp.push(
 						item.aprovacao_situacao === null
 							? "Aguardando"
