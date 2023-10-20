@@ -153,12 +153,17 @@
         this.mostrarAlerta = true
         this.totalItens += 1
       },
+
       editado(rota) {
         let idx = this.dados.findIndex((o) => o.id === rota.id)
         this.dados[idx].numero = rota.numero
         this.dados[idx].local = rota.local
         this.dados[idx].horario_saida = rota.horario_saida
-        this.dados[idx].Veiculo.nome = rota.Veiculo.nome
+        if(this.dados[idx].Veiculo){
+          this.dados[idx].Veiculo.nome = rota.Veiculo.nome
+        }else{
+          this.dados[idx].Veiculo = { nome: rota.Veiculo.nome }
+        }
         this.dados[idx].turno = rota.turno
         this.dados[idx].mostrar_grafico = rota.mostrar_grafico
 
