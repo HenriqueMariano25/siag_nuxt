@@ -200,6 +200,7 @@
 							obrigatorio
 							id="nomeIndicacao"
 							uppercase
+              semEspeciais
 							v-model="card.indicacao.nome"
 							:invalido="erro.includes('indicacao.nome')" />
 						<AppFormInput
@@ -236,6 +237,7 @@
 							label="Quem indicou"
 							type="text"
 							obrigatorio
+              semEspeciais
 							id="indicandoIndicacao"
 							v-model="card.indicacao.indicado_por"
 							:invalido="erro.includes('indicacao.indicado_por')"

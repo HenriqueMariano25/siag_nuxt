@@ -3,7 +3,7 @@
 		<div class="flex w-full justify-between relative">
 			<label
 				:for="'inputPersonalizado' + id"
-				class="ml-1.5 text-xs font-medium flex"
+				class="ml-1.5 text-xs font-medium flex whitespace-nowrap"
 				>{{ label }}
 				<span
 					v-if="obrigatorio"
