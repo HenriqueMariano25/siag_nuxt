@@ -31,6 +31,7 @@
 						>Erro no servidor, entre em contato com o suporte!</span
 					>
 					<span v-if="erro === 'invalid_data'">Usuário ou senha incorreto!</span>
+					<span v-if="erro === 'invalid_user'">Usuário não encontrado, entre em contato com o suporte!</span>
 				</div>
 				<div class="text-sm bg-yellow-100 px-2 border border-yellow-300">
 					<span>
@@ -103,12 +104,10 @@
 						await this.$router.push("/")
 					}
 				} catch (e) {
-					console.log(e.response)
-
 					if (!e.response) {
 						this.erro = "server_error"
 					} else {
-						if (e.response && e.response.status === 401) this.erro = "invalid_data"
+            this.erro = e.response.data.dados.type
 					}
 				}
 			},
