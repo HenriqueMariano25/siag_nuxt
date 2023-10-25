@@ -11,12 +11,7 @@
             :options="escopos"
             v-model="processo.escoposs_id"
             id="escoposs_id"/>
-          <AppFormTextarea
-            type="text"
-            label="Abragência do escopo"
-            v-model="processo.abrangencia_escopo"
-            :total-caracteres="2000"
-            id="escopo_servico"/>
+          c
           <AppFormSelect
             label="Comprador"
             :options="compradores"

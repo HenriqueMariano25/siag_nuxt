@@ -19,6 +19,10 @@
                        v-if="$auth.user.permissoes.includes('transporte')">
         <img src="@/assets/icons/bus-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
+      <ButtonNavegacao titulo="T.I" cor="bg-[#264653]" link="administracao/ti"
+                       v-if="$auth.user.permissoes.includes('ti')">
+        <img src="@/assets/icons/computer-w.svg" alt="" class="w-8 h-8">
+      </ButtonNavegacao>
       <ButtonNavegacao titulo="Catracas" cor="bg-[#264653]" link="administracao/catracas"
                        v-if="$auth.user.permissoes.includes('acessos_catraca')">
         <img src="@/assets/icons/gate-w.svg" alt="" class="w-8 h-8">
