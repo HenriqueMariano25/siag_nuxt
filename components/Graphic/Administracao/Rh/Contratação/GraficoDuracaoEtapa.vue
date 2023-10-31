@@ -26,6 +26,7 @@
           src="@/assets/img/logoagcnovo.png"
           alt=""
           class="" />
+        <span>MÉDIA DE DURAÇÃO DE CARD POR ETAPA</span>
         <div class="flex flex-col">
           <span>Atualização: {{ $dayjs().format("DD/MM/YYYY") }}</span>
           <span
@@ -65,10 +66,10 @@ export default {
           height: "100%",
           width: "100%",
           toolbar: {
-            show: false,
+            show: true,
           },
           zoom: {
-            enabled: false,
+            enabled: true,
           },
           foreColor: '#373d3f',
           redrawOnWindowResize: true,
@@ -79,23 +80,23 @@ export default {
         },
         responsive: [
           {
-            breakpoint: 480,
+          breakpoint: 480,
             options: {
               legend: {
-                position: "bottom",
+                position: 'bottom',
                 offsetX: -10,
-                offsetY: 0,
-              },
-            },
-          },
+                offsetY: 0
+              }
+            }
+          }
         ],
 
         markers: {
-          size: 0,
+          size: 5,
         },
         title: {
-          text: "Duração de Card por etapa",
-          offsetY: 20,
+          text: "MÉDIA DE DURAÇÃO DE CARD POR ETAPA",
+          offsetY: 15,
           align: "top",
           style: {
             color: "#444",
@@ -132,16 +133,23 @@ export default {
         },
         dataLabels: {
           enabled: true,
-          offsetY: -20,
+          offsetY: -10,
           style: {
             fontSize: '12px',
             colors: ["#304758"]
-          }
+          },
+          enabledOnSeries: [0]
+        },
+        stroke: {
+          show: true,
+          curve: 'smooth',
+          width: [0,5],
+          dashArray: 0,
         },
         plotOptions: {
           bar: {
+            borderRadius: 2,
             columnWidth: "50%",
-            horizontal: false,
             dataLabels: {
               total: {
                 enabled: true,
@@ -171,19 +179,17 @@ export default {
                 textoCurto = val.substr(0, 18)
                 textoCurto += "..."
               }
-
               return textoCurto
             },
             minHeight: 105,
-            // hideOverlappingLabels: false
           },
         },
         yaxis: {
           title: {
             text: "Dias de duração de cards em cada etapa",
           },
-          min: 0,
-          // max: 150,
+          tickAmount: 6,
+          forceNiceScale: true,
           labels: {
             formatter: (value) => {
               return value.toFixed(0)
@@ -198,7 +204,7 @@ export default {
         },
         legend: {
           position: "top",
-          offsetY: -30
+          offsetY: 0
         },
         fill: {
           opacity: 1,
@@ -217,7 +223,8 @@ export default {
       let { etapas } = resp.dados
 
       this.valores = [
-        { name: "Etapas", data: etapas.map((o) => parseFloat(o.media)), type: "bar" },
+        { name: "Média", data: etapas.map((o) => parseFloat(o.media)), type: "bar" },
+        { name: "Previsto", data: etapas.map((o) => parseFloat(o.leadtime)), type: "line" },
       ]
 
       for(let etapa of etapas){
@@ -242,8 +249,7 @@ export default {
         ...opcoes,
 
         series: valores,
-      })
-      console.log(this.opcoes);
+      });
 
       await chart.render()
     },
@@ -306,8 +312,6 @@ export default {
       gerarExcel(cabecalho, itens, nomeArquivo)
     },
     async gerarKpiDuracao() {
-
-      console.log(this.$dayjs().format("HH:mm:ss"))
       this.opcoes.chart.width = 1488
       this.opcoes.chart.height = 950
       await this.atualizarGrafico()
