@@ -17,7 +17,7 @@
 				@selecionados="funcSelecionados = $event"
 				:limparSelecionar="true"
 				selecionar>
-				<template v-slot:[`body.rota.id`]="{ item }">
+				<template v-slot:[`body.rota_id`]="{ item }">
 					<span
 						v-if="item.rota"
 						class="whitespace-nowrap">
@@ -356,7 +356,7 @@
 					},
 					{
 						nome: "Rota",
-						valor: "rota.id",
+						valor: "rota_id",
 						filtro: true,
 						mostrarVazio: true,
 						opcoes:
