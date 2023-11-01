@@ -368,3 +368,47 @@ export const buscarEquipePlanejamento = {
     },
   },
 }
+
+export const buscarPlanosChip = {
+  methods: {
+    async buscarPlanosChip(buscarAgora) {
+      let ultimaBusca = this.$store.state.planoChip.ultimaBusca
+      let diferencaEmHoras = 0
+      if (ultimaBusca) diferencaEmHoras = this.$dayjs().diff(this.$dayjs(ultimaBusca), "hour")
+      let planos = this.$store.state.planoChip.planosChip
+
+      if (buscarAgora || ultimaBusca === null || diferencaEmHoras > 0) {
+        let resp = await this.$axios.$get("/ti/plano/buscarTodos", { params: { filtros: {}}})
+
+        if (!resp.falha) {
+          let planosChipBuscadas = resp.dados.planos
+          planos = planosChipBuscadas
+
+          let agora = this.$dayjs()
+
+          this.$store.commit("planoChip/DEFINIR_PLANOS_CHIP", {
+            planosChip: planosChipBuscadas,
+            ultimaBusca: agora,
+          })
+        }
+      }
+
+      return planos
+    },
+  },
+}
+
+export const buscarSituacaoChip = {
+  methods:{
+    async buscarSituacaoChip(buscarAgora){
+      let resp = await this.$axios.$get("/ti/situacao/buscarTodos")
+
+      if(!resp.falha){
+        let situacoes = resp.dados.situacoes
+
+        return situacoes
+      }
+
+    }
+  }
+}
