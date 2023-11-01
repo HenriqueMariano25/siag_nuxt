@@ -225,6 +225,7 @@
             </div>
             <BotaoPadrao
               texto="Salvar"
+              :disabled="funcionarioLocal.id !== funcionarioAtual.id && !buscouFuncionario"
               @clique="editarFuncionario(false)"
             >
               <img
@@ -234,6 +235,7 @@
             </BotaoPadrao>
             <BotaoPadrao
               texto="Salvar e sair"
+              :disabled="funcionarioLocal.id !== funcionarioAtual.id && !buscouFuncionario"
               @clique="editarFuncionario(true)"
             >
               <img
@@ -303,11 +305,7 @@
 				carregando: false,
 				planos: [],
 				erros: [],
-				tabs: [
-					{ nome: "Chip", valor: "chip" },
-					{ nome: "Funcionário", valor: "funcionario", disabled: !this.chip },
-					{ nome: "Histórico", valor: "historico", disabled: !this.chip},
-				],
+
 				tab: "chip",
 				filtros: {},
 				ordem: null,
@@ -323,15 +321,7 @@
         funcionarioAtual: {},
         buscouFuncionario: false,
         historicos: [],
-        // cabecalho: [
-        //   { nome: "Número", valor: "numero", filtro: true, ordenar: true },
-        //   { nome: "Data Ativação", valor: "data_ativacao", filtro: true, ordenar: true },
-        //   { nome: "SimCard", valor: "sim_card", ordenar: true, filtro: true },
-        //   { nome: "Plano", valor: "PlanoChip.nome", filtro: true, ordenar: true },
-        //   { nome: "Funcionário", valor: "Funcionario.nome", filtro: true, ordenar: true },
-        //   { nome: "Setor", valor: "Funcionario.setor.nome", filtro: true, ordenar: true },
-        //   { nome: "Situação", valor: "SituacaoChip.descricao" },
-        // ],
+        tabAtiva: true,
 			}
 		},
 		async created() {
@@ -348,17 +338,27 @@
       await this.buscarFuncionarios()
 
 			if (this.chip !== null) {
+        this.tabAtiva = true
 				this.carregando = true
 				this.chipLocal = Object.assign({}, this.chip)
 				this.carregando = false
         await this.buscarChip()
         await this.buscarHistoricos()
-			}
+			}else{
+        this.tabAtiva = false
+      }
 		},
     computed:{
       temDataEntrega(){
         return this.chipLocal.data_entrega !== null
-      }
+      },
+      tabs(){
+        return [
+          { nome: "Chip", valor: "chip" },
+          { nome: "Funcionário", valor: "funcionario", disabled: !this.tabAtiva },
+          { nome: "Histórico", valor: "historico", disabled: !this.tabAtiva },
+        ]
+      },
     },
 		methods: {
 			cancelar() {
@@ -399,6 +399,8 @@
           this.funcionarioLocal.observacao_funcionario = chip.observacao_funcionario
           if(chip.Funcionario)
             this.funcionarioAtual = Object.assign({}, chip.Funcionario )
+          if(chip.Funcionario)
+            this.funcionarioLocal = Object.assign({}, chip.Funcionario)
         }
       },
 
@@ -441,11 +443,21 @@
 				if (this.erros.length === 0) {
 					let chip = this.chipLocal
           let usuario_id =this.$auth.user.id
-					await this.$axios.$post("/ti/chip/cadastrar", { ...chip, usuario_id }).then((resp) => {
-						let chipCriado = resp.dados.chip
+					let resp = await this.$axios.$post("/ti/chip/cadastrar", { ...chip, usuario_id })
+          if(!resp.falha){
+            let chipCriado = resp.dados.chip
+
+            if (!sair) {
+              this.textoAlerta = "Chip cadastrado com sucesso!"
+              this.mostrarAlerta = true
+              this.chipLocal = Object.assign({}, chipCriado)
+              this.tabAtiva = true
+              await this.buscarHistoricos()
+            }
 
             this.$emit("cadastrado", { chip: chipCriado, sair })
-					})
+          }
+
 				}
 			},
 
@@ -467,8 +479,6 @@
             data_cancelamento
           }
           let usuario_id = this.$auth.user.id
-					// let rota = this.rotaLocal
-          //
 
           let resp = await this.$axios.$post("/ti/chip/editar",{
             chip, usuario_id })
@@ -537,7 +547,9 @@
       },
 
       async buscarHistoricos(){
-        let id = this.chip.id
+        let id = this.chipLocal.id
+
+        console.log(id);
 
         let resp = await this.$axios.$get("/ti/chip/historicoChip/buscar", { params: { id: id }})
 

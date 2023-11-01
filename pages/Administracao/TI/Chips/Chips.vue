@@ -172,6 +172,7 @@ export default {
         this.textoAlerta = "Chip cadastrado com sucesso!"
         this.mostrarAlerta = true
       }
+      this.chip = chip
       this.dados.push(chip)
       this.totalItens += 1
     },
@@ -193,7 +194,7 @@ export default {
       let idx = this.dados.findIndex((o) => o.id === id)
       this.dados.splice(idx, 1)
 
-      this.mostrarDialogCriarRota = false
+      this.mostrarDialogCriarChip = false
       this.textoAlerta = "Chip deletada com sucesso!"
       this.mostrarAlerta = true
       this.chip = null
