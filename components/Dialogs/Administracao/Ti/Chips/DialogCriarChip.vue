@@ -108,8 +108,8 @@
                     </BotaoPadrao>
                   </div>
                 </div>
-                <span class="self-center text-xl" v-if="Object.keys(funcionarioAtual).length > 0"><strong>ou</strong></span>
-                <div class="flex items-end" v-if="Object.keys(funcionarioAtual).length > 0">
+                <span class="self-center text-xl" v-if="funcionarioAtual.id !== null"><strong>ou</strong></span>
+                <div class="flex items-end" v-if="funcionarioAtual.id !== null">
                   <BotaoPadrao texto="DEVOLVER AO ESTOQUE" class="text-white shadow" @clique="devolverEstoque()"
                                cor="bg-blue-500 hover:bg-blue-600">
                     <img src="@/assets/icons/stock-w.svg" alt="" class="w-7 h-7">
@@ -119,7 +119,7 @@
               <div class="flex w-full gap-2 items-center">
                 <div class="flex grow flex-col border border-slate-600 rounded" >
                   <span class="bg-gray-300 px-2 rounded-t text-lg font-bold uppercase">Funcionário atual</span>
-                  <div class="gap-4 flex px-2 justify-between" v-if="Object.keys(funcionarioAtual).length > 0">
+                  <div class="gap-4 flex px-2 justify-between" v-if="funcionarioAtual.id !== null">
                     <span>{{ funcionarioAtual.nome ? funcionarioAtual.nome : ""}}</span>
                     <span>{{ funcionarioAtual.chapa ? funcionarioAtual.chapa : ""}}</span>
                     <span>{{ funcionarioAtual.cargo ? funcionarioAtual.cargo : ""}}</span>
@@ -397,10 +397,14 @@
           this.chipLocal = Object.assign({}, chip)
           this.funcionarioLocal.data_entrega = this.$dayjs().format("YYYY-MM-DD")
           this.funcionarioLocal.observacao_funcionario = chip.observacao_funcionario
-          if(chip.Funcionario)
-            this.funcionarioAtual = Object.assign({}, chip.Funcionario )
-          if(chip.Funcionario)
+
+          if(chip.Funcionario){
+            this.funcionarioAtual = Object.assign({ }, chip.Funcionario )
             this.funcionarioLocal = Object.assign({}, chip.Funcionario)
+          }else{
+            this.funcionarioAtual = Object.assign({}, this.funcionarioLocal)
+          }
+
         }
       },
 
@@ -522,11 +526,12 @@
 
             if(!sair){
               if(this.funcionarioLocal.id === null){
-                this.funcionarioAtual = {}
+                this.funcionarioAtual = {id: null}
+                this.funcionarioLocal = {id: null}
               }else{
                 this.funcionarioAtual = Object.assign({}, this.funcionarioLocal)
-                this.buscouFuncionario = false
               }
+              this.buscouFuncionario = false
               await this.buscarHistoricos()
               this.textoAlerta = "Funcionário alterado com sucesso!"
               this.mostrarAlerta = true
