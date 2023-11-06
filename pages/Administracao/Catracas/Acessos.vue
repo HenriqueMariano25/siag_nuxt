@@ -2,31 +2,45 @@
 	<div class="w-full">
 		<CabecalhoPagina titulo="Acessos nas catraca" />
 		<div class="relative">
-			<div class="!mt-11 p-1.5 bg-white flex gap-2 items-center">
+			<div class="!mt-11 p-1.5 bg-white grid grid-cols-12 gap-x-2 gap-y-1 items-center">
 				<AppFormInput
 					id="data_inicial"
 					type="date"
 					label="Data inicial"
-					class="grow"
+					class="col-span-3"
 					v-model="acesso.data_inicial" />
 				<AppFormInput
 					id="data_final"
 					type="date"
 					label="Data final"
-					class="grow"
+          class="col-span-3"
 					v-model="acesso.data_final" />
 				<AppFormInput
 					id="hora_inicial"
 					type="time"
 					label="Hora inicial"
-					class="grow"
+          class="col-span-3"
 					v-model="acesso.hora_inicial" />
 				<AppFormInput
 					id="hora_final"
 					type="time"
 					label="Hora final"
-					class="grow"
+          class="col-span-3"
 					v-model="acesso.hora_final" />
+        <AppFormInput
+          id="nome"
+          type="text"
+          label="Nome"
+          class="col-span-6"
+          placeholder="Ex: HENRIQUE MARIANO"
+          v-model="acesso.nome" />
+        <AppFormInput
+          id="empresa"
+          type="text"
+          label="Empresa"
+          placeholder="Ex: GNA"
+          class="col-span-5"
+          v-model="acesso.empresa" />
 				<BotaoPadrao
 					class="self-end"
 					texto="buscar"
@@ -51,7 +65,7 @@
 					@ordem="ordem = $event"
 					:totalItens="totalItens"
           @itensPorPagina="itensPorPagina = $event"
-					altura="calc(100vh - 252px)"
+					altura="calc(100vh - 308px)"
 					@atualizar="buscarAcessos()"
 					:temDetalhes="false">
 					<template v-slot:[`body.DataHora`]="{ item }">
@@ -143,6 +157,8 @@
 					data_final: this.$dayjs().format("YYYY-MM-DD"),
 					hora_inicial: "00:00",
 					hora_final: "23:59",
+          nome: null,
+          empresa: null,
 				},
         locaisAcesso: [],
 				terceiros: [],
@@ -211,6 +227,15 @@
 				let page = this.pagina
 				let size = this.itensPorPagina
 				let filtros = this.filtros
+
+        let { nome, empresa } = this.acesso
+
+        if(nome !== null && nome !== ""){
+          filtros.push(`AND LOWER(func.Nome) LIKE LOWER('%${nome}%')`)
+        }
+        if(empresa !== null && empresa !== ""){
+          filtros.push(`AND LOWER(empr.Descricao) LIKE LOWER('%${empresa}%')`)
+        }
 
 				let resp = await this.$axios.$get("/catraca/acessos/novo_padrao", {
 					params: { ...this.acesso, page, size, filtros },
