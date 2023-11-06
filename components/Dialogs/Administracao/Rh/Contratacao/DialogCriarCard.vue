@@ -125,29 +125,12 @@
 						obrigatorio
 						id="confidencial"
 						v-model="card.confidencial" />
-					<!--					<AppFormRadio-->
-					<!--						simNao-->
-					<!--						titulo="Aplicar testes específicos ?"-->
-					<!--						obrigatorio-->
-					<!--						id="testes"-->
-					<!--						v-model="card.teste_especificos" />-->
 					<AppFormRadio
 						simNao
 						titulo="Avaliar inglês ?"
 						obrigatorio
 						id="ingles"
 						v-model="card.avaliar_ingles" />
-
-					<!--          <div>-->
-					<!--            <AppFormRadio-->
-					<!--              class="col-span-2"-->
-					<!--              simNao-->
-					<!--              titulo="Já tem indicação ?"-->
-					<!--              obrigatorio-->
-					<!--              id="indicacao"-->
-					<!--              v-model="card.tem_indicacao"/>-->
-					<!--        </div>-->
-					<!--          {{ card.tem_indicacao }}-->
 					<div>
 						<span><Strong>Treinamentos/NRs</Strong></span>
 						<div
@@ -404,7 +387,6 @@
 					equipamentos: [],
 					comentario: null,
 					avaliar_ingles: false,
-					teste_especificos: false,
 					confidencial: false,
 					equipamento_ti: null,
 				},
@@ -721,7 +703,6 @@
 							equipamentos: [],
 							comentario: null,
 							avaliar_ingles: false,
-							teste_especificos: false,
 							confidencial: false,
 							equipamento_ti: null,
 						}
@@ -760,6 +741,9 @@
             tem_indicacao: this.card.tem_indicacao,
             indicacao: this.card.indicacao,
             comentario: this.card.comentario,
+            salario: this.card.salario,
+            funcao_id: this.card.funcao_id,
+            disciplina_id: this.card.disciplina_id
           }
 
 					let rawData = {
@@ -821,7 +805,9 @@
 					}
 
 					this.dataNecessidadeOriginal = card.data_necessidade
-					this.card = Object.assign({}, card)
+					this.card = Object.assign(this.card, card)
+
+          console.log(this.card);
 
 					if (card.nrs.length > 0) {
 						this.card.nrs = []
