@@ -743,8 +743,27 @@
 					let formData = new FormData()
 					formData.append(`files`, this.card.indicacao.pdf)
 
+          let card = {
+            id: this.card.id,
+            status_card_id: this.card.status_card_id,
+            centro_custo_pep_id: this.card.centro_custo_pep_id,
+            responsavel_id: this.card.responsavel_id,
+            data_necessidade: this.card.data_necessidade,
+            turno: this.card.turno,
+            tipo_recrutamento: this.card.tipo_recrutamento,
+            mobilizacao: this.card.mobilizacao,
+            entrevista_gestor: this.card.entrevista_gestor,
+            confidencial: this.card.confidencial,
+            avaliar_ingles: this.card.avaliar_ingles,
+            equipamento_ti: this.card.equipamento_ti,
+            nrs: this.card.nrs,
+            tem_indicacao: this.card.tem_indicacao,
+            indicacao: this.card.indicacao,
+            comentario: this.card.comentario,
+          }
+
 					let rawData = {
-						card: this.card,
+						card: card,
 						usuario_id: usuario_id,
 					}
 
