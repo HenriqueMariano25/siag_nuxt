@@ -1,6 +1,6 @@
 <template>
   <BaseDialog
-    titulo="Processar Card"
+    titulo="Aprovar Card"
     @cancelar="cancelar()">
     <template v-slot:corpo>
       <div class="w-full">
@@ -13,12 +13,11 @@
           </span>
         </div>
         <div class="pt-2 px-2 space-y-2">
-          <AppFormSelect
+          <AppFormSelectCompleto
+            id="pep"
             label="Centro de Custo - PEP"
             :options="centrosCusto"
-            v-model="processo.pep"
-            id="pep"
-            />
+            v-model="processo.pep" />
           <AppFormTextarea id="comentario" label="Comentário" placeholder="Comentário opcional"
                            v-model="processo.comentario" class=""/>
         </div>
@@ -52,13 +51,15 @@ import BaseDialog from "~/components/Shared/BaseDialog.vue";
 import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
 import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue";
 import AppFormSelect from "~/components/Ui/AppFormSelect.vue";
+import AppFormSelectCompleto from "~/components/Ui/Form/AppFormSelectCompleto.vue";
 export default {
   name: "DialogProcControleCard",
   components: {
     BaseDialog,
     BotaoPadrao,
     AppFormTextarea,
-    AppFormSelect
+    AppFormSelect,
+    AppFormSelectCompleto
   },
   props: {
     card: {
@@ -83,13 +84,10 @@ export default {
       this.$emit("cancelar")
     },
     async buscarCentrosCusto() {
-      let setor_id = this.card.setor_id
-
-      let resp = await this.$axios.$get("/contratacao/centro_custo/por_setor", {
-        params: {setor_id},
-      })
+      let resp = await this.$axios.$get("/contratacao/centro_custo/buscarTodos")
       if (!resp.falha) {
-        let centrosCusto = resp.dados.centrosCusto
+
+        let centrosCusto = resp.centrosCusto
         let options = centrosCusto.map((o) => {
           return {id: o.id, nome: `${o.numero_pep} - ${o.descricao}`}
         })
