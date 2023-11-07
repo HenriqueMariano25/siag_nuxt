@@ -225,7 +225,7 @@
             </div>
             <BotaoPadrao
               texto="Salvar"
-              :disabled="funcionarioLocal.id !== funcionarioAtual.id && !buscouFuncionario"
+              :disabled="funcionarioLocal.id !== funcionarioAtual.id && !buscouFuncionario || ( funcionarioLocal.data_entrega === null || funcionarioLocal.data_entrega === '') "
               @clique="editarFuncionario(false)"
             >
               <img
@@ -235,7 +235,7 @@
             </BotaoPadrao>
             <BotaoPadrao
               texto="Salvar e sair"
-              :disabled="funcionarioLocal.id !== funcionarioAtual.id && !buscouFuncionario"
+              :disabled="funcionarioLocal.id !== funcionarioAtual.id && !buscouFuncionario || ( funcionarioLocal.data_entrega === null || funcionarioLocal.data_entrega === '')"
               @clique="editarFuncionario(true)"
             >
               <img
