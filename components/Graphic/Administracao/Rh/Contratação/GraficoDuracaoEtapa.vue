@@ -4,7 +4,7 @@
       <div class="flex gap-2">
         <BotaoPadrao
           texto="Excel"
-          @clique="buscarKpiDuracao"
+          @clique="buscarKpiDuracaoExcel"
           :disabled="mostrarSemCards || carregando"
           cor="bg-blue-300 hover:!bg-blue-400">
           <img
@@ -311,8 +311,13 @@ export default {
       await chart.updateOptions({})
     },
 
-    async buscarKpiDuracao() {
-      let resp = await this.$axios.$get("/contratacao/kpi/duracao_card_etapa")
+    async buscarKpiDuracaoExcel() {
+      let data_inicio = this.data_inicio
+      let data_final = this.data_final
+      data_inicio = data_inicio === '' ? null : data_inicio
+      data_final = data_final === '' ? null : data_final
+
+      let resp = await this.$axios.$get("/contratacao/kpi/duracao_card_etapa", { params: { data_inicio, data_final } })
 
       let { etapas, cards } = resp.dados
       let cabecalho = ["Card"]
