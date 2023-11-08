@@ -509,7 +509,7 @@
 
 				if (this.$auth.user.permissoes.includes("rh_contratacoes")) {
 					// if (!listaNaoSelect.some((o) => this.etapa_id === o)) {
-					//   cabecalho.unshift({nome: "", valor: "selecione", centralizar: true, largura: "w-10"})
+					//   cabecalho.unshift({nome: "", valor: "selecione", centralizar: true, larura: "w-10"})
 					// }
 				}
 

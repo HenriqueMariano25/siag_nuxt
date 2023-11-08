@@ -79,6 +79,7 @@
               <AppFormInput
                 placeholder="Ex: JOSE MOREIRA"
                 label="Quem indicou"
+                semEspeciais
                 type="text"
                 obrigatorio
                 id="indicandoIndicacao"
