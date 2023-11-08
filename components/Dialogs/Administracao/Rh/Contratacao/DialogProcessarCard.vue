@@ -5,7 +5,7 @@
 			largura="w-10/12"
 			@cancelar="cancelar()">
 			<template v-slot:corpo>
-				<div class="grid w-full ">
+				<div class="grid w-full">
 					<div class="flex w-full max-h-[32vh] overflow-y-auto">
 						<table class="flex-col w-full">
 							<thead class="">
@@ -82,7 +82,9 @@
 						<!--            class="w-2/6"-->
 						<!--            id="status"/>-->
 					</div>
-					<div class="px-1 bg-gray-200 border border-gray-300 flex flex-col pb-1 gap-y-1" v-if="!etapa.concluir_card">
+					<div
+						class="px-1 bg-gray-200 border border-gray-300 flex flex-col pb-1 gap-y-1"
+						v-if="!etapa.concluir_card">
 						<div>
 							<span
 								class="text-red-600 text-xl"
@@ -93,36 +95,44 @@
 						<div>
 							<span>Clique na etapa que deseja mover os Cards acima</span>
 						</div>
-            <div v-if="etapa.voltar_etapa === true" class="border border-blue-200 bg-blue-100 p-1 flex flex-col gap-1">
-              <span class="text-xl w-full bg-blue-200 px-1 uppercase font-medium">Etapa para retornar</span>
-              <div class="flex ">
-                <BotaoPadrao
-                  :disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
-                  :texto="anteriorEtapa.ordem + ' - ' + anteriorEtapa.nome"
-                  cor="bg-primaria-500 hover:bg-primaria-700"
-                  class="text-white"
-                  @clique="processarCards(anteriorEtapa.id)" />
-              </div>
-            </div>
-						<div class="flex flex-col gap-1 border border-green-300 bg-green-200 p-1" v-if="proximaEtapa">
-              <span class="text-xl w-full bg-green-300 px-1 uppercase font-medium">Etapas para avançar</span>
-              <div class="flex gap-2">
-                <BotaoPadrao
-                  :disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
-                  :texto="proximaEtapa.ordem + ' - ' + proximaEtapa.nome"
-                  cor="bg-primaria-500 hover:bg-primaria-700"
-                  class="text-white"
-                  @clique="processarCards(proximaEtapa.id)" />
-                <div v-for="proxima of etapa.ProximasEtapas">
-                  <!--              {{ proxima }}-->
-                  <BotaoPadrao
-                    :disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
-                    :texto="proxima.ordem + ' - ' + proxima.nome"
-                    cor="bg-primaria-500 hover:!bg-primaria-700"
-                    class="text-white"
-                    @clique="processarCards(proxima.id)" />
-                </div>
-              </div>
+						<div
+							v-if="etapa.voltar_etapa === true"
+							class="border border-blue-200 bg-blue-100 p-1 flex flex-col gap-1">
+							<span class="text-xl w-full bg-blue-200 px-1 uppercase font-medium"
+								>Etapa para retornar</span
+							>
+							<div class="flex">
+								<BotaoPadrao
+									:disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
+									:texto="anteriorEtapa.ordem + ' - ' + anteriorEtapa.nome"
+									cor="bg-primaria-500 hover:bg-primaria-700"
+									class="text-white"
+									@clique="processarCards(anteriorEtapa.id)" />
+							</div>
+						</div>
+						<div
+							class="flex flex-col gap-1 border border-green-300 bg-green-200 p-1"
+							v-if="proximaEtapa">
+							<span class="text-xl w-full bg-green-300 px-1 uppercase font-medium"
+								>Etapas para avançar</span
+							>
+							<div class="flex gap-2">
+								<BotaoPadrao
+									:disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
+									:texto="proximaEtapa.ordem + ' - ' + proximaEtapa.nome"
+									cor="bg-primaria-500 hover:bg-primaria-700"
+									class="text-white"
+									@clique="processarCards(proximaEtapa.id)" />
+								<div v-for="proxima of etapa.ProximasEtapas">
+									<!--              {{ proxima }}-->
+									<BotaoPadrao
+										:disabled="etapa.obrigatorio_indicacao && !todosTemIndicacao"
+										:texto="proxima.ordem + ' - ' + proxima.nome"
+										cor="bg-primaria-500 hover:!bg-primaria-700"
+										class="text-white"
+										@clique="processarCards(proxima.id)" />
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -138,18 +148,45 @@
 							alt=""
 							class="w-7 h-7" />
 					</BotaoPadrao>
-          <BotaoPadrao texto="Rejeitar cards" @clique="rejeitarCard()" v-if="etapa.rejeita_card" class="bg-red-300 hover:!bg-red-400">
-            <img src="@/assets/icons/close-b.svg" alt="" class="w-7 h-7">
-          </BotaoPadrao>
-          <BotaoPadrao texto="Standby cards" @clique="standbyCard()" v-if="etapa.standby_card" class="">
-            <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7">
-          </BotaoPadrao>
-          <BotaoPadrao texto="Retornar cards" @clique="retornarDestandbyCard()" v-if="etapa.nome === 'Standby'" class="">
-            <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7">
-          </BotaoPadrao>
-          <BotaoPadrao texto="Finalizar cards" @clique="finalizarCard()" v-if="etapa.concluir_card">
-            <img src="@/assets/icons/check-b.svg" alt="" class="w-7 h-7">
-          </BotaoPadrao>
+					<BotaoPadrao
+						texto="Rejeitar cards"
+						@clique="rejeitarCard()"
+						v-if="etapa.rejeita_card"
+						class="bg-red-300 hover:!bg-red-400">
+						<img
+							src="@/assets/icons/close-b.svg"
+							alt=""
+							class="w-7 h-7" />
+					</BotaoPadrao>
+					<BotaoPadrao
+						texto="Standby cards"
+						@clique="standbyCard()"
+						v-if="etapa.standby_card"
+						class="">
+						<img
+							src="@/assets/icons/information-circle-g.svg"
+							alt=""
+							class="w-7 h-7" />
+					</BotaoPadrao>
+					<BotaoPadrao
+						texto="Retornar cards"
+						@clique="retornarDestandbyCard()"
+						v-if="etapa.nome === 'Standby' || etapa.nome === 'Vagas Rejeitadas'"
+						class="">
+						<img
+							src="@/assets/icons/information-circle-g.svg"
+							alt=""
+							class="w-7 h-7" />
+					</BotaoPadrao>
+					<BotaoPadrao
+						texto="Finalizar cards"
+						@clique="finalizarCard()"
+						v-if="etapa.concluir_card">
+						<img
+							src="@/assets/icons/check-b.svg"
+							alt=""
+							class="w-7 h-7" />
+					</BotaoPadrao>
 					<!--          Lembrar que tem que selecionar motivo da desistencia da indicação-->
 				</div>
 			</template>
@@ -164,12 +201,12 @@
 			@cancelar="mostrarDialogAlterarCandidado = false"
 			:cards="cards"
 			@alterouCandidato="$emit('alterouCandidato', $event)" />
-    <AppAlerta
-      tipo="sucesso"
-      :mostrar="mostrarAlerta"
-      @escondeu="mostrarAlerta = false">
-      {{ textoAlerta }}
-    </AppAlerta>
+		<AppAlerta
+			tipo="sucesso"
+			:mostrar="mostrarAlerta"
+			@escondeu="mostrarAlerta = false">
+			{{ textoAlerta }}
+		</AppAlerta>
 	</div>
 </template>
 
@@ -182,13 +219,13 @@
 	import AppTooltip from "~/components/Ui/AppTooltip.vue"
 	import DialogAdicionarIndicacao from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogAdicionarIndicacao.vue"
 	import DialogAlterarCandidato from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogAlterarCandidato.vue"
-  import AppAlerta from "~/components/Ui/AppAlerta.vue";
+	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 
 	export default {
 		name: "DialogProcessarCard",
 		mixins: [buscarEtapa],
 		components: {
-      AppAlerta,
+			AppAlerta,
 			DialogAlterarCandidato,
 			AppTooltip,
 			BaseDialog,
@@ -208,9 +245,9 @@
 			proximaEtapa: {
 				type: [Object],
 			},
-      anteriorEtapa: {
-        type: [Object],
-      },
+			anteriorEtapa: {
+				type: [Object],
+			},
 		},
 		data() {
 			return {
@@ -222,8 +259,8 @@
 				mostraDialogAdicionarIndicacao: false,
 				mostrarDialogAlterarCandidado: false,
 				cardAddIndicacao: null,
-        mostrarAlerta: false,
-        textoAlerta: ""
+				mostrarAlerta: false,
+				textoAlerta: "",
 			}
 		},
 		async fetch() {
@@ -247,8 +284,8 @@
 
 				this.cards[idx]["Indicacao.nome"] = indicacao.nome
 				this.mostraDialogAdicionarIndicacao = false
-        this.textoAlerta = 'Indicação adicionada com sucesso!'
-        this.mostrarAlerta = true
+				this.textoAlerta = "Indicação adicionada com sucesso!"
+				this.mostrarAlerta = true
 			},
 
 			async processarCards(etapa_id_destino) {
@@ -274,54 +311,78 @@
 					})
 			},
 
-      async finalizarCard(){
-        let cards = this.cards.map((card) => card.id)
-        let usuario_id = this.$auth.user ? this.$auth.user.id : null
-        let { comentario } = this.processo
+			async finalizarCard() {
+				let cards = this.cards.map((card) => card.id)
+				let usuario_id = this.$auth.user ? this.$auth.user.id : null
+				let { comentario } = this.processo
 
-        let resp = await this.$axios.$post("/contratacao/card/finalizar_cards", { cards, usuario_id, comentario })
+				let resp = await this.$axios.$post("/contratacao/card/finalizar_cards", {
+					cards,
+					usuario_id,
+					comentario,
+				})
 
-        if(!resp.falha){
-          this.$emit("concluido", cards)
-        }
-      },
+				if (!resp.falha) {
+					this.$emit("concluido", cards)
+				}
+			},
 
-      async rejeitarCard(){
-        let cards = this.cards.map((card) => card.id)
-        let usuario_id = this.$auth.user ? this.$auth.user.id : null
-        let { comentario } = this.processo
+			async rejeitarCard() {
+				let cards = this.cards.map((card) => card.id)
+				let usuario_id = this.$auth.user ? this.$auth.user.id : null
+				let { comentario } = this.processo
 
-        let resp = await this.$axios.$post("/contratacao/card/rejeitar_cards", { cards, usuario_id, comentario })
+				let resp = await this.$axios.$post("/contratacao/card/rejeitar_cards", {
+					cards,
+					usuario_id,
+					comentario,
+				})
 
-        if (!resp.falha) {
-          this.$emit("rejeitado", cards)
-        }
-      },
+				if (!resp.falha) {
+					this.$emit("rejeitado", cards)
+				}
+			},
 
-      async standbyCard() {
-        let cards = this.cards.map((card) => card.id)
-        let usuario_id = this.$auth.user ? this.$auth.user.id : null
-        let { comentario } = this.processo
+			async standbyCard() {
+				let cards = this.cards.map((card) => card.id)
+				let usuario_id = this.$auth.user ? this.$auth.user.id : null
+				let { comentario } = this.processo
 
-        let resp = await this.$axios.$post("/contratacao/card/standby_cards", { cards, usuario_id, comentario })
+				let resp = await this.$axios.$post("/contratacao/card/standby_cards", {
+					cards,
+					usuario_id,
+					comentario,
+				})
 
-        if (!resp.falha) {
-          this.$emit("standby", cards)
-        }
-      },
+				if (!resp.falha) {
+					this.$emit("standby", cards)
+				}
+			},
 
-      async retornarDestandbyCard(){
-        let cards = this.cards.map((card) => card.id)
-        let usuario_id = this.$auth.user ? this.$auth.user.id : null
-        let { comentario } = this.processo
-
-        let resp = await this.$axios.$post("/contratacao/card/retornar_standby_cards", { cards, usuario_id, comentario })
+			async retornarDestandbyCard() {
+				let cards = this.cards.map((card) => card.id)
+				let usuario_id = this.$auth.user ? this.$auth.user.id : null
+				let { comentario } = this.processo
+				let resp
+				if (this.etapa.nome === "Standby") {
+					resp = await this.$axios.$post("/contratacao/card/retornar_standby_cards", {
+						cards,
+						usuario_id,
+						comentario,
+					})
+				}
+				if (this.etapa.nome === "Vagas Rejeitadas") {
+					resp = await this.$axios.$post("/contratacao/card/retornar_rejeitadas_cards", {
+						cards,
+						usuario_id,
+						comentario,
+					})
+				}
 
         if (!resp.falha) {
           this.$emit("retornouStandby", cards)
         }
-      }
-
+			},
 		},
 	}
 </script>

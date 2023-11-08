@@ -541,7 +541,7 @@
 					.filter((o) => o.precisa_aprovacao === true)
 					.map((o) => o.id)
 				this.etapasFinalização = this.etapas
-					.filter((o) => o.conclui_processo === true || o.rejeita_processo === true)
+					.filter((o) => o.conclui_processo === true)
 					.map((o) => o.id)
 			},
 
