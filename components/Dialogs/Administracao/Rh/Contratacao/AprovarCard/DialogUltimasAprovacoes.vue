@@ -95,7 +95,7 @@ export default {
 
       if(this.tipoAprovacao === 'controle'){
         ordem = 2
-      }else if(this.tipoAprovacao === 'gestor_area'){
+      }else if(this.tipoAprovacao === 'gestor_area' || this.tipoAprovacao === 'gestor_area_geral'){
         ordem = 3
       }
       let resp = await this.$axios.$get('/contratacao/card/aprovacao/ultimas_aprovacoes', { params: { usuario_id, ordem }})

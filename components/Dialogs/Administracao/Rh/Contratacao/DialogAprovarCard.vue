@@ -108,8 +108,7 @@ export default {
         cardPrEnviar.push(card)
 
         if (cont === 5 || total === cards.length) {
-
-          if (tipo_aprovacao === "gestor_area") {
+          if (tipo_aprovacao === "gestor_area" || tipo_aprovacao === "gestor_area_geral") {
             await this.$axios.$post("/contratacao/card/aprovacao/gestor_area", {
               cards: cardPrEnviar,
               aprovacao: aprovacao,
@@ -129,8 +128,6 @@ export default {
           cardPrEnviar = []
         }
       }
-
-
 
       this.$emit("aprovado", cards, aprovacao)
       this.comentario = null
