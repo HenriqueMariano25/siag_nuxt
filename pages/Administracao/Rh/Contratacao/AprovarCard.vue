@@ -13,7 +13,7 @@
 				@click="tipoAprovacao = 'gestor_area'"
 				class="px-4 hover:bg-blue-600"
 				v-if="$auth.user && $auth.user.permissoes.includes('aprovar_card_gerente_area')"
-				:class="{ 'border-b-4 border-b-white': tipoAprovacao === 'gestor_area' }">
+				:class="{ 'border-b-4 border-b-white': tipoAprovacao === 'gestor_area' || tipoAprovacao === 'gestor_area_geral' }">
 				Gestor Área
 			</button>
 		</div>
@@ -382,6 +382,10 @@
 				let setor_id = this.$auth.user.setor_id
 				let filtros = this.filtros
 				this.selecionados = []
+
+        if(this.tipoAprovacao === 'gestor_area' && this.$auth.user.permissoes.includes('aprovar_card_gerente_area_geral')){
+          this.tipoAprovacao = 'gestor_area_geral'
+        }
 
 				let resp = await this.$axios.$get("/contratacao/card/aprovacao/buscarPaginados", {
 					params: {
