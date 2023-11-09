@@ -104,9 +104,10 @@
 									<AppFormInput
 										id="rg"
 										type="text"
+                    uppercase
+                    sem-especiais
 										label="RG"
 										obrigatorio
-										mask="##.###.###-#"
 										:invalido="erros.includes('rg')"
 										placeholder="Ex: 12.345.678-9"
 										v-model="psp.rg" />
