@@ -1,7 +1,7 @@
 <template>
-  <div class="w-full">
+  <div class="w-full print:!-ml-0.5">
     <CabecalhoPagina titulo="Chips" />
-    <div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11">
+    <div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11 print:hidden ">
       <TabelaPadrao
         :cabecalho="cabecalho"
         :dados="dados"
@@ -159,7 +159,6 @@ export default {
           ordem,
         },
       })
-      console.log(resp)
 
       if (!resp.falha) {
         this.dados = resp.dados.chips
@@ -309,4 +308,15 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style>
+@page {
+  size: A4;
+}
+
+@media print {
+
+  @page {
+    size: A4;
+  }
+}
+</style>
