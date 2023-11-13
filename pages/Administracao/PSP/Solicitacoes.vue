@@ -303,7 +303,7 @@
 					delete filtros.etapa_psp_id
 				}
 
-				if (!this.$auth.user.permissoes.includes("gerenciamento_psp")) {
+				if (!this.$auth.user.permissoes.includes("gerenciamento_psp") && !this.$auth.user.permissoes.includes("aprovar_psp_rh")) {
 					filtros["$Funcionario.setor.id$"] = this.$auth.user.setor_id
 				}
 
