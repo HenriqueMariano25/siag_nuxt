@@ -423,7 +423,7 @@
 									</div>
 									<AppFormTextarea
 										class="col-span-2"
-                    :total-caracteres="255"
+                    :total-caracteres="1000"
 										id="teste"
 										label="Descrição do Itinerário"
 										v-model="psp.descricao_itinerario" />
