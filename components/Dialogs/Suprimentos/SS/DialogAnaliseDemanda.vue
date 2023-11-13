@@ -11,7 +11,6 @@
             :options="escopos"
             v-model="processo.escoposs_id"
             id="escoposs_id"/>
-          c
           <AppFormSelect
             label="Comprador"
             :options="compradores"
