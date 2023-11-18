@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 export default async ({ store, $axios }) =>  {
   try {
 
@@ -57,7 +59,9 @@ export default async ({ store, $axios }) =>  {
           }
         })
 
-        store.commit("funcionarios/DEFINIR_FUNCIONARIOS", funcionarios)
+        let ultimaBusca = dayjs()
+
+        store.commit("funcionarios/DEFINIR_FUNCIONARIOS", { funcionarios, ultimaBusca})
         store.commit("funcionarios/DEFINIR_SUBSETORESAJUSTE", subSetores)
         store.commit("funcionarios/DEFINIR_SUBSETORES", subSetoresFuncionario)
         store.commit("funcionarios/DEFINIR_FUNCOES", funcoes)

@@ -22,6 +22,16 @@
 					alt=""
 					class="w-8 h-8" />
 			</ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="Pool"
+        cor="bg-[#264653]"
+        link="transporte/pool"
+        v-if="$auth.user.permissoes.includes('transporte')">
+        <img
+          src="@/assets/icons/cog-w.svg"
+          alt=""
+          class="w-8 h-8" />
+      </ButtonNavegacao>
 			<ButtonNavegacao
 				titulo="Veículos"
 				cor="bg-[#264653]"

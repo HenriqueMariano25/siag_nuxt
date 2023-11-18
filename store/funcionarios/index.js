@@ -5,5 +5,6 @@ export const state = () => ({
   setores: [],
   funcoes: [],
   rotas: [],
-  subSetores: []
+  subSetores: [],
+  ultimaBusca: null
 })

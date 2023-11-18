@@ -48,7 +48,7 @@
 			class="conteudo"
 			:id="'conteudo-' + id">
 			<div class="sub-conteudo">
-				<div class="busca">
+				<div class="busca items-center">
 					<img
 						src="@/assets/icons/magnifier-g.svg"
 						alt=""
@@ -59,6 +59,27 @@
 						class="busca-input"
 						:value="busca"
 						@input="busca = $event.target.value" />
+          <AppTooltip v-if="btnCadastrar">
+            <template v-slot:corpo>
+              <div class="flex items-end">
+                <BotaoPadrao
+                  @clique="$emit('cadastrar')"
+                  cor="bg-blue-400 hover:!bg-blue-500 ml-1.5"
+                  class="!p-1">
+                  <img
+                    src="@/assets/icons/add-b.svg"
+                    alt=""
+                    class="w-6 h-6" />
+                </BotaoPadrao>
+              </div>
+            </template>
+            <template v-slot:tooltip>
+              <div class="text-sm whitespace-nowrap">
+                <span><strong>{{ tooltipAdd }}</strong></span>
+              </div>
+            </template>
+          </AppTooltip>
+
 				</div>
 				<div>
 					<ul
@@ -80,10 +101,11 @@
 <script>
 	import { defineComponent } from "vue"
 	import AppTooltip from "~/components/Ui/AppTooltip.vue"
+  import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
 
 	export default defineComponent({
 		name: "AppFormSelectCompleto",
-		components: { AppTooltip },
+		components: { BotaoPadrao, AppTooltip },
 		props: {
 			label: String,
 			value: {
@@ -128,8 +150,16 @@
 			},
 			altura: {
 				type: String,
-				defaut: "170px",
+				default: "170px",
 			},
+      tooltipAdd: {
+				type: String,
+				default: "Cadastrar",
+			},
+      btnCadastrar: {
+        type: Boolean,
+        default: false
+      }
 		},
 		data() {
 			return {
