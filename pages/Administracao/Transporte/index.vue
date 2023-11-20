@@ -28,7 +28,7 @@
         link="transporte/pool"
         v-if="$auth.user.permissoes.includes('transporte')">
         <img
-          src="@/assets/icons/cog-w.svg"
+          src="@/assets/icons/road-w.svg"
           alt=""
           class="w-8 h-8" />
       </ButtonNavegacao>

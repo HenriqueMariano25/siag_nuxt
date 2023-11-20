@@ -31,6 +31,7 @@
 						@cadastrar="mostrarDialogCadastrarSubSetor = true"
 						tooltip-add="Cadastrar Sub Setor"
 						:options="subSetoresFormatados"
+            @deletar="deletarSubSetor"
 						v-model="pool.sub_setor_pool_id" />
 					<AppFormInput
 						id="data_inicial"
@@ -61,6 +62,7 @@
             btn-cadastrar
 						label="Atendimento"
 						:options="atendimentos"
+            @deletar="deletarAtendimento"
 						@cadastrar="mostrarDialogCadastrarAtendimento = true"
 						tooltip-add="Cadastrar atendimento"
 						v-model="pool.atendimento_pool_id"
@@ -72,6 +74,7 @@
 						label="Motivo"
             btn-cadastrar
 						@cadastrar="mostrarDialogCadastrarMotivo = true"
+            @deletar="deletarMotivo"
 						:options="motivos"
 						v-model="pool.motivo_pool_id"
 						:invalido="erros.includes('motivo_pool_id')" />
@@ -255,6 +258,17 @@
 				this.textoAlerta = "Atendimento cadastrado com sucesso!"
 				this.mostrarAlerta = true
 			},
+      async deletarAtendimento({ id }) {
+        await this.$axios.$delete("/pool/atendimento/deletar", { params: { id } })
+
+        let idx = this.atendimentos.findIndex(o => o.id === id)
+
+        if (idx >= 0) {
+          this.atendimentos.splice(idx, 1)
+          if (this.pool.atendimento_pool_id === id) this.pool.atendimento_pool_id = null
+        }
+      },
+
 			subSetorCadastrado(subSetor) {
 				this.subSetores.push({ id: subSetor.id, nome: subSetor.sub_setor })
 				this.pool.sub_setor_pool_id = subSetor.id
@@ -263,6 +277,18 @@
 				this.textoAlerta = "Sub Setor cadastrado com sucesso!"
 				this.mostrarAlerta = true
 			},
+
+      async deletarSubSetor({ id }) {
+        await this.$axios.$delete("/pool/subSetor/deletar", { params: { id } })
+
+        let idx = this.subSetores.findIndex(o => o.id === id)
+
+        if (idx >= 0) {
+          this.subSetores.splice(idx, 1)
+          if (this.pool.sub_setor_pool_id === id) this.pool.sub_setor_pool_id = null
+        }
+      },
+
 			motivoCadastrado(motivo) {
 				this.motivos.push({ id: motivo.id, nome: motivo.motivo })
 				this.pool.motivo_pool_id = motivo.id
@@ -271,6 +297,16 @@
 				this.textoAlerta = "Motivo cadastrado com sucesso!"
 				this.mostrarAlerta = true
 			},
+      async deletarMotivo({ id }){
+        await this.$axios.$delete("/pool/motivo/deletar", { params: { id }})
+
+        let idx = this.motivos.findIndex( o => o.id === id)
+
+        if(idx >= 0){
+          this.motivos.splice(idx, 1)
+          if(this.pool.motivo_pool_id === id) this.pool.motivo_pool_id = null
+        }
+      }
 		},
 		watch: {
 			async "pool.funcionario_id"(valor) {

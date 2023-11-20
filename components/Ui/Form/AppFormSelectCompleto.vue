@@ -89,7 +89,26 @@
 							v-for="op of opcoesFiltradas"
 							@click="selecionarOpcao(op, $event)"
 							:key="op.key ? op.key : op.id">
-							{{ op.nome }}
+              <div class="flex justify-between divide-x divide-gray-400 gap-0.5">
+							<span>
+                {{ op.nome }}
+              </span>
+                <div class="flex pl-1 gap-0.5" v-if="itemPrDeletar === op.id">
+                  <BotaoPadrao icone class="rounded pr-0" cor="!bg-red-500 hover:!bg-red-600" @clique="deletarItem(op.id)">
+                    <img src="@/assets/icons/delete-b.svg" alt="" class="w-5 h-5">
+                  </BotaoPadrao>
+                  <BotaoPadrao icone cor="!bg-gray-200 hover:!bg-gray-300" @clique="itemPrDeletar = null">
+                    <img src="@/assets/icons/close-b.svg" alt="" class="w-5 h-5">
+                  </BotaoPadrao>
+
+                </div>
+                <div v-if="btnCadastrar && itemPrDeletar !== op.id" class="pl-1">
+                  <BotaoPadrao icone @clique="itemPrDeletar=op.id" >
+                    <img src="@/assets/icons/delete-b.svg" alt="" class="w-5 h-5">
+                  </BotaoPadrao>
+                </div>
+
+              </div>
 						</li>
 					</ul>
 				</div>
@@ -165,6 +184,7 @@
 			return {
 				busca: "",
 				texto: "Selecione",
+        itemPrDeletar: null,
 				// altura: "200px",
 			}
 		},
@@ -217,6 +237,11 @@
 				wrapper.classList.toggle("active")
 				event.stopPropagation() // Evita que o evento de clique seja propagado para o elemento pai
 			},
+
+      deletarItem(id){
+        this.$emit("deletar", { id })
+        this.itemPrDeletar = null
+      }
 		},
 		watch: {
 			options(valor) {

@@ -36,7 +36,13 @@
 			</div>
 		</div>
 		<RodapePagina>
-			<template v-slot> </template>
+			<template v-slot>
+        <div>
+          <BotaoPadrao texto="Histórico" @clique="$router.push('pool/historico')">
+            <img src="../../../../assets/icons/list-b.svg" alt="" class="w-7 h-7">
+          </BotaoPadrao>
+        </div>
+      </template>
 		</RodapePagina>
 		<DialogAbrirPool
 			v-if="mostrarDialogAbrirPool"
