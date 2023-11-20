@@ -215,7 +215,16 @@
 				this.motivos = motivos.map((o) => {
 					return { id: o.id, nome: o.motivo }
 				})
+
+        await this.buscarKmInicial()
 			},
+
+      async buscarKmInicial(){
+        let resp = await this.$axios.$get("/pool/buscarKmInicial", { params: { id: this.carro_id }})
+
+        if(resp.dados.km_inicial)
+          this.pool.km_inicial = resp.dados.km_inicial
+      },
 
 			validarFormulario() {
 				this.erros = []

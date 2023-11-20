@@ -124,7 +124,7 @@ export default {
   },
   methods: {
     async buscarPools() {
-      let resp = await this.$axios.$get("/poo/buscarTodos")
+      let resp = await this.$axios.$get("/pool/buscarTodos")
 
       console.log(resp);
       if(!resp.falha){
