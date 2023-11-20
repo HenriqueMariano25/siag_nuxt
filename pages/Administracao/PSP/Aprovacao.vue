@@ -229,7 +229,7 @@
 					etapas.push({ nome: "RH", valor: "2" })
 				}
 
-				if (permissoes.includes("aprovar_psp_coordenador")) {
+				if (permissoes.includes("aprovar_psp_coordenador") || permissoes.includes("aprovar_psp_gerente")) {
 					etapas.push({ nome: "Coordenador", valor: "3" })
 				}
 
@@ -258,10 +258,13 @@
 				let size = this.itensPorPagina
         let usuario_id = this.$auth.user.id
 
+        let permissoes = this.$auth.user.permissoes.filter((o) => o.includes("aprovar_psp_"))
+        let ehGerente = permissoes.includes("aprovar_psp_gerente")
+
         filtros.push(`AND Psp.etapa_psp_id = ${parseInt(this.etapa_psp_id)}`)
 
 				let resp = await this.$axios.$get("/psp/buscar/aprovacao/todas", {
-					params: { filtros, page, size, usuario_id },
+					params: { filtros, page, size, usuario_id, ehGerente },
 				})
 
 				if (!resp.falha) {
