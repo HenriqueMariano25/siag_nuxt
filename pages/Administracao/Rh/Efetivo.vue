@@ -383,6 +383,7 @@
 					{ nome: "Data Demissão", valor: "data_demissao", centralizar: true },
 					{ nome: "CPF", valor: "cpf", filtro: true },
 					{ nome: "D/I", valor: "direto_indireto", filtro: true, centralizar: true },
+					{ nome: "Situação", valor: "situacao", filtro: true,},
 					{ nome: "His. Mudanças", valor: "historico_mudanca", largura: "w-30" },
 				]
 
@@ -498,6 +499,7 @@
 					"Data de demissão",
 					"CPF",
 					"Direto/Indireto",
+          "Situação"
 				]
 				let nomeArquivo
 
@@ -532,6 +534,7 @@
 						: temp.push("")
 					temp.push(item.cpf)
 					temp.push(item.direto_indireto)
+					temp.push(item.situacao)
 					itens.push(temp)
 				}
 
