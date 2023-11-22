@@ -11,19 +11,18 @@
 				<div
 					class="grid grid-cols-1 divide-y divide-gray-300 text-lg w-full"
 					v-if="psp">
-
-          <div class="!border-b-2 !border-b-black w-full flex-col hidden print:flex">
-            <div class="justify-between flex w-full items-center mb-1">
-              <img
-                src="@/assets/img/logogrande.png"
-                alt=""
-                class="w-[250px]" />
-              <span>{{ $dayjs().format("DD/MM/YYYY HH:mm") }}</span>
-            </div>
-            <div class="text-center">
-              <span class="text-3xl"><strong>Gestão de Viagem</strong></span>
-            </div>
-          </div>
+					<div class="!border-b-2 !border-b-black w-full flex-col hidden print:flex">
+						<div class="justify-between flex w-full items-center mb-1">
+							<img
+								src="@/assets/img/logogrande.png"
+								alt=""
+								class="w-[250px]" />
+							<span>{{ $dayjs().format("DD/MM/YYYY HH:mm") }}</span>
+						</div>
+						<div class="text-center">
+							<span class="text-3xl"><strong>Gestão de Viagem</strong></span>
+						</div>
+					</div>
 					<div class="flex justify-between w-full">
 						<span><strong>Código: </strong>{{ ("00000" + psp.id).slice(-5) }}</span>
 						<span>
@@ -67,7 +66,7 @@
 					</div>
 					<span> <strong>Origem: </strong>{{ psp.origem }} </span>
 					<span> <strong>Destino: </strong>{{ psp.destino }} </span>
-					<span> <strong>Transporte: </strong>{{ psp.meio_transporte }} </span>
+					<span v-if="psp.PspTemMeioTransporte.length <= 0"> <strong>Transporte: </strong>{{ psp.meio_transporte }} </span>
 					<span> <strong>Motivo: </strong>{{ psp.motivo }} </span>
 					<span>
 						<strong>Centro de Custo: </strong>
@@ -80,6 +79,18 @@
 					<span>
 						<strong>Solicitado por: </strong>{{ psp.criado_por ? psp.criado_por.nome : "" }}
 					</span>
+					<span
+						class="titulo"
+						v-if="psp.PspTemMeioTransporte.length > 0"
+						><strong>Meios de transporte</strong></span
+					>
+					<template v-for="meio of psp.PspTemMeioTransporte">
+						<span class="font-bold bg-blue-200">{{ meio.meio_transporte }}</span>
+						<span>
+							<strong>De: </strong>{{ meio.origem }} <strong> Para: </strong>{{ meio.destino }}
+						</span>
+            <span><strong v-if="meio.hora_partida">Partida: </strong> {{ meio.hora_partida }}</span>
+					</template>
 					<span class="titulo"><strong>Aprovações</strong></span>
 					<div
 						class="grid grid-cols-2 w-full divide-x divide-gray-400"
@@ -182,7 +193,6 @@
 
 				if (!resp.falha) {
 					this.psp = resp.dados.psp
-					console.log(resp.dados.psp)
 					this.carregando = false
 				}
 			},

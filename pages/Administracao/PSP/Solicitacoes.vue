@@ -39,15 +39,17 @@
 				:limparSelecionar="true"
 				:carregando="carregandoTabela">
 				<template v-slot:[`body.acao`]="{ item }">
-					<BotaoPadrao
-						icone
-						@clique="editarPsp(item)"
-						v-if="item.criado_por.id === $auth.user.id || podeEditarPsp">
-						<img
-							src="@/assets/icons/edit-b.svg"
-							alt=""
-							class="w-6 h-6" />
-					</BotaoPadrao>
+          <div class="min-w-[30px]">
+            <BotaoPadrao
+              icone
+              @clique="editarPsp(item)"
+              v-if="item.criado_por.id === $auth.user.id || podeEditarPsp">
+              <img
+                src="@/assets/icons/edit-b.svg"
+                alt=""
+                class="w-6 h-6 " />
+            </BotaoPadrao>
+          </div>
 				</template>
 				<template v-slot:[`body.Psp.id`]="{ item }">
 					<span class="whitespace-nowrap">
@@ -94,6 +96,11 @@
 						{{ item.CentroCustoPEP ? item.CentroCustoPEP.descricao : "" }}
 					</span>
 				</template>
+        <template v-slot:[`body.PspTemMeioTransporte.meio_transporte`]="{ item }">
+					<span class="whitespace-nowrap">
+						{{ item.PspTemMeioTransporte.length > 0 ? item.PspTemMeioTransporte[0].meio_transporte + '  -  xablau' : item.meio_transporte }}
+					</span>
+        </template>
 				<template v-slot:[`body.historico`]="{ item }">
 					<div class="w-[120px]">
 						<BotaoPadrao
@@ -255,14 +262,14 @@
 					{ nome: "Motivo", valor: "motivo", filtro: true },
 					{ nome: "Data de ida", valor: "data_ida" },
 					{ nome: "Destino", valor: "destino", filtro: true },
-					{ nome: "Transporte", valor: "meio_transporte", filtro: true },
+					{ nome: "Transporte", valor: "PspTemMeioTransporte.meio_transporte", filtro: true },
 					{ nome: "Centro Custo", valor: "CentroCustoPEP.descricao", filtro: true },
 					{ nome: "Solicitado por", valor: "criado_por.nome", filtro: true },
 					{ nome: "Histórico", valor: "historico", filtro: true, largura: "w-[150px]" },
 				]
 
 				if ((this.etapa_psp_id >= 1 && this.etapa_psp_id <= 4) || this.etapa_psp_id === 10) {
-					cabecalho.unshift({ nome: "", valor: "acao" })
+					cabecalho.unshift({ nome: "", valor: "acao", largura: 'w-10' })
 				}
 
 				return cabecalho

@@ -104,8 +104,8 @@
 									<AppFormInput
 										id="rg"
 										type="text"
-                    uppercase
-                    sem-especiais
+										uppercase
+										sem-especiais
 										label="RG"
 										obrigatorio
 										:invalido="erros.includes('rg')"
@@ -197,13 +197,11 @@
 													.format("DD/MM/YYYY")
 											}}</span
 										>
-										<span v-if="psp.data_ida"
-											><strong>Dias da última volta até a próxima ida: </strong
-											>{{
-												$dayjs(psp.data_ida).diff(funcionario.Psp[0].data_volta, "day")
-											}}
-											dias</span
-										>
+										<span v-if="psp.data_ida">
+											<strong>Dias da última volta até a próxima ida: </strong>
+											{{ $dayjs(psp.data_ida).diff(funcionario.Psp[0].data_volta, "day") }}
+											dias
+										</span>
 									</div>
 									<div
 										class="w-full flex justify-center mt-0.5 bg-red-200 border-t-2 border-red-500"
@@ -215,9 +213,9 @@
 											src="@/assets/icons/alert-triangle-r.svg"
 											alt=""
 											class="w-7 h-7 flex" />
-										<span class="flex text-red-500 text-lg px-1"
-											><strong>DATA DE IDA É MENOR DO QUE A DATA PRESVISTA</strong></span
-										>
+										<span class="flex text-red-500 text-lg px-1">
+											<strong>DATA DE IDA É MENOR DO QUE A DATA PREVISTA</strong>
+										</span>
 									</div>
 								</div>
 							</div>
@@ -292,13 +290,148 @@
 										v-model="psp.centro_custo_pep_id"
 										class="grow" />
 									<div></div>
-									<AppFormRadio
-										:itens="opcoesMeioTransporte"
-										titulo="Meio de Transporte"
-										obrigatorio
-										:invalido="erros.includes('meio_transporte')"
-										v-model="psp.meio_transporte"
-										id="meio_transporte" />
+									<div
+										class="grid grid-cols-2 col-span-2 gap-x-2 bg-gray-50 p-1 border border-gray-400">
+										<span class="font-bold">Meio de Transporte</span>
+										<span class="font-bold">Adicionados</span>
+										<div class="flex flex-col">
+											<div class="flex flex-col gap-2 bg-blue-200 border border-blue-300 p-1">
+												<div class="grid grid-cols-4 gap-2">
+													<AppFormSelect
+														id=""
+														:options="opcoesMeioTransporte"
+														label="Meio de transporte"
+														:invalido="errosMeioTransporte.includes('meio_transporte')"
+														class="col-span-3"
+														v-model="meioTransporte.meio_transporte" />
+													<AppFormInput
+														id="hora_saida"
+														type="time"
+														label="Hora de partida"
+														v-model="meioTransporte.hora_partida" />
+													<AppFormInput
+														id="meioTransporteOrigem"
+														type="text"
+														label="Origem"
+														class="col-span-2"
+														v-model="meioTransporte.origem"
+														placeholder="Ex: Grussai, São João da Barra, RJ"
+														:invalido="errosMeioTransporte.includes('origem')" />
+													<AppFormInput
+														id="meioTransporteDestino"
+														type="text"
+														label="Destino"
+														class="col-span-2"
+														v-model="meioTransporte.destino"
+														:invalido="errosMeioTransporte.includes('destino')"
+														placeholder="Ex: Tietê,São Paulo, SP" />
+												</div>
+												<div class="flex justify-end">
+													<BotaoPadrao
+                            class="!z-10"
+														texto="Salvar"
+														cor="bg-green-400"
+														@clique="adicionarMeioTransporte()">
+														<img
+															src="@/assets/icons/save-b.svg"
+															alt=""
+															class="w-7 h-7" />
+													</BotaoPadrao>
+												</div>
+											</div>
+										</div>
+										<div class="flex flex-col gap-0.5">
+											<div class="px-2 text-gray-700 font-bold">
+												<span v-if="meiosTransporte.length === 0">
+													Nenhum meio de transporte adicionado</span
+												>
+											</div>
+
+											<div
+												class="flex flex-col gap-0.5 w-full"
+												v-for="(meio, index) of meiosTransporte">
+												<div
+													class="!w-full flex justify-center"
+													v-if="index > 0">
+													<img
+														src="@/assets/icons/arrow-down-simple-b.svg"
+														alt=""
+														class="w-4 h-4" />
+												</div>
+												<div class="flex flex-row">
+													<div class="flex flex-col bg-blue-200 border border-blue-300 p-1 grow">
+														<div class="justify-between flex grow">
+															<span class="font-bold text-xl">{{ meio.meio_transporte }}</span>
+															<span
+																class=""
+																v-if="meio.hora_partida">
+																<strong>Partida:</strong> {{ meio.hora_partida }}
+															</span>
+														</div>
+														<span><strong>De: </strong> {{ meio.origem }}</span>
+														<span><strong>Para: </strong>{{ meio.destino }}</span>
+													</div>
+													<div
+														class="flex flex-col !min-w-12 content-center items-center justify-center !h-full">
+                            <div>
+                              <BotaoPadrao icone @clique="removerMeioTransporte(index)">
+                                <img src="@/assets/icons/delete-b.svg" alt="" class="w-6 h-6">
+                              </BotaoPadrao>
+                            </div>
+														<div class="flex">
+															<BotaoPadrao
+																icone
+																@clique="index !== 0 ? mudarPosicao('subir', index) : null"
+																:class="{ 'cursor-default hover:!bg-white': index === 0 }">
+																<img
+																	src="@/assets/icons/arrow-up-b.svg"
+																	alt=""
+																	class="w-6 h-6"
+																	v-if="index !== 0" />
+																<img
+																	src="@/assets/icons/arrow-up-disabled.svg"
+																	alt=""
+																	class="w-6 h-6"
+																	v-if="index === 0" />
+															</BotaoPadrao>
+														</div>
+														<div class="flex">
+															<BotaoPadrao
+																icone
+																@clique="
+																	index !== meiosTransporte.length - 1
+																		? mudarPosicao('descer', index)
+																		: null
+																"
+																:class="{
+																	'cursor-default hover:!bg-white':
+																		index === meiosTransporte.length - 1,
+																}">
+																<img
+																	src="@/assets/icons/arrow-down-b.svg"
+																	alt=""
+																	class="w-6 h-6"
+																	v-if="index !== meiosTransporte.length - 1" />
+																<img
+																	src="@/assets/icons/arrow-down-disabled.svg"
+																	alt=""
+																	class="w-6 h-6"
+																	v-if="index === meiosTransporte.length - 1" />
+															</BotaoPadrao>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div
+											class="col-span-2 bg-red-300 border border-red-400 px-2 mt-1 text-center"
+											v-if="erros.includes('meiosTransporte')">
+											<span class="text-xl text-red-700"
+												><strong>Favor cadastre um meio de transporte</strong></span
+											>
+										</div>
+									</div>
+
 									<div class="flex flex-col gap-1">
 										<AppFormRadio
 											:itens="opcoesMotivo"
@@ -423,7 +556,7 @@
 									</div>
 									<AppFormTextarea
 										class="col-span-2"
-                    :total-caracteres="1000"
+										:total-caracteres="1000"
 										id="teste"
 										label="Descrição do Itinerário"
 										v-model="psp.descricao_itinerario" />
@@ -574,9 +707,9 @@
 					{ label: "Outros", valor: "outros" },
 				],
 				opcoesMeioTransporte: [
-					{ label: "Rodoviário", valor: "Rodoviário" },
-					{ label: "Aérea", valor: "Aérea" },
-					{ label: "Carro", valor: "Carro" },
+					{ nome: "Rodoviário", id: "Rodoviário" },
+					{ nome: "Aérea", id: "Aérea" },
+					{ nome: "Carro", id: "Carro" },
 				],
 				centrosCusto: [],
 				cadastrou: false,
@@ -597,6 +730,14 @@
 				textoErroDataIda: null,
 				textoErroDataVolta: null,
 				podeSalvar: false,
+				meioTransporte: {
+					meio_transporte: null,
+					hora_partida: null,
+					origem: null,
+					destino: null,
+				},
+				meiosTransporte: [],
+				errosMeioTransporte: [],
 			}
 		},
 		props: {
@@ -641,6 +782,7 @@
 					let psp = resp.dados.psp
 					this.psp.funcionario_id = psp.funcionario_id
 					this.psp = Object.assign(this.psp, resp.dados.psp)
+          this.meiosTransporte = psp.PspTemMeioTransporte
 					await this.buscarFuncionario()
 					this.carregando = false
 				}
@@ -747,7 +889,6 @@
 					"turno",
 					"data_nascimento",
 					"motivo",
-					"meio_transporte",
 					"prazo",
 					"origem",
 					"destino",
@@ -777,6 +918,8 @@
 					}
 				}
 
+				if (this.meiosTransporte.length === 0) this.erros.push("meiosTransporte")
+
 				for (let campo of camposObrigatorio) {
 					if (this.psp[`${campo}`] === null || this.psp[`${campo}`] === "") this.erros.push(campo)
 				}
@@ -787,6 +930,7 @@
 				let psp = this.psp
 				let usuario_id = this.$auth.user.id
 				let dependentes = []
+				let meiosTransporte = this.meiosTransporte
 
 				if (psp.motivo === "Mobilização familiar") {
 					if (this.dependentes.length <= 0) {
@@ -799,7 +943,12 @@
 				}
 
 				if (this.erros.length === 0 && this.erroSemDependente === false) {
-					let resp = await this.$axios.$post("/psp/criar", { ...psp, usuario_id, dependentes })
+					let resp = await this.$axios.$post("/psp/criar", {
+						...psp,
+						usuario_id,
+						dependentes,
+						meiosTransporte,
+					})
 					if (!resp.falha) {
 						let pspEncontrada = resp.dados.psp
 
@@ -817,6 +966,7 @@
 				let dependentes = []
 				let psp_id = this.psp_id
 				let etapa_psp_id = this.psp.etapa_psp_id
+        let meiosTransportes = this.meiosTransporte
 
 				if (psp.motivo === "Mobilização familiar") {
 					if (this.dependentes.length <= 0) {
@@ -834,6 +984,7 @@
 						usuario_id,
 						dependentes,
 						psp_id,
+            meiosTransportes
 					})
 
 					if (!resp.falha) {
@@ -878,6 +1029,62 @@
 				if (idx >= 0) {
 					this.dependentes.splice(idx, 1)
 				}
+			},
+
+			adicionarMeioTransporte() {
+				this.validarFormularioMeioTransporte()
+
+				if (this.errosMeioTransporte.length === 0) {
+					this.meiosTransporte.push(this.meioTransporte)
+
+					this.meioTransporte = {
+						meio_transporte: null,
+						hora_partida: null,
+						origem: this.meioTransporte.destino,
+						destino: null,
+					}
+				}
+			},
+			mudarPosicao(acao, idx) {
+				let principal = this.meiosTransporte[idx]
+				let secundario
+				let idxSecundario
+
+				if (acao === "subir") {
+					idxSecundario = idx - 1
+					secundario = this.meiosTransporte[idxSecundario]
+				}
+
+				if (acao === "descer") {
+					idxSecundario = idx + 1
+					secundario = this.meiosTransporte[idxSecundario]
+				}
+
+				this.meiosTransporte.splice(idx, 1, secundario)
+				this.meiosTransporte.splice(idxSecundario, 1, principal)
+			},
+
+      removerMeioTransporte(idx){
+        this.meiosTransporte.splice(idx, 1)
+      },
+
+			validarFormularioMeioTransporte() {
+				this.errosMeioTransporte = []
+
+				let camposObrigatorio = ["meio_transporte", "origem", "destino"]
+
+				for (let campo of camposObrigatorio) {
+					if (this.meioTransporte[`${campo}`] === null || this.meioTransporte[`${campo}`] === "")
+						this.errosMeioTransporte.push(campo)
+				}
+			},
+		},
+		watch: {
+			"psp.origem": function (valor) {
+				this.meioTransporte.origem = valor
+			},
+			"psp.destino": function (valor) {
+				this.meioTransporte.destino = valor
 			},
 		},
 	}
