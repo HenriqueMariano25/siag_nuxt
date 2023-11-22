@@ -364,6 +364,7 @@
 					this.mostrarDialogCriarPsp = false
 					this.textoAlerta = "PSP deletada com sucesso!"
 					this.mostrarAlerta = true
+          this.psp_id = null
 				}
 			},
 

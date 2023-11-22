@@ -47,6 +47,7 @@
 				<div class="flex gap-2">
 					<div>
 						<BotaoPadrao
+              :disabled="!podeNegar"
 							texto="Negar"
 							cor="bg-red-400 hover:!bg-red-500"
 							@clique="aprovacao(false)">
@@ -94,6 +95,12 @@
 				type: String,
 			},
 		},
+    computed:{
+      podeNegar(){
+        let comentario = this.comentario ? this.comentario.trim() : null
+        return comentario !== null && comentario !== ""
+      }
+    },
 		methods: {
 			cancelar() {
 				this.$emit("cancelar")
