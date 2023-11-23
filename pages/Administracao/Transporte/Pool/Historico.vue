@@ -33,7 +33,7 @@
 						{{ item.Setor ? item.Setor.nome : "" }}
 					</span>
         </template>
-        <template v-slot:[`body.SubSetorPool.nome`]="{ item }">
+        <template v-slot:[`body.SubSetorPool.sub_setor`]="{ item }">
 					<span
             class="whitespace-nowrap">
 						{{ item.SubSetorPool ? item.SubSetorPool.sub_setor : "" }}
