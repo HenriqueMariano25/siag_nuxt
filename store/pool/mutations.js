@@ -16,6 +16,13 @@ export default {
   ATUALIZAR_SUB_SETORES_POOL(state, { novoDado }) {
     state.subSetores.dados.push(novoDado)
   },
+
+  REMOVER_SUB_SETORES_POOL(state, { id }) {
+    let idx = state.subSetores.dados.findIndex(o => o.id === id)
+
+    state.subSetores.dados.splice(idx, 1)
+  },
+
   DEFINIR_MOTIVO_POOL(state, { dados, ultimaBusca }) {
     state.motivos.dados = dados
     state.motivos.ultimaBusca = ultimaBusca

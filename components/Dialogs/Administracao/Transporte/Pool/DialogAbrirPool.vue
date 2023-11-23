@@ -279,7 +279,10 @@
       },
 
 			subSetorCadastrado(subSetor) {
+        console.log(subSetor);
+
 				this.subSetores.push({ id: subSetor.id, nome: subSetor.sub_setor })
+				this.subSetoresFormatados.push({ id: subSetor.id, nome: subSetor.sub_setor })
 				this.pool.sub_setor_pool_id = subSetor.id
 				this.$store.commit("pool/ATUALIZAR_SUB_SETORES_POOL", { novoDado: subSetor })
 				this.mostrarDialogCadastrarSubSetor = false
@@ -291,9 +294,11 @@
         await this.$axios.$delete("/pool/subSetor/deletar", { params: { id } })
 
         let idx = this.subSetores.findIndex(o => o.id === id)
+        this.$store.commit("pool/REMOVER_SUB_SETORES_POOL", { id })
 
         if (idx >= 0) {
           this.subSetores.splice(idx, 1)
+          this.subSetoresFormatados.splice(idx, 1)
           if (this.pool.sub_setor_pool_id === id) this.pool.sub_setor_pool_id = null
         }
       },
