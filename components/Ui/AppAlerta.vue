@@ -1,5 +1,5 @@
 <template>
-  <div class=" fixed z-50 top-2 right-2 flex p-4 min-w-[500px] border-2 rounded-sm text-center"
+  <div class=" fixed z-50 top-2 right-2 flex p-4 min-w-[500px] border-2 rounded-sm text-center print:hidden"
        style="z-index: 110"
     :class="{
       'bg-red-300 border-red-700 ' :tipo === 'erro',

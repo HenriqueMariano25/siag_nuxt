@@ -241,7 +241,7 @@
 									</tbody>
 								</table>
 							</div>
-							<span class="text-lg"
+							<span class="text-sm"
 								>Nesta data e pelo presente instrumento, a Consórcio Geração Açu 2 cede ao empregado
 								acima através do presente termo o direito de utilização do
 								Equipamento abaixo identificado.</span
@@ -274,11 +274,14 @@
 													}}</span>
 												</div>
 											</td>
+                      <td>
+                        {{ chip.sim_card }}
+                      </td>
 										</tr>
 									</tbody>
 								</table>
 								<div class="flex flex-col w-full text-start mt-2">
-									<span class="text-xl font-bold ml-2">Observações Chip</span>
+									<span class="text-xl font-bold ml-2">Observações do Chip</span>
 									<div class="border border-black flex flex-col px-2">
 										<span class="font-bold"
 											>O pacote contempla somente ligações realizadas para a operadora 21.</span
@@ -290,12 +293,12 @@
 									</div>
 								</div>
 								<div class="flex flex-col w-full text-start mt-2">
-									<span class="text-xl font-bold ml-2">Observações Funcionário</span>
+									<span class="text-xl font-bold ml-2">Observações do Funcionário</span>
 									<div class="border border-black flex flex-col px-2 min-h-[40px]">
 										<span class="font-bold">{{ chipLocal.observacao_funcionario }}</span>
 									</div>
 								</div>
-                <div class="w-full text-start mt-4 text-md">
+                <div class="w-full text-start mt-4 text-sm">
                   <span class="">
                   O empregado torna-se, a partir de agora, responsável pelo uso e conservação do referido bem, o qual deverá ser utilizado exclusivamente a serviço, notificando a empresa quando ocorrer qualquer irregularidade. Em nenhuma hipótese o empregado torna-se-á o titular do referido chip, comprometendo-se a devolvê-lo quando solicitado pela empresa. No caso de perda, roubo, extravio, dano acidental ou qualquer tipo de inviabilize o uso desse equipamento, o empregado deverá repor o bem de marca e modelo ao que lhe é fora entregue. O empregado declara estar recebendo o chip acima descrito respeitando as informações de número, pacote, simcard e suas respectivas observações nos termos da LGPD e da Norma AG 135 02 - Segurança da Informação, disponível no Portal AG.
                 </span>
@@ -575,9 +578,8 @@
 
 				if (!resp.falha) {
 					let { chip } = resp.dados
+
 					this.chipLocal = Object.assign({}, chip)
-					this.funcionarioLocal.data_entrega = this.$dayjs().format("YYYY-MM-DD")
-					this.funcionarioLocal.observacao_funcionario = chip.observacao_funcionario
 
 					if (chip.Funcionario) {
 						this.funcionarioAtual = Object.assign({}, chip.Funcionario)
@@ -585,6 +587,9 @@
 					} else {
 						this.funcionarioAtual = Object.assign({}, this.funcionarioLocal)
 					}
+
+          this.funcionarioLocal.observacao_funcionario = chip.observacao_funcionario
+          this.funcionarioLocal.data_entrega = this.$dayjs().format("YYYY-MM-DD")
 				}
 			},
 
@@ -736,8 +741,6 @@
 
 			async buscarHistoricos() {
 				let id = this.chipLocal.id
-
-				console.log(id)
 
 				let resp = await this.$axios.$get("/ti/chip/historicoChip/buscar", { params: { id: id } })
 
