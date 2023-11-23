@@ -24,13 +24,13 @@
         <template v-slot:[`body.Funcionario.nome`]="{ item }">
 					<span
             class="whitespace-nowrap">
-						{{ item.Funcionario.nome }}
+						{{ item.Funcionario ? item.Funcionario.nome : "" }}
 					</span>
         </template>
         <template v-slot:[`body.Setor.nome`]="{ item }">
 					<span
             class="whitespace-nowrap">
-						{{ item.Setor.nome }}
+						{{ item.Setor ? item.Setor.nome : "" }}
 					</span>
         </template>
         <template v-slot:[`body.SubSetorPool.nome`]="{ item }">
@@ -42,13 +42,13 @@
         <template v-slot:[`body.AtendimentoPool.local`]="{ item }">
 					<span
             class="whitespace-nowrap">
-						{{ item.AtendimentoPool.local }}
+						{{ item.AtendimentoPool ? item.AtendimentoPool.local : "" }}
 					</span>
         </template>
         <template v-slot:[`body.MotivoPool.motivo`]="{ item }">
 					<span
             class="whitespace-nowrap">
-						{{ item.MotivoPool.motivo }}
+						{{ item.MotivoPool ? item.MotivoPool.motivo : "" }}
 					</span>
         </template>
         <template v-slot:[`body.data_inicial`]="{ item }">
