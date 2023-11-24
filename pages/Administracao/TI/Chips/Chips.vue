@@ -75,7 +75,12 @@
     </div>
     <RodapePagina>
       <template v-slot>
-        <div class="flex justify-end w-full">
+        <div class="flex justify-between w-full">
+          <div class="flex">
+            <BotaoPadrao texto="gerar excel" @clique="gerarExcel()">
+              <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
+            </BotaoPadrao>
+          </div>
           <div class="flex">
             <BotaoPadrao
               class="flex"
@@ -116,6 +121,7 @@ import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 import RodapePagina from "~/components/Shared/RodapePagina.vue";
 import AppAlerta from "~/components/Ui/AppAlerta.vue";
 import DialogCriarChip from "~/components/Dialogs/Administracao/Ti/Chips/DialogCriarChip.vue";
+import gerarExcel from "~/functions/gerarExcel";
 
 export default {
   components: { DialogCriarChip, AppAlerta, RodapePagina, BotaoPadrao, CabecalhoPagina, TabelaPadrao },
@@ -200,109 +206,46 @@ export default {
       this.totalItens -= 1
     },
 
-    totalOcupacao(item) {
+    gerarExcel(){
+      let dados = this.dados
 
-      let totalFuncionario = item.Funcionarios ? item.Funcionarios.length : 0
-      let totalTerceiros = item.TerceirosRota ? item.TerceirosRota.length : 0
+      let cabecalho = [
+        "Número",
+        "Data de ativação",
+        "SimCard",
+        "Plano",
+        "Funcionário",
+        "Setor",
+        "Situação",
+      ]
+      let nomeArquivo
 
-      return (totalFuncionario + totalTerceiros)
+      nomeArquivo = "chips"
 
-    },
-
-    async gerarRelatorio(rota) {
-      let funcionariosPorRota = []
-
-      let funcionarios = await this.$axios.$get("/transporte/rotas/funcionarios", { params: { id: rota.id } }).then(resp => resp.funcionarios)
-
-      funcionariosPorRota = funcionarios
-
-      let terceiros = await this.$axios.$get("/transporte/terceiros/rota", { params: { rota_id: rota.id } }).then(resp => resp.terceiros)
-
-      funcionariosPorRota.push(...terceiros)
-
-      let funcOrdenados = await funcionariosPorRota.sort((a, b) => {
-        const nomeA = a.nome.toUpperCase()
-        const nomeB = b.nome.toUpperCase()
-
-        if (nomeA > nomeB) {
-
-          return 1
-        }
-        if (nomeA < nomeB) {
-          return -1
-        }
-        return 0
-      })
-
-      let hojeAgr = this.$dayjs().format("DD/MM/YYYY HH:mm:ss");
-
-      let novosDados = JSON.parse(JSON.stringify(funcOrdenados));
-      var doc = new jsPDF({});
-      doc.page = 1;
-      doc.setProperties({
-        title: "Relatório pontos de embarque",
-      });
-
-      const logo = require("@/assets/img/logoagcnovo.png");
-      var imgLogo = new Image();
-      imgLogo.src = logo;
-
-      doc.addImage(imgLogo, "PNG", 4, 6, 50, 9);
-      doc.setFontSize(14);
-      doc.setTextColor(0);
-      doc.text("RELATÓRIO PASSAGEIROS POR ROTA", 75, 9);
-      doc.setFontSize(14);
-      doc.text(`ROTA`, 190, 9);
-      doc.text(`${rota.numero}`, 190, 14);
-      doc.setFontSize(12);
-      doc.text(`Passageiros: ${funcionariosPorRota.length}`, 4, 20);
-      doc.text(
-        `Disponíveis: ${46 - parseInt(funcionariosPorRota.length)}`,
-        60,
-        20
-      );
-
-      doc.line(4, 22, 206, 22);
-      doc.setFontSize(14);
-      doc.autoTable({
-        head: [["Matricula", "Nome", "Cargo", "Ponto de embarque", "Poltrona"]],
-        columns: [
-          { header: "Matricula", dataKey: "chapa" },
-          { header: "Nome", dataKey: "nome" },
-          { header: "Cargo", dataKey: "cargo" },
-          { header: "Ponto de embarque", dataKey: "ponto_embarque" },
-          { header: "Poltrona", dataKey: "poltrona" },
-        ],
-        columnStyles: { id: { halign: "center" } },
-        body: novosDados,
-        theme: "striped",
-
-        headStyles: {
-          fillColor: [50, 50, 50],
-        },
-        bodyStyles: {
-          fontSize: 7,
-        },
-        startY: 24,
-        pageBreak: "auto",
-        margin: { left: 4, right: 4, top: 4 },
-      });
-      const totalPaginas = doc.internal.getNumberOfPages();
-      doc.setTextColor(0);
-      doc.setFontSize(10);
-      for (var i = 1; i <= totalPaginas; i++) {
-        doc.setPage(i);
-        doc.text(
-          `Página ${String(i)} de ${String(totalPaginas)}`,
-          205,
-          294,
-          null,
-          null,
-          "right"
-        );
-        doc.text(hojeAgr, 5, 294);
+      let itens = []
+      for (let item of dados) {
+        let temp = []
+        temp.push(item.numero ? item.numero : "")
+        temp.push(this.$dayjs(item.data_ativacao).format("DD/MM/YYYY"))
+        temp.push(item.sim_card ? item.sim_card : "")
+        temp.push(item.PlanoChip ? item.PlanoChip.nome : "")
+        temp.push(
+          item.Funcionario
+            ? item.Funcionario.nome
+            : "No estoque",
+        )
+        temp.push(
+          item.Funcionario && item.Funcionario.setor
+            ? item.Funcionario.setor.nome
+            : "",
+        )
+        temp.push(
+          item.SituacaoChip ? item.SituacaoChip.descricao : "",
+        )
+        itens.push(temp)
       }
-      window.open(doc.output("bloburl", { filename: "tabela_clientes.pdf" }));
+
+      gerarExcel(cabecalho, itens, nomeArquivo)
     }
   },
 }
