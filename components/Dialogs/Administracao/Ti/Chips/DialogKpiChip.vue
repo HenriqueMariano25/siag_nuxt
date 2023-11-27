@@ -26,12 +26,12 @@
 						</div>
 					</div>
           <div class="bg-red-500 flex w-full h-full bg-white z-10">
-            <img alt="graph" v-if="print_mode" class="print:hidden w-100" :src="chart_img" />
+            <img alt="graph" v-if="print_mode" class="print:hidden w-100 mt-2 p-1" :src="chart_img" />
           </div>
           <div class="flex w-full h-full grafico-imprimir">
 
             <div
-              class="mt-2 !w-full p-1 !h-full flex print:!flex" :class="{'hidden': print_mode}"
+              class="mt-2 p-1 !w-full  !h-full flex print:!flex" :class="{'hidden': print_mode}"
               id="main"
               style="width: 1500px;min-height: 500px"></div>
 
@@ -92,16 +92,35 @@
 				let dados = await this.buscarDados()
 				let dadosFormatados = []
 				let series = []
+
 				for (let key of Object.keys(dados)) {
 					if (dadosFormatados.length === 0) {
-						dadosFormatados.push(["Planos", ...Object.keys(dados[key])])
-						series = Array(Object.keys(dados[key]).length).fill({
+            dadosFormatados.push(["Planos", ...Object.keys(dados[key])])
+						series = Array(Object.keys(dados[key]).length - 1).fill({
 							type: "bar",
+              stack: 'a',
 							label: {
 								show: true,
-								position: "top",
+								position: "inside",
+                verticalAlign: "middle",
+                fontSize: 18,
+                fontWeight: 'bold'
 							},
 						})
+
+            series.push({
+              name:"Previsto",
+              type: "line",
+              lineStyle: {
+                width: 4
+              },
+              label: {
+                show: false,
+                position: "top",
+                fontSize: 18,
+                fontWeight: 'bold'
+              },
+            })
 					}
 
 					dadosFormatados.push([key, ...Object.values(dados[key])])
@@ -111,17 +130,40 @@
 				this.myChart = myChart
 				let option
 
+        for(let dado of dadosFormatados){
+          for(let idx in dado){
+            if(idx != dado.length - 1 ){
+              if (dado[idx] === 0) {
+                dado[idx] = ""
+              }
+            }
+          }
+        }
+
 				option = {
-					legend: {},
-					tooltip: {},
+          color: ['#f29e4c', '#efea5a', '#83e377', '#0db39e', '#2c699a', '#54478c'],
+					legend: {
+            textStyle:{
+              fontSize: 18
+            }
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross',
+              crossStyle: {
+                color: '#999'
+              }
+            }
+          },
 					dataset: {
 						source: dadosFormatados,
 					},
-					xAxis: { type: "category" },
-					yAxis: { name: "N° de CHip" },
+					xAxis: { type: "category", axisLabel: { interval: 0, rotate: 30, fontSize: 16, margin: 12 } },
+					yAxis: { name: "N° de Chip", axisLabel: { fontSize: 16 }, nameTextStyle: { fontSize: 16} },
 					series: series,
           grid: {
-            left: 10,
+            left: 12,
             right: 2,
             bottom: 0, containLabel: true
           }
@@ -141,12 +183,10 @@
 
         this.chart_img = chart_dom.getDataURL()
         this.print_mode = true
-        console.log(chart_dom);
-        console.log(chart_dom.getWidth());
         let widthOriginal = chart_dom.getWidth()
         let heightOriginal = chart_dom.getHeight()
 
-        chart_dom.resize({ width: 1800, height:900})
+        chart_dom.resize({ width: 1800, height:1000})
         setTimeout(() => {
           window.print()
           chart_dom.resize({ width: widthOriginal, height: heightOriginal })
