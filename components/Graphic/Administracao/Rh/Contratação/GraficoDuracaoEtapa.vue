@@ -34,7 +34,7 @@
         </div>
       </div>
     </div>
-    <div id="imprimir" class="h-du">
+    <div id="imprimir" class="">
       <div class="bg-primaria-700 p-1 w-full text-white hidden print:flex justify-between items-center">
         <img
           src="@/assets/img/logoagcnovo.png"

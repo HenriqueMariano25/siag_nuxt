@@ -76,9 +76,12 @@
     <RodapePagina>
       <template v-slot>
         <div class="flex justify-between w-full">
-          <div class="flex">
-            <BotaoPadrao texto="gerar excel" @clique="gerarExcel()">
+          <div class="flex gap-2">
+            <BotaoPadrao texto="excel" @clique="gerarExcel()">
               <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
+            </BotaoPadrao>
+            <BotaoPadrao texto="KPI" @clique="mostrarDialogKpiChip = true">
+              <img src="@/assets/icons/graph-b.svg" alt="" class="w-7 h-7">
             </BotaoPadrao>
           </div>
           <div class="flex">
@@ -111,6 +114,7 @@
       @escondeu="mostrarAlerta = false">
       {{ textoAlerta }}
     </AppAlerta>
+    <DialogKpiChip v-if="mostrarDialogKpiChip" @cancelar="mostrarDialogKpiChip = false"/>
   </div>
 </template>
 
@@ -122,9 +126,10 @@ import RodapePagina from "~/components/Shared/RodapePagina.vue";
 import AppAlerta from "~/components/Ui/AppAlerta.vue";
 import DialogCriarChip from "~/components/Dialogs/Administracao/Ti/Chips/DialogCriarChip.vue";
 import gerarExcel from "~/functions/gerarExcel";
+import DialogKpiChip from "~/components/Dialogs/Administracao/Ti/Chips/DialogKpiChip.vue";
 
 export default {
-  components: { DialogCriarChip, AppAlerta, RodapePagina, BotaoPadrao, CabecalhoPagina, TabelaPadrao },
+  components: { DialogKpiChip, DialogCriarChip, AppAlerta, RodapePagina, BotaoPadrao, CabecalhoPagina, TabelaPadrao },
   data() {
     return {
       cabecalho: [
@@ -147,6 +152,7 @@ export default {
       chip: null,
       mostrarAlerta: false,
       textoAlerta: null,
+      mostrarDialogKpiChip: false
     }
   },
   created() {

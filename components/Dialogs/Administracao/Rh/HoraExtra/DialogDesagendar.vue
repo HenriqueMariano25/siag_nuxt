@@ -1,7 +1,7 @@
 <template>
   <div>
     <BaseDialog
-      titulo="Desagendar agendametos"
+      titulo="Desagendar agendamentos"
       @cancelar="cancelar()">
       <template v-slot:corpo>
         <div class="px-2 gap-y-2 flex flex-col">
