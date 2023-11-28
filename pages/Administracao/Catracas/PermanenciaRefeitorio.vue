@@ -34,7 +34,7 @@
         <div class="flex justify-start w-full">
           <div class="flex">
             <BotaoPadrao
-              :disabled="buscou"
+              :disabled="!buscou"
               class="flex"
               @clique="gerarExcel()"
               texto="Gerar excel">
