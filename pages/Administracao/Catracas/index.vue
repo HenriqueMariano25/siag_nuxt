@@ -4,6 +4,10 @@
       <ButtonNavegacao titulo="Acessos" cor="bg-[#264653]" link="catracas/acessos">
         <img src="@/assets/icons/arrows-horizontal-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
+      <ButtonNavegacao titulo="Permanência no Ref." cor="bg-[#264653]" link="catracas/permanenciaRefeitorio"
+                       v-if="$auth.user.permissoes.includes('permanencia_refeitorio_catraca')">
+        <img src="@/assets/icons/stopwatch-w.svg" alt="" class="w-8 h-8">
+      </ButtonNavegacao>
       <ButtonNavegacao titulo="Cartões" cor="bg-[#264653]" link="catracas/cartoes">
         <img src="@/assets/icons/id-card-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
