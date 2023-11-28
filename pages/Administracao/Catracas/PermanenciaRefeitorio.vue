@@ -26,6 +26,12 @@
           <template v-slot:[`body.permanencia`]="{ item }">
             <span>{{ item.permanencia ? item.permanencia + " minutos" : "" }}</span>
           </template>
+          <template v-slot:[`body.entrada`]="{ item }">
+            <span>{{ item.entrada ? $dayjs(item.entrada).utc().format("DD/MM/YYYY HH:MM") : "" }}</span>
+          </template>
+          <template v-slot:[`body.saida`]="{ item }">
+            <span>{{ item.saida ? $dayjs(item.saida).utc().format("DD/MM/YYYY HH:MM") : "" }}</span>
+          </template>
         </TabelaPadrao>
       </div>
     </div>
@@ -81,6 +87,8 @@ export default {
         { nome: "Nome", valor: "nome" },
         { nome: "Cargo", valor: "cargo" },
         { nome: "Setor", valor: "setor" },
+        { nome: "Entrada", valor: "entrada" },
+        { nome: "Saída", valor: "saida" },
         { nome: "Permanencia", valor: "permanencia" },
       ],
       carregando: false,
@@ -114,9 +122,10 @@ export default {
         "Nome",
         "Cargo",
         "Setor",
+        "Entrada",
+        "Saída",
         "Permanencia",
       ]
-
 
       let nomeArquivo
 
@@ -137,6 +146,8 @@ export default {
         temp.push(item.nome ? item.nome : "")
         temp.push(item.cargo ? item.cargo : "")
         temp.push(item.setor ? item.setor : "")
+        temp.push(item.entrada ? this.$dayjs(item.entrada).format("DD/MM/YYYY HH:MM") : "")
+        temp.push(item.saida ? this.$dayjs(item.saida).format("DD/MM/YYYY HH:MM") : "")
         temp.push(item.permanencia ? item.permanencia : "")
         itens.push(temp)
       }
