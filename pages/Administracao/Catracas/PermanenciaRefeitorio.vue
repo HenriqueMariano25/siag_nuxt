@@ -27,10 +27,10 @@
             <span>{{ item.permanencia ? item.permanencia + " minutos" : "" }}</span>
           </template>
           <template v-slot:[`body.entrada`]="{ item }">
-            <span>{{ item.entrada ? $dayjs(item.entrada).utc().format("DD/MM/YYYY HH:MM") : "" }}</span>
+            <span>{{ item.entrada ? $dayjs(item.entrada).utc().format("DD/MM/YYYY HH:mm") : "" }}</span>
           </template>
           <template v-slot:[`body.saida`]="{ item }">
-            <span>{{ item.saida ? $dayjs(item.saida).utc().format("DD/MM/YYYY HH:MM") : "" }}</span>
+            <span>{{ item.saida ? $dayjs(item.saida).utc().format("DD/MM/YYYY HH:mm") : "" }}</span>
           </template>
         </TabelaPadrao>
       </div>
