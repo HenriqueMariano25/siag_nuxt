@@ -5,7 +5,7 @@
 			titulo="Kpi de CHIP"
 			@cancelar="cancelar()">
 			<template v-slot:corpo>
-				<div class="relative">
+				<div class="relative ">
 					<div
 						id="imprimir"
 						class="w-full">
@@ -25,15 +25,31 @@
 							</div>
 						</div>
 					</div>
-          <div class="bg-red-500 flex w-full h-full bg-white z-10">
+          <div class="flex gap-1 justify-between px-1 w-full">
+            <div class=" text-center ">
+              <div class="border border-gray-500 rounded bg-gray-50 shadow flex flex-col p-2 print:mt-2 ">
+                <span class="text-xl print:text-4xl">Total de CHIPs</span>
+                <span class="font-bold text-4xl print:text-8xl">{{ totalChips }}</span>
+              </div>
+            </div>
+
+            <div class="flex bg-white z-10">
+              <img alt="graph" v-if="print_mode" class="print:hidden w-100 mt-2 p-1" :src="totalPorSetor_img" />
+            </div>
+              <div
+                class="mt-2 p-1 !w-full !h-full flex print:!flex" :class="{'hidden': print_mode}"
+                id="totalPorSetor" style="width: 500px;min-height: 200px"
+                >
+              </div>
+          </div>
+          <div class="flex w-full h-full bg-white z-10">
             <img alt="graph" v-if="print_mode" class="print:hidden w-100 mt-2 p-1" :src="chart_img" />
           </div>
           <div class="flex w-full h-full grafico-imprimir">
-
             <div
-              class="mt-2 p-1 !w-full  !h-full flex print:!flex" :class="{'hidden': print_mode}"
+              class="p-1 !w-full  !h-full flex print:!flex" :class="{'hidden': print_mode}"
               id="main"
-              style="width: 1500px;min-height: 500px"></div>
+              style="width: 1500px;min-height: 300px"></div>
 
           </div>
 
@@ -69,8 +85,12 @@
 		data() {
 			return {
 				myChart: null,
+        graficoTotalPorSetor: null,
         chart_img: null,
-        print_mode: false
+        totalPorSetor_img: null,
+        print_mode: false,
+        totalChips: 0,
+        totalPorSetor: {}
 			}
 		},
 		mounted() {
@@ -170,26 +190,110 @@
 				}
 
 				option && myChart.setOption(option)
+
+        await this.gerarGraficoTotalPorSeto()
 			},
+      async gerarGraficoTotalPorSeto(){
+        let quantidade = Object.keys(this.totalPorSetor).map( o=> {
+          if(this.totalPorSetor[o] > 0)
+            return { value: this.totalPorSetor[o], name: o}})
+
+        let grafico = echarts.init(document.getElementById("totalPorSetor"))
+        this.graficoTotalPorSetor = grafico
+        let option = {
+          title: {
+            text: 'Quantidade por setor',
+            left: 'center',
+            // padding:5
+            top: -5
+
+          },
+          margin: 20,
+          tooltip: {
+            trigger: 'item'
+          },
+          legend: {
+            show: false
+          },
+
+          label: {
+            fontSize: 22,
+            alignTo: 'edge',
+            minMargin: 5,
+            edgeDistance: 10,
+            lineHeight: 15,
+            rich: {
+              time: {
+                fontSize: 10,
+                color: '#999'
+              }
+            }
+          },
+          labelLine: {
+            length: 15,
+            length2: 0,
+            maxSurfaceAngle: 80
+          }, itemStyle: {
+            borderColor: '#fff',
+            borderWidth: 1
+          },
+          series: [
+            {
+              name: "Quantidade por setor",
+              type: 'pie',
+              top: 15,
+              radius: ['30%', '70%'],
+              emphasis: {
+                label: {
+                  show: true,
+                  fontSize: 24,
+                  fontWeight: 'bold'
+                }
+              },
+              labelLine: {
+                show: true
+              },
+              data: quantidade
+            }
+          ]
+        }
+
+        option && grafico.setOption(option);
+
+
+      },
 			async buscarDados() {
 				let resp = await this.$axios.$get("/ti/chip/kpi")
 
 				if (!resp.falha) {
+          this.totalChips = resp.dados.totalChips
+          this.totalPorSetor = resp.dados.totalPorSetor
+
 					return resp.dados.porSetor
 				}
 			},
 			imprimir() {
         let chart_dom = this.myChart
+        let totalPorSetor = this.graficoTotalPorSetor
+        this.print_mode = true
 
         this.chart_img = chart_dom.getDataURL()
-        this.print_mode = true
         let widthOriginal = chart_dom.getWidth()
         let heightOriginal = chart_dom.getHeight()
 
-        chart_dom.resize({ width: 1800, height:1000})
+        chart_dom.resize({ width: 1800, height:700})
+
+        this.totalPorSetor_img = totalPorSetor.getDataURL()
+        let totalPorSetorwidthOriginal = totalPorSetor.getWidth()
+        let totalPorSetorheightOriginal = totalPorSetor.getHeight()
+
+        totalPorSetor.resize({ width: 1400, height: 400 })
+
+
         setTimeout(() => {
           window.print()
           chart_dom.resize({ width: widthOriginal, height: heightOriginal })
+          totalPorSetor.resize({ width: totalPorSetorwidthOriginal, height: totalPorSetorheightOriginal })
         }, 800)
 
 
