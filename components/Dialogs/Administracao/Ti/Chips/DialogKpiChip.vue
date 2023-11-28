@@ -217,6 +217,7 @@
           },
 
           label: {
+            formatter: '{c} - {b}',
             fontSize: 22,
             alignTo: 'edge',
             minMargin: 5,
@@ -259,7 +260,6 @@
         }
 
         option && grafico.setOption(option);
-
 
       },
 			async buscarDados() {
