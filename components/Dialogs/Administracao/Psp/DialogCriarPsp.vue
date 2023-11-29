@@ -189,14 +189,14 @@
 									<div
 										class="grid grid-cols-2 px-1"
 										v-if="funcionario.prazo">
-										<span
-											><strong>Data prevista de ida: </strong
-											>{{
+										<span>
+											<strong>Data prevista de ida: </strong>
+											{{
 												$dayjs(funcionario.Psp[0].data_volta)
 													.add(funcionario.prazo, "day")
 													.format("DD/MM/YYYY")
-											}}</span
-										>
+											}}
+										</span>
 										<span v-if="psp.data_ida">
 											<strong>Dias da última volta até a próxima ida: </strong>
 											{{ $dayjs(psp.data_ida).diff(funcionario.Psp[0].data_volta, "day") }}
@@ -328,7 +328,7 @@
 												</div>
 												<div class="flex justify-end">
 													<BotaoPadrao
-                            class="!z-10"
+														class="!z-10"
 														texto="Salvar"
 														cor="bg-green-400"
 														@clique="adicionarMeioTransporte()">
@@ -373,11 +373,16 @@
 													</div>
 													<div
 														class="flex flex-col !min-w-12 content-center items-center justify-center !h-full">
-                            <div>
-                              <BotaoPadrao icone @clique="removerMeioTransporte(index)">
-                                <img src="@/assets/icons/delete-b.svg" alt="" class="w-6 h-6">
-                              </BotaoPadrao>
-                            </div>
+														<div>
+															<BotaoPadrao
+																icone
+																@clique="removerMeioTransporte(index)">
+																<img
+																	src="@/assets/icons/delete-b.svg"
+																	alt=""
+																	class="w-6 h-6" />
+															</BotaoPadrao>
+														</div>
 														<div class="flex">
 															<BotaoPadrao
 																icone
@@ -704,6 +709,7 @@
 					{ label: "Baixada", valor: "Baixada" },
 					{ label: "Férias", valor: "Férias" },
 					{ label: "Mobilização familiar", valor: "Mobilização familiar" },
+					{ label: "Cotação", valor: "Cotação" },
 					{ label: "Outros", valor: "outros" },
 				],
 				opcoesMeioTransporte: [
@@ -782,7 +788,7 @@
 					let psp = resp.dados.psp
 					this.psp.funcionario_id = psp.funcionario_id
 					this.psp = Object.assign(this.psp, resp.dados.psp)
-          this.meiosTransporte = psp.PspTemMeioTransporte
+					this.meiosTransporte = psp.PspTemMeioTransporte
 					await this.buscarFuncionario()
 					this.carregando = false
 				}
@@ -918,7 +924,10 @@
 					}
 				}
 
-				if (this.meiosTransporte.length === 0) this.erros.push("meiosTransporte")
+				if (this.meiosTransporte.length === 0) {
+          if(this.psp.motivo !== 'Cotação')
+            this.erros.push("meiosTransporte")
+        }
 
 				for (let campo of camposObrigatorio) {
 					if (this.psp[`${campo}`] === null || this.psp[`${campo}`] === "") this.erros.push(campo)
@@ -966,7 +975,7 @@
 				let dependentes = []
 				let psp_id = this.psp_id
 				let etapa_psp_id = this.psp.etapa_psp_id
-        let meiosTransportes = this.meiosTransporte
+				let meiosTransportes = this.meiosTransporte
 
 				if (psp.motivo === "Mobilização familiar") {
 					if (this.dependentes.length <= 0) {
@@ -984,7 +993,7 @@
 						usuario_id,
 						dependentes,
 						psp_id,
-            meiosTransportes
+						meiosTransportes,
 					})
 
 					if (!resp.falha) {
@@ -1064,9 +1073,9 @@
 				this.meiosTransporte.splice(idxSecundario, 1, principal)
 			},
 
-      removerMeioTransporte(idx){
-        this.meiosTransporte.splice(idx, 1)
-      },
+			removerMeioTransporte(idx) {
+				this.meiosTransporte.splice(idx, 1)
+			},
 
 			validarFormularioMeioTransporte() {
 				this.errosMeioTransporte = []

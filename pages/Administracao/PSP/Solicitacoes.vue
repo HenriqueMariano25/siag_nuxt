@@ -98,8 +98,9 @@
 				</template>
         <template v-slot:[`body.PspTemMeioTransporte.meio_transporte`]="{ item }">
 					<span class="whitespace-nowrap">
-						{{ item.PspTemMeioTransporte.length > 0 ? item.PspTemMeioTransporte[0].meio_transporte : item.meio_transporte }}
+						{{ item.PspTemMeioTransporte && item.PspTemMeioTransporte.length > 0 ? item.PspTemMeioTransporte[0].meio_transporte : item.meio_transporte }}
 					</span>
+          <span>{{ item.PspTemMeioTransporte && item.PspTemMeioTransporte.length === 0 && item.motivo === 'Cotação' ? "Cotação" : ""}}</span>
         </template>
 				<template v-slot:[`body.historico`]="{ item }">
 					<div class="w-[120px]">
