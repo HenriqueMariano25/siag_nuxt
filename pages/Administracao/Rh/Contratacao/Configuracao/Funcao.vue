@@ -27,6 +27,10 @@
             </div>
           </BotaoPadrao>
         </template>
+        <template v-slot:[`body.cct`]="{ item }">
+          <span>{{ item.cct === true ? "Sim" : "" }}</span>
+          <span>{{ item.cct === false ? "Não" : "" }}</span>
+        </template>
       </TabelaPadrao>
     </div>
     <RodapePagina>
@@ -81,7 +85,7 @@ export default {
         { nome: "Nome", valor: "nome", filtro: true, ordenar: true },
         { nome: "Tipo Mão de Obra", valor: "tipo_mao_obra", filtro: true, ordenar: true },
         { nome: "Numero CBO", valor: "numero_cbo", filtro: true, ordenar: true },
-        { nome: "CCT", valor: "cct", filtro: true, ordenar: true },
+        { nome: "CCT", valor: "cct"},
         { nome: "Sálario", valor: "salario", filtro: true, ordenar: true },
       ],
       filtros: {},
