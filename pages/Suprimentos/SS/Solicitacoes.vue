@@ -353,7 +353,7 @@
 				mostrarAlerta: false,
 				textoAlerta: "",
 				dados: [],
-				filtros: {},
+				filtros: { '$situacao$': { '$or': ['pendente', 'no_prazo', 'atrasado']}},
 				itensPorPagina: 50,
 				pagina: 1,
 				totalItens: 0,
@@ -370,6 +370,13 @@
 				mostrarDialogDetalhesSS: false,
 				carregandoTabela: false,
 				usuario_ss_id: false,
+				opcoesSituacao: [
+					{ id: "atrasado", texto: "Atrasado" },
+					{ id: "cancelado", texto: "Cancelado" },
+					{ id: "finalizado", texto: "Finalizado" },
+					{ id: "no_prazo", texto: "No prazo" },
+					{ id: "pendente", texto: "Pendente" },
+				],
 			}
 		},
 		computed: {
@@ -419,7 +426,13 @@
 						filtro: true,
 						centralizar: true,
 					},
-					{ nome: "Situação", valor: "situacao", centralizar: true },
+					{
+						nome: "Situação",
+						valor: "situacao",
+						centralizar: true,
+						filtro: true,
+						opcoes: this.opcoesSituacao,
+					},
 					{ nome: "Natureza Operação", valor: "natureza_operacao", filtro: true },
 					{ nome: "Tipo Solicitação", valor: "tipo_solicitacao", filtro: true },
 					{ nome: "Prazo de Execução", valor: "prazo_execucao" },
@@ -515,6 +528,84 @@
 				let temPermissao = permEspeciais.some((i) => permissoes.includes(i))
 
 				if (!temPermissao) filtros["setor_id"] = this.$auth.user.setor_id
+
+        if(Object.keys(filtros).includes('$situacao$')){
+          let filtroSituacao = filtros['$situacao$']['$or']
+
+          if(filtroSituacao.includes('cancelado')){
+            if(Object.keys(filtros).includes('$EtapaSS.id$')){
+              filtros['$EtapaSS.id$']['$or'].push(5)
+            }else{
+              filtros['$EtapaSS.id$'] = { ['$or']: [5] }
+            }
+          }
+
+          if (filtroSituacao.includes('finalizado')) {
+            if (Object.keys(filtros).includes('$EtapaSS.id$')) {
+              filtros['$EtapaSS.id$']['$or'].push(6)
+            } else {
+              filtros['$EtapaSS.id$'] = { ['$or']: [6] }
+            }
+          }
+
+          if(filtroSituacao.includes('atrasado')){
+            let filtro = [
+              { 'natureza_operacao': 'urgente', 'data_aprov_site_manager': { '$lte': this.$dayjs().subtract(28, 'day').format("YYYY-MM-DD")}, 'etapa_ss_id': { '$not': [5,6]} },
+              { 'natureza_operacao': 'maquina parada', 'data_aprov_setor': { '$lte': this.$dayjs().subtract(14, 'day').format("YYYY-MM-DD")},
+                'etapa_ss_id': { '$not': [5,6] }},
+              { 'natureza_operacao': 'normal', 'data_aprov_setor': { '$lte': this.$dayjs().subtract(45, 'day').format("YYYY-MM-DD")},
+                'etapa_ss_id': { '$not': [5,6] }},
+            ]
+
+            if (Object.keys(filtros).includes('$or')) {
+              filtros['$or'].push(...filtro)
+            } else {
+              filtros['$or'] = filtro
+            }
+          }
+
+          if (filtroSituacao.includes('pendente')) {
+            let filtro = [
+              { 'aprovacao_controle': null, 'etapa_ss_id': { '$not': [5, 6] } },
+              { 'aprovacao_gestor_area': null, 'etapa_ss_id': { '$not': [5, 6] } },
+              { 'natureza_operacao': 'urgente', 'aprovacao_site_manager': null, 'etapa_ss_id': { '$not': [5, 6] }},
+            ]
+
+            if (Object.keys(filtros).includes('$or')) {
+              filtros['$or'].push(...filtro)
+            } else {
+              filtros['$or'] = filtro
+            }
+          }
+
+          if(filtroSituacao.includes('no_prazo')){
+            let filtro = [
+              {
+                'natureza_operacao': 'urgente',
+                'data_aprov_site_manager': { '$gte': this.$dayjs().subtract(28, 'day').format("YYYY-MM-DD") },
+                'etapa_ss_id': { '$not': [5, 6] }
+              },
+              {
+                'natureza_operacao': 'maquina parada',
+                'data_aprov_setor': { '$gte': this.$dayjs().subtract(14, 'day').format("YYYY-MM-DD") },
+                'etapa_ss_id': { '$not': [5, 6] }
+              },
+              {
+                'natureza_operacao': 'normal',
+                'data_aprov_setor': { '$gte': this.$dayjs().subtract(45, 'day').format("YYYY-MM-DD") },
+                'etapa_ss_id': { '$not': [5, 6] }
+              },
+            ]
+
+            if (Object.keys(filtros).includes('$or')) {
+              filtros['$or'].push(...filtro)
+            }else{
+              filtros['$or'] = filtro
+            }
+          }
+
+          delete filtros['$situacao$']
+        }
 
 				let resp = await this.$axios.$get("/suprimentos/ss/buscar_todas", {
 					params: {
@@ -710,7 +801,7 @@
 							? this.$dayjs(item.data_aprov_site_manager).format("DD/MM/YYYY")
 							: "",
 					)
-          temp.push(dataAnaliseDemanda ? dataAnaliseDemanda : "")
+					temp.push(dataAnaliseDemanda ? dataAnaliseDemanda : "")
 					temp.push(
 						item.FornecedorSS.length > 0 ? item.FornecedorSS.map((o) => o.nome).join("; ") : "",
 					)
@@ -740,7 +831,6 @@
 					return `${this.$dayjs(item.data_aprov_setor).add(14, "day")}`
 				else if (item.natureza_operacao === "normal" && item.data_aprov_setor)
 					return `${this.$dayjs(item.data_aprov_setor).add(45, "day")}`
-
 				return ""
 			},
 		},
