@@ -382,7 +382,7 @@
 				mostrarDialogCriarCard: false,
 				dados: [],
 				filtros: [],
-				itensPorPagina: 50,
+				itensPorPagina: 100,
 				pagina: 1,
 				card_id: null,
 				totalItens: 0,
@@ -582,6 +582,15 @@
 				let usuario_id = this.$auth.user.id
 				let filtros = [...this.filtros]
 
+        let etapa_id = this.etapa_id
+        if (etapa_id !== 0) {
+          filtros.push(` AND etapa.id = ${etapa_id}`)
+        } else {
+          if (filtros.length === 0) {
+            filtros.push(" AND Etapa.id NOT IN ('21','24','25')")
+          }
+        }
+
 				let confidencial
 				let listaPermissoes = [
 					"aprovar_card_site_manager",
@@ -598,11 +607,6 @@
 					filtros.push(
 						` AND (card.confidencial IS NULL OR card.confidencial = false OR ( card.confidencial = true AND usuario.id = ${usuario_id}))`,
 					)
-				}
-
-				let etapa_id = this.etapa_id
-				if (etapa_id !== 0) {
-					filtros.push(` AND etapa.id = ${etapa_id}`)
 				}
 
 				let filtrosFinais
