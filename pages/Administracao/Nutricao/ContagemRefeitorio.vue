@@ -4,9 +4,16 @@
       <div class="flex w-full bg-primaria-700 px-2 py-1 rounded-t uppercase">
         <span class="text-4xl text-white">{{ nomeRefeicao }}</span>
       </div>
-      <div class="w-full py-12 bg-gray-900/80 text-center flex flex-col justify-center items-center gap-2" v-if="carregando">
+      <div class="w-full py-12 bg-gray-900/80 text-center flex flex-col justify-center items-center gap-2 text-white" v-if="carregando">
+        <template v-if="!erro">
+
         <div class="square-circle-5"></div>
-        <span class="text-4xl text-white font-bold">BUSCANDO DADOS, POR FAVOR AGUARDE!</span>
+        <span class="text-4xl font-bold">BUSCANDO DADOS, POR FAVOR AGUARDE!</span>
+        <span class="text-md">A lentidão se dá pelo grande volume de dados nas catracas e não por conta do SIAG!</span>
+        </template>
+        <template v-if="erro">
+          <span class="text-3xl font-bold text-red-400">ERRO NA BUSCA DOS DADOS, ATUALIZE PARA BUSCAR NOVAMENTE!</span>
+        </template>
       </div>
       <div class="flex flex-col gap-2 divide-y divide-gray-500 bg-white justify-center text-center" v-if="!carregando">
         <div class="flex flex-col text-6xl py-4">
@@ -22,7 +29,7 @@
         <BotaoPadrao texto="voltar" @clique="$router.push('/administracao/nutricao')">
           <img src="@/assets/icons/back-b.svg" alt="" class="w-7 h-7">
         </BotaoPadrao>
-        <BotaoPadrao texto="atualizar" :disabled="carregando" @clique="buscarContagem()">
+        <BotaoPadrao texto="atualizar" :disabled="carregando && !erro" @clique="buscarContagem()">
           <img src="@/assets/icons/rotate-b.svg" alt="" class="w-7 h-7">
         </BotaoPadrao>
       </div>
@@ -41,7 +48,8 @@ export default {
       horarioInicio: null,
       horarioFim: null,
       passagensEntrada: 0,
-      passagensSaida: 0
+      passagensSaida: 0,
+      erro: false,
     };
   },
   computed: {
@@ -75,17 +83,21 @@ export default {
   methods: {
     async buscarContagem() {
       this.carregando = true
+      this.erro = false
       let horarioInicio = this.horarioInicio
       let horarioFim = this.horarioFim
 
-      let resp = await this.$axios.$get("/nutricao/contagem_refeitorio", { params: { horarioInicio, horarioFim }})
+      try {
+          let resp = await this.$axios.$get("/nutricao/contagem_refeitorio", { params: { horarioInicio, horarioFim }})
 
-
-      console.log(resp);
-      if(resp){
-        this.passagensEntrada = resp.passagensEntrada
-        this.passagensSaida = resp.passagensSaida
-        this.carregando = false
+        if(resp){
+          this.passagensEntrada = resp.passagensEntrada
+          this.passagensSaida = resp.passagensSaida
+          this.carregando = false
+        }
+        this.erro = false
+      }catch (e) {
+        this.erro = true
       }
     }
   }
