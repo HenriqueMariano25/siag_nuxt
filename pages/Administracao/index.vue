@@ -31,6 +31,10 @@
                        v-if="$auth.user.permissoes.includes('administracao_psp')">
         <img src="@/assets/icons/travel-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
+      <ButtonNavegacao titulo="Nutrição" cor="bg-[#264653]" link="administracao/nutricao"
+                       v-if="$auth.user.permissoes.includes('administrativo_refeitorio')">
+        <img src="@/assets/icons/fork-and-knife-w-com.svg" alt="" class="w-8 h-8">
+      </ButtonNavegacao>
     </div>
   </div>
 </template>
