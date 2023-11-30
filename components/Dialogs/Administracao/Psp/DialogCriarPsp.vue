@@ -705,13 +705,6 @@
 				},
 				funcionarios: [],
 				turnos: [],
-				opcoesMotivo: [
-					{ label: "Baixada", valor: "Baixada" },
-					{ label: "Férias", valor: "Férias" },
-					{ label: "Mobilização familiar", valor: "Mobilização familiar" },
-					{ label: "Cotação", valor: "Cotação" },
-					{ label: "Outros", valor: "outros" },
-				],
 				opcoesMeioTransporte: [
 					{ nome: "Rodoviário", id: "Rodoviário" },
 					{ nome: "Aérea", id: "Aérea" },
@@ -766,6 +759,21 @@
 
 				return false
 			},
+      opcoesMotivo(){
+        let motivos = [
+          { label: "Baixada", valor: "Baixada" },
+          { label: "Férias", valor: "Férias" },
+          { label: "Mobilização familiar", valor: "Mobilização familiar" },
+          { label: "Cotação", valor: "Cotação" },
+          { label: "Outros", valor: "outros" },
+        ]
+
+        if(this.$auth.user.permissoes.includes('aprovar_psp_rh') || this.$auth.user.permissoes.includes('gerenciamento_psp')){
+          motivos.push({ label: "Desmobilização", valor: "Desmobilização" },)
+        }
+
+        return motivos
+      }
 		},
 		async created() {
 			await this.buscarFuncionarios()
