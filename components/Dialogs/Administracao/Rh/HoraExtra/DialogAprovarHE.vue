@@ -60,6 +60,7 @@
 								</div>
 								<div>
 									<TabelaPadrao
+                    ref="tabela"
 										id="aprovacaoHe"
 										:cabecalho="cabecalho"
 										:dados="dadosFiltradoGestor"
@@ -621,7 +622,6 @@
 			},
 
 			async aprovado($event) {
-        this.limparSelecionados = true
 				let { aprovacao, agendamentos } = $event
 
 				this.selecionadosGestor = []
@@ -640,7 +640,7 @@
 					}
 				}
 
-				this.limparSelecionados = false
+        this.$refs.tabela.limparSelecionados()
 			},
 
 			async gerarExcelGestor() {

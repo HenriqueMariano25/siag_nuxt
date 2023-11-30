@@ -975,6 +975,10 @@ export default {
       if (this.dados.length > 0) {
         this.dadosPrMostrar = [...this.dados].splice(0, this.indexFim)
       }
+    },
+
+    limparSelecionados(){
+      this.selecionados = []
     }
   },
   watch: {
