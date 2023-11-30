@@ -776,14 +776,18 @@
     width: 300px;
   }
 
+  #main,
+  html,
+  body {
+    width: 100%;
+  }
   @page {
-    size: A4;
   }
 
 	@media print {
 
     @page {
-      size: A4;
+      margin: 5mm 5mm 5mm 5mm !important;
     }
 		.impressao {
 			padding-right: 10px;

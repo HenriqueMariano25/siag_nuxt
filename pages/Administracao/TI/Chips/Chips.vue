@@ -257,15 +257,8 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 @page {
-  size: A4;
-}
-
-@media print {
-
-  @page {
-    size: A4;
-  }
+  size: auto;
 }
 </style>

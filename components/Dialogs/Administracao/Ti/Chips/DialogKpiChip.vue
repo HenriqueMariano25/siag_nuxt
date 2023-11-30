@@ -9,7 +9,7 @@
 					<div
 						id="imprimir"
 						class="w-full">
-						<div class="bg-primaria-700 p-1 text-white flex justify-between items-center hidden print:flex w-[1800px]">
+						<div class="bg-primaria-700 p-1 text-white flex justify-between items-center hidden print:flex print:w-[1600px] w-[1800px]">
 							<img
 								src="@/assets/img/logoagcnovo.png"
 								alt=""
@@ -281,7 +281,7 @@
         let widthOriginal = chart_dom.getWidth()
         let heightOriginal = chart_dom.getHeight()
 
-        chart_dom.resize({ width: 1800, height:700})
+        chart_dom.resize({ width: 1600, height:610})
 
         this.totalPorSetor_img = totalPorSetor.getDataURL()
         let totalPorSetorwidthOriginal = totalPorSetor.getWidth()
@@ -308,9 +308,11 @@ html,
 body {
   width: 100%;
 }
+
+@page {
+}
 	@media print {
 		@page {
-      size:  35.7cm 25cm !important;
       margin: 5mm 5mm 5mm 5mm !important;
 		}
 
