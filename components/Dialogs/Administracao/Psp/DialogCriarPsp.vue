@@ -490,7 +490,6 @@
 													:invalido="errosDependentes.includes('rg')"
 													placeholder="Ex: 12.345.678-9"
 													obrigatorio
-													mask="##.###.###-#"
 													v-model="dependente.rg" />
 												<AppFormInput
 													id="dataNascimentoDepente"
