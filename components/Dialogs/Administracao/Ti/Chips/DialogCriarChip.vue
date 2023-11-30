@@ -295,7 +295,7 @@
 								<div class="flex flex-col w-full text-start mt-2">
 									<span class="text-xl font-bold ml-2">Observações do Funcionário</span>
 									<div class="border border-black flex flex-col px-2 min-h-[40px]">
-										<span class="font-bold">{{ chipLocal.observacao_funcionario }}</span>
+										<span class="font-bold">{{ funcionarioLocal.observacao_funcionario }}</span>
 									</div>
 								</div>
                 <div class="w-full text-start mt-4 text-sm">
