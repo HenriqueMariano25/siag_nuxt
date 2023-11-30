@@ -15,16 +15,32 @@
           <span class="text-3xl font-bold text-red-400">ERRO NA BUSCA DOS DADOS, ATUALIZE PARA BUSCAR NOVAMENTE!</span>
         </template>
       </div>
-      <div class="flex flex-col gap-2 divide-y divide-gray-500 bg-white justify-center text-center" v-if="!carregando">
-        <div class="flex flex-col text-6xl py-4">
-          <span>ENTRADAS</span>
-          <span>{{ passagensEntrada }}</span>
+      <div class="bg-white flex w-full divide-x divide-gray-700" v-if="!carregando">
+        <div class="p-1 flex flex-col justify-center grow w-full">
+          <span class="text-2xl text-center bg-primaria-500 text-white py-1">REFEITÓRIO 1</span>
+          <div class="flex flex-col gap-2 divide-y divide-gray-500  justify-center text-center"
+               >
+            <div class="flex flex-col text-6xl py-4">
+              <span>ENTRADAS</span>
+              <span>{{ passagensEntrada }}</span>
+            </div>
+            <div class="flex flex-col text-6xl py-4">
+              <span>SAÍDAS</span>
+              <span>{{ passagensSaida }}</span>
+            </div>
+          </div>
         </div>
-        <div class="flex flex-col text-6xl py-4">
-          <span>SAÍDAS</span>
-          <span>{{ passagensSaida }}</span>
+        <div class="p-1 flex flex-col justify-start grow w-full">
+          <span class="text-2xl text-center bg-primaria-500 text-white py-1">REFEITÓRIO 2</span>
+          <div class="flex flex-col gap-2 divide-y divide-gray-500  justify-center text-center">
+            <div class="flex flex-col text-6xl py-4">
+              <span>ENTRADAS</span>
+              <span>{{ passagensRef2 }}</span>
+            </div>
+          </div>
         </div>
       </div>
+
       <div class="flex w-full bg-primaria-700 px-2 py-1 rounded-b uppercase justify-between">
         <BotaoPadrao texto="voltar" @clique="$router.push('/administracao/nutricao')">
           <img src="@/assets/icons/back-b.svg" alt="" class="w-7 h-7">
@@ -44,11 +60,12 @@ export default {
   components: { BotaoPadrao },
   data() {
     return {
-      carregando: true,
+      carregando: false,
       horarioInicio: null,
       horarioFim: null,
       passagensEntrada: 0,
       passagensSaida: 0,
+      passagensRef2: 0,
       erro: false,
     };
   },
@@ -93,6 +110,7 @@ export default {
         if(resp){
           this.passagensEntrada = resp.passagensEntrada
           this.passagensSaida = resp.passagensSaida
+          this.passagensRef2 = resp.passagensRef2
           this.carregando = false
         }
         this.erro = false
