@@ -65,20 +65,13 @@
 
 <script>
 	import ButtonNavegacao from "~/components/Shared/ButtonNavegacao.vue"
-
 	export default {
 		name: "IndexPage",
 		components: { ButtonNavegacao },
 		middleware: "buscarFuncionarios",
-		data() {
-			return {
-				// funcionarios: []
-			}
-		},
-		async fetch() {
-			this.funcionarios = this.$store.state.funcionarios
-		},
-		methods: {},
-		watch: {},
 	}
 </script>
+
+<style scoped>
+
+</style>

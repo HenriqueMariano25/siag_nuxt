@@ -838,7 +838,7 @@
 					}
 				} else if (valor === "planejamento") {
 					if (this.funcionarios.length === 1) {
-						this.planejamento.equipe_planejamento_id = this.funcionarios[0].EquipePlanejamento.id
+						this.planejamento.equipe_planejamento_id = this.funcionarios[0] && this.funcionarios[0].EquipePlanejamento ? this.funcionarios[0].EquipePlanejamento.id : null
 						this.planejamento.permanencia = this.funcionarios[0].permanencia
 					}
 				} else if (valor === "rh") {

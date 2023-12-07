@@ -234,10 +234,11 @@ export const buscarFuncionarios = {
   methods: {
     async buscarFuncionarios(buscarAgora) {
       let ultimaBusca = this.$store.state.funcionarios.ultimaBusca
+      let buscarTransporte = this.$store.state.funcionarios.buscarTransporte
       let diferencaEmHoras = 0
       if (ultimaBusca) diferencaEmHoras = this.$dayjs().diff(this.$dayjs(ultimaBusca), "hour")
 
-      if (buscarAgora || ultimaBusca === null || diferencaEmHoras > 0) {
+      if (buscarAgora || ultimaBusca === null || diferencaEmHoras > 0 || buscarTransporte) {
         let resp = await this.$axios.$get("/efetivo/funcionarios/busca_simplicada")
 
         if (!resp.falha) {
@@ -248,6 +249,7 @@ export const buscarFuncionarios = {
           this.$store.commit("funcionarios/DEFINIR_FUNCIONARIOS", {
             funcionarios: funcionariosBuscados,
             ultimaBusca: agora,
+            buscarTransporte: false
           })
           return funcionariosBuscados
         }

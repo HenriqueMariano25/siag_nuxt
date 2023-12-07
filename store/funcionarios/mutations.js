@@ -1,7 +1,8 @@
 export default {
-  DEFINIR_FUNCIONARIOS(state, { funcionarios, ultimaBusca }) {
+  DEFINIR_FUNCIONARIOS(state, { funcionarios, ultimaBusca, buscarTranporte }) {
     state.funcionarios = funcionarios
     state.ultimaBusca = ultimaBusca
+    state.buscarTranporte = buscarTranporte
   },
 
   DEFINIR_ESTA_BUSCANDO(state, bool){
