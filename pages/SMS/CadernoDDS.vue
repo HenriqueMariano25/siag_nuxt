@@ -69,7 +69,7 @@
 						:cabecalho="cabecalho"
 						:dados="dados"
 						:temRodape="false"
-						altura="calc(100vh - 293px)"
+						altura="calc(100vh - 311px)"
 						@atualizar="buscarFuncionariosResponsavel()"
 						:temDetalhes="false">
 					</TabelaPadrao>
@@ -221,4 +221,9 @@
 	}
 </script>
 
-<style scoped></style>
+<style scoped>
+@page {
+  size: auto !important;
+  //margin: 5mm 5mm 5mm 5mm !important;
+}
+</style>
