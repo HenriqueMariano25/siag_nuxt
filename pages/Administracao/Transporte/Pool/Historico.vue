@@ -81,7 +81,11 @@
                 alt=""
                 class="w-7 h-7" />
             </BotaoPadrao>
+
           </div>
+          <BotaoPadrao texto="Excel" @clique="gerarExcel()">
+            <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
+          </BotaoPadrao>
         </div>
       </template>
     </RodapePagina>
@@ -93,6 +97,7 @@ import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
 import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
 import RodapePagina from "~/components/Shared/RodapePagina.vue";
+import gerarExcel from "~/functions/gerarExcel";
 
 export default {
   components: { RodapePagina, BotaoPadrao, TabelaPadrao, CabecalhoPagina },
@@ -125,12 +130,61 @@ export default {
   methods: {
     async buscarPools() {
       let resp = await this.$axios.$get("/pool/buscarTodos")
-
-      console.log(resp);
       if(!resp.falha){
         this.dados = resp.dados.pools
       }
+    },
+    async gerarExcel(){
+      let dados = this.dados
+      let cabecalho = [
+        "Status",
+        "CGA",
+        "Funcionário",
+        "Setor",
+        "Sub Setor",
+        "Atendimento",
+        "Motivo",
+        "Data inicial",
+        "Data final",
+        "Km inicial",
+        "Km final",
+      ]
+      let nomeArquivo
 
+      nomeArquivo = "historico_pool"
+
+      let itens = []
+      for (let item of dados) {
+        let temp = []
+        temp.push(item.StatusPool ? item.StatusPool.descricao : "")
+        temp.push(item.Carro ? item.Carro.cga : "")
+        temp.push(item.Funcionario ? item.Funcionario.nome : "")
+        temp.push(item.Setor ? item.Setor.nome : "")
+        temp.push(
+          item.SubSetorPool
+            ? item.SubSetorPool.sub_setor
+            : "",
+        )
+        temp.push(
+          item.AtendimentoPool
+            ? item.AtendimentoPool.local
+            : "",
+        )
+        temp.push(
+          item.MotivoPool ? item.MotivoPool.motivo : "",
+        )
+        temp.push(item.data_inicial ?
+         `${this.$dayjs(item.data_inicial).format("DD/MM/YYYY")} ${item.hora_inicial}` : ""
+        )
+        temp.push(item.data_final ?
+          `${ this.$dayjs(item.data_final).format("DD/MM/YYYY")} ${item.data_final}` : ""
+        )
+        temp.push(item.km_inicial ? item.km_inicial : "")
+        temp.push(item.km_final ? item.km_final : "")
+        itens.push(temp)
+      }
+
+      gerarExcel(cabecalho, itens, nomeArquivo)
     }
   }
 };
