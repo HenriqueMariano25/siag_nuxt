@@ -2,6 +2,7 @@
   <div class="flex items-center gap-2">
     <label class="switch" >
       <input type="checkbox" v-model="model">
+
       <span class="slider"></span>
     </label>
     <span>{{ label }}</span>
@@ -15,6 +16,9 @@ export default {
     label: {
       type: String,
       default: null
+    },
+    value:{
+      type: [Boolean]
     }
   },
   computed: {

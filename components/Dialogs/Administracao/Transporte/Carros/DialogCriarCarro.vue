@@ -46,6 +46,7 @@
             obrigatorio
             :invalido="erros.includes('status_carro_id')"
             v-model="carroLocal.status_carro_id" />
+          <AppFormSwitch label="Ocultar carro no Pool" v-model="carroLocal.ocultar_pool"/>
 				</div>
 			</template>
       <template v-slot:rodape-btn-direito>
@@ -63,10 +64,11 @@
 	import AppFormSelectCompleto from "~/components/Ui/Form/AppFormSelectCompleto.vue"
 	import { buscarSetores } from "~/mixins/buscarInformacoes"
   import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
+  import AppFormSwitch from "~/components/Ui/AppFormSwitch.vue";
 
 	export default {
 		mixins: [buscarSetores],
-		components: { BotaoPadrao, BaseDialog, AppFormInput, AppFormSelectCompleto },
+		components: { AppFormSwitch, BotaoPadrao, BaseDialog, AppFormInput, AppFormSelectCompleto },
 		props: {
 			carro: {
 				type: [Object],
@@ -80,6 +82,7 @@
 					cga: null,
 					setor_id: null,
           status_carro_id: 1,
+          ocultar_pool: false
 				},
 				setores: [],
         statusCarro: [],
@@ -147,7 +150,7 @@
 
         if(this.erros.length === 0){
           let {
-            marca_modelo, placa, cga, setor_id, status_carro_id
+            marca_modelo, placa, cga, setor_id, status_carro_id, ocultar_pool
           } = this.carroLocal
 
           try {
@@ -156,7 +159,8 @@
               placa,
               cga,
               setor_id,
-              status_carro_id
+              status_carro_id,
+              ocultar_pool
             })
 
             if (!resp.falha) {
@@ -172,7 +176,7 @@
       },
       async editarCarro(){
         let {
-          marca_modelo, placa, cga, setor_id, status_carro_id, id
+          marca_modelo, placa, cga, setor_id, status_carro_id, id, ocultar_pool
         } = this.carroLocal
 
         let resp = await this.$axios.$post("/transporte/carro/editar", {
@@ -181,7 +185,7 @@
           placa,
           cga,
           setor_id,
-          status_carro_id
+          status_carro_id, ocultar_pool
         })
 
         if (!resp.falha) {

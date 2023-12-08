@@ -79,6 +79,12 @@
 						{{ item.StatusCarro.descricao }}
 					</span>
 				</template>
+        <template v-slot:[`body.ocultar_pool`]="{ item }">
+					<span
+						class="whitespace-nowrap">
+						{{ item.ocultar_pool ? "Sim":"Não" }}
+					</span>
+				</template>
 			</TabelaPadrao>
 		</div>
 		<RodapePagina>
@@ -166,6 +172,7 @@
 					{ nome: "Marca/Modelo", valor: "marca_modelo", filtro: true, ordenar: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true, ordenar: true },
 					{ nome: "Status", valor: "StatusCarro.descricao", filtro: true, ordenar: true },
+					{ nome: "Ocuto Pool", valor: "ocultar_pool" },
 				],
 				filtros: {},
 				ordem: null,
