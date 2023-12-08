@@ -1826,7 +1826,7 @@
 			},
 
 			restanteCamposSegunda() {
-				return 30 - this.funcionarios.slice(30).length
+				return 30 - this.funcionarios.slice(30, 60).length
 			},
 
 			repeticaoValidada() {
@@ -1842,7 +1842,7 @@
 			},
 		},
 		created() {
-			// this.imprimir()
+			this.imprimir()
 		},
 		methods: {
 			cancelar() {
