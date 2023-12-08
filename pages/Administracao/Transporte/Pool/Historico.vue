@@ -18,7 +18,7 @@
         <template v-slot:[`body.Carro.cga`]="{ item }">
 					<span
             class="whitespace-nowrap">
-						{{ item.Carro.cga }}
+						{{ item.Carro ? item.Carro.cga : "" }}
 					</span>
         </template>
         <template v-slot:[`body.Funcionario.nome`]="{ item }">
