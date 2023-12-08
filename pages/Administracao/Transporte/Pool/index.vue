@@ -104,16 +104,15 @@
         pool_id: null,
 			}
 		},
-		mounted() {
-			this.buscarCarros()
+		async mounted() {
+			await this.buscarCarros()
+      await this.ordenarCarros()
 		},
 		methods: {
 			async buscarCarros() {
 				let resp = await this.$axios.$get("/pool/todosCarros")
 
 				if (!resp.falha) {
-					console.log(resp.dados.carros)
-
 					this.carros = resp.dados.carros
 				}
 			},
@@ -144,10 +143,10 @@
 				this.mostrarDialogAbrirPool = false
 				this.textoAlerta = "Pool iniciado com sucesso!"
 				this.mostrarAlerta = true
+        this.ordenarCarros()
 			},
 
       async poolFinalizado({ pool}) {
-        console.log(pool);
 
         let idx = this.carros.findIndex((o) => o.id === pool.carro_id)
 
@@ -158,7 +157,24 @@
         this.mostrarDialogFinalizarPool = false
         this.textoAlerta = "Pool finalizado com sucesso!"
         this.mostrarAlerta = true
+        this.ordenarCarros()
       },
+      ordenarCarros(){
+        let carros= this.carros
+
+        let carrosPool = carros.filter(o => o.Pool.length > 0)
+        let carrosSemPool = carros.filter(o => o.Pool.length === 0)
+
+        let carrosPoolOrdenados = carrosPool.sort((a, b) => {
+          return parseInt(a.cga) - parseInt(b.cga)
+        })
+
+        let carrosSemPoolOrdenados = carrosSemPool.sort((a, b) => {
+          return parseInt(a.cga) - parseInt(b.cga)
+        })
+
+        this.carros = [...carrosPoolOrdenados, ...carrosSemPoolOrdenados]
+      }
 		},
 	}
 </script>
