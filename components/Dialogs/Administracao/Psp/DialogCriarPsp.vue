@@ -588,21 +588,6 @@
 						<div class="flex flex-col gap-2 w-full border border-gray-500">
 							<span class="px-1 bg-blue-300 text-xl">Etapas de aprovação</span>
 							<div class="flex items-center gap-4 self-center pb-1">
-								<div
-									class="flex flex-col justify-center items-center"
-									v-if="menor35dias">
-									<div class="bg-blue-400 w-7 h-7 rounded-full"></div>
-									<span><strong>Gerente GAF</strong></span>
-									<span>Validação do Prazo</span>
-								</div>
-								<div
-									class=""
-									v-if="menor35dias">
-									<img
-										src="@/assets/icons/arrow-right-blue.svg"
-										alt=""
-										class="w-10 h-10" />
-								</div>
 								<div class="flex flex-col justify-center items-center">
 									<div class="bg-blue-400 w-7 h-7 rounded-full"></div>
 									<span><strong>RH</strong></span>
@@ -630,6 +615,21 @@
 									<span><strong>Gestor da Área</strong></span>
 									<span>{{ funcionario.Gestor ? funcionario.Gestor.nome : "" }}</span>
 								</div>
+                <div
+                  class="flex flex-col justify-center items-center"
+                  v-if="menor35dias">
+                  <div class="bg-blue-400 w-7 h-7 rounded-full"></div>
+                  <span><strong>Gerente GAF</strong></span>
+                  <span>Validação do Prazo</span>
+                </div>
+                <div
+                  class=""
+                  v-if="menor35dias">
+                  <img
+                    src="@/assets/icons/arrow-right-blue.svg"
+                    alt=""
+                    class="w-10 h-10" />
+                </div>
 							</div>
 						</div>
 					</div>

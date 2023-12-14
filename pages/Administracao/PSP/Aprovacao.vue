@@ -221,9 +221,7 @@
 
 				let permissoes = this.$auth.user.permissoes.filter((o) => o.includes("aprovar_psp_"))
 
-				if (permissoes.includes("aprovar_psp_gaf")) {
-					etapas.push({ nome: "GAF", valor: "1" })
-				}
+
 
 				if (permissoes.includes("aprovar_psp_rh")) {
 					etapas.push({ nome: "RH", valor: "2" })
@@ -236,6 +234,10 @@
 				if (permissoes.includes("aprovar_psp_gerente")) {
 					etapas.push({ nome: "Gerente Área", valor: "4" })
 				}
+
+        if (permissoes.includes("aprovar_psp_gaf")) {
+          etapas.push({ nome: "GAF", valor: "1" })
+        }
 
 				return etapas
 			},
