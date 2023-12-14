@@ -146,8 +146,8 @@ export default {
         temp.push(item.nome ? item.nome : "")
         temp.push(item.cargo ? item.cargo : "")
         temp.push(item.setor ? item.setor : "")
-        temp.push(item.entrada ? this.$dayjs(item.entrada).format("DD/MM/YYYY HH:MM") : "")
-        temp.push(item.saida ? this.$dayjs(item.saida).format("DD/MM/YYYY HH:MM") : "")
+        temp.push(item.entrada ? this.$dayjs(item.entrada).utc().format("DD/MM/YYYY HH:mm") : "")
+        temp.push(item.saida ? this.$dayjs(item.saida).utc().format("DD/MM/YYYY HH:mm") : "")
         temp.push(item.permanencia ? item.permanencia : "")
         itens.push(temp)
       }
