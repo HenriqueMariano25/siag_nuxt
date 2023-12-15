@@ -200,7 +200,7 @@
                     :value="valorFiltro(cab.valor)"
                     placeholder="Pressione ENTER para buscar"
                     @keyup.enter.prevent.stop="
-												adicionarFiltro(cab.valor, $event, cab.colunaTabela, cab.tipoFiltro)
+												adicionarFiltro(cab.valor, $event, cab, cab.tipoFiltro)
 											" />
                 </div>
                 <div class="w-full mt-1">
@@ -647,13 +647,16 @@ export default {
       this.$emit("dblclick", item)
     },
 
-    adicionarFiltro(item, event, colunaTabela, tipoFiltro) {
+    adicionarFiltro(item, event, coluna, tipoFiltro) {
       let valor = event.target.value
+
       if (!this.filtrosAtivos.includes(item) && valor !== null && valor !== "") {
         this.filtrosAtivos.push(item)
       }
 
+      let colunaTabela = coluna.colunaTabela ? coluna.colunaTabela : coluna.valor
       if (this.dadosSql) {
+
         if (this.filtros.some((o) => o.includes(`LOWER(${colunaTabela})`))) {
           let idx = this.filtros.findIndex((o) => o.includes(`LOWER(${item})`))
 
