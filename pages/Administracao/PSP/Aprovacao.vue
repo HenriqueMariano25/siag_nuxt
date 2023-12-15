@@ -96,8 +96,9 @@
         </template>
         <template v-slot:[`body.Psp.meio_transporte`]="{ item }">
 					<span class="whitespace-nowrap">
-						{{ item['Psp.meio_transporte'] ? item['Psp.meio_transporte'] : "" }}
+						{{ item['PspTemMeioTransporte.meio_transporte'] ? item['PspTemMeioTransporte.meio_transporte'] : item["Psp.meio_transporte"] }}
 					</span>
+          <span>{{ item['PspTemMeioTransporte.meio_transporte'] && item['PspTemMeioTransporte.meio_transporte'] === 'Cotação' ? "Cotação" : ""}}</span>
         </template>
         <template v-slot:[`body.CentroCustoPEP.descricao`]="{ item }">
 					<span class="whitespace-nowrap">
