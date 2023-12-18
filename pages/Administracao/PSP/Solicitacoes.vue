@@ -39,17 +39,19 @@
 				:limparSelecionar="true"
 				:carregando="carregandoTabela">
 				<template v-slot:[`body.acao`]="{ item }">
-          <div class="min-w-[30px]">
-            <BotaoPadrao
-              icone
-              @clique="editarPsp(item)"
-              v-if="item.criado_por.id === $auth.user.id || podeEditarPsp">
-              <img
-                src="@/assets/icons/edit-b.svg"
-                alt=""
-                class="w-6 h-6 " />
-            </BotaoPadrao>
-          </div>
+					<div class="min-w-[30px]">
+						<BotaoPadrao
+							icone
+							@clique="editarPsp(item)"
+							v-if="item.criado_por.id === $auth.user.id || podeEditarPsp">
+							<div class="w-6 h-6">
+								<img
+									src="@/assets/icons/edit-b.svg"
+									alt=""
+									class="w-6 h-6" />
+							</div>
+						</BotaoPadrao>
+					</div>
 				</template>
 				<template v-slot:[`body.Psp.id`]="{ item }">
 					<span class="whitespace-nowrap">
@@ -96,12 +98,22 @@
 						{{ item.CentroCustoPEP ? item.CentroCustoPEP.descricao : "" }}
 					</span>
 				</template>
-        <template v-slot:[`body.PspTemMeioTransporte.meio_transporte`]="{ item }">
+				<template v-slot:[`body.PspTemMeioTransporte.meio_transporte`]="{ item }">
 					<span class="whitespace-nowrap">
-						{{ item.PspTemMeioTransporte && item.PspTemMeioTransporte.length > 0 ? item.PspTemMeioTransporte[0].meio_transporte : item.meio_transporte }}
+						{{
+							item.PspTemMeioTransporte && item.PspTemMeioTransporte.length > 0
+								? item.PspTemMeioTransporte[0].meio_transporte
+								: item.meio_transporte
+						}}
 					</span>
-          <span>{{ item.PspTemMeioTransporte && item.PspTemMeioTransporte.length === 0 && item.motivo === 'Cotação' ? "Cotação" : ""}}</span>
-        </template>
+					<span>{{
+						item.PspTemMeioTransporte &&
+						item.PspTemMeioTransporte.length === 0 &&
+						item.motivo === "Cotação"
+							? "Cotação"
+							: ""
+					}}</span>
+				</template>
 				<template v-slot:[`body.historico`]="{ item }">
 					<div class="w-[120px]">
 						<BotaoPadrao
@@ -124,30 +136,35 @@
 			<template v-slot>
 				<div class="flex items-center w-full">
 					<div class="flex w-full gap-2 justify-between">
-            <div class="flex gap-2">
-              <BotaoPadrao texto="Gerar Excel" @clique="gerarExcel()">
-                <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
-              </BotaoPadrao>
-            </div>
-            <div class="flex gap-2">
-              <BotaoPadrao
-                texto="criar psp"
-                @clique="mostrarDialogCriarPsp = true">
-                <img
-                  src="@/assets/icons/add-b.svg"
-                  alt=""
-                  class="w-7 h-7" />
-              </BotaoPadrao>
-              <BotaoPadrao
-                v-if="podeProcessar"
-                texto="processar"
-                @clique="mostrarDialogProcessarPsp = true">
-                <img
-                  src="@/assets/icons/check-circle-b.svg"
-                  alt=""
-                  class="w-7 h-7" />
-              </BotaoPadrao>
-            </div>
+						<div class="flex gap-2">
+							<BotaoPadrao
+								texto="Gerar Excel"
+								@clique="gerarExcel()">
+								<img
+									src="@/assets/icons/excel-b.svg"
+									alt=""
+									class="w-7 h-7" />
+							</BotaoPadrao>
+						</div>
+						<div class="flex gap-2">
+							<BotaoPadrao
+								texto="criar psp"
+								@clique="mostrarDialogCriarPsp = true">
+								<img
+									src="@/assets/icons/add-b.svg"
+									alt=""
+									class="w-7 h-7" />
+							</BotaoPadrao>
+							<BotaoPadrao
+								v-if="podeProcessar"
+								texto="processar"
+								@clique="mostrarDialogProcessarPsp = true">
+								<img
+									src="@/assets/icons/check-circle-b.svg"
+									alt=""
+									class="w-7 h-7" />
+							</BotaoPadrao>
+						</div>
 					</div>
 				</div>
 			</template>
@@ -201,7 +218,7 @@
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import DialogDetalhesPsp from "~/components/Dialogs/Administracao/Psp/DialogDetalhesPsp.vue"
 	import DialogHistoricoPsp from "~/components/Dialogs/Administracao/Psp/DialogHistoricoPsp.vue"
-  import gerarExcel from "~/functions/gerarExcel";
+	import gerarExcel from "~/functions/gerarExcel"
 
 	export default {
 		name: "Psp",
@@ -278,7 +295,7 @@
 				]
 
 				if ((this.etapa_psp_id >= 1 && this.etapa_psp_id <= 4) || this.etapa_psp_id === 10) {
-					cabecalho.unshift({ nome: "", valor: "acao", largura: 'w-10' })
+					cabecalho.unshift({ nome: "", valor: "acao", largura: "w-10" })
 				}
 
 				return cabecalho
@@ -319,7 +336,10 @@
 					delete filtros.etapa_psp_id
 				}
 
-				if (!this.$auth.user.permissoes.includes("gerenciamento_psp") && !this.$auth.user.permissoes.includes("aprovar_psp_rh")) {
+				if (
+					!this.$auth.user.permissoes.includes("gerenciamento_psp") &&
+					!this.$auth.user.permissoes.includes("aprovar_psp_rh")
+				) {
 					filtros["$Funcionario.setor.id$"] = this.$auth.user.setor_id
 				}
 
@@ -373,7 +393,7 @@
 					this.mostrarDialogCriarPsp = false
 					this.textoAlerta = "PSP deletada com sucesso!"
 					this.mostrarAlerta = true
-          this.psp_id = null
+					this.psp_id = null
 				}
 			},
 
@@ -410,59 +430,49 @@
 				this.mostrarDialogCriarPsp = true
 			},
 
-      async gerarExcel(){
-        let dados = this.dados
+			async gerarExcel() {
+				let dados = this.dados
 
-        let cabecalho = [
-          "Cod.",
-          "Etapa",
-          "Funcionário",
-          "Cargo",
-          "Setor",
-          "Motivo",
-          "Data de ida",
-          "data de volta",
-          "Destino",
-          "Transporte",
-          "Centro custo",
-          "Solicitado por",
-        ]
-        let nomeArquivo = "psp"
+				let cabecalho = [
+					"Cod.",
+					"Etapa",
+					"Funcionário",
+					"Cargo",
+					"Setor",
+					"Motivo",
+					"Data de ida",
+					"data de volta",
+					"Destino",
+					"Transporte",
+					"Centro custo",
+					"Solicitado por",
+				]
+				let nomeArquivo = "psp"
 
-        let itens = []
-        for (let item of dados) {
-          let temp = []
-          temp.push(("00000" + item.id).slice(-5))
-          temp.push(item.EtapaPsp ? item.EtapaPsp.nome : "")
-          temp.push(item.Funcionario ? item.Funcionario.nome : "")
-          temp.push(item.Funcionario ? item.Funcionario.cargo : "")
-          temp.push(
-            item.Funcionario.setor ? item.Funcionario.setor.nome : ""
-          )
-          temp.push(
-            item.motivo ? item.motivo : ""
-          )
-          temp.push(
-            item.data_ida ? this.$dayjs(item.data_ida).format("DD/MM/YYYY") : ""
-          )
-          temp.push(
-            item.data_volta ? this.$dayjs(item.data_volta).format("DD/MM/YYYY") : ""
-          )
-          temp.push(
-            item.destino ? item.destino : ""
-          )
-          temp.push(
-            item.PspTemMeioTransporte.length > 0 ? item.PspTemMeioTransporte[0].meio_transporte : item.meio_transporte
-          )
-          temp.push(
-            item.CentroCustoPEP ? item.CentroCustoPEP.descricao : ""
-          )
-          temp.push(item.criado_por ? item.criado_por.nome : "")
-          itens.push(temp)
-        }
+				let itens = []
+				for (let item of dados) {
+					let temp = []
+					temp.push(("00000" + item.id).slice(-5))
+					temp.push(item.EtapaPsp ? item.EtapaPsp.nome : "")
+					temp.push(item.Funcionario ? item.Funcionario.nome : "")
+					temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+					temp.push(item.Funcionario.setor ? item.Funcionario.setor.nome : "")
+					temp.push(item.motivo ? item.motivo : "")
+					temp.push(item.data_ida ? this.$dayjs(item.data_ida).format("DD/MM/YYYY") : "")
+					temp.push(item.data_volta ? this.$dayjs(item.data_volta).format("DD/MM/YYYY") : "")
+					temp.push(item.destino ? item.destino : "")
+					temp.push(
+						item.PspTemMeioTransporte.length > 0
+							? item.PspTemMeioTransporte[0].meio_transporte
+							: item.meio_transporte,
+					)
+					temp.push(item.CentroCustoPEP ? item.CentroCustoPEP.descricao : "")
+					temp.push(item.criado_por ? item.criado_por.nome : "")
+					itens.push(temp)
+				}
 
-        gerarExcel(cabecalho, itens, nomeArquivo)
-      }
+				gerarExcel(cabecalho, itens, nomeArquivo)
+			},
 		},
 		watch: {
 			async etapa_psp_id() {
