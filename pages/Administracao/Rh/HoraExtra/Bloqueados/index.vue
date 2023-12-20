@@ -3,6 +3,7 @@
     <CabecalhoPagina titulo="BLOQUEADOS" />
     <div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11 print:hidden">
       <TabelaPadrao
+        ref="tabela"
         class="print:hidden"
         :cabecalho="cabecalho"
         :dados="dados"
@@ -105,6 +106,7 @@ export default {
       this.textoAlerta = "Funcionários liberados com sucesso!"
       this.mostrarAlerta = true
       this.mostrarDialogLiberarBloqueados = false
+      this.$refs.tabela.limparSelecionados()
     },
 
     async filtrarBloqueados(){

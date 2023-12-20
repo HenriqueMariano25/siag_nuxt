@@ -13,7 +13,7 @@
         @ordem="ordem = $event"
         :totalItens="totalItens"
         altura="calc(100vh - 179px)"
-        @atualizar="buscarHistorico"
+        @atualizar="buscarHistorico()"
         :temDetalhes="false">
         <template v-slot:[`body.Funcionario.nome`]="{ item }">
 					<span
@@ -48,7 +48,7 @@
         <template v-slot:[`body.createdAt`]="{ item }">
 					<span
             class="whitespace-nowrap">
-						{{ $dayjs(item.createadAt).format("DD/MM/YYYY HH:mm:ss") }}
+						{{ $dayjs(item.createdAt).format("DD/MM/YYYY HH:mm:ss") }}
 					</span>
         </template>
       </TabelaPadrao>
@@ -108,6 +108,7 @@ export default {
   },
   methods: {
     async buscarHistorico() {
+      console.log("Aqui");
       let filtros = this.filtros
       let page = this.pagina - 1
       let size = this.itensPorPagina
