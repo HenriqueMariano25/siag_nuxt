@@ -11,7 +11,7 @@
       </ButtonNavegacao>
       <ButtonNavegacao titulo="Bloqueados" cor="bg-[#264653]" link="/administracao/rh/horaExtra/bloqueados"
                        v-if="$auth.user.permissoes.includes('bloqueados_hora_extra')">
-        <img src="@/assets/icons/blocked-w.svg" alt="" class="w-8 h-8"->
+        <img src="@/assets/icons/blocked-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
       <ButtonNavegacao titulo="KPIs" cor="bg-[#264653]" link="/administracao/rh/horaExtra/kpis"
                        v-if="$auth.user.permissoes.includes('kpi_hora_extra')">
