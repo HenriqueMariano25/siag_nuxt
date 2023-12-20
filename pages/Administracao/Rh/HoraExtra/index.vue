@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full grid  h-fit gap-2">
-    <div class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white ">
+  <div class="w-full grid gap-2 overflow-y-auto " style="height: calc(100vh - 17px)">
+    <div class="border grid grid-cols-4 gap-2 border-1 shadow border-gray-300 p-2 rounded bg-white ">
       <ButtonNavegacao titulo="Agendar" cor="bg-[#264653]" link="/administracao/rh/horaExtra/agendar"
                        v-if="$auth.user.permissoes.includes('horaExtra_rh')">
         <img src="@/assets/icons/clock-check-w.svg" alt="" class="w-8 h-8">
@@ -8,6 +8,10 @@
       <ButtonNavegacao titulo="Terceiros" cor="bg-[#264653]" link="/administracao/rh/horaExtra/terceiros">
         <img src="@/assets/icons/constructor-w.svg" alt="" class="w-8 h-8"
              v-if="$auth.user.permissoes.includes('horaExtra_rh')">
+      </ButtonNavegacao>
+      <ButtonNavegacao titulo="Bloqueados" cor="bg-[#264653]" link="/administracao/rh/horaExtra/bloqueados"
+                       v-if="$auth.user.permissoes.includes('bloqueados_hora_extra')">
+        <img src="@/assets/icons/blocked-w.svg" alt="" class="w-8 h-8"->
       </ButtonNavegacao>
       <ButtonNavegacao titulo="KPIs" cor="bg-[#264653]" link="/administracao/rh/horaExtra/kpis"
                        v-if="$auth.user.permissoes.includes('kpi_hora_extra')">
@@ -20,13 +24,6 @@
     </div>
     <div class="bg-white items-center flex" style="height: calc(100vh - 165px)">
       <div ref="graAgendamento" class="flex w-full"></div>
-<!--      <ApexChart-->
-<!--        class=""-->
-<!--        type="pie"-->
-<!--        red="graAgendamento"-->
-<!--        :options="opcoesAgendamento"-->
-<!--        :series="valoresAgendamento"-->
-<!--        id="graAgendamento" />-->
     </div>
   </div>
 </template>

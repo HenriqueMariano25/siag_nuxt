@@ -161,8 +161,6 @@ export default {
             })
 
           }else if(this.tipoAprovacao === "siteManager"){
-            console.log("------------------")
-
             await this.$axios.$post("/hora_extra/aprovar/site_manager", {
               agendamentos: agendPrEnviar,
               data,
