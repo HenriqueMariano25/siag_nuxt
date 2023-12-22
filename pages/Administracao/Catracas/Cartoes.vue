@@ -75,6 +75,7 @@ import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
 import RodapePagina from "~/components/Shared/RodapePagina.vue";
 import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
+import gerarExcel from "~/functions/gerarExcel";
 
 export default {
   name: "Cartoes",
@@ -119,6 +120,33 @@ export default {
         this.totalItens = resp.dados.total
         this.buscandoDados = false
       }
+    },
+    async gerarExcel(){
+      let dados = this.dados
+
+      let cabecalho = [
+        "Matrícula",
+        "Nome",
+        "Cargo",
+        "Cartão",
+        "Empresa",
+        "Perfil",
+      ]
+      let nomeArquivo = "cartoes"
+
+      let itens = []
+      for (let item of dados) {
+        let temp = []
+        temp.push(item.Matricula)
+        temp.push(item.Nome)
+        temp.push(item.Funcao)
+        temp.push(item.Cartao)
+        temp.push(item.Empresa)
+        temp.push(item.Perfil)
+        itens.push(temp)
+      }
+
+      gerarExcel(cabecalho, itens, nomeArquivo)
     }
   }
 };
