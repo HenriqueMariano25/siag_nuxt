@@ -493,6 +493,7 @@
 						tipoFiltro: "data",
 					},
 					{ nome: "Responsável", valor: "responsavel.nome", filtro: true },
+					{ nome: "Turno", valor: "turno", filtro: true },
 					{ nome: "Comentários", valor: "comentarios" },
 				]
 
