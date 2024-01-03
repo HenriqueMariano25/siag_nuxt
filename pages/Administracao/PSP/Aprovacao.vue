@@ -272,6 +272,7 @@
 
 				if (!resp.falha) {
 					this.dados = resp.dados.psps
+
 					this.totalItens = resp.dados.total
 					this.carregandoTabela = false
 				}
