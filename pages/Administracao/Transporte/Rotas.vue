@@ -218,14 +218,16 @@
 				if (!resp.falha) {
 					let { rotas } = resp.dados
 					let hojeAgr = this.$dayjs().format("DD/MM/YYYY HH:mm:ss")
+
 					var doc = new jsPDF({})
 					doc.setProperties({
 						title: "Relatório pontos de embarque",
 					})
 
 					const logo = require("@/assets/img/logoagcnovo.png")
+          let chaves = Object.keys(rotas).sort()
 
-					for (let rotaKey of Object.keys(rotas)) {
+					for (let rotaKey of chaves) {
 						let rota = rotas[rotaKey]
             let passageirosOrdenados = await rota.sort((a, b) => {
               const nomeA = a.nome.toUpperCase()
