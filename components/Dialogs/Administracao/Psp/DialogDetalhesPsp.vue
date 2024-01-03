@@ -42,6 +42,7 @@
 					</span>
 					<span> <strong>CPF: </strong>{{ psp.Funcionario ? psp.Funcionario.cpf : "" }} </span>
 					<span> <strong>RG: </strong>{{ psp.Funcionario ? psp.Funcionario.rg : "" }} </span>
+					<span> <strong>Telefone: </strong>{{ psp.Funcionario ? psp.Funcionario.celular : "" }} </span>
 					<span>
 						<strong>Data de Nascimento: </strong>
 						{{
@@ -50,7 +51,7 @@
 					</span>
 					<span> <strong>E-mail: </strong>{{ psp.Funcionario ? psp.Funcionario.email : "" }} </span>
 					<span>
-						<strong>Setor: </strong>
+						<strong>Turno: </strong>
 						{{ psp.Funcionario && psp.Funcionario.Turno ? psp.Funcionario.Turno.descricao : "" }}
 					</span>
 					<span class="titulo"><strong>Viagem</strong></span>
@@ -190,6 +191,8 @@
 			},
 			async buscarPsp() {
 				let resp = await this.$axios.$get(`/psp/buscar/${this.psp_id}`)
+
+        console.log(resp);
 
 				if (!resp.falha) {
 					this.psp = resp.dados.psp
