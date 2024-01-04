@@ -35,6 +35,7 @@
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
+        @itensPorPagina="itensPorPagina = $event"
 				:pagina="pagina"
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
@@ -359,6 +360,7 @@
 	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
 	import gerarExcel from "~/functions/gerarExcel"
 	import DialogEditarFuncao from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogEditarFuncao.vue"
+  import dialgoConfirmarAprovacao from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialgoConfirmarAprovacao.vue";
 	export default {
 		mixins: [buscarEtapa, prepararFiltro, buscarSetores, buscarDisciplinaCard],
 		name: "Cards",
@@ -821,52 +823,9 @@
 			},
 
 			async gerarExcel() {
-				// let usuario_id = this.$auth.user.id
-
-				let usuario_id = this.$auth.user.id
-				let filtros = [...this.filtros]
-
-				let confidencial
-				let listaPermissoes = [
-					"aprovar_card_site_manager",
-					"aprovar_card_controle",
-					"rh_contratacoes",
-				]
-				if (listaPermissoes.some((o) => this.$auth.user.permissoes.includes(o))) {
-					confidencial = "todos"
-					filtros.push(
-						`AND (card.confidencial IS NULL OR card.confidencial = false OR card.confidencial = true)`,
-					)
-				} else {
-					confidencial = "setor"
-					filtros.push(
-						` AND (card.confidencial IS NULL OR card.confidencial = false OR ( card.confidencial = true AND usuario.id = ${usuario_id}))`,
-					)
-				}
-
-				let etapa_id = this.etapa_id
-				if (etapa_id !== 0) {
-					filtros.push(` AND etapa.id = ${etapa_id}`)
-				}
-
-				let filtrosFinais
-
-				if (filtros !== "") {
-					filtrosFinais = filtros.join("")
-				}
-
-				let resp = await this.$axios.$get("/contratacao/card/buscarPaginados", {
-					params: {
-						page: this.pagina - 1,
-						size: this.totalItens,
-						filtros: filtrosFinais,
-						usuario_id,
-					},
-				})
-
-				if (!resp.falha) {
+        if (this.dados) {
 					this.gerandoExcel = true
-					let dados = resp.dados.cards
+					let dados = this.dados
 
 					let cabecalho = [
 						"Código",
