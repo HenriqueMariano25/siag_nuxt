@@ -519,6 +519,8 @@
 			await this.buscarConfiguracao()
 			await this.buscarFuncionarios()
 			await this.podeAprovar()
+
+
 		},
 
 		methods: {
@@ -642,7 +644,8 @@
 					const hoje = this.$dayjs()
 					const diaSemana = hoje.day()
 
-					let diasAteProximoDomingo = (8 - diaSemana) % 8
+					let diasAteProximoDomingo = (7 - diaSemana) % 7
+
 					if (diasAteProximoDomingo > 6) diasAteProximoDomingo = 6
 
 					let data = this.$dayjs().format("YYYY-MM-DD")
@@ -650,6 +653,8 @@
 
 					let dias = []
 					let tipoDia = null
+
+
 
 					while (data <= diaFinal) {
 						if (feriados.includes(data) || this.$dayjs(data).day() === 0) {
@@ -663,9 +668,32 @@
 						let diaSemana = this.$dayjs(data).locale("pt-br").format("dddd")
 						dias.push({ data, tipo: tipoDia, diaSemana })
 						data = this.$dayjs(data).add(1, "day").format("YYYY-MM-DD")
+
 					}
 
+          let diasAgendamento = await this.$axios.$get("/hora_extra/dias_agendamento/buscar_especifico").then( resp => resp.dados.dias)
+
+          let diasJaPreparados = dias.map( o => o.data)
+          for(let dia of diasAgendamento){
+            let data = dia.data
+
+            if(!diasJaPreparados.includes(data)){
+
+            if (feriados.includes(data) || this.$dayjs(data).day() === 0) {
+              tipoDia = "feriadoDomingo"
+            } else if (this.$dayjs(data).day() === 6) {
+              tipoDia = "sabado"
+            } else {
+              tipoDia = "normal"
+            }
+
+            let diaSemana = this.$dayjs(data).locale("pt-br").format("dddd")
+            dias.push({ data, tipo: tipoDia, diaSemana })
+            data = this.$dayjs(data).add(1, "day").format("YYYY-MM-DD")
+            }
+          }
 					this.diasPrAgendamento = dias
+
 				}
 			},
 

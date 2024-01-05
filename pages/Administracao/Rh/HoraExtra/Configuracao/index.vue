@@ -14,6 +14,10 @@
                        v-if="$auth.user.permissoes.includes('configuracao_he')">
         <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
+      <ButtonNavegacao titulo="Dias p/ agendamento" cor="bg-[#264653]" link="/administracao/rh/horaExtra/configuracao/diasAgendamento"
+                       v-if="$auth.user.permissoes.includes('he_data_agendamento')">
+        <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
+      </ButtonNavegacao>
     </div>
   </div>
 </template>
