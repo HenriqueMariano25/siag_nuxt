@@ -20,7 +20,7 @@
       </ButtonNavegacao>
       <ButtonNavegacao titulo="Dias p/ compensação" cor="bg-[#264653]"
                        link="/administracao/rh/horaExtra/configuracao/diasCompensacao"
-                       v-if="$auth.user.permissoes.includes('he_data_compencacao')">
+                       v-if="$auth.user.permissoes.includes('he_data_compensacao')">
         <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
     </div>
