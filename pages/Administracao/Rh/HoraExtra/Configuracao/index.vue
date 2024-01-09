@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full grid  h-fit gap-2">
-    <div class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white ">
+  <div class="w-full grid h-fit gap-2">
+    <div class="border grid grid-cols-4 gap-3 border-1 shadow border-gray-300 p-2 rounded bg-white ">
       <ButtonNavegacao titulo="Feriados" cor="bg-[#264653]" link="/administracao/rh/horaExtra/configuracao/feriados"
                        v-if="$auth.user.permissoes.includes('horaExtra_feriados')">
         <img src="@/assets/icons/calendar-days-w.svg" alt="" class="w-8 h-8">
@@ -16,6 +16,11 @@
       </ButtonNavegacao>
       <ButtonNavegacao titulo="Dias p/ agendamento" cor="bg-[#264653]" link="/administracao/rh/horaExtra/configuracao/diasAgendamento"
                        v-if="$auth.user.permissoes.includes('he_data_agendamento')">
+        <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
+      </ButtonNavegacao>
+      <ButtonNavegacao titulo="Dias p/ compensação" cor="bg-[#264653]"
+                       link="/administracao/rh/horaExtra/configuracao/diasCompensacao"
+                       v-if="$auth.user.permissoes.includes('he_data_compencacao')">
         <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
     </div>

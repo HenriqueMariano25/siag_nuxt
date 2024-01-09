@@ -1,6 +1,6 @@
 <template>
 	<div class="w-full">
-		<CabecalhoPagina titulo="Dias p/ agendamento" />
+		<CabecalhoPagina titulo="DIAS PARA AGENDAMENTO" />
 		<div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11">
 			<TabelaPadrao
 				:cabecalho="cabecalho"
@@ -132,19 +132,17 @@
 				this.mostrarDialogCadastrarDiasAgendamento = false
 				this.textoAlerta = "Dia de agendamento cadastrado com sucesso!"
 				this.mostrarAlerta = true
+        this.dia = null
 			},
       editado(dia){
-        console.log(dia);
         let idx = this.dados.findIndex( o => o.id === dia.id)
         if(idx >= 0){
-          console.log("entrei aq");
-          console.log(this.dados[idx]);
-          console.log(dia);
           this.dados[idx] = Object.assign(this.dados[idx], dia)
         }
 				this.mostrarDialogCadastrarDiasAgendamento = false
         this.textoAlerta = "Dia de agendamento editado com sucesso!"
         this.mostrarAlerta = true
+        this.dia = null
       },
       deletado(id){
         let idx = this.dados.findIndex(o => o.id === id)
@@ -155,6 +153,7 @@
         this.mostrarDialogCadastrarDiasAgendamento = false
         this.textoAlerta = "Dia de agendamento deletado com sucesso!"
         this.mostrarAlerta = true
+        this.dia = null
       }
 		},
 	}
