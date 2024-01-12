@@ -1,9 +1,8 @@
 <template>
-	<div class="ml-2">
+	<div class="ml-2 w-full">
 		<div class="flex">
-
 			<span :class="{ 'text-red-600': invalido }">
-				<strong>
+				<strong class="!text-sm">
 					{{ titulo
 					}}<span
 						v-if="obrigatorio"
@@ -22,25 +21,29 @@
           </div>
         </template>
       </AppTooltip>
-
 		</div>
 		<div
-			v-for="item in itens"
-			v-if="itens.length > 0 && !simNao">
-			<label
-				class="flex flex-row items-center gap-1"
-				:for="'inputRadio' + item.valor">
-				<input
-          :class="{'input-invalido':invalido}"
-					class="cursor-pointer mr-2"
-					type="radio"
-					:id="'inputRadio' + item.valor"
-					:value="item.valor"
-					v-model="model"
-					:disabled="item.disabled || disabled"
-					@click.stop />
-				{{ item.label }}
-			</label>
+
+			v-if="itens.length > 0 && !simNao"
+
+      :class="{'flex gap-2': linha}"
+    >
+      <div class="" v-for="item in itens">
+        <label
+          class="flex flex-row items-center gap-1"
+          :for="id ? 'inputRadio' + id + item.valor : 'inputRadio' + item.valor">
+          <input
+            :class="{'input-invalido':invalido}"
+            class="cursor-pointer mr-2"
+            type="radio"
+            :id="id ? 'inputRadio' + id + item.valor : 'inputRadio' + item.valor"
+            :value="item.valor"
+            v-model="model"
+            :disabled="item.disabled || disabled"
+            @click.stop />
+          {{ item.label }}
+        </label>
+      </div>
 		</div>
 		<div v-if="simNao">
 			<div>
@@ -132,6 +135,10 @@
       dicaPosicao: {
         type: String,
         default: 'left-0'
+      },
+      linha:{
+        type: Boolean,
+        default: false,
       }
 		},
 		computed: {
