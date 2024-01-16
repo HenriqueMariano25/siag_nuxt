@@ -328,7 +328,7 @@
 
 			async buscarPsps() {
 				this.carregandoTabela = true
-				let filtros = this.filtros
+				let filtros = { }
 
 				if (this.etapa_psp_id > 0) {
 					filtros["etapa_psp_id"] = this.etapa_psp_id
@@ -343,6 +343,17 @@
 					filtros["$Funcionario.setor.id$"] = this.$auth.user.setor_id
 				}
 
+        filtros = Object.assign(filtros, this.filtros)
+        if(Object.keys(filtros).includes('$PspTemMeioTransporte.meio_transporte$')){
+          let valorTransporte = filtros['$PspTemMeioTransporte.meio_transporte$']
+
+          delete filtros['$PspTemMeioTransporte.meio_transporte$']
+
+          filtros = Object.assign(filtros, { $or: [
+              { '$PspTemMeioTransporte.meio_transporte$' : valorTransporte},
+              { 'meio_transporte': valorTransporte }
+            ]})
+        }
 				let page = this.pagina
 				let size = this.itensPorPagina
 
