@@ -371,6 +371,8 @@ export default {
     if(this.$route.params.id){
       await this.buscarAvaliacao(this.$route.params.id)
     }
+
+    console.log(this.$route.name);
   },
   methods: {
     cancelar() {
@@ -378,7 +380,7 @@ export default {
     },
     voltar(){
       this.$router.push({
-        name: "Administracao-Rh-AvaliacaoFuncionario",
+        name: "Administracao-Rh-AvaliacaoFuncionario-Avaliacoes",
       })
     },
     async buscarEncarregados() {
@@ -441,7 +443,7 @@ export default {
 
           if(sair){
             await this.$router.push({
-              name: "Administracao-Rh-AvaliacaoFuncionario",
+              name: "Administracao-Rh-AvaliacaoFuncionario-Avaliacoes",
               params: { acao: "Cadastrado" },
             })
 
@@ -476,7 +478,7 @@ export default {
         if (!resp.falha) {
           if (sair) {
             await this.$router.push({
-              name: "Administracao-Rh-AvaliacaoFuncionario",
+              name: "Administracao-Rh-AvaliacaoFuncionario-Avaliacoes",
               params: { acao: "Editado" },
             })
 
@@ -516,7 +518,7 @@ export default {
       if(!resp.falha){
         console.log(resp);
         await this.$router.push({
-          name: "Administracao-Rh-AvaliacaoFuncionario",
+          name: "Administracao-Rh-AvaliacaoFuncionario-Avaliacoes",
           params: { acao: "Deletado", item: id },
         })
       }
