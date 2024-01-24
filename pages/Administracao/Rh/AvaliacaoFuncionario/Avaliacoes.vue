@@ -19,10 +19,13 @@
 					<BotaoPadrao
 						icone
 						@clique="irParaEdicao(item.id)">
+            <div class="w-[22px]">
+
 						<img
 							src="@/assets/icons/edit-b.svg"
 							alt=""
 							class="w-6 h-6" />
+            </div>
 					</BotaoPadrao>
 				</template>
 				<template v-slot:[`body.codigo`]="{ item }">
@@ -96,7 +99,7 @@
 	  data() {
 	    return {
 	      cabecalho: [
-	        { nome: "", valor: "acoes", largura: "w-24" },
+	        { nome: "", valor: "acoes", largura: "w-12" },
 	        { nome: "Cód.", valor: "codigo", largura: "w-[80px]", centralizar: true },
 	        { nome: "Status", valor: "StatusAvaliacao.descricao", filtro: true, ordenar: true },
 	        { nome: "Matricula", valor: "Funcionario.chapa"},
@@ -133,7 +136,7 @@
             this.dados.splice(idx, 1)
           }
 
-          this.textoAlerta = "Avaliação editada com sucesso!"
+          this.textoAlerta = "Avaliação deletada com sucesso!"
           this.mostrarAlerta = true
         }
 	    }
