@@ -103,10 +103,13 @@
 								mostrarDialogCriarSolicitacao = true
 								ss_id = item.id
 							">
+              <div class="w-[20px]">
+
 							<img
 								src="@/assets/icons/edit-b.svg"
 								alt=""
 								class="w-6 h-6" />
+              </div>
 						</BotaoPadrao>
 						<div
 							v-else-if="item.Usuario.id !== $auth.user.id"
@@ -115,7 +118,7 @@
 								largura="w-[200px]"
 								fundo>
 								<template v-slot:corpo>
-									<div class="flex justify-center">
+									<div class="flex justify-center w-[22px]">
 										<img
 											src="@/assets/icons/information-circle-g.svg"
 											alt=""

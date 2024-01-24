@@ -197,43 +197,42 @@
 								>A Área Requisitante sugere os seguintes prestadores de serviços (máximo 4
 								fornecedores):</span
 							>
-							<div class="gap-y-2 w-full flex flex-wrap gap-x-4">
+							<div class="grid grid-cols-2 gap-y-2 w-full gap-x-4">
 								<AppFormInput
-									class="w-[49.4%]"
 									label="Fornecedor"
 									placeholder="Fornecedor"
 									type="text"
 									id="fornecedor"
 									v-model="fornecedor.nome" />
 								<AppFormInput
-									class="w-[49.4%]"
 									label="E-mail"
 									placeholder="E-mail"
 									type="text"
 									id="email"
 									v-model="fornecedor.email" />
 								<AppFormInput
-									class="w-[49.4%]"
 									label="Pessoa de contato"
 									placeholder="Pessoa de contato"
 									type="text"
 									id="pessoa_contato"
 									v-model="fornecedor.pessoa_contato" />
-								<AppFormInput
-									class="w-[40.3%]"
-									label="Telefone"
-									placeholder="Telefone"
-									type="text"
-									mask="['(##)####-####','(##)#####-####']"
-									id="telefone"
-									v-model="fornecedor.telefone" />
-								<BotaoPadrao
-									:disabled="validarAddFornecedor"
-									texto="Adicionar"
-									cor="bg-[#15536D]"
-									class="text-white self-end"
-									@clique="adicionarFornecedor()">
-								</BotaoPadrao>
+                <div class="flex gap-2">
+                  <AppFormInput
+                    class="grow"
+                    label="Telefone"
+                    placeholder="Telefone"
+                    type="text"
+                    mask="['(##)####-####','(##)#####-####']"
+                    id="telefone"
+                    v-model="fornecedor.telefone" />
+                  <BotaoPadrao
+                    :disabled="validarAddFornecedor"
+                    texto="Adicionar"
+                    cor="bg-[#15536D]"
+                    class="text-white self-end"
+                    @clique="adicionarFornecedor()">
+                  </BotaoPadrao>
+                </div>
 							</div>
 						</div>
 						<div class="mt-2">
@@ -254,7 +253,7 @@
 										<td class="border border-gray-400">
 											<BotaoIcone
 												class="flex"
-												@clique="removerFornecedor(index)">
+												@click="removerFornecedor(index)">
 												<img
 													src="@/assets/icons/delete-b.svg"
 													alt="close"
@@ -1605,6 +1604,7 @@
 				}
 			},
 			removerFornecedor(index) {
+        console.log(index);
 				this.fornecedores.splice(index, 1)
 			},
 
@@ -1670,9 +1670,6 @@
           this.bloquearBotaoSalvar = true
 					let usuario_id = this.$auth.user.id
 
-          console.log(this.ss)
-          console.log(this.fornecedores)
-
 					let dados = {
 						ss: { ...this.ss },
 						matriz: this.matriz,
@@ -1683,7 +1680,7 @@
 
 					if (!resp.falha) {
             this.bloquearBotaoSalvar = false
-						this.$emit("editado", { solicitacao: this.ss })
+						// this.$emit("editado", { solicitacao: this.ss })
 					}
 				}
 			},
