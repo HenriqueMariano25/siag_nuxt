@@ -220,94 +220,125 @@
 
 				if (!resp.falha) {
 					let { rotas } = resp.dados
-					let hojeAgr = this.$dayjs().format("DD/MM/YYYY HH:mm:ss")
 
-					var doc = new jsPDF({})
-					doc.setProperties({
-						title: "Relatório pontos de embarque",
-					})
+          const primeiroPDF = Object.keys(rotas).slice(0, 50).reduce((result, key) => {
+            result[key] = rotas[key];
 
-					const logo = require("@/assets/img/logoagcnovo.png")
-          let chaves = Object.keys(rotas).sort()
+            return result;
+          }, {});
 
-					for (let rotaKey of chaves) {
-						let rota = rotas[rotaKey]
-            let passageirosOrdenados = await rota.sort((a, b) => {
-              const nomeA = a.nome.toUpperCase()
-              const nomeB = b.nome.toUpperCase()
+          await this.rederizarRelatorio(primeiroPDF)
 
-              if (nomeA > nomeB) {
-                return 1
-              }
-              if (nomeA < nomeB) {
-                return -1
-              }
-              return 0
-            })
-						let novosDados = JSON.parse(JSON.stringify(passageirosOrdenados))
+          if(Object.keys(rotas).length > 50){
 
-						let imgLogo = new Image()
-						imgLogo.src = logo
-						doc.addImage(imgLogo, "PNG", 4, 6, 50, 9)
-						doc.setFontSize(14)
-						doc.setTextColor(0)
-						doc.text("RELATÓRIO PASSAGEIROS POR ROTA", 75, 9)
-						doc.setFontSize(14)
-						doc.text(`ROTA`, 190, 9)
-						doc.text(`${rotaKey}`, 190, 14)
-						doc.setFontSize(12)
-						doc.text(`Passageiros: ${rota.length}`, 4, 20)
-						doc.text(`Disponíveis: ${46 - parseInt(rota.length)}`, 60, 20)
-						doc.line(4, 22, 206, 22)
-						doc.setFontSize(14)
-						doc.autoTable({
-							head: [["Matricula", "Nome", "Cargo", "Ponto de embarque", "Poltrona"]],
-							columns: [
-								{ header: "Matricula", dataKey: "chapa" },
-								{ header: "Nome", dataKey: "nome" },
-								{ header: "Cargo", dataKey: "cargo" },
-								{ header: "Ponto de embarque", dataKey: "ponto_embarque" },
-								{ header: "Poltrona", dataKey: "poltrona" },
-							],
-							columnStyles: { id: { halign: "center" } },
-							body: novosDados,
-							theme: "striped",
+            const segundoPDF = Object.keys(rotas).slice(50, 100).reduce((result, key) => {
+              result[key] = rotas[key];
 
-							headStyles: {
-								fillColor: [50, 50, 50],
-							},
-							bodyStyles: {
-								fontSize: 7,
-							},
-							startY: 24,
-							pageBreak: "auto",
-							margin: { left: 4, right: 4, top: 4 },
-						})
+              return result;
+            }, {});
+            await this.rederizarRelatorio(segundoPDF)
+          }
 
-            if(doc.getNumberOfPages() < Object.keys(rotas).length){
-						  doc.addPage()
-            }
-					}
+          if (Object.keys(rotas).length > 50) {
+            const terceiroPDF = Object.keys(rotas).slice(100).reduce((result, key) => {
+              result[key] = rotas[key];
 
-					const totalPaginas = doc.internal.getNumberOfPages()
-					doc.setTextColor(0)
-					doc.setFontSize(10)
-					for (var i = 1; i <= totalPaginas; i++) {
-						doc.setPage(i)
-						doc.text(
-							`Página ${String(i)} de ${String(totalPaginas)}`,
-							205,
-							294,
-							null,
-							null,
-							"right",
-						)
-						doc.text(hojeAgr, 5, 294)
-					}
-
-					window.open(doc.output("bloburl", { filename: "tabela_clientes.pdf" }))
+              return result;
+            }, {});
+            await this.rederizarRelatorio(terceiroPDF)
+          }
 				}
 			},
+
+      async rederizarRelatorio(rotas){
+        let hojeAgr = this.$dayjs().format("DD/MM/YYYY HH:mm:ss")
+
+        var doc = new jsPDF({})
+        doc.setProperties({
+          title: "Relatório pontos de embarque",
+        })
+
+        const logo = require("@/assets/img/logoagcnovo.png")
+        let chaves = Object.keys(rotas).sort()
+
+        for (let rotaKey of chaves) {
+          let rota = rotas[rotaKey]
+          let passageirosOrdenados = await rota.sort((a, b) => {
+            const nomeA = a.nome.toUpperCase()
+            const nomeB = b.nome.toUpperCase()
+
+            if (nomeA > nomeB) {
+              return 1
+            }
+            if (nomeA < nomeB) {
+              return -1
+            }
+            return 0
+          })
+          let novosDados = JSON.parse(JSON.stringify(passageirosOrdenados))
+
+          let imgLogo = new Image()
+          imgLogo.src = logo
+          doc.addImage(imgLogo, "PNG", 4, 6, 50, 9)
+          doc.setFontSize(14)
+          doc.setTextColor(0)
+          doc.text("RELATÓRIO PASSAGEIROS POR ROTA", 75, 9)
+          doc.setFontSize(14)
+          doc.text(`ROTA`, 190, 9)
+          doc.text(`${rotaKey}`, 190, 14)
+          doc.setFontSize(12)
+          doc.text(`Passageiros: ${rota.length}`, 4, 20)
+          doc.text(`Disponíveis: ${46 - parseInt(rota.length)}`, 60, 20)
+          doc.line(4, 22, 206, 22)
+          doc.setFontSize(14)
+          doc.autoTable({
+            head: [["Matricula", "Nome", "Cargo", "Ponto de embarque", "Poltrona"]],
+            columns: [
+              { header: "Matricula", dataKey: "chapa" },
+              { header: "Nome", dataKey: "nome" },
+              { header: "Cargo", dataKey: "cargo" },
+              { header: "Ponto de embarque", dataKey: "ponto_embarque" },
+              { header: "Poltrona", dataKey: "poltrona" },
+            ],
+            columnStyles: { id: { halign: "center" } },
+            body: novosDados,
+            theme: "striped",
+
+            headStyles: {
+              fillColor: [50, 50, 50],
+            },
+            bodyStyles: {
+              fontSize: 7,
+            },
+            startY: 24,
+            pageBreak: "auto",
+            margin: { left: 4, right: 4, top: 4 },
+          })
+
+          if (doc.getNumberOfPages() < Object.keys(rotas).length) {
+            doc.addPage()
+          }
+        }
+
+        const totalPaginas = doc.internal.getNumberOfPages()
+
+        doc.setTextColor(0)
+        doc.setFontSize(10)
+        for (var i = 1; i <= totalPaginas; i++) {
+          doc.setPage(i)
+          doc.text(
+            `Página ${String(i)} de ${String(totalPaginas)}`,
+            205,
+            294,
+            null,
+            null,
+            "right",
+          )
+          doc.text(hojeAgr, 5, 294)
+        }
+
+        window.open(doc.output("bloburl", { filename: "tabela_clientes.pdf" }))
+      },
 
 			async gerarRelatorio(rota) {
 				let funcionariosPorRota = []
