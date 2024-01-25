@@ -3,14 +3,17 @@
 		<CabecalhoPagina titulo="Rotas" />
 		<div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11">
 			<TabelaPadrao
+        id="rotas"
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
+        @itensPorPagina="itensPorPagina = $event"
 				:pagina="pagina"
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
 				@ordem="ordem = $event"
 				:totalItens="totalItens"
+        @totalItens="totalItens = $event"
 				altura="calc(100vh - 179px)"
 				@atualizar="buscarRota"
 				:temDetalhes="false">
