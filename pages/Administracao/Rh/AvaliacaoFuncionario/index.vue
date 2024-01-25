@@ -4,6 +4,9 @@
       <ButtonNavegacao titulo="Avaliações" cor="bg-[#264653]" link="/administracao/rh/AvaliacaoFuncionario/Avaliacoes">
         <img src="@/assets/icons/person-circle-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
+      <ButtonNavegacao titulo="Aprovações" cor="bg-[#264653]" link="/administracao/rh/AvaliacaoFuncionario/Aprovacoes">
+        <img src="@/assets/icons/check-circle-w.svg" alt="" class="w-8 h-8">
+      </ButtonNavegacao>
       <ButtonNavegacao titulo="Configurações" cor="bg-[#264653]" link="/administracao/rh/AvaliacaoFuncionario/Configuracoes">
         <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
