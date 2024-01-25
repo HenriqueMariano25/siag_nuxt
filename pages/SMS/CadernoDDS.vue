@@ -66,6 +66,7 @@
 				</div>
 				<div class="flex">
 					<TabelaPadrao
+            id="cadernoDDS"
 						:cabecalho="cabecalho"
 						:dados="dados"
 						:temRodape="false"

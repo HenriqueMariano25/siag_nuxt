@@ -3,6 +3,7 @@
 		<CabecalhoPagina titulo="Centro de custo" />
 		<div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11">
 			<TabelaPadrao
+        id="centroCusto"
 				:cabecalho="cabecalho"
 				:dados="dados"
 				@filtros="filtros = $event"

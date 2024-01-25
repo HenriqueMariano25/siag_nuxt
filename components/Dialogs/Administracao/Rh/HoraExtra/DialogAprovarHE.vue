@@ -221,6 +221,7 @@
 										:cabecalho="cabecalho"
 										:dados="dadosFiltradoSiteManager"
 										@filtros="filtrosSiteManager = $event"
+                    id="aprovacaoHeSiteManager"
 										@ordem="ordemSiteManager = $event"
 										:totalItens="totalItensSiteManager"
 										altura="calc(100vh - 335px)"

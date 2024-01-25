@@ -56,6 +56,7 @@
 							</div>
 							<div>
 								<TabelaPadrao
+                  id="liberacaoBloqueio"
 									:cabecalho="cabecalhoAgendamento"
 									:dados="usuariosAgendamento"
                   :tem-rodape="false"
@@ -147,6 +148,7 @@
               </div>
               <div>
                 <TabelaPadrao
+                  id="liberacaoAprovacao"
                   :cabecalho="cabecalhoAprovacao"
                   :dados="usuariosAprovacao"
                   :itensPorPagina="itensPorPaginaAprovacao"

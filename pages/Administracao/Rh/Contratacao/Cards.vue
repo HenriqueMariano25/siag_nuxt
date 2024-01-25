@@ -32,6 +32,7 @@
 		</div>
 		<div class="print:hidden">
 			<TabelaPadrao
+        id="cards"
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"

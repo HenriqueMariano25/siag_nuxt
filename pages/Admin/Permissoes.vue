@@ -1,6 +1,7 @@
 <template>
 	<div class="w-full">
 		<TabelaPadrao
+      id="permissoes"
 			:cabecalho="cabecalho"
 			:dados="dados"
       :itensPorPagina="itensPorPagina"

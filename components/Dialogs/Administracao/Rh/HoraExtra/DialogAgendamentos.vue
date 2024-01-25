@@ -50,6 +50,7 @@
 									</div>
 									<div>
 										<TabelaPadrao
+                      id="aprovados"
 											:cabecalho="cabecalhoAprovados"
 											:dados="dadosAprovados"
 											:itensPorPagina="itensPorPaginaAprovados"
@@ -176,6 +177,7 @@
 									</div>
 									<div>
 										<TabelaPadrao
+                      id="pendentes"
 											:cabecalho="cabecalhoPendentes"
 											:dados="dadosPendentes"
 											:itensPorPagina="itensPorPaginaPendentes"
@@ -307,6 +309,7 @@
 									</div>
 									<div>
 										<TabelaPadrao
+                      id="negados"
 											:cabecalho="cabecalhoNegados"
 											:dados="dadosNegados"
 											:itensPorPagina="itensPorPaginaNegados"
@@ -440,16 +443,17 @@
 										<TabelaPadrao
 											:cabecalho="cabecalhoMeusAgendamentos"
 											:dados="dadosMeusAgendamentos"
+											@filtros="filtrosMeusAgendamentos = $event"
+											@pagina="paginaMeusAgendamentos = $event"
 											:itensPorPagina="itensPorPaginaMeusAgendamentos"
+											@itensPorPagina="itensPorPaginaMeusAgendamentos = $event"
 											:pagina="paginaMeusAgendamentos"
 											:totalItens="totalItensMeusAgendamentos"
-											@itensPorPagina="itensPorPaginaMeusAgendamentos = $event"
+                      id="meusAgendamentos"
 											altura="calc(100vh - 335px)"
-											selecionar
-											@pagina="paginaMeusAgendamentos = $event"
-											@filtros="filtrosMeusAgendamentos = $event"
-											@selecionados="selecionadosMeusAgendamentos = $event"
 											@atualizar="buscarMeusAgendamentos()"
+											@selecionados="selecionadosMeusAgendamentos = $event"
+											selecionar
 											:carregando="carregandoTabelaMeusAgendamentos">
 											<template v-slot:[`body.status`]="{ item }">
 												<span class="whitespace-nowrap">

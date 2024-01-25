@@ -23,6 +23,7 @@
 		</div>
 		<div class="print:hidden">
 			<TabelaPadrao
+        id="pspSolicitacoes"
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"

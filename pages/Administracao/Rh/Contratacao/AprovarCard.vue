@@ -19,6 +19,7 @@
 		</div>
 		<div class="">
 			<TabelaPadrao
+        id="aprovarCard"
 				:cabecalho="cabecalho"
 				:dados="dados"
 				@filtrar="recebendoFiltro"

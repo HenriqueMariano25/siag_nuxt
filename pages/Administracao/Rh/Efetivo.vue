@@ -2,6 +2,7 @@
 	<div class="w-full">
 		<div>
 			<TabelaPadrao
+        id="efetivo"
 				:cabecalho="cabecalho"
 				:dados="dados"
 				@filtros="filtros = $event"

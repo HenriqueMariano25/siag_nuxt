@@ -3,6 +3,7 @@
 		<CabecalhoPagina titulo="Equipe Planejamento" />
 		<div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11">
 			<TabelaPadrao
+        id="equipePLanejamento"
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"

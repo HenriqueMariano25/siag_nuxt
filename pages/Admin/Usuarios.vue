@@ -9,6 +9,7 @@
         :filtros="filtros"
         @filtros="filtros = $event"
         :pagina="pagina"
+        id="usuarios"
         @pagina="pagina = $event"
         altura="calc(100vh - 135px)"
         :totalItens="totalItens"
@@ -28,7 +29,7 @@
           <span class="whitespace-nowrap">{{ item.usuario }}</span>
         </template>
         <template v-slot:[`body.Setor.nome`]="{ item }">
-          <span class="whitespace-nowrap">{{ item.Setor.nome }}</span>
+          <span class="whitespace-nowrap">{{ item.Setor ? item.Setor.nome : ""  }}</span>
         </template>
         <template v-slot:[`body.StatusUsuario.descricao`]="{ item }">
           <span class="whitespace-nowrap">{{ item.StatusUsuario.descricao }}</span>

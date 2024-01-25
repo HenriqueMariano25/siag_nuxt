@@ -153,6 +153,7 @@
 			</div>
 		</div>
 		<TabelaPadrao
+      id="agendar"
 			class="print:hidden"
 			:cabecalho="cabecalho"
 			:dados="dados"

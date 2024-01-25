@@ -29,6 +29,7 @@
     </div>
     <div>
       <TabelaPadrao
+        id="terceiros"
         altura="calc(100vh - 142px)"
         :cabecalho="cabecalho"
         :dados="dados"

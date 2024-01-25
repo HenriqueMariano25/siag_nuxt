@@ -24,6 +24,7 @@
 		<div class="print:hidden">
 			<!--			<div class="flex">-->
 			<TabelaPadrao
+        id="ssSolicitacoes"
 				:cabecalho="cabecalho"
 				:dados="dados"
 				@filtros="filtros = $event"

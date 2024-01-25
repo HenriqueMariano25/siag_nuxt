@@ -21,6 +21,7 @@
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
 				:pagina="pagina"
+        id="Aprovacao"
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
 				:totalItens="totalItens"

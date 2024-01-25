@@ -400,7 +400,7 @@ export default {
   props: {
     id: {
       type: String,
-      default: 'local'
+      required:true
     },
     cabecalho: {
       type: Array,
@@ -556,22 +556,6 @@ export default {
         this.dadosPrMostrar = [...this.dados].splice(0, this.indexFim)
       }
     },
-
-    // Comentado: 18/09/2023
-    // getColumnWidths() {
-    //   console.log("Aqui")
-    //   const table = this.$refs.myTable;
-    //   const headerCells = table.querySelectorAll('th');
-    //   const columnWidths = [];
-    //
-    //   headerCells.forEach((cell) => {
-    //     const width = cell.offsetWidth;
-    //     columnWidths.push(width);
-    //   });
-    //
-    //   console.log(columnWidths);
-    //   Faça o que desejar com os valores das larguras das colunas
-    // },
     valorFiltro(valor) {
       if (this.dadosSql) {
         return ""
@@ -975,6 +959,7 @@ export default {
       this.dadosPrMostrar = []
 
       this.indexFim = 50
+
       if (this.dados.length > 0) {
         this.dadosPrMostrar = [...this.dados].splice(0, this.indexFim)
       }
