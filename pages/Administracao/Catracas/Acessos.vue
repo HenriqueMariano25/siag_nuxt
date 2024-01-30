@@ -55,6 +55,7 @@
 
 			<div class="flex w-full mt-2">
 				<TabelaPadrao
+          id="tabelaPadrao"
 					:cabecalho="cabecalho"
 					:dados="dados"
 					:itensPorPagina="itensPorPagina"

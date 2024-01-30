@@ -7,18 +7,13 @@
 				@tab="tab = $event">
 				<template v-slot:[`tab.funcionario`]="{ item }">
 					<div
-						class="flex flex-col gap-2 overflow-y-auto"
-						style="max-height: calc(100vh - 90px)">
-						<div>
-							<span class="text-gray-700 text-lg px-2 font-bold"
-								>Primeiro preencha os dados do funcionário
-							</span>
-						</div>
+						class="flex flex-col gap-2 h-full"
+						style="height: calc(100vh - 157px)">
 						<div class="grid grid-cols-12 p-1 gap-2 items-center">
 							<AppFormSelectCompleto
 								id="funcionario_id"
-                :disabled="jaIniciado"
-                :readonly="jaIniciado"
+								:disabled="jaIniciado"
+								:readonly="jaIniciado"
 								v-model="funcionario.funcionario_id"
 								label="Funcionário"
 								:invalido="erros.includes('funcionario_id')"
@@ -62,21 +57,30 @@
 								:options="formacoes"
 								class="col-span-4" />
 							<AppFormInput
-								type="number"
+								type="text"
 								:invalido="erros.includes('anos_experiencia')"
 								id="ano_experiencia"
-								v-model="funcionario.anos_experiencia"
+								:value="anosExperiencia"
+								disabled
+								readonly
 								label="Anos de Experiencia"
 								placeholder="Ex: 3 anos"
 								class="col-span-3" />
 
+							<AppFormInput
+								type="month"
+								:invalido="erros.includes('previsao_disponibilidade')"
+								id="previsao"
+								v-model="funcionario.previsao_disponibilidade"
+								label="Previsão de disponibilidade"
+								class="col-span-3" />
 							<div class="col-span-12 gap-2 grid grid-cols-2">
-								<div>
-									<table class="border table w-full">
-										<thead class="bg-blue-900 text-white">
-											<tr class="border border-gray-700">
-												<th class="border border-gray-700 px-2 w-full">CONHECIMENTO</th>
-												<th class="border border-gray-700 px-2"></th>
+								<div class="">
+									<table>
+										<thead class="bg-blue-900 text-white w-full">
+											<tr class="border border-gray-700 font-bold text-center">
+												<td class="w-10/12 border border-gray-700 px-2">CONHECIMENTO</td>
+												<td class="w-2/12 border border-gray-700 px-2"></td>
 											</tr>
 										</thead>
 										<tbody class="bg-white">
@@ -86,7 +90,7 @@
 												<td class="border border-gray-700 items-center px-2">
 													{{ conhecimento.descricao }}
 												</td>
-												<td class="border border-gray-700">
+												<td class="border border-gray-700 w-2/12">
 													<div class="flex justify-center p-0.5 pt-1">
 														<AppFormCheckbox
 															label=""
@@ -98,43 +102,22 @@
 											</tr>
 										</tbody>
 									</table>
+									<div class="bg-blue-900 text-white text-center font-bold">
+										<span
+											>SELECIONADOS: {{ funcionario.conhecimentos.length }}/{{
+												conhecimentosFuncionario.length
+											}}</span
+										>
+									</div>
 								</div>
 								<div>
-									<table class="border table w-full">
-										<thead class="bg-blue-900 text-white">
-											<tr class="border border-gray-700">
-												<th class="border border-gray-700 px-2 w-full">TIPOS DE OBRA</th>
-												<th class="border border-gray-700 px-2"></th>
-											</tr>
-										</thead>
-										<tbody class="bg-white">
-											<tr
-												v-for="item of tiposObra"
-												:key="item.id">
-												<td class="border border-gray-700 items-center px-2">
-													{{ item.descricao }}
-												</td>
-												<td class="border border-gray-700">
-													<div class="flex justify-center items-center p-0.5 pt-1">
-														<AppFormCheckbox
-															label=""
-															:id="'checkboxTipoObra' + item.id"
-															:valor="item.id"
-															v-model="funcionario.tiposObra" />
-													</div>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div>
-									<table class="border table w-full">
-										<thead class="bg-blue-900 text-white">
-											<tr class="border border-gray-700">
-												<th class="border border-gray-700 px-2 w-full">
+									<table>
+										<thead class="bg-blue-900 text-white w-full">
+											<tr class="border border-gray-700 font-bold text-center">
+												<td class="w-10/12 border border-gray-700 px-2">
 													LOCALIDADE/DISPO. DE TRABALHO
-												</th>
-												<th class="border border-gray-700 px-2"></th>
+												</td>
+												<td class="w-2/12 border border-gray-700 px-2"></td>
 											</tr>
 										</thead>
 										<tbody class="bg-white">
@@ -144,7 +127,7 @@
 												<td class="border border-gray-700 items-center px-2">
 													{{ item.descricao }}
 												</td>
-												<td class="border border-gray-700">
+												<td class="border border-gray-700 w-2/12">
 													<div class="flex justify-center p-0.5 pt-1">
 														<AppFormCheckbox
 															label=""
@@ -156,6 +139,92 @@
 											</tr>
 										</tbody>
 									</table>
+									<div class="bg-blue-900 text-white text-center font-bold">
+										<span
+											>SELECIONADOS: {{ funcionario.dispoTrabalho.length }}/{{
+												disponibilidadesTrabalho.length
+											}}</span
+										>
+									</div>
+								</div>
+								<div class="col-span-2">
+									<div
+										class="flex flex-col w-full items-center border border-blue-200 bg-blue-50 gap-1 ">
+										<div class="w-full px-2 font-bold bg-blue-200 py-0.5  text-lg border-b border-blue-400">
+											<span>Experiências profissionais</span>
+										</div>
+										<div class="flex gap-2 items-center w-full p-1">
+											<AppFormSelectCompleto
+												id="tipoObra"
+												:options="tiposObra"
+												label="Tipo de obra"
+												:invalido="errosTipoObra.includes('tipo_obra_avaliacao_id')"
+												class="grow"
+												v-model="tipoObra.tipo_obra_avaliacao_id" />
+											<AppFormSelectCompleto
+												id="cargo"
+												:options="cargos"
+												label="Cargo"
+												:invalido="errosTipoObra.includes('cargo_avaliacao_id')"
+												class="grow"
+												v-model="tipoObra.cargo_avaliacao_id" />
+											<AppFormInput
+												label="Anos"
+												type="number"
+												id="anos"
+												v-model="tipoObra.anos"
+												placeholder="EX: 1"
+												obrigatorio
+												:invalido="errosTipoObra.includes('anos')" />
+											<BotaoPadrao
+												cor="bg-blue-300 hover:!bg-blue-400 self-end"
+												@clique="adicionarTipoObra()">
+												<img
+													src="@/assets/icons/add-b.svg"
+													alt=""
+													class="w-7 h-7" />
+											</BotaoPadrao>
+										</div>
+									</div>
+									<div>
+										<table>
+											<thead class="bg-blue-900 text-white w-full">
+												<tr class="border border-gray-700 font-bold text-center">
+													<th class="grow px-2 border border-gray-600">Tipo de Obra</th>
+													<th class="grow px-2 border border-gray-600">Cargo</th>
+													<th class="grow px-2 border border-gray-600">Anos</th>
+													<th class="w-1/12 border border-gray-600"></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr
+													v-for="(item, index) of funcionario.tiposObra"
+													class="border-collapse">
+													<td class="grow px-2 border border-gray-600">
+														<span>{{ item.tipo_obra }}</span>
+													</td>
+													<td class="grow px-2 border border-gray-600">
+														<span>{{ item.cargo }}</span>
+													</td>
+													<td class="grow px-2 border border-gray-600">
+														<span>{{ item.anos }} anos</span>
+													</td>
+													<td class="w-1/12 justify-center border border-gray-600">
+														<div class="w-full justify-center items-center flex">
+															<BotaoPadrao
+																icone
+																@clique="removerTipoObra(index)">
+																<img
+																	src="@/assets/icons/delete-b.svg"
+																	alt=""
+																	class="w-6 h-6" />
+															</BotaoPadrao>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -311,16 +380,24 @@
 								alt=""
 								class="w-7 h-7" />
 						</BotaoPadrao>
-            <div v-if="estaDeletando" class="flex items-center">
-              <BotaoPadrao texto="Não" cor=" bg-red-500" @clique="estaDeletando = false"></BotaoPadrao>
-              <span class="px-2 text-white">Certeza que deseja deletar essa AVALIÇÃO ?</span>
-              <BotaoPadrao texto="Sim" cor="bg-green-500" @clique="cancelarAvaliacao()"></BotaoPadrao>
-            </div>
+						<div
+							v-if="estaDeletando"
+							class="flex items-center">
+							<BotaoPadrao
+								texto="Não"
+								cor=" bg-red-500"
+								@clique="estaDeletando = false"></BotaoPadrao>
+							<span class="px-2 text-white">Certeza que deseja deletar essa AVALIÇÃO ?</span>
+							<BotaoPadrao
+								texto="Sim"
+								cor="bg-green-500"
+								@clique="cancelarAvaliacao()"></BotaoPadrao>
+						</div>
 					</div>
 					<div class="flex gap-2">
 						<BotaoPadrao
 							texto="SALVAR"
-							@clique="iniciarAvaliacao(false)">
+							@clique="jaIniciado ? editarAvaliacao(false) : iniciarAvaliacao(false)">
 							<template v-slot>
 								<img
 									src="@/assets/icons/save-b.svg"
@@ -389,19 +466,29 @@
 					conhecimentos: [],
 					tiposObra: [],
 					dispoTrabalho: [],
+					previsao_disponibilidade: null,
 				},
 				jaIniciado: false,
 				conhecimentosFuncionario: [],
 				tiposObra: [],
 				disponibilidadesTrabalho: [],
-				campos: ["funcionario_id", "formacao_id", "anos_experiencia"],
+				campos: ["funcionario_id", "formacao_id", "previsao_disponibilidade"],
 				erros: [],
 				avaliacao_id: null,
 				mostrarAlerta: false,
 				textoAlerta: null,
 				avaliacaoEncarregado: null,
 				erroJaTemAvaliacao: false,
-        estaDeletando: false,
+				estaDeletando: false,
+				cargos: [],
+				tipoObra: {
+					tipo_obra: null,
+					tipo_obra_avaliacao_id: null,
+					cargo: null,
+					cargo_avaliacao_id: null,
+					anos: null,
+				},
+				errosTipoObra: [],
 			}
 		},
 		computed: {
@@ -411,6 +498,9 @@
 					{ nome: "Descrição Cargo", valor: "descricao_cargo", disabled: !this.jaIniciado },
 				]
 			},
+			anosExperiencia() {
+				return this.funcionario.tiposObra.reduce((acc, item) => acc + parseInt(item.anos), 0)
+			},
 		},
 		async mounted() {
 			await this.buscarEncarregados()
@@ -418,6 +508,7 @@
 			await this.buscarConheFuncionario()
 			await this.buscarTipoObra()
 			await this.buscarDisponibilidaTrabalho()
+			await this.buscarCargos()
 
 			if (this.$route.params.id) {
 				await this.buscarAvaliacao(this.$route.params.id)
@@ -460,7 +551,9 @@
 				let resp = await this.$axios.$get("/tipo_obra/buscarSimples")
 
 				if (!resp.falha) {
-					this.tiposObra = resp.dados.tiposObra
+					this.tiposObra = resp.dados.tiposObra.map((o) => {
+						return { id: o.id, nome: o.descricao }
+					})
 				}
 			},
 			async buscarDisponibilidaTrabalho() {
@@ -470,17 +563,27 @@
 					this.disponibilidadesTrabalho = resp.dados.disponibilidades
 				}
 			},
+			async buscarCargos() {
+				let resp = await this.$axios.$get("/cargo_avaliacao/buscarSimples")
+
+				if (!resp.falha) {
+					this.cargos = resp.dados.cargos.map((o) => {
+						return { id: o.id, nome: o.nome }
+					})
+				}
+			},
 			async iniciarAvaliacao(sair) {
 				let {
 					funcionario_id,
 					formacao_id,
-					anos_experiencia,
 					conhecimentos,
 					dispoTrabalho,
 					tiposObra,
+					previsao_disponibilidade,
 				} = this.funcionario
-        this.erroJaTemAvaliacao = false
+				this.erroJaTemAvaliacao = false
 				let usuario_id = this.$auth.user.id
+				let anos_experiencia = parseInt(this.anosExperiencia)
 
 				this.erros = validarFormulario(this.campos, this.funcionario)
 
@@ -496,6 +599,7 @@
 							dispoTrabalho,
 							tiposObra,
 							usuario_id,
+							previsao_disponibilidade,
 						})
 
 						if (!resp.falha) {
@@ -507,6 +611,19 @@
 									params: { acao: "Cadastrado" },
 								})
 							} else {
+								let dados = resp.dados
+								if (dados.tiposObra.length > 0) {
+									for (let cadaTipo of dados.tiposObra) {
+										let idx = this.funcionario.tiposObra.findIndex(
+											(o) =>
+												o.tipo_obra_avaliacao_id === cadaTipo.tipo_obra_avaliacao_id &&
+												o.cargo_avaliacao_id === cadaTipo.cargo_avaliacao_id,
+										)
+										if (idx >= 0) {
+											this.funcionario.tiposObra[idx].id = cadaTipo.id
+										}
+									}
+								}
 								this.avaliacao_id = avaliacao.id
 								this.jaIniciado = true
 								this.textoAlerta = "Avaliação iniciada com sucesso!"
@@ -520,11 +637,12 @@
 				let {
 					funcionario_id,
 					formacao_id,
-					anos_experiencia,
 					conhecimentos,
 					dispoTrabalho,
 					tiposObra,
+					previsao_disponibilidade,
 				} = this.funcionario
+				let anos_experiencia = parseInt(this.anosExperiencia)
 				let avaliacao_id = this.avaliacao_id
 				let usuario_id = this.$auth.user.id
 
@@ -540,6 +658,7 @@
 						tiposObra,
 						usuario_id,
 						avaliacao_id,
+						previsao_disponibilidade,
 					})
 
 					if (!resp.falha) {
@@ -549,6 +668,20 @@
 								params: { acao: "Editado" },
 							})
 						} else {
+							let dados = resp.dados
+							if (dados.tiposObra.length > 0) {
+								for (let cadaTipo of dados.tiposObra) {
+									let idx = this.funcionario.tiposObra.findIndex(
+										(o) =>
+											o.tipo_obra_avaliacao_id === cadaTipo.tipo_obra_avaliacao_id &&
+											o.cargo_avaliacao_id === cadaTipo.cargo_avaliacao_id,
+									)
+									if (idx >= 0) {
+										this.funcionario.tiposObra[idx].id = cadaTipo.id
+									}
+								}
+							}
+
 							this.jaIniciado = true
 							this.textoAlerta = "Avaliação editada com sucesso!"
 							this.mostrarAlerta = true
@@ -568,14 +701,32 @@
 					this.jaIniciado = true
 					let conhecimentos = avaliacao.Funcionario.ConheFuncionarioAvaliacaos
 					this.funcionario.conhecimentos = conhecimentos.map((o) => o.id)
-					let tiposObra = avaliacao.Funcionario.TipoObraAvaliacaos
-					this.funcionario.tiposObra = tiposObra.map((o) => o.id)
+					// let tiposObra = avaliacao.Funcionario.TipoObraAvaliacaos
+					// this.funcionario.tiposObra = tiposObra.map((o) => o.id)
 					let dispoTrabalho = avaliacao.Funcionario.DispoTrabalhoAvaliacaos
 					this.funcionario.dispoTrabalho = dispoTrabalho.map((o) => o.id)
 
 					this.funcionario.funcionario_id = avaliacao.funcionario_id
 					this.funcionario.formacao_id = avaliacao.Funcionario.formacao_id
-					this.funcionario.anos_experiencia = avaliacao.Funcionario.anos_experiencia
+					this.funcionario.previsao_disponibilidade = avaliacao.Funcionario.previsao_disponibilidade
+
+					this.funcionario.tiposObra = avaliacao.Funcionario.FuncionarioTemTipoObras.map((o) => {
+						return {
+							id: o.id,
+							tipo_obra: o.TipoObraAvaliacao ? o.TipoObraAvaliacao.descricao : null,
+							cargo: o.CargoAvaliacao ? o.CargoAvaliacao.nome : null,
+							cargo_avaliacao_id: o.cargo_avaliacao_id,
+							tipo_obra_avaliacao_id: o.tipo_obra_avaliacao_id,
+							anos: o.anos,
+						}
+					})
+
+					/*tipo_obra: null,
+          tipo_obra_avaliacao_id: null,
+					cargo: null,
+          cargo_avaliacao_id: null,
+					anos: null,*/
+					console.log(avaliacao.Funcionario)
 				}
 			},
 			async cancelarAvaliacao() {
@@ -590,6 +741,32 @@
 					})
 				}
 			},
+			async adicionarTipoObra() {
+				this.errosTipoObra = validarFormulario(
+					["tipo_obra_avaliacao_id", "cargo_avaliacao_id", "anos"],
+					this.tipoObra,
+				)
+
+				if (this.errosTipoObra.length === 0) {
+					let tipoObra = this.tipoObra
+					tipoObra.tipo_obra = this.tiposObra.find(
+						(o) => o.id === tipoObra.tipo_obra_avaliacao_id,
+					).nome
+					tipoObra.cargo = this.cargos.find((o) => o.id === tipoObra.cargo_avaliacao_id).nome
+					this.funcionario.tiposObra.push({ ...tipoObra })
+
+					this.tipoObra = {
+						tipo_obra: null,
+						tipo_obra_avaliacao_id: null,
+						cargo: null,
+						cargo_avaliacao_id: null,
+						anos: null,
+					}
+				}
+			},
+			async removerTipoObra(index) {
+				this.funcionario.tiposObra.splice(index, 1)
+			},
 		},
 		watch: {
 			"funcionario.funcionario_id"(valor) {
@@ -600,22 +777,39 @@
 					this.funcionario.chapa = encarregado.chapa
 					this.funcionario.cargo = encarregado.cargo
 
-
-          if(!this.jaIniciado){
-
-					if (encarregado.AvaliacaoFuncionarios.length > 0) {
-						this.avaliacaoEncarregado = {
-							nome: encarregado.AvaliacaoFuncionarios[0].AvaliadoPor.nome,
-							data: encarregado.AvaliacaoFuncionarios[0].createdAt,
+					if (!this.jaIniciado) {
+						if (encarregado.AvaliacaoFuncionarios.length > 0) {
+							this.avaliacaoEncarregado = {
+								nome: encarregado.AvaliacaoFuncionarios[0].AvaliadoPor.nome,
+								data: encarregado.AvaliacaoFuncionarios[0].createdAt,
+							}
+						} else {
+							this.avaliacaoEncarregado = null
 						}
-					} else {
-						this.avaliacaoEncarregado = null
 					}
-          }
 				}
 			},
 		},
 	}
 </script>
 
-<style scoped></style>
+<style scoped>
+	tbody {
+		display: block;
+		max-height: 300px;
+		overflow: auto;
+	}
+
+	thead,
+	tbody tr {
+		display: table;
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	td,
+	th,
+	tr {
+		border-collapse: collapse;
+	}
+</style>

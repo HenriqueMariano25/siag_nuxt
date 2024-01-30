@@ -12,6 +12,15 @@
 					class="w-8 h-8" />
 			</ButtonNavegacao>
       <ButtonNavegacao
+        titulo="Cargo"
+        cor="bg-[#264653]"
+        link="Configuracoes/Cargo">
+        <img
+          src="@/assets/icons/list-w.svg"
+          alt=""
+          class="w-8 h-8" />
+      </ButtonNavegacao>
+      <ButtonNavegacao
         titulo="Conhe. Comportamental"
         cor="bg-[#264653]"
         link="configuracoes/ConhecimentoComportamental">
