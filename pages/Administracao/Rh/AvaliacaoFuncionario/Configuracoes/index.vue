@@ -56,6 +56,15 @@
           alt=""
           class="w-8 h-8" />
       </ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="Hab. Técnica"
+        cor="bg-[#264653]"
+        link="configuracoes/HabilidadeTecnica">
+        <img
+          src="@/assets/icons/list-w.svg"
+          alt=""
+          class="w-8 h-8" />
+      </ButtonNavegacao>
 		</div>
 	</div>
 </template>

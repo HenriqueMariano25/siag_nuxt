@@ -16,6 +16,7 @@
 								:readonly="jaIniciado"
 								v-model="funcionario.funcionario_id"
 								label="Funcionário"
+                obrigatorio
 								:invalido="erros.includes('funcionario_id')"
 								:options="encarregados"
 								class="col-span-6" />
@@ -54,6 +55,7 @@
 								v-model="funcionario.formacao_id"
 								:invalido="erros.includes('formacao_id')"
 								label="Formacação"
+                obrigatorio
 								:options="formacoes"
 								class="col-span-4" />
 							<AppFormInput
@@ -71,6 +73,7 @@
 								type="month"
 								:invalido="erros.includes('previsao_disponibilidade')"
 								id="previsao"
+                obrigatorio
 								v-model="funcionario.previsao_disponibilidade"
 								label="Previsão de disponibilidade"
 								class="col-span-3" />
@@ -149,8 +152,9 @@
 								</div>
 								<div class="col-span-2">
 									<div
-										class="flex flex-col w-full items-center border border-blue-200 bg-blue-50 gap-1 ">
-										<div class="w-full px-2 font-bold bg-blue-200 py-0.5  text-lg border-b border-blue-400">
+										class="flex flex-col w-full items-center border border-blue-200 bg-blue-50 gap-1">
+										<div
+											class="w-full px-2 font-bold bg-blue-200 py-0.5 text-lg border-b border-blue-400">
 											<span>Experiências profissionais</span>
 										</div>
 										<div class="flex gap-2 items-center w-full p-1">
@@ -234,123 +238,99 @@
 					</div>
 				</template>
 				<template v-slot:[`tab.descricao_cargo`]="{ item }">
-					<div
-						class="relative"
-						v-if="jaIniciado">
-						<div class="grid grid-cols-12 p-1 gap-2 border border-blue-300 bg-blue-100">
-							<span class="w-full bg-blue-300 px-2 col-span-12">Descrição do Cargo</span>
-							<span class="col-span-12">Preencha as colunas NOTA com os valores:</span>
-							<div class="col-span-6">
-								<table class="w-full table">
-									<thead class="bg-blue-900 text-white">
-										<tr>
-											<th class="border border-gray-700 whitespace-nowrap px-1 w-full">
-												Conhecimento Técnico
-											</th>
-											<th class="border border-gray-700 whitespace-nowrap px-1">Nivel</th>
-											<th class="border border-gray-700 whitespace-nowrap px-1">Nota</th>
-										</tr>
-									</thead>
-									<tbody class="bg-white">
-										<tr>
-											<td
-												class="border border-gray-700 text-center bg-gray-200 text-sm"
-												colspan="3">
-												<span>0-Não avaliado; 1-Não Atende; 2-Atende; 3-Supera</span>
-											</td>
-										</tr>
-										<tr>
-											<td class="border border-gray-700 px-1">Pacote Office</td>
-											<td class="border border-gray-700 px-1">Básico</td>
-											<td class="border border-gray-700 px-1">
+					<div class="relative">
+						<div class="grid grid-cols-2 gap-2">
+							<table class="table w-full">
+								<thead class="bg-blue-900 text-white w-full">
+									<tr class="border border-gray-500 font-bold text-center">
+										<th class="w-10/12 border border-gray-500 px-2">1. Habilidade Técnicas</th>
+										<th class="w-2/12 border border-gray-500 px-2">Nota</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td
+											colspan="2"
+											class="border-gray-500 border bg-slate-300">
+											<div class="w-full text-center">
+												<span
+													><strong>1</strong>-Não atende; <strong>2</strong>-Atende;
+													<strong>3</strong>-Supera</span
+												>
+											</div>
+										</td>
+									</tr>
+									<tr v-for="habilidade of habilidadesTecnicas">
+										<td class="w-10/12 border border-gray-500 px-2">
+											{{ habilidade.descricao }}
+										</td>
+										<td class="w-2/12 border border-gray-500 px-2">
+											<div class="w-full flex justify-center">
 												<input
-													id="teste"
 													type="text"
-													class="flex !h-[20px] !w-[40px] grow border border-gray-500 text-center"
 													v-maska
-													data-maska="#" />
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-							<div class="col-span-6">
-								<table class="w-full table">
-									<thead class="bg-blue-900 text-white">
-										<tr>
-											<th class="border border-gray-700 whitespace-nowrap px-1 w-full">Idiomas</th>
-											<th class="border border-gray-700 whitespace-nowrap px-1">Nivel</th>
-											<th class="border border-gray-700 whitespace-nowrap px-1">Nota</th>
-										</tr>
-									</thead>
-									<tbody class="bg-white">
-										<tr>
-											<td
-												class="border border-gray-700 text-center bg-gray-200 text-sm"
-												colspan="3">
-												<span>0-Não avaliado; 1-Não Atende; 2-Atende; 3-Supera</span>
-											</td>
-										</tr>
-										<tr>
-											<td class="border border-gray-700 px-1">Inglês</td>
-											<td class="border border-gray-700 px-1">Intermediário</td>
-											<td class="border border-gray-700 px-1">
+													class="border border-gray-600 px-3.5 font-bold text-lg w-[40px] rounded"
+													data-maska="A"
+                          :class="{'bg-red-200 border border-red-400': errosHabTecnicas && (!Object.keys(funcionario.habilidadesTecnicas).includes((habilidade.id).toString()) || funcionario.habilidadesTecnicas[(habilidade.id).toString()] === '')}"
+                          v-model="funcionario.habilidadesTecnicas[`${habilidade.id}`]"
+													data-maska-tokens="A:[1-3]" />
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<table class="table w-full">
+								<thead class="bg-blue-900 text-white w-full">
+									<tr class="border border-gray-300 font-bold text-center">
+										<th class="w-10/12 border border-gray-300 px-2">
+											2. Habilidade Comportamentais
+										</th>
+										<th class="w-2/12 border border-gray-300 px-2">Nota</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td
+											colspan="2"
+											class="border-gray-500 border bg-slate-300">
+											<div class="w-full text-center">
+												<span>
+                          <strong>1</strong>-Não atende;
+                          <strong>2</strong>-Atende;
+													<strong>3</strong>-Supera
+                        </span>
+											</div>
+										</td>
+									</tr>
+									<tr v-for="conhecimento of conheComportamentais">
+										<td class="w-10/12 border border-gray-500 px-2">
+											{{ conhecimento.descricao }}
+										</td>
+										<td class="w-2/12 border border-gray-500 px-2">
+											<div class="w-full flex justify-center">
 												<input
-													id="teste"
 													type="text"
-													class="flex !h-[20px] !w-[40px] grow border border-gray-500 text-center"
 													v-maska
-													data-maska="#" />
-											</td>
-										</tr>
-										<tr>
-											<td class="border border-gray-700 px-1">Espanhol</td>
-											<td class="border border-gray-700 px-1">Intermediário</td>
-											<td class="border border-gray-700 px-1">
-												<input
-													id="teste"
-													type="text"
-													class="flex !h-[20px] !w-[40px] grow border border-gray-500 text-center"
-													v-maska
-													data-maska="#" />
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-							<div class="col-span-6">
-								<table class="w-full table">
-									<thead class="bg-blue-900 text-white">
-										<tr>
-											<th class="border border-gray-700 whitespace-nowrap px-1 w-full">
-												Certificações
-											</th>
-											<th class="border border-gray-700 whitespace-nowrap px-1">Nivel</th>
-											<th class="border border-gray-700 whitespace-nowrap px-1">Nota</th>
-										</tr>
-									</thead>
-									<tbody class="bg-white">
-										<tr>
-											<td
-												class="border border-gray-700 text-center bg-gray-200 text-sm"
-												colspan="3">
-												<span>0-Não avaliado; 1-Não Atende; 2-Atende; 3-Supera</span>
-											</td>
-										</tr>
-										<tr>
-											<td class="border border-gray-700 px-1">Gestão de Material</td>
-											<td class="border border-gray-700 px-1">Básico</td>
-											<td class="border border-gray-700 px-1">
-												<input
-													id="teste"
-													type="text"
-													class="flex !h-[20px] !w-[40px] grow border border-gray-500 text-center"
-													v-maska
-													data-maska="#" />
-											</td>
-										</tr>
-									</tbody>
-								</table>
+													class="border border-gray-600 px-3.5 font-bold text-lg w-[40px] rounded"
+													data-maska="A"
+                          :class="{'bg-red-200 border border-red-400': errosConheComportamental && (!Object.keys(funcionario.conheComportamentais).includes((conhecimento.id).toString()) || funcionario.conheComportamentais[(conhecimento.id).toString()] === '')}"
+                          v-model="funcionario.conheComportamentais[`${conhecimento.id}`]"
+													data-maska-tokens="A:[1-3]" />
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="col-span-2 flex flex-col px-2 pb-2">
+								<span class="bg-blue-900 text-white font-bold px-2">3. Comentários Gerais</span>
+								<AppFormTextarea
+									id="observacao"
+									:total-caracteres="1000"
+									label="Comentários Gerais"
+									linhas="2"
+                  v-model="funcionario.comentario_geral"
+									placeholder="Comentário opcional"
+									class="col-span-3" />
 							</div>
 						</div>
 					</div>
@@ -394,7 +374,8 @@
 								@clique="cancelarAvaliacao()"></BotaoPadrao>
 						</div>
 					</div>
-					<div class="flex gap-2">
+					<div class="flex gap-2 items-center">
+            <span class="text-red-400 text-xl font-bold" v-if="erros.length > 0 || errosHabTecnicas || errosConheComportamental">Favor preencher todos os campos obrigatórios</span>
 						<BotaoPadrao
 							texto="SALVAR"
 							@clique="jaIniciado ? editarAvaliacao(false) : iniciarAvaliacao(false)">
@@ -414,6 +395,15 @@
 									alt="close"
 									class="w-7 h-7" />
 							</template>
+						</BotaoPadrao>
+						<BotaoPadrao
+							texto="finalizar"
+              @clique="finalizarAvaliacao()"
+							v-if="jaIniciado">
+							<img
+								src="@/assets/icons/check-circle-b.svg"
+								alt=""
+								class="w-6 h-6" />
 						</BotaoPadrao>
 					</div>
 				</div>
@@ -439,9 +429,11 @@
 	import AppFormCheckbox from "~/components/Ui/Form/AppFormCheckbox.vue"
 	import { validarFormulario } from "~/mixins/validarFormulario"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
+	import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue"
 
 	export default {
 		components: {
+			AppFormTextarea,
 			AppAlerta,
 			AppFormCheckbox,
 			BotaoPadrao,
@@ -467,6 +459,9 @@
 					tiposObra: [],
 					dispoTrabalho: [],
 					previsao_disponibilidade: null,
+          habilidadesTecnicas: [],
+          conheComportamentais: [],
+          comentario_geral: null
 				},
 				jaIniciado: false,
 				conhecimentosFuncionario: [],
@@ -489,6 +484,10 @@
 					anos: null,
 				},
 				errosTipoObra: [],
+				habilidadesTecnicas: {},
+				conheComportamentais: [],
+        errosHabTecnicas: false,
+        errosConheComportamental: false
 			}
 		},
 		computed: {
@@ -496,6 +495,7 @@
 				return [
 					{ nome: "Funcionário", valor: "funcionario" },
 					{ nome: "Descrição Cargo", valor: "descricao_cargo", disabled: !this.jaIniciado },
+					// { nome: "Descrição Cargo", valor: "descricao_cargo" },
 				]
 			},
 			anosExperiencia() {
@@ -509,6 +509,10 @@
 			await this.buscarTipoObra()
 			await this.buscarDisponibilidaTrabalho()
 			await this.buscarCargos()
+
+			//DESCRICAO CARGO
+			await this.buscarHabilidadesTecnicas()
+			await this.buscarConheComportamental()
 
 			if (this.$route.params.id) {
 				await this.buscarAvaliacao(this.$route.params.id)
@@ -641,6 +645,7 @@
 					dispoTrabalho,
 					tiposObra,
 					previsao_disponibilidade,
+          comentario_geral
 				} = this.funcionario
 				let anos_experiencia = parseInt(this.anosExperiencia)
 				let avaliacao_id = this.avaliacao_id
@@ -648,7 +653,22 @@
 
 				this.erros = validarFormulario(this.campos, this.funcionario)
 
-				if (this.erros.length === 0) {
+        let valoresHab = Object.values(this.funcionario.habilidadesTecnicas.filter(o => o !== "" && o !== null))
+        this.errosHabTecnicas = this.habilidadesTecnicas.length > valoresHab.length;
+
+
+        this.errosConheComportamental = this.conheComportamentais.length > Object.values(this.funcionario.conheComportamentais).length;
+
+
+				if (this.erros.length === 0 && this.errosHabTecnicas === false && this.errosConheComportamental === false) {
+          let habilidadesTecnicas = Object.keys(this.funcionario.habilidadesTecnicas).map(o => {
+            return { id: parseInt(o), nota: this.funcionario.habilidadesTecnicas[o]  }
+          })
+
+          let conheComportamentais = Object.keys(this.funcionario.conheComportamentais).map(o => {
+            return { id: parseInt(o), nota: this.funcionario.conheComportamentais[o] }
+          })
+
 					let resp = await this.$axios.$post("/avaliacao_funcionario/editar", {
 						funcionario_id,
 						formacao_id,
@@ -659,6 +679,9 @@
 						usuario_id,
 						avaliacao_id,
 						previsao_disponibilidade,
+            habilidadesTecnicas,
+            conheComportamentais,
+            comentario_geral,
 					})
 
 					if (!resp.falha) {
@@ -689,27 +712,37 @@
 					}
 				}
 			},
+      async finalizarAvaliacao(){
+        await this.editarAvaliacao(false)
+
+        let avaliacao_id = this.avaliacao_id
+        let resp = await this.$axios.$post("/avaliacao_funcionario/finalizar", { avaliacao_id })
+
+        if(!resp.falha){
+          let status = resp.dados.status
+
+          await this.$router.push({
+            name: "Administracao-Rh-AvaliacaoFuncionario-Avaliacoes",
+            params: { acao: "Finalizado", item: avaliacao_id, status },
+          })
+        }
+      },
 			async buscarAvaliacao(id) {
 				let resp = await this.$axios.$get("/avalicao_funcionario/buscarAvaliacao", {
 					params: { id },
 				})
 
 				if (!resp.falha) {
-					let avaliacao = resp.dados.avaliacao
-
+					let avaliacao = resp.dados.avaliacao;
 					this.avaliacao_id = avaliacao.id
 					this.jaIniciado = true
 					let conhecimentos = avaliacao.Funcionario.ConheFuncionarioAvaliacaos
 					this.funcionario.conhecimentos = conhecimentos.map((o) => o.id)
-					// let tiposObra = avaliacao.Funcionario.TipoObraAvaliacaos
-					// this.funcionario.tiposObra = tiposObra.map((o) => o.id)
 					let dispoTrabalho = avaliacao.Funcionario.DispoTrabalhoAvaliacaos
 					this.funcionario.dispoTrabalho = dispoTrabalho.map((o) => o.id)
-
 					this.funcionario.funcionario_id = avaliacao.funcionario_id
 					this.funcionario.formacao_id = avaliacao.Funcionario.formacao_id
 					this.funcionario.previsao_disponibilidade = avaliacao.Funcionario.previsao_disponibilidade
-
 					this.funcionario.tiposObra = avaliacao.Funcionario.FuncionarioTemTipoObras.map((o) => {
 						return {
 							id: o.id,
@@ -721,12 +754,17 @@
 						}
 					})
 
-					/*tipo_obra: null,
-          tipo_obra_avaliacao_id: null,
-					cargo: null,
-          cargo_avaliacao_id: null,
-					anos: null,*/
-					console.log(avaliacao.Funcionario)
+          let habilidadesTecnicas = avaliacao.AvaliacaoTemHabTecnicas
+          for(let hab of habilidadesTecnicas){
+            this.funcionario.habilidadesTecnicas[`${hab.habilidade_tecnica_avaliacao_id}`] = hab.nota
+          }
+
+          let conheComportamentais = avaliacao.AvaliacaoTemConheComportamentals
+          for (let con of conheComportamentais) {
+            this.funcionario.conheComportamentais[`${con.ConheComportamentalAvaliacaoId}`] = con.nota
+          }
+
+          this.funcionario.comentario_geral = avaliacao.comentario_geral
 				}
 			},
 			async cancelarAvaliacao() {
@@ -766,6 +804,21 @@
 			},
 			async removerTipoObra(index) {
 				this.funcionario.tiposObra.splice(index, 1)
+			},
+
+			async buscarHabilidadesTecnicas() {
+				let resp = await this.$axios.$get("/habilidade_tecnica/buscarSimples")
+
+				if (!resp.falha) {
+					this.habilidadesTecnicas = resp.dados.habilidades
+				}
+			},
+			async buscarConheComportamental() {
+				let resp = await this.$axios.$get("/conhecimento_comportamental/buscarSimples")
+
+				if (!resp.falha) {
+					this.conheComportamentais = resp.dados.conhecimentos
+				}
 			},
 		},
 		watch: {
