@@ -16,7 +16,7 @@
 								:readonly="jaIniciado"
 								v-model="funcionario.funcionario_id"
 								label="Funcionário"
-                obrigatorio
+								obrigatorio
 								:invalido="erros.includes('funcionario_id')"
 								:options="encarregados"
 								class="col-span-6" />
@@ -55,7 +55,7 @@
 								v-model="funcionario.formacao_id"
 								:invalido="erros.includes('formacao_id')"
 								label="Formacação"
-                obrigatorio
+								obrigatorio
 								:options="formacoes"
 								class="col-span-4" />
 							<AppFormInput
@@ -73,7 +73,7 @@
 								type="month"
 								:invalido="erros.includes('previsao_disponibilidade')"
 								id="previsao"
-                obrigatorio
+								obrigatorio
 								v-model="funcionario.previsao_disponibilidade"
 								label="Previsão de disponibilidade"
 								class="col-span-3" />
@@ -271,8 +271,15 @@
 													v-maska
 													class="border border-gray-600 px-3.5 font-bold text-lg w-[40px] rounded"
 													data-maska="A"
-                          :class="{'bg-red-200 border border-red-400': errosHabTecnicas && (!Object.keys(funcionario.habilidadesTecnicas).includes((habilidade.id).toString()) || funcionario.habilidadesTecnicas[(habilidade.id).toString()] === '')}"
-                          v-model="funcionario.habilidadesTecnicas[`${habilidade.id}`]"
+													:class="{
+														'bg-red-200 border border-red-400':
+															errosHabTecnicas &&
+															(!Object.keys(funcionario.habilidadesTecnicas).includes(
+																habilidade.id.toString(),
+															) ||
+																funcionario.habilidadesTecnicas[habilidade.id.toString()] === ''),
+													}"
+													v-model="funcionario.habilidadesTecnicas[`${habilidade.id}`]"
 													data-maska-tokens="A:[1-3]" />
 											</div>
 										</td>
@@ -295,10 +302,9 @@
 											class="border-gray-500 border bg-slate-300">
 											<div class="w-full text-center">
 												<span>
-                          <strong>1</strong>-Não atende;
-                          <strong>2</strong>-Atende;
+													<strong>1</strong>-Não atende; <strong>2</strong>-Atende;
 													<strong>3</strong>-Supera
-                        </span>
+												</span>
 											</div>
 										</td>
 									</tr>
@@ -313,8 +319,16 @@
 													v-maska
 													class="border border-gray-600 px-3.5 font-bold text-lg w-[40px] rounded"
 													data-maska="A"
-                          :class="{'bg-red-200 border border-red-400': errosConheComportamental && (!Object.keys(funcionario.conheComportamentais).includes((conhecimento.id).toString()) || funcionario.conheComportamentais[(conhecimento.id).toString()] === '')}"
-                          v-model="funcionario.conheComportamentais[`${conhecimento.id}`]"
+													:class="{
+														'bg-red-200 border border-red-400':
+															errosConheComportamental &&
+															(!Object.keys(funcionario.conheComportamentais).includes(
+																conhecimento.id.toString(),
+															) ||
+																funcionario.conheComportamentais[conhecimento.id.toString()] ===
+																	''),
+													}"
+													v-model="funcionario.conheComportamentais[`${conhecimento.id}`]"
 													data-maska-tokens="A:[1-3]" />
 											</div>
 										</td>
@@ -328,7 +342,7 @@
 									:total-caracteres="1000"
 									label="Comentários Gerais"
 									linhas="2"
-                  v-model="funcionario.comentario_geral"
+									v-model="funcionario.comentario_geral"
 									placeholder="Comentário opcional"
 									class="col-span-3" />
 							</div>
@@ -375,7 +389,11 @@
 						</div>
 					</div>
 					<div class="flex gap-2 items-center">
-            <span class="text-red-400 text-xl font-bold" v-if="erros.length > 0 || errosHabTecnicas || errosConheComportamental">Favor preencher todos os campos obrigatórios</span>
+						<span
+							class="text-red-400 text-xl font-bold"
+							v-if="erros.length > 0 || errosHabTecnicas || errosConheComportamental"
+							>Favor preencher todos os campos obrigatórios</span
+						>
 						<BotaoPadrao
 							texto="SALVAR"
 							@clique="jaIniciado ? editarAvaliacao(false) : iniciarAvaliacao(false)">
@@ -398,7 +416,7 @@
 						</BotaoPadrao>
 						<BotaoPadrao
 							texto="finalizar"
-              @clique="finalizarAvaliacao()"
+							@clique="finalizarAvaliacao()"
 							v-if="jaIniciado">
 							<img
 								src="@/assets/icons/check-circle-b.svg"
@@ -459,9 +477,9 @@
 					tiposObra: [],
 					dispoTrabalho: [],
 					previsao_disponibilidade: null,
-          habilidadesTecnicas: [],
-          conheComportamentais: [],
-          comentario_geral: null
+					habilidadesTecnicas: [],
+					conheComportamentais: [],
+					comentario_geral: null,
 				},
 				jaIniciado: false,
 				conhecimentosFuncionario: [],
@@ -486,8 +504,8 @@
 				errosTipoObra: [],
 				habilidadesTecnicas: {},
 				conheComportamentais: [],
-        errosHabTecnicas: false,
-        errosConheComportamental: false
+				errosHabTecnicas: false,
+				errosConheComportamental: false,
 			}
 		},
 		computed: {
@@ -645,7 +663,7 @@
 					dispoTrabalho,
 					tiposObra,
 					previsao_disponibilidade,
-          comentario_geral
+					comentario_geral,
 				} = this.funcionario
 				let anos_experiencia = parseInt(this.anosExperiencia)
 				let avaliacao_id = this.avaliacao_id
@@ -653,21 +671,27 @@
 
 				this.erros = validarFormulario(this.campos, this.funcionario)
 
-        let valoresHab = Object.values(this.funcionario.habilidadesTecnicas.filter(o => o !== "" && o !== null))
-        this.errosHabTecnicas = this.habilidadesTecnicas.length > valoresHab.length;
+				let valoresHab = Object.values(
+					this.funcionario.habilidadesTecnicas.filter((o) => o !== "" && o !== null),
+				)
+				this.errosHabTecnicas = this.habilidadesTecnicas.length > valoresHab.length
 
+				this.errosConheComportamental =
+					this.conheComportamentais.length >
+					Object.values(this.funcionario.conheComportamentais).length
 
-        this.errosConheComportamental = this.conheComportamentais.length > Object.values(this.funcionario.conheComportamentais).length;
+				if (
+					this.erros.length === 0 &&
+					this.errosHabTecnicas === false &&
+					this.errosConheComportamental === false
+				) {
+					let habilidadesTecnicas = Object.keys(this.funcionario.habilidadesTecnicas).map((o) => {
+						return { id: parseInt(o), nota: this.funcionario.habilidadesTecnicas[o] }
+					})
 
-
-				if (this.erros.length === 0 && this.errosHabTecnicas === false && this.errosConheComportamental === false) {
-          let habilidadesTecnicas = Object.keys(this.funcionario.habilidadesTecnicas).map(o => {
-            return { id: parseInt(o), nota: this.funcionario.habilidadesTecnicas[o]  }
-          })
-
-          let conheComportamentais = Object.keys(this.funcionario.conheComportamentais).map(o => {
-            return { id: parseInt(o), nota: this.funcionario.conheComportamentais[o] }
-          })
+					let conheComportamentais = Object.keys(this.funcionario.conheComportamentais).map((o) => {
+						return { id: parseInt(o), nota: this.funcionario.conheComportamentais[o] }
+					})
 
 					let resp = await this.$axios.$post("/avaliacao_funcionario/editar", {
 						funcionario_id,
@@ -679,9 +703,9 @@
 						usuario_id,
 						avaliacao_id,
 						previsao_disponibilidade,
-            habilidadesTecnicas,
-            conheComportamentais,
-            comentario_geral,
+						habilidadesTecnicas,
+						conheComportamentais,
+						comentario_geral,
 					})
 
 					if (!resp.falha) {
@@ -712,33 +736,50 @@
 					}
 				}
 			},
-      async finalizarAvaliacao(){
-        await this.editarAvaliacao(false)
+			async finalizarAvaliacao() {
+				await this.editarAvaliacao(false)
 
-        let avaliacao_id = this.avaliacao_id
-        let resp = await this.$axios.$post("/avaliacao_funcionario/finalizar", { avaliacao_id })
+				this.erros = validarFormulario(this.campos, this.funcionario)
 
-        if(!resp.falha){
-          let status = resp.dados.status
+				let valoresHab = Object.values(
+					this.funcionario.habilidadesTecnicas.filter((o) => o !== "" && o !== null),
+				)
+				this.errosHabTecnicas = this.habilidadesTecnicas.length > valoresHab.length
 
-          await this.$router.push({
-            name: "Administracao-Rh-AvaliacaoFuncionario-Avaliacoes",
-            params: { acao: "Finalizado", item: avaliacao_id, status },
-          })
-        }
-      },
+				this.errosConheComportamental =
+					this.conheComportamentais.length >
+					Object.values(this.funcionario.conheComportamentais).length
+
+				if (
+					this.erros.length === 0 &&
+					this.errosHabTecnicas === false &&
+					this.errosConheComportamental === false
+				) {
+					let avaliacao_id = this.avaliacao_id
+					let resp = await this.$axios.$post("/avaliacao_funcionario/finalizar", { avaliacao_id })
+
+					if (!resp.falha) {
+						let status = resp.dados.status
+
+						await this.$router.push({
+							name: "Administracao-Rh-AvaliacaoFuncionario-Avaliacoes",
+							params: { acao: "Finalizado", item: avaliacao_id, status },
+						})
+					}
+				}
+			},
 			async buscarAvaliacao(id) {
 				let resp = await this.$axios.$get("/avalicao_funcionario/buscarAvaliacao", {
 					params: { id },
 				})
 
 				if (!resp.falha) {
-					let avaliacao = resp.dados.avaliacao;
+					let avaliacao = resp.dados.avaliacao
 					this.avaliacao_id = avaliacao.id
 					this.jaIniciado = true
-					let conhecimentos = avaliacao.Funcionario.ConheFuncionarioAvaliacaos
+					let conhecimentos = avaliacao.Funcionario.ConheFuncionarioAvaliacao
 					this.funcionario.conhecimentos = conhecimentos.map((o) => o.id)
-					let dispoTrabalho = avaliacao.Funcionario.DispoTrabalhoAvaliacaos
+					let dispoTrabalho = avaliacao.Funcionario.DispoTrabalhoAvaliacao
 					this.funcionario.dispoTrabalho = dispoTrabalho.map((o) => o.id)
 					this.funcionario.funcionario_id = avaliacao.funcionario_id
 					this.funcionario.formacao_id = avaliacao.Funcionario.formacao_id
@@ -754,17 +795,19 @@
 						}
 					})
 
-          let habilidadesTecnicas = avaliacao.AvaliacaoTemHabTecnicas
-          for(let hab of habilidadesTecnicas){
-            this.funcionario.habilidadesTecnicas[`${hab.habilidade_tecnica_avaliacao_id}`] = hab.nota
-          }
+					let habilidadesTecnicas = avaliacao.AvaliacaoTemHabTecnicas
+					for (let hab of habilidadesTecnicas) {
+						this.funcionario.habilidadesTecnicas[`${hab.habilidade_tecnica_avaliacao_id}`] =
+							hab.nota
+					}
 
-          let conheComportamentais = avaliacao.AvaliacaoTemConheComportamentals
-          for (let con of conheComportamentais) {
-            this.funcionario.conheComportamentais[`${con.ConheComportamentalAvaliacaoId}`] = con.nota
-          }
+					let conheComportamentais = avaliacao.AvaliacaoTemConheComportamental
+					for (let con of conheComportamentais) {
+						this.funcionario.conheComportamentais[`${con.ConheComportamentalAvaliacaoId}`] =
+							con.nota
+					}
 
-          this.funcionario.comentario_geral = avaliacao.comentario_geral
+					this.funcionario.comentario_geral = avaliacao.comentario_geral
 				}
 			},
 			async cancelarAvaliacao() {

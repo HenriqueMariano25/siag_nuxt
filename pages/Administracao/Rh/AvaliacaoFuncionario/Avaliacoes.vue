@@ -18,7 +18,9 @@
 				:temDetalhes="false">
 				<template v-slot:[`body.acoes`]="{ item }">
 					<BotaoPadrao
+						v-if="item.AvaliadoPor.nome === $auth.user.nome"
 						icone
+						class="!p-0.5"
 						@clique="irParaEdicao(item.id)">
 						<div class="w-[22px]">
 							<img
