@@ -511,8 +511,8 @@
 		computed: {
 			tabs() {
 				return [
-					{ nome: "Funcionário", valor: "funcionario" },
-					{ nome: "Descrição Cargo", valor: "descricao_cargo", disabled: !this.jaIniciado },
+					{ nome: "Currículo", valor: "funcionario" },
+					{ nome: "Avaliação de Desempenho", valor: "descricao_cargo", disabled: !this.jaIniciado },
 					// { nome: "Descrição Cargo", valor: "descricao_cargo" },
 				]
 			},

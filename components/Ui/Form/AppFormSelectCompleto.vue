@@ -210,7 +210,18 @@
 				},
 			},
 		},
-		methods: {
+    mounted() {
+      let valor = this.value
+      if (valor && valor !== "") {
+        let op = this.options.find((o) => o.id === valor)
+        if (op) {
+          this.texto = op.nome
+        }
+      } else {
+        this.texto = "Selecione"
+      }
+    },
+    methods: {
       abriOpcoes(){
         if (!this.disabled && !this.readonly) {
           const wrapper = document.getElementById("wrapper-" + this.id)
