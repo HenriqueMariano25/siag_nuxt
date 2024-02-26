@@ -756,7 +756,8 @@
 					this.errosConheComportamental === false
 				) {
 					let avaliacao_id = this.avaliacao_id
-					let resp = await this.$axios.$post("/avaliacao_funcionario/finalizar", { avaliacao_id })
+          let usuario_id = this.$auth.user.id
+					let resp = await this.$axios.$post("/avaliacao_funcionario/finalizar", { avaliacao_id, usuario_id })
 
 					if (!resp.falha) {
 						let status = resp.dados.status
