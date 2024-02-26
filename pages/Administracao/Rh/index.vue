@@ -16,7 +16,7 @@
         </svg>
       </ButtonNavegacao>
       <ButtonNavegacao titulo="Avaliação Funcionário" cor="bg-[#264653]" link="/administracao/rh/AvaliacaoFuncionario"
-                       v-if="$auth.user.permissoes.includes('prototipo')">
+                       v-if="$auth.user.permissoes.includes('avaliacao_funcionario')">
         <img src="@/assets/icons/person-circle-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
     </div>
