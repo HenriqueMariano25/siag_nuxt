@@ -812,8 +812,9 @@
 			},
 			async cancelarAvaliacao() {
 				let id = this.avaliacao_id
+        let usuario_id = this.$auth.user.id
 
-				let resp = await this.$axios.$delete(`/avaliacao_funcionario/deletar`, { params: { id } })
+				let resp = await this.$axios.$delete(`/avaliacao_funcionario/deletar`, { params: { id, usuario_id } })
 
 				if (!resp.falha) {
 					await this.$router.push({
