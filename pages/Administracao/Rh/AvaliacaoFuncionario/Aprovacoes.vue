@@ -183,7 +183,7 @@
             this.dados.splice(idx, 1)
           }
         }
-
+        this.selecionados = null
         this.textoAlerta = `Avaliações aprovadas com sucesso!`
         this.mostrarAlerta = true
         this.mostrarDialogAprovarAvaliacao = false
