@@ -60,7 +60,9 @@
           <span class="whitespace-nowrap">{{ item.avaliado_em ? $dayjs(item.avaliado_em).format("DD/MM/YYYY") : "" }}</span>
         </template>
         <template v-slot:[`body.historico`]="{ item }">
-          <BotaoPadrao texto="histórico" class="w-full border border-gray-700" @clique="mostrarDialogHistoricoAvaliacao = true; avaliacao_id = item.id">
+          <BotaoPadrao texto="histórico" class="w-full border border-gray-700 !py-0 !justify-center"
+                       cor="bg-blue-100 hover:!bg-blue-300"
+                       @clique="mostrarDialogHistoricoAvaliacao = true; avaliacao_id = item.id">
             <img src="@/assets/icons/history-b.svg" alt="" class="w-6 h-6">
           </BotaoPadrao>
         </template>

@@ -54,6 +54,13 @@
 				<template v-slot:[`body.AvaliadoPor.nome`]="{ item }">
 					<span class="whitespace-nowrap">{{ item.AvaliadoPor ? item.AvaliadoPor.nome : "" }}</span>
 				</template>
+        <template v-slot:[`body.historico`]="{ item }">
+          <BotaoPadrao texto="histórico" class="w-full border border-gray-700 !py-0 !justify-center"
+                       cor="bg-blue-100 hover:!bg-blue-300"
+                       @clique="mostrarDialogHistoricoAvaliacao = true; avaliacao_id = item.id">
+            <img src="@/assets/icons/history-b.svg" alt="" class="w-6 h-6">
+          </BotaoPadrao>
+        </template>
 			</TabelaPadrao>
 		</div>
 		<RodapePagina>
@@ -75,6 +82,10 @@
 		<DialogAvaliacaoFuncionario
 			v-if="mostrarDialogCriaAvaliacaoFuncionario"
 			@cancelar="mostrarDialogCriaAvaliacaoFuncionario = false" />
+    <DialogHistoricoAvaliacao
+      v-if="mostrarDialogHistoricoAvaliacao"
+      @cancelar="mostrarDialogHistoricoAvaliacao = false; avaliacao_id = null"
+      :avaliacao_id="avaliacao_id" />
 		<AppAlerta
 			tipo="sucesso"
 			:mostrar="mostrarAlerta"
@@ -92,10 +103,13 @@
 	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
 	import DialogAvaliacaoFuncionario from "~/components/Dialogs/Administracao/Rh/AvaliacaoFuncionario/DialogAvaliacaoFuncionario.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
+  import DialogHistoricoAvaliacao
+    from "~/components/Dialogs/Administracao/Rh/AvaliacaoFuncionario/DialogHistoricoAvaliacao.vue";
 
 	export default {
 		name: "AvaliacaoFuncionario",
 		components: {
+      DialogHistoricoAvaliacao,
 			AppAlerta,
 			DialogAvaliacaoFuncionario,
 			TabelaPadrao,
@@ -114,6 +128,7 @@
 					{ nome: "Nome", valor: "Funcionario.nome" },
 					{ nome: "Cargo", valor: "Funcionario.cargo" },
 					{ nome: "Avaliado por", valor: "AvaliadoPor.nome", filtro: true, ordenar: true },
+          { nome: "", valor: "historico" },
 				],
 				filtros: {},
 				ordem: null,
@@ -124,6 +139,8 @@
 				mostrarDialogCriaAvaliacaoFuncionario: false,
 				mostrarAlerta: false,
 				textoAlerta: null,
+        mostrarDialogHistoricoAvaliacao: false,
+        avaliacao_id: null
 			}
 		},
 		mounted() {
