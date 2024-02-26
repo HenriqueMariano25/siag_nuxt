@@ -252,11 +252,44 @@
 										<td
 											colspan="2"
 											class="border-gray-500 border bg-slate-300">
-											<div class="w-full text-center">
-												<span
-													><strong>1</strong>-Não atende; <strong>2</strong>-Atende;
-													<strong>3</strong>-Supera</span
-												>
+											<div class="w-full text-center justify-center flex items-center gap-1.5">
+                        <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7">
+												<div>
+													<AppTooltip posicao="left-0">
+														<template v-slot:corpo>
+															<span class="cursor-pointer hover:!text-blue-900 hover:font-bold"> <strong>1</strong>-Não atende; </span>
+														</template>
+														<template v-slot:tooltip>
+															<div class="w-[400px]">
+																<span>Situação em que o avaliado está abaixo do que é esperado para sua posição.</span>
+															</div>
+														</template>
+													</AppTooltip>
+												</div>
+                        <div>
+                          <AppTooltip posicao="right-0">
+                            <template v-slot:corpo>
+                              <span class="cursor-pointer hover:!text-blue-900 hover:font-bold"> <strong>2</strong>-Atende; </span>
+                            </template>
+                            <template v-slot:tooltip>
+                              <div class="w-[400px]">
+                                <span>Situação em que o avaliado entrega o que é esperado para sua posição.</span>
+                              </div>
+                            </template>
+                          </AppTooltip>
+                        </div>
+                        <div>
+                          <AppTooltip posicao="right-0">
+                            <template v-slot:corpo>
+                              <span class="cursor-pointer hover:!text-blue-900 hover:font-bold"> <strong>3</strong>-Supera; </span>
+                            </template>
+                            <template v-slot:tooltip>
+                              <div class="w-[400px]">
+                                <span>Situação em que o avaliado entrega além do que é esperado para sua posição, se destacando constantemente.</span>
+                              </div>
+                            </template>
+                          </AppTooltip>
+                        </div>
 											</div>
 										</td>
 									</tr>
@@ -300,12 +333,45 @@
 										<td
 											colspan="2"
 											class="border-gray-500 border bg-slate-300">
-											<div class="w-full text-center">
-												<span>
-													<strong>1</strong>-Não atende; <strong>2</strong>-Atende;
-													<strong>3</strong>-Supera
-												</span>
-											</div>
+                      <div class="w-full text-center justify-center flex items-center gap-1.5">
+                        <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7">
+                        <div>
+                          <AppTooltip posicao="left-0">
+                            <template v-slot:corpo>
+                              <span class="cursor-pointer hover:!text-blue-900 hover:font-bold"> <strong>1</strong>-Não atende; </span>
+                            </template>
+                            <template v-slot:tooltip>
+                              <div class="w-[400px]">
+                                <span>Situação em que o avaliado está abaixo do que é esperado para sua posição.</span>
+                              </div>
+                            </template>
+                          </AppTooltip>
+                        </div>
+                        <div>
+                          <AppTooltip posicao="right-0">
+                            <template v-slot:corpo>
+                              <span class="cursor-pointer hover:!text-blue-900 hover:font-bold"> <strong>2</strong>-Atende; </span>
+                            </template>
+                            <template v-slot:tooltip>
+                              <div class="w-[400px]">
+                                <span>Situação em que o avaliado entrega o que é esperado para sua posição.</span>
+                              </div>
+                            </template>
+                          </AppTooltip>
+                        </div>
+                        <div>
+                          <AppTooltip posicao="right-0">
+                            <template v-slot:corpo>
+                              <span class="cursor-pointer hover:!text-blue-900 hover:font-bold"> <strong>3</strong>-Supera; </span>
+                            </template>
+                            <template v-slot:tooltip>
+                              <div class="w-[400px]">
+                                <span>Situação em que o avaliado entrega além do que é esperado para sua posição, se destacando constantemente.</span>
+                              </div>
+                            </template>
+                          </AppTooltip>
+                        </div>
+                      </div>
 										</td>
 									</tr>
 									<tr v-for="conhecimento of conheComportamentais">
@@ -448,9 +514,11 @@
 	import { validarFormulario } from "~/mixins/validarFormulario"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue"
+	import AppTooltip from "~/components/Ui/AppTooltip.vue"
 
 	export default {
 		components: {
+			AppTooltip,
 			AppFormTextarea,
 			AppAlerta,
 			AppFormCheckbox,
@@ -756,8 +824,11 @@
 					this.errosConheComportamental === false
 				) {
 					let avaliacao_id = this.avaliacao_id
-          let usuario_id = this.$auth.user.id
-					let resp = await this.$axios.$post("/avaliacao_funcionario/finalizar", { avaliacao_id, usuario_id })
+					let usuario_id = this.$auth.user.id
+					let resp = await this.$axios.$post("/avaliacao_funcionario/finalizar", {
+						avaliacao_id,
+						usuario_id,
+					})
 
 					if (!resp.falha) {
 						let status = resp.dados.status
@@ -813,9 +884,11 @@
 			},
 			async cancelarAvaliacao() {
 				let id = this.avaliacao_id
-        let usuario_id = this.$auth.user.id
+				let usuario_id = this.$auth.user.id
 
-				let resp = await this.$axios.$delete(`/avaliacao_funcionario/deletar`, { params: { id, usuario_id } })
+				let resp = await this.$axios.$delete(`/avaliacao_funcionario/deletar`, {
+					params: { id, usuario_id },
+				})
 
 				if (!resp.falha) {
 					await this.$router.push({
