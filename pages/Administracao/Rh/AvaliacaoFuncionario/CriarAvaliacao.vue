@@ -585,7 +585,7 @@
 				]
 			},
 			anosExperiencia() {
-				return this.funcionario.tiposObra.reduce((acc, item) => acc + parseInt(item.anos), 0)
+				return this.funcionario.tiposObra.filter(item => item.anos !== null && item.anos !== "").reduce((acc, item) => acc + parseInt(item.anos), 0)
 			},
 		},
 		async mounted() {
@@ -739,44 +739,70 @@
 
 				this.erros = validarFormulario(this.campos, this.funcionario)
 
-				let valoresHab = Object.values(
-					this.funcionario.habilidadesTecnicas.filter((o) => o !== "" && o !== null),
-				)
-				this.errosHabTecnicas = this.habilidadesTecnicas.length > valoresHab.length
-
-				this.errosConheComportamental =
-					this.conheComportamentais.length >
-					Object.values(this.funcionario.conheComportamentais).length
-
 				if (
-					this.erros.length === 0 &&
-					this.errosHabTecnicas === false &&
-					this.errosConheComportamental === false
+					this.erros.length === 0
 				) {
-					let habilidadesTecnicas = Object.keys(this.funcionario.habilidadesTecnicas).map((o) => {
-						return { id: parseInt(o), nota: this.funcionario.habilidadesTecnicas[o] }
-					})
+          let habilidadesTecnicas = []
+          let conheComportamentais = []
 
-					let conheComportamentais = Object.keys(this.funcionario.conheComportamentais).map((o) => {
-						return { id: parseInt(o), nota: this.funcionario.conheComportamentais[o] }
-					})
+          let resp = null
 
-					let resp = await this.$axios.$post("/avaliacao_funcionario/editar", {
-						funcionario_id,
-						formacao_id,
-						anos_experiencia,
-						conhecimentos,
-						dispoTrabalho,
-						tiposObra,
-						usuario_id,
-						avaliacao_id,
-						previsao_disponibilidade,
-						habilidadesTecnicas,
-						conheComportamentais,
-						comentario_geral,
-					})
+          if(this.tab === 'descricao_cargo'){
+            let valoresHab = Object.values(
+              this.funcionario.habilidadesTecnicas.filter((o) => o !== "" && o !== null),
+            )
+            this.errosHabTecnicas = this.habilidadesTecnicas.length > valoresHab.length
 
-					if (!resp.falha) {
+            this.errosConheComportamental =
+              this.conheComportamentais.length >
+              Object.values(this.funcionario.conheComportamentais).length
+
+            if (this.errosHabTecnicas === false &&
+              this.errosConheComportamental === false){
+              habilidadesTecnicas= Object.keys(this.funcionario.habilidadesTecnicas).map((o) => {
+                return { id: parseInt(o), nota: this.funcionario.habilidadesTecnicas[o] }
+              })
+
+              conheComportamentais = Object.keys(this.funcionario.conheComportamentais).map((o) => {
+                return { id: parseInt(o), nota: this.funcionario.conheComportamentais[o] }
+              })
+
+              resp = await this.$axios.$post("/avaliacao_funcionario/editar", {
+                funcionario_id,
+                formacao_id,
+                anos_experiencia,
+                conhecimentos,
+                dispoTrabalho,
+                tiposObra,
+                usuario_id,
+                avaliacao_id,
+                previsao_disponibilidade,
+                habilidadesTecnicas,
+                conheComportamentais,
+                comentario_geral,
+              })
+            }
+          }else{
+            resp = await this.$axios.$post("/avaliacao_funcionario/editar", {
+              funcionario_id,
+              formacao_id,
+              anos_experiencia,
+              conhecimentos,
+              dispoTrabalho,
+              tiposObra,
+              usuario_id,
+              avaliacao_id,
+              previsao_disponibilidade,
+              habilidadesTecnicas,
+              conheComportamentais,
+              comentario_geral,
+            })
+          }
+
+
+
+
+					if (resp && !resp.falha) {
 						if (sair) {
 							await this.$router.push({
 								name: "Administracao-Rh-AvaliacaoFuncionario-Avaliacoes",
