@@ -10,6 +10,7 @@
           </div>
           <div>
             <TabelaPadrao
+              id="desagendar"
               :cabecalho="cabecalho"
               :dados="dados"
               altura="calc(100vh - 335px)"

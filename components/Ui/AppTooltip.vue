@@ -7,10 +7,12 @@
 			<slot name="corpo"> </slot>
 		</div>
 		<div
+      v-if="mostrarDica"
 			class="bg-gray-900/90 absolute flex p-2 rounded text-white tooltip direito"
-			:class="{ [largura]: largura, [posicao]: posicao, [alinhamento]: alinhamento }"
+			:class="{ [largura]: largura, [posicao]: posicao, [alinhamento]: alinhamento, [`!top-[${altura}px]`]: altura }"
 			style="z-index: 105"
-			:style="alinhamento === 'direita' ? 'margin-left: ' + widthCorpo + 'px' : ''">
+      :style=" alinhamento === 'direita' ? 'margin-left: ' + widthCorpo + 'px' : ''"
+			>
 			<slot name="tooltip"> </slot>
 		</div>
 	</div>
@@ -37,15 +39,30 @@
 			alinhamento: {
 				type: [String],
 			},
+      altura: {
+        type: [Number],
+        default: null
+      },
+      mostrarDica: {
+        type: Boolean,
+        default: true
+      }
 		},
 		data() {
 			return {
 				widthCorpo: null,
+        color: "red",
+        alturaLocal: null
 			}
 		},
 		mounted() {
-			let tooltip = document.getElementById("tooltip-" + this.id)
-			this.widthCorpo = tooltip.offsetWidth
+      let tooltip = document.getElementById("tooltip-" + this.id)
+      this.widthCorpo = tooltip.offsetWidth
+
+      if(this.altura) {
+       this.alturaLocal = `${this.altura}px`
+      }
+
 		},
 	}
 </script>
@@ -56,13 +73,11 @@
 
 	.tooltip {
 		visibility: hidden;
+    top: v-bind(alturaLocal) ;
 	}
 
 	.geral:hover .tooltip {
 		visibility: visible;
 	}
 
-	.direita {
-		top: 0;
-	}
 </style>

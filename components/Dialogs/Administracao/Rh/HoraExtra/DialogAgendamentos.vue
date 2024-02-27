@@ -443,6 +443,7 @@
 										<TabelaPadrao
 											:cabecalho="cabecalhoMeusAgendamentos"
 											:dados="dadosMeusAgendamentos"
+                      ref="tabela"
 											@filtros="filtrosMeusAgendamentos = $event"
 											@pagina="paginaMeusAgendamentos = $event"
 											:itensPorPagina="itensPorPaginaMeusAgendamentos"
@@ -453,9 +454,10 @@
 											altura="calc(100vh - 335px)"
 											@atualizar="buscarMeusAgendamentos()"
 											@selecionados="selecionadosMeusAgendamentos = $event"
+                      limpar-selecionar
 											selecionar
 											:carregando="carregandoTabelaMeusAgendamentos">
-											<template v-slot:[`body.status`]="{ item }">
+                      <template v-slot:[`body.status`]="{ item }">
 												<span class="whitespace-nowrap">
 													{{ item.StatusAgendamento ? item.StatusAgendamento.descricao : "" }}
 												</span>
@@ -539,6 +541,32 @@
 							alt=""
 							class="w-6 h-6" />
 					</BotaoPadrao>
+          <AppTooltip
+            :altura="-65"
+            :mostrar-dica="!podeEditar"
+            posicao="left-0">
+            <template v-slot:corpo>
+              <BotaoPadrao
+                texto="Editar motivo"
+                v-if="tab === 'meusAgendamentos'"
+                :disabled="selecionadosMeusAgendamentos.length <= 0 || !noIntervalo || !podeEditar"
+                @clique="mostrarDialogEditarMotivo = true">
+                <img
+                  src="@/assets/icons/edit-b.svg"
+                  alt=""
+                  class="w-6 h-6" />
+              </BotaoPadrao>
+            </template>
+            <template v-slot:tooltip>
+              <div class="min-w-[300px] max-w-full">
+                <span>
+                  <strong>
+                  Não é possivel mudar o motivo de um agendamento já aprovado pelo gestor!
+                  </strong>
+                </span>
+              </div>
+            </template>
+          </AppTooltip>
 					<BotaoPadrao
 						texto="PDF"
 						:disabled="desativarBtnExcel"
@@ -607,6 +635,7 @@
 			@cancelar="mostrarDialogPDFAgendamentoMeus = false"
 			:dados="dadosMeusAgendamentos"
 			:data="dataMeusAgendamentos" />
+    <DialogEditarMotivo v-if="mostrarDialogEditarMotivo" @cancelar="mostrarDialogEditarMotivo = false;" :agendamentos="selecionadosMeusAgendamentos" @motivoEditado="motivoEditado"/>
 	</div>
 </template>
 
@@ -627,11 +656,15 @@
 	import DialogPDFAgendamentoPend from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogPDFAgendamentoPend.vue"
 	import DialogPDFAgendamentoNega from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogPDFAgendamentoNega.vue"
 	import DialogPDFAgendamentoMeus from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogPDFAgendamentoMeus.vue"
+  import DialogEditarMotivo from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogEditarMotivo.vue";
+  import AppTooltip from "~/components/Ui/AppTooltip.vue";
 
 	export default {
 		mixins: [horaExtra],
 		name: "DialogAgendamentos",
 		components: {
+      AppTooltip,
+      DialogEditarMotivo,
 			DialogPDFAgendamentoAprov,
 			DialogPDFAgendamentoPend,
 			DialogPDFAgendamentoNega,
@@ -826,7 +859,7 @@
 				//Meus agendamentos
 				cabecalhoMeusAgendamentos: [
 					{ nome: "Status", valor: "status" },
-					{ nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
+          { nome: "Matricula", valor: "chapa", filtro: true, centralizar: true },
 					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
           { nome: "Disciplina", valor: "Funcionario.Disciplina.descricao", filtro: true },
@@ -861,6 +894,8 @@
 				mostrarDialogDesagendar: false,
 				gerandoExcelMeusAgendamentos: false,
 				mostrarDialogPDFAgendamentoMeus: false,
+        mostrarDialogEditarMotivo: false,
+        agendamento: {}
 			}
 		},
 		computed: {
@@ -884,6 +919,10 @@
 
 				return this.tab === "meusAgendamentos" && this.dadosMeusAgendamentos.length === 0
 			},
+      podeEditar(){
+        return this.selecionadosMeusAgendamentos.filter(o => o.status_agendamento_id !== 1).length === 0
+
+      }
 		},
 		created() {
 			this.buscarDiasAprovados()
@@ -1375,6 +1414,21 @@
 				gerarExcel(cabecalho, itens, nomeArquivo)
 				this.gerandoExcelMeusAgendamentos = false
 			},
+
+      async motivoEditado({ agendamentos, motivo }){
+        for(let id of agendamentos){
+          let idx = this.dadosMeusAgendamentos.findIndex(o => o.id === id)
+
+          if(idx >= 0){
+            this.dadosMeusAgendamentos[idx].motivo = motivo
+          }
+        }
+
+        this.$refs.tabela.limparSelecionados()
+        this.textoAlerta = "Motivo editado com sucesso!"
+        this.mostrarAlerta = true
+        this.mostrarDialogEditarMotivo = false
+      }
 		},
 		watch: {
 			tab(valor) {

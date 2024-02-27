@@ -47,8 +47,6 @@ export default {
     }
   },
   created() {
-    console.log(this.funcao)
-
     if(this.funcao){
       this.funcaoLocal.nome = this.funcao.id
       this.funcaoLocal.prazo = this.funcao.prazo ? this.funcao.prazo : null
