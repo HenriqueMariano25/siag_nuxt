@@ -287,7 +287,7 @@
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
 					{ nome: "Setor", valor: "Funcionario.setor.nome", filtro: true },
 					{ nome: "Motivo", valor: "motivo", filtro: true },
-					{ nome: "Data de ida", valor: "data_ida" },
+					{ nome: "Data de ida", valor: "data_ida", filtro: true, tipoFiltro: "data" },
 					{ nome: "Destino", valor: "destino", filtro: true },
 					{ nome: "Transporte", valor: "PspTemMeioTransporte.meio_transporte", filtro: true },
 					{ nome: "Centro Custo", valor: "CentroCustoPEP.descricao", filtro: true },
@@ -330,7 +330,6 @@
 			async buscarPsps() {
 				this.carregandoTabela = true
 				let filtros = { }
-
 				if (this.etapa_psp_id > 0) {
 					filtros["etapa_psp_id"] = this.etapa_psp_id
 				} else {

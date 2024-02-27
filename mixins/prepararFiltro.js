@@ -17,6 +17,11 @@ export const prepararFiltro = {
           continue
         }
 
+        if (keySecundaria.includes('$bet')) {
+          filtros = { ...filtros, ...filtro }
+          continue
+        }
+
         if(keyPrimaria.includes('.id')){
           filtros[keyPrimaria] = filtro[keyPrimaria]
           continue
