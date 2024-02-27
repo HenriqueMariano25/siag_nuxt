@@ -18,7 +18,7 @@
 						<div class="px-2">
 							<BotaoPadrao
 								@clique="atualizarAsm()"
-								texto="atulizar ASM"
+								texto="atualizar ASM"
 								cor="bg-blue-300 hover:bg-blue-400">
 								<img
 									src="@/assets/icons/rotate-b.svg"
@@ -99,11 +99,11 @@
 			},
 			async atualizarAsm() {
 				this.atualizandoAsm = true
-				this.mensagem = "Atualizando o efetivo pelo ASM"
-				let resp = await this.$axios.$post("/efetivo/atualizar_asm")
+				this.mensagem = "Atualizando hora extra pelo ASM"
+				let resp = await this.$axios.$post("/hora_extra/atualizar/asm")
 
 				if (!resp.falha) {
-					this.textoAlerta = "Funcionários do ASM atualizado!"
+					this.textoAlerta = "Horas extra do ASM atualizadas!"
 					this.mostrarAlerta = true
 					this.atualizandoAsm = false
 					this.mensagem = null
