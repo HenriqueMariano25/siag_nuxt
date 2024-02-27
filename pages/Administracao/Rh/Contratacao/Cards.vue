@@ -604,7 +604,7 @@
 				if (listaPermissoes.some((o) => this.$auth.user.permissoes.includes(o))) {
 					confidencial = "todos"
 					filtros.push(
-						`AND (card.confidencial IS NULL OR card.confidencial = false OR card.confidencial = true)`,
+						` AND (card.confidencial IS NULL OR card.confidencial = false OR card.confidencial = true)`,
 					)
 				} else {
 					confidencial = "setor"

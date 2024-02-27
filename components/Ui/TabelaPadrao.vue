@@ -640,10 +640,8 @@ export default {
 
       let colunaTabela = coluna.colunaTabela ? coluna.colunaTabela : coluna.valor
       if (this.dadosSql) {
-
-        if (this.filtros.some((o) => o.includes(`LOWER(${colunaTabela})`))) {
+        if (this.filtros.some((o) => o.includes(`LOWER(${colunaTabela})`) || o.includes(colunaTabela))) {
           let idx = this.filtros.findIndex((o) => o.includes(`LOWER(${item})`))
-
           this.filtros.splice(idx, 1)
         }
 
