@@ -480,10 +480,11 @@
 									class="w-7 h-7" />
 							</template>
 						</BotaoPadrao>
+            <span v-if="avaliacao.status_avaliacao_id === 2 && jaIniciado" class="text-white font-bold">Aguardando aprovação</span>
 						<BotaoPadrao
+              v-if="avaliacao.status_avaliacao_id === 1 && jaIniciado"
 							texto="finalizar"
-							@clique="finalizarAvaliacao()"
-							v-if="jaIniciado">
+							@clique="finalizarAvaliacao()">
 							<img
 								src="@/assets/icons/check-circle-b.svg"
 								alt=""
@@ -574,6 +575,9 @@
 				conheComportamentais: [],
 				errosHabTecnicas: false,
 				errosConheComportamental: false,
+        avaliacao:{
+          status_avaliacao_id: null
+        }
 			}
 		},
 		computed: {
@@ -906,6 +910,8 @@
 					}
 
 					this.funcionario.comentario_geral = avaliacao.comentario_geral
+          this.avaliacao.status_avaliacao_id = avaliacao.status_avaliacao_id
+          console.log(avaliacao);
 				}
 			},
 			async cancelarAvaliacao() {
