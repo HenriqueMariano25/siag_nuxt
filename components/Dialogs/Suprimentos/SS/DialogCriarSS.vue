@@ -1,7 +1,9 @@
 <template>
 	<BaseDialog
 		:titulo="
-			ss_id === null ? 'Criar Solicitação de Serviço' : `Editando Solicitação de Serviço - ${ss.numero_acompanhamento_original}`
+			ss_id === null
+				? 'Criar Solicitação de Serviço'
+				: `Editando Solicitação de Serviço - ${ss.numero_acompanhamento_original}`
 		"
 		:carregando="carregando"
 		@cancelar="cancelar()">
@@ -13,7 +15,7 @@
 					<div class="bg-blue-100 p-2 border border-blue-200 space-y-1">
 						<div class="grid grid-cols-3 gap-x-4 gap-y-2">
 							<AppFormInput
-                uppercase
+								uppercase
 								label="Código de acompanhamento"
 								placeholder="Ex.: ELETR"
 								type="text"
@@ -21,8 +23,7 @@
 								id="cod_acompanhamento"
 								mask="@@@@@"
 								:invalido="erro.includes('numero_acompanhamento')"
-								v-model="ss.numero_acompanhamento"
-              />
+								v-model="ss.numero_acompanhamento" />
 							<AppFormInput
 								label="Data de Emissão"
 								type="date"
@@ -120,7 +121,7 @@
 								placeholder="Descrição mais detalhada do escopo selecionado a cima"
 								v-model="ss.abrangencia_escopo"
 								:invalido="erro.includes('abrangencia_escopo')"
-                :totalCaracteres="2000"
+								:totalCaracteres="2000"
 								class="mt-1" />
 						</div>
 						<div class="grid grid-cols-4 gap-y-1">
@@ -172,7 +173,7 @@
 						</span>
 						<div class="flex items-end space-x-2">
 							<AppFormRadio
-                obrigatorio
+								obrigatorio
 								class="w-2/12 self-start"
 								:itens="opcoesLocalPrestacao"
 								titulo="Local"
@@ -216,23 +217,23 @@
 									type="text"
 									id="pessoa_contato"
 									v-model="fornecedor.pessoa_contato" />
-                <div class="flex gap-2">
-                  <AppFormInput
-                    class="grow"
-                    label="Telefone"
-                    placeholder="Telefone"
-                    type="text"
-                    mask="['(##)####-####','(##)#####-####']"
-                    id="telefone"
-                    v-model="fornecedor.telefone" />
-                  <BotaoPadrao
-                    :disabled="validarAddFornecedor"
-                    texto="Adicionar"
-                    cor="bg-[#15536D]"
-                    class="text-white self-end"
-                    @clique="adicionarFornecedor()">
-                  </BotaoPadrao>
-                </div>
+								<div class="flex gap-2">
+									<AppFormInput
+										class="grow"
+										label="Telefone"
+										placeholder="Telefone"
+										type="text"
+										mask="['(##)####-####','(##)#####-####']"
+										id="telefone"
+										v-model="fornecedor.telefone" />
+									<BotaoPadrao
+										:disabled="validarAddFornecedor"
+										texto="Adicionar"
+										cor="bg-[#15536D]"
+										class="text-white self-end"
+										@clique="adicionarFornecedor()">
+									</BotaoPadrao>
+								</div>
 							</div>
 						</div>
 						<div class="mt-2">
@@ -324,866 +325,866 @@
 							<tbody>
 								<tr class="text-center border border-gray-400">
 									<td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="alojamento_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.alojamento"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="alojamento_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.alojamento"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
 									</td>
 									<td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="alojamento_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.alojamento"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="alojamento_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.alojamento"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
 									</td>
 									<td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="alojamento_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.alojamento"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="alojamento_na"
+												titulo=""
+												value="na"
+												v-model="matriz.alojamento"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
 									</td>
 									<td><span>Alojamento</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="alimentacao_interna_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.alimentacao_interna"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="alimentacao_interna_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.alimentacao_interna"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="alimentacao_interna_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.alimentacao_interna"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="alimentacao_interna_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.alimentacao_interna"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="alimentacao_interna_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.alimentacao_interna"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="alimentacao_interna_na"
+												titulo=""
+												value="na"
+												v-model="matriz.alimentacao_interna"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Alimentação Interna</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="alimentacao_externa_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.alimentacao_externa"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="alimentacao_externa_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.alimentacao_externa"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="alimentacao_externa_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.alimentacao_externa"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="alimentacao_externa_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.alimentacao_externa"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="alimentacao_externa_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.alimentacao_externa"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="alimentacao_externa_na"
+												titulo=""
+												value="na"
+												v-model="matriz.alimentacao_externa"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Alimentação Externa</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="transporte_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.transporte"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="transporte_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.transporte"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="transporte_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.transporte"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="transporte_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.transporte"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="transporte_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.transporte"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="transporte_na"
+												titulo=""
+												value="na"
+												v-model="matriz.transporte"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Transporte/Vale Transporte</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="cesta_basica_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.cesta_basica"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="cesta_basica_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.cesta_basica"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="cesta_basica_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.cesta_basica"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="cesta_basica_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.cesta_basica"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="cesta_basica_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.cesta_basica"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="cesta_basica_na"
+												titulo=""
+												value="na"
+												v-model="matriz.cesta_basica"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Cesta Básica</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="plano_odontologico_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.plano_odontologico"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="plano_odontologico_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.plano_odontologico"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="plano_odontologico_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.plano_odontologico"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="plano_odontologico_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.plano_odontologico"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="plano_odontologico_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.plano_odontologico"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="plano_odontologico_na"
+												titulo=""
+												value="na"
+												v-model="matriz.plano_odontologico"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Plano Odontológico</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="epi_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.epi"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="epi_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.epi"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="epi_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.epi"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="epi_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.epi"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="epi_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.epi"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="epi_na"
+												titulo=""
+												value="na"
+												v-model="matriz.epi"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>EPI's (descrever)</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="epc_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.epc"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="epc_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.epc"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="epc_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.epc"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="epc_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.epc"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="epc_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.epc"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="epc_na"
+												titulo=""
+												value="na"
+												v-model="matriz.epc"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>EPC's (descrever)</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="despesas_viagem_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.despesas_viagem"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="despesas_viagem_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.despesas_viagem"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="despesas_viagem_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.despesas_viagem"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="despesas_viagem_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.despesas_viagem"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="despesas_viagem_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.despesas_viagem"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="despesas_viagem_na"
+												titulo=""
+												value="na"
+												v-model="matriz.despesas_viagem"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Despesas de Viagens</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="banheiro_bebedouro_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.banheiro_bebedouro"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="banheiro_bebedouro_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.banheiro_bebedouro"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="banheiro_bebedouro_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.banheiro_bebedouro"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="banheiro_bebedouro_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.banheiro_bebedouro"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="banheiro_bebedouro_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.banheiro_bebedouro"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="banheiro_bebedouro_na"
+												titulo=""
+												value="na"
+												v-model="matriz.banheiro_bebedouro"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Banheiro Químico e Bebedouro</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="vestiario_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.vestiario"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="vestiario_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.vestiario"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="vestiario_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.vestiario"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="vestiario_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.vestiario"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="vestiario_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.vestiario"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="vestiario_na"
+												titulo=""
+												value="na"
+												v-model="matriz.vestiario"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Vestiários</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="energia_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.energia"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="energia_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.energia"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="energia_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.energia"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="energia_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.energia"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="energia_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.energia"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="energia_na"
+												titulo=""
+												value="na"
+												v-model="matriz.energia"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Energia (especificar voltagem)</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="agua_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.agua"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="agua_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.agua"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="agua_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.agua"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="agua_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.agua"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="agua_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.agua"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="agua_na"
+												titulo=""
+												value="na"
+												v-model="matriz.agua"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Água</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="exames_admissionais_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.exames_admissionais"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="exames_admissionais_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.exames_admissionais"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="exames_admissionais_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.exames_admissionais"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="exames_admissionais_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.exames_admissionais"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="exames_admissionais_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.exames_admissionais"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="exames_admissionais_na"
+												titulo=""
+												value="na"
+												v-model="matriz.exames_admissionais"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Exames Adminissionais</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="cracha_uniforme_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.cracha_uniforme"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="cracha_uniforme_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.cracha_uniforme"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="cracha_uniforme_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.cracha_uniforme"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="cracha_uniforme_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.cracha_uniforme"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="cracha_uniforme_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.cracha_uniforme"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="cracha_uniforme_na"
+												titulo=""
+												value="na"
+												v-model="matriz.cracha_uniforme"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Crachá e Uniforme(descrever)</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="guindaste_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.guindaste"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="guindaste_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.guindaste"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="guindaste_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.guindaste"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="guindaste_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.guindaste"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="guindaste_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.guindaste"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="guindaste_na"
+												titulo=""
+												value="na"
+												v-model="matriz.guindaste"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Guindastes(especificar)</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="andaime_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.andaime"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="andaime_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.andaime"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="andaime_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.andaime"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="andaime_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.andaime"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="andaime_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.andaime"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="andaime_na"
+												titulo=""
+												value="na"
+												v-model="matriz.andaime"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Andaime(especificar)</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="equip_pequeno_porte_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.equip_pequeno_porte"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="equip_pequeno_porte_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.equip_pequeno_porte"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="equip_pequeno_porte_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.equip_pequeno_porte"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="equip_pequeno_porte_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.equip_pequeno_porte"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="equip_pequeno_porte_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.equip_pequeno_porte"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="equip_pequeno_porte_na"
+												titulo=""
+												value="na"
+												v-model="matriz.equip_pequeno_porte"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Equip. de Pequeno Porte(especificar)</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="escritorio_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.escritorio"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="escritorio_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.escritorio"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="escritorio_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.escritorio"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="escritorio_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.escritorio"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="escritorio_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.escritorio"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="escritorio_na"
+												titulo=""
+												value="na"
+												v-model="matriz.escritorio"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Escritório(especificar espaço)</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="mobiliario_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.mobiliario"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="mobiliario_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.mobiliario"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="mobiliario_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.mobiliario"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="mobiliario_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.mobiliario"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="mobiliario_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.mobiliario"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="mobiliario_na"
+												titulo=""
+												value="na"
+												v-model="matriz.mobiliario"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Mobiliário(descrever)</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="seguro_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.seguro"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="seguro_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.seguro"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="seguro_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.seguro"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="seguro_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.seguro"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="seguro_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.seguro"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="seguro_na"
+												titulo=""
+												value="na"
+												v-model="matriz.seguro"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Seguro(descrever)</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="garantias_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.garantias"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="garantias_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.garantias"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="garantias_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.garantias"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="garantias_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.garantias"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="garantias_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.garantias"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="garantias_na"
+												titulo=""
+												value="na"
+												v-model="matriz.garantias"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Garantias(descrever)</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="veiculos_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.veiculos"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="veiculos_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.veiculos"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="veiculos_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.veiculos"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="veiculos_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.veiculos"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="veiculos_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.veiculos"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="veiculos_na"
+												titulo=""
+												value="na"
+												v-model="matriz.veiculos"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Veículos</span></td>
 								</tr>
 								<tr class="text-center border border-gray-400">
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="tributos_ag"
-                        titulo=""
-                        value="ag"
-                        v-model="matriz.tributos"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'ag' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="tributos_fornecedor"
-                        titulo=""
-                        value="fornecedor"
-                        v-model="matriz.tributos"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'fornecedor' }]"/>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="w-full justify-center flex">
-                      <AppFormRadio
-                        id="tributos_na"
-                        titulo=""
-                        value="na"
-                        v-model="matriz.tributos"
-                        class="!ml-0 flex"
-                        :itens="[{ label: '', valor: 'na' }]"/>
-                    </div>
-                  </td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="tributos_ag"
+												titulo=""
+												value="ag"
+												v-model="matriz.tributos"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'ag' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="tributos_fornecedor"
+												titulo=""
+												value="fornecedor"
+												v-model="matriz.tributos"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'fornecedor' }]" />
+										</div>
+									</td>
+									<td>
+										<div class="w-full justify-center flex">
+											<AppFormRadio
+												id="tributos_na"
+												titulo=""
+												value="na"
+												v-model="matriz.tributos"
+												class="!ml-0 flex"
+												:itens="[{ label: '', valor: 'na' }]" />
+										</div>
+									</td>
 									<td><span>Tributos</span></td>
 								</tr>
 							</tbody>
@@ -1193,7 +1194,7 @@
 							label="Observações"
 							placeholder="Observações opcionais"
 							v-model="ss.observacoes_matriz"
-              :total-caracteres="1000"
+							:total-caracteres="1000"
 							class="mt-1" />
 					</div>
 					<div class="grid grid-cols-2 gap-3">
@@ -1279,7 +1280,7 @@
 								label="Observações"
 								placeholder="Observações opcionais"
 								v-model="ss.observacoes_condicao"
-                :total-caracteres="1000"
+								:total-caracteres="1000"
 								class="mt-1" />
 						</div>
 						<div class="bg-blue-100 p-2 border border-blue-200">
@@ -1289,7 +1290,7 @@
 								label="Exames e requisitos do SMS necessários"
 								placeholder="Exames e requisitos do SMS necessários"
 								v-model="ss.exames_necessarios"
-                :total-caracteres="1000"
+								:total-caracteres="1000"
 								class="mt-2" />
 							<AppFormInput
 								class="mt-2"
@@ -1358,7 +1359,7 @@
 						<AppFormTextarea
 							id="observacoes_condicao"
 							label="Observações"
-              :total-caracteres="1000"
+							:total-caracteres="1000"
 							placeholder="Observações opcionais"
 							v-model="ss.observacoes_geral"
 							class="mt-1" />
@@ -1383,9 +1384,15 @@
 						<span>Campos obrigatórios necessários</span>
 					</div>
 
-					<BotaoPadrao texto="salvar" :disabled="bloquearBotaoSalvar" @clique="ss_id !== null ? editarSS() : adicionarSS()">
-            <img src="@/assets/icons/save-b.svg" alt="" class="w-6 h-6">
-          </BotaoPadrao>
+					<BotaoPadrao
+						texto="salvar"
+						:disabled="bloquearBotaoSalvar"
+						@clique="ss_id !== null ? editarSS() : adicionarSS()">
+						<img
+							src="@/assets/icons/save-b.svg"
+							alt=""
+							class="w-6 h-6" />
+					</BotaoPadrao>
 				</div>
 			</div>
 		</template>
@@ -1424,11 +1431,6 @@
 		data() {
 			return {
 				erro: [],
-				opcoesNaturezaOperacao: [
-					{ label: "Normal", valor: "normal" },
-					{ label: "Urgente", valor: "urgente" },
-					{ label: "Máquina Parada", valor: "maquina parada" },
-				],
 				opcoesTipoSolicitacao: [
 					{ label: "Solicitação de Serviço PONTUAL (SPOT)", valor: "spot", disabled: true },
 					{ label: "Solicitação de Serviço CONTRATO", valor: "contrato" },
@@ -1439,7 +1441,7 @@
 					{ label: "Fora da obra", valor: "fora_obra" },
 				],
 				selecionarTipoSolicitacao: false,
-        fornecedores: [],
+				fornecedores: [],
 				ss: {
 					numero_acompanhamento: null,
 					data_emissao: this.$dayjs().format("YYYY-MM-DD"),
@@ -1481,7 +1483,7 @@
 					edital: null,
 					cronograma: null,
 					histograma: null,
-          numero_acompanhamento_original: null
+					numero_acompanhamento_original: null,
 				},
 				matriz: {
 					alojamento: "fornecedor",
@@ -1518,7 +1520,7 @@
 				centrosCusto: [],
 				escopos: [],
 				carregando: false,
-        bloquearBotaoSalvar: false
+				bloquearBotaoSalvar: false,
 			}
 		},
 		computed: {
@@ -1529,6 +1531,17 @@
 					!(this.fornecedor.telefone.length == 14 || this.fornecedor.telefone.length == 13) ||
 					this.fornecedores.length === 4
 				)
+			},
+			opcoesNaturezaOperacao() {
+				let opcoes = [
+					{ label: "Normal", valor: "normal" },
+					{ label: "Urgente", valor: "urgente" },
+				]
+				if (this.$auth.user.permissoes.includes("ss_pcme")) {
+					opcoes.push({ label: "Máquina Parada", valor: "maquina parada" })
+				}
+
+				return opcoes
 			},
 		},
 		async fetch() {
@@ -1577,7 +1590,7 @@
 
 				if (!resp.falha) {
 					this.ss = Object.assign({}, resp.dados.ss)
-          this.ss.numero_acompanhamento_original = resp.dados.ss.numero_acompanhamento
+					this.ss.numero_acompanhamento_original = resp.dados.ss.numero_acompanhamento
 
 					this.fornecedores = this.ss.FornecedorSS ? this.ss.FornecedorSS : []
 					this.matriz = this.ss.MatrizResponsabilidadeSS ? this.ss.MatrizResponsabilidadeSS : []
@@ -1604,7 +1617,7 @@
 				}
 			},
 			removerFornecedor(index) {
-        console.log(index);
+				console.log(index)
 				this.fornecedores.splice(index, 1)
 			},
 
@@ -1645,7 +1658,7 @@
 				this.validarFormulario()
 
 				if (this.erro.length === 0) {
-          this.bloquearBotaoSalvar = true
+					this.bloquearBotaoSalvar = true
 					let setor_id = this.$auth.user.setor_id
 					let usuario_id = this.$auth.user.id
 
@@ -1658,7 +1671,7 @@
 					let resp = await this.$axios.$post("/ss/cadastrar", { ...dados })
 
 					if (!resp.falha) {
-            this.bloquearBotaoSalvar = false
+						this.bloquearBotaoSalvar = false
 						this.$emit("adicionado")
 					}
 				}
@@ -1667,7 +1680,7 @@
 				this.validarFormulario()
 
 				if (this.erro.length === 0) {
-          this.bloquearBotaoSalvar = true
+					this.bloquearBotaoSalvar = true
 					let usuario_id = this.$auth.user.id
 
 					let dados = {
@@ -1679,7 +1692,7 @@
 					let resp = await this.$axios.$put("/suprimentos/ss/editar", { ...dados })
 
 					if (!resp.falha) {
-            this.bloquearBotaoSalvar = false
+						this.bloquearBotaoSalvar = false
 						// this.$emit("editado", { solicitacao: this.ss })
 					}
 				}
@@ -1709,7 +1722,11 @@
 				let diferenca = this.$dayjs(valor).diff(emissao, "day")
 
 				if (diferenca > 0 && diferenca <= 14) {
-					this.ss.natureza_operacao = "maquina parada"
+					if (this.$auth.user.permissoes.includes("ss_pcme")) {
+						this.ss.natureza_operacao = "maquina parada"
+					} else {
+						this.ss.natureza_operacao = "urgente"
+					}
 				} else if (diferenca > 14 && diferenca <= 28) {
 					this.ss.natureza_operacao = "urgente"
 				} else if (diferenca > 28) {
