@@ -29,16 +29,7 @@
               <span>{{ passagensSaida }}</span>
             </div>
           </div>
-        </div>
-        <div class="p-1 flex flex-col justify-start grow w-full">
-          <span class="text-2xl text-center bg-primaria-500 text-white py-1">REFEITÓRIO 2</span>
-          <div class="flex flex-col gap-2 divide-y divide-gray-500  justify-center text-center">
-            <div class="flex flex-col text-6xl py-4">
-              <span>ENTRADAS</span>
-              <span>{{ passagensRef2 }}</span>
-            </div>
-          </div>
-        </div>
+        </div>f
       </div>
 
       <div class="flex w-full bg-primaria-700 px-2 py-1 rounded-b uppercase justify-between">
