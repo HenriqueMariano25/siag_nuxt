@@ -4,7 +4,7 @@
       <ButtonNavegacao titulo="Contagem Refeições" cor="bg-[#264653]" link="nutricao/contagemRefeitorio">
         <img src="@/assets/icons/serve-w.svg" alt="" class="w-7 h-7">
       </ButtonNavegacao>
-      <ButtonNavegacao titulo="Configurações" cor="bg-[#264653]" link="nutricao/configuracoes">
+      <ButtonNavegacao titulo="Configurações" cor="bg-[#264653]" link="nutricao/configuracoes" v-if="$auth.user.permissoes.includes('nutricao_configuracao')">
         <img src="@/assets/icons/cog-w.svg" alt="" class="w-7 h-7">
       </ButtonNavegacao>
     </div>
