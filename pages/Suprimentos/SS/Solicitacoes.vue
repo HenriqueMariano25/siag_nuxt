@@ -91,12 +91,12 @@
 				</template>
 				<template v-slot:[`body.acoes`]="{ item }">
 					<BotaoIconeEditar
-						v-if="etapa_id !== 1 && etapa_id !== 2 && etapa_id !== 7"
+						v-if="etapa_id !== 1 && etapa_id !== 2 && etapa_id !== 3 && etapa_id !== 7"
 						@click="
 							mostrarDialogProcessarSS = true
 							ss = item
 						" />
-					<template v-if="etapa_id === 1 || etapa_id === 2">
+					<template v-if="etapa_id === 1 || etapa_id === 2 || etapa_id === 3">
 						<BotaoPadrao
 							icone
 							v-if="item.Usuario.id === $auth.user.id"
@@ -178,6 +178,7 @@
 					</span>
 				</template>
 				<template v-slot:[`body.comentarios`]="{ item }">
+          <div class="border border-gray-400 bg-gray-300 !text-black w-full min-w-[185px] shadow">
 					<button
 						class="flex hover:bg-gray-400 min-w-[235px] p-1"
 						v-if="item.ComentarioSS.length > 0"
@@ -197,6 +198,7 @@
 							}}{{ item.ComentarioSS.at(0).descricao.length > 25 ? "..." : "" }}
 						</span>
 					</button>
+          </div>
 				</template>
 			</TabelaPadrao>
 			<!--			</div>-->
@@ -456,7 +458,7 @@
 					cabecalho.unshift({ nome: "", valor: "selecione", centralizar: true, largura: "w-10" })
 				}
 
-				if (this.etapa_id === 1 || this.etapa_id === 2) {
+				if (this.etapa_id === 1 || this.etapa_id === 2 || this.etapa_id === 3) {
 					cabecalho.unshift({ nome: "", valor: "acoes", centralizar: true, largura: "w-8" })
 				}
 				return cabecalho
@@ -484,14 +486,21 @@
 				this.mostrarAlerta = true
 				this.textoAlerta = "Solicitação criada com sucesso!"
 			},
-			async ssEditado({ solicitacao }) {
+			async ssEditado({ solicitacao, moveu }) {
 				this.mostrarDialogCriarSolicitacao = false
 				this.mostrarAlerta = true
 				this.textoAlerta = "Solicitação editada com sucesso!"
 
-				let index = this.dados.findIndex((o) => (o.id = solicitacao.id))
+				let index = this.dados.findIndex((o) => (o.id === solicitacao.id))
+        let keys = ['natureza_operacao', 'tipo_solicitacao', 'data_necessidade']
 
-				if (solicitacao.etapa_ss_id === 1) this.dados.splice(index, 1)
+        if (moveu) {
+          this.dados.splice(index, 1)
+        }else{
+          for(let key of keys){
+            this.dados[index][key] = solicitacao[key]
+          }
+        }
 			},
 			cancelar() {
 				this.card_id = null

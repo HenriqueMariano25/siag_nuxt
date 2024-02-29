@@ -39,14 +39,14 @@
 								id="data_necessidade"
 								:invalido="erro.includes('data_necessidade')"
 								v-model="ss.data_necessidade" />
-							<AppFormSelect
-								class="col-span-2"
-								obrigatorio
-								label="Elemento PEP"
-								:options="centrosCusto"
-								v-model="ss.centro_custo_pep_id"
-								id="centro_custo"
-								:invalido="erro.includes('centro_custo_pep_id')" />
+              <AppFormSelectCompleto
+                class="col-span-2"
+                obrigatorio
+                id="centro_custo_pep_id"
+                label="Elemento PEP"
+                :options="centrosCusto"
+                v-model="ss.centro_custo_pep_id"
+                :invalido="erro.includes('centro_custo_pep_id')" />
 							<AppFormInput
 								label="Ordem de Serviço"
 								type="text"
@@ -103,13 +103,13 @@
 					</div>
 					<div class="flex-col bg-blue-100 p-2 border border-blue-200">
 						<span class="col-span-3 text-md"><strong>2 - ESCOPO DOS SERVIÇOS</strong></span>
-						<AppFormSelect
-							class="col-span-2"
-							label="Requisita-se a contratação dos serviços abaixo descrito:"
-							:options="escopos"
-							v-model="ss.escoposs_id"
-							id="escoposs_id"
-							:invalido="erro.includes('escoposs_id')" />
+            <AppFormSelectCompleto
+              class="col-span-2"
+              label="Requisita-se a contratação dos serviços abaixo descrito:"
+              :options="escopos"
+              v-model="ss.escoposs_id"
+              id="escoposs_id"
+              :invalido="erro.includes('escoposs_id')" />
 					</div>
 					<div class="bg-blue-100 p-2 border border-blue-200">
 						<div class="flex-col">
@@ -1409,10 +1409,12 @@
 	import AppFormTextarea from "~/components/Ui/Form/AppFormTextarea.vue"
 	import BotaoIcone from "~/components/Ui/Buttons/BotaoIcone.vue"
 	import AppConfirmacao from "~/components/Ui/AppConfirmacao.vue"
+  import AppFormSelectCompleto from "~/components/Ui/Form/AppFormSelectCompleto.vue";
 
 	export default {
 		name: "DialogCriarSS",
 		components: {
+      AppFormSelectCompleto,
 			BotaoIcone,
 			BotaoPadrao,
 			BaseDialog,
@@ -1617,7 +1619,6 @@
 				}
 			},
 			removerFornecedor(index) {
-				console.log(index)
 				this.fornecedores.splice(index, 1)
 			},
 
@@ -1693,17 +1694,14 @@
 
 					if (!resp.falha) {
 						this.bloquearBotaoSalvar = false
-						// this.$emit("editado", { solicitacao: this.ss })
+            let moveu = resp.dados.moveu
+						this.$emit("editado", { solicitacao: this.ss, moveu })
 					}
 				}
 			},
 			async cancelarSS() {
-				console.log("Cancelando SS")
-				console.log(this.ss_id)
-
 				let usuario_id = this.$auth.user.id
 				let ss_id = this.ss_id
-				console.log(usuario_id)
 
 				let resp = await this.$axios.$post("/suprimentos/ss/cancelar_solicitacao", {
 					ss_id,
