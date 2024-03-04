@@ -19,7 +19,7 @@
 				@dblclick="verDetalhes"
 				@atualizar="buscarAprovacoes()"
 				:temDetalhes="false">
-				<template v-slot:[`body.codigo`]="{ item }">
+				<template v-slot:[`body.id`]="{ item }">
 					<span class="whitespace-nowrap">{{ ("000000" + item.id).slice(-6) }}</span>
 				</template>
 				<template v-slot:[`body.acoes`]="{ item }">
@@ -134,13 +134,12 @@
 			return {
 				cabecalho: [
 					{ nome: "", valor: "acoes", largura: "w-12" },
-					{ nome: "Cód.", valor: "codigo", largura: "w-[80px]", centralizar: true },
-					{ nome: "Status", valor: "StatusAvaliacao.descricao", filtro: true, ordenar: true },
-					{ nome: "Matricula", valor: "Funcionario.chapa" },
-					{ nome: "Nome", valor: "Funcionario.nome" },
-					{ nome: "Cargo", valor: "Funcionario.cargo" },
+					{ nome: "Cód.", valor: "id", largura: "w-[80px]", centralizar: true, filtro: true },
+					{ nome: "Matricula", valor: "Funcionario.chapa", filtro: true },
+					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
+					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
 					{ nome: "Avaliado por", valor: "AvaliadoPor.nome", filtro: true, ordenar: true },
-					{ nome: "Avaliado em", valor: "avaliado_em", filtro: true, ordenar: true },
+					{ nome: "Avaliado em", valor: "avaliado_em", filtro: true, ordenar: true, tipoFiltro: "data" },
 					{ nome: "", valor: "historico"},
 				],
 				filtros: {},
@@ -166,8 +165,12 @@
 		methods: {
 			async buscarAprovacoes() {
 				let usuario_id = this.$auth.user.id
+        let page = this.pagina - 1
+        let size = this.itensPorPagina
+        let filtros = this.filtros
+
 				let resp = await this.$axios.$get("/avaliacao_funcionario/aprovacoes", {
-					params: { usuario_id },
+					params: { usuario_id, page, size, filtros },
 				})
 
 				if (!resp.falha) {

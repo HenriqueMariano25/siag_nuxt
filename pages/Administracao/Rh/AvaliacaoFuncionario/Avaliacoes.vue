@@ -178,8 +178,6 @@
 				let size = this.itensPorPagina
 				let filtros = this.filtros
 
-        console.log(filtros);
-
 				let resp = await this.$axios.$get("/avaliacao_funcionario/buscarTodos", {
 					params: { page, size, filtros },
 				})
