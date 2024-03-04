@@ -127,11 +127,11 @@
 				cabecalho: [
 					{ nome: "", valor: "acoes", largura: "w-12"},
 					{ nome: "Cód.", valor: "id", largura: "w-[80px]", centralizar: true, filtro: true, tipoFiltro: "inteiro", },
-					{ nome: "Status", valor: "StatusAvaliacao.descricao", filtro: true, ordenar: true },
+					{ nome: "Status", valor: "StatusAvaliacao.descricao", filtro: true},
 					{ nome: "Matricula", valor: "Funcionario.chapa", filtro: true },
 					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
-					{ nome: "Avaliado por", valor: "AvaliadoPor.nome", filtro: true, ordenar: true },
+					{ nome: "Avaliado por", valor: "AvaliadoPor.nome", filtro: true },
           { nome: "", valor: "historico" },
 				],
 				filtros: {},

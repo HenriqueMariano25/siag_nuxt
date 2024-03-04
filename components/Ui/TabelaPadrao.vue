@@ -81,12 +81,17 @@
                           clip-rule="evenodd" />
                       </svg>
                     </button>
+<!--                    @click="-->
+<!--                    filtroAberto !== cab.valor-->
+<!--                    ? (filtroAberto = cab.valor)-->
+<!--                    : (filtroAberto = null)-->
+<!--                    "-->
                     <button
+                      :ref="'icone-filtro-'+cab.valor+'-tabela-'+id"
+                      :id="'filtro-'+cab.valor+'-tabela-'+id"
                       v-if="cab.filtro === true"
                       @click="
-													filtroAberto !== cab.valor
-														? (filtroAberto = cab.valor)
-														: (filtroAberto = null)
+													abrirFiltro(cab.valor, $event)
 												"
                       :class="{
 													'text-blue-400': filtrosAtivos.includes(cab.valor),
@@ -179,6 +184,7 @@
               <!--								</div>-->
               <div
                 style="top: 34px"
+                :ref="'filtro-'+cab.valor+'-tabela-'+id"
                 v-if="filtroAberto === cab.valor && !cab.opcoes && cab.tipoFiltro !== 'data'"
                 class="absolute text-start px-2 py-1 rounded-sm shadow-lg bg-white min-w-[300px] border border-gray-200">
                 <div
@@ -287,7 +293,7 @@
             class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white h-7"
             :key="dado.id"
             @dblclick.prevent.stop="mostrarDbl(dado, $event)"
-            @click.prevent.stop="mostrarDetalhes(dado, $event)">
+            @click="mostrarDetalhes(dado, $event)">
             <td
               v-for="(c, index) in cabecalhoLocal"
               :key="index"
@@ -540,8 +546,32 @@ export default {
 
       let container = document.querySelector(`.tabela-container-${this.id}`)
       container.addEventListener("scroll", this.rolando)
+
+    document.addEventListener("click", this.verificarCliqueFora)
+  },
+  destroyed() {
+    document.removeEventListener("click", this.verificarCliqueFora)
   },
   methods: {
+    verificarCliqueFora(event) {
+      let icone = 'icone-filtro-' + this.filtroAberto + '-tabela-' + this.id
+      let filtro = 'filtro-' + this.filtroAberto + '-tabela-' + this.id
+
+      if(filtro){
+        const componente = this.$refs[filtro]
+        const componenteIcon = this.$refs[icone]
+        let clicouDentro = componente[0].contains(event.target) || componenteIcon[0].contains(event.target)
+
+        if (!clicouDentro) {
+          this.filtroAberto = null
+        }
+      }
+    },
+    abrirFiltro(valor){
+      this.filtroAberto !== valor
+        ? (this.filtroAberto =valor)
+        : (this.filtroAberto = null)
+    },
     rolando() {
       const listElm = document.querySelector(`.tabela-container-${this.id}`);
 

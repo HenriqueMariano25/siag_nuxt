@@ -1,5 +1,6 @@
 <template>
 	<div
+    :ref="'meuSelectCompleto' + id"
 		:id="'wrapper-' + id"
 		class="wrapper relative">
 		<div class="flex text-xs ml-1.5 mt-1 font-medium">
@@ -220,8 +221,24 @@
       } else {
         this.texto = "Selecione"
       }
+      document.addEventListener("click", this.verificarCliqueFora)
+    },
+    destroyed() {
+      document.removeEventListener("click", this.verificarCliqueFora)
     },
     methods: {
+      verificarCliqueFora(event) {
+        let nome = "meuSelectCompleto" + this.id
+        const componente = this.$refs[nome]
+        this.clicouDentro = componente.contains(event.target)
+
+        if (!this.clicouDentro) {
+          const wrapper = document.getElementById("wrapper-" + this.id)
+          if (wrapper.classList.contains("active")) {
+            wrapper.classList.toggle("active")
+          }
+        }
+      },
       abriOpcoes(){
         if (!this.disabled && !this.readonly) {
           const wrapper = document.getElementById("wrapper-" + this.id)
