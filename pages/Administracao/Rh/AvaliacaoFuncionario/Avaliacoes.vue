@@ -65,7 +65,10 @@
 		</div>
 		<RodapePagina>
 			<template v-slot>
-				<div class="flex justify-end w-full">
+				<div class="flex justify-between w-full">
+          <BotaoPadrao texto="Excel" @clique="gerarExcel()">
+            <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
+          </BotaoPadrao>
 					<div class="flex">
 						<BotaoPadrao
 							texto="AVALIAR"
@@ -105,6 +108,7 @@
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
   import DialogHistoricoAvaliacao
     from "~/components/Dialogs/Administracao/Rh/AvaliacaoFuncionario/DialogHistoricoAvaliacao.vue";
+  import gerarExcel from "~/functions/gerarExcel";
 
 	export default {
 		name: "AvaliacaoFuncionario",
@@ -192,6 +196,60 @@
 					params: { id: id },
 				})
 			},
+      async gerarExcel(){
+        let resp = await this.$axios.$get("/avaliacao_funcionario/buscarRelatorio")
+        if(!resp.falha){
+          let { avaliacoes } = resp.dados
+          let cabecalho = [
+            "Código",
+            "Status",
+            "Matricula",
+            "Nome",
+            "Cargo",
+            "CPF",
+            "Turno",
+            "Data admissão",
+            "Supervisor",
+            "Situação Supervisor",
+            "Engenheiro",
+            "Situação Engenheiro",
+            "Coordenador",
+            "Avaliado por",
+            "Comentário geral"
+          ]
+
+          let nomeArquivo
+
+          nomeArquivo = "avaliacoes"
+
+          let itens = []
+          for (let item of avaliacoes) {
+            let temp = []
+            temp.push(("0000" + item.id).slice(-4))
+            temp.push(item.StatusAvaliacao ? item.StatusAvaliacao.descricao : "")
+            temp.push(item.Funcionario ? item.Funcionario.chapa : "")
+            temp.push(item.Funcionario ? item.Funcionario.nome : "")
+            temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+            temp.push(item.Funcionario ? item.Funcionario.cpf : "")
+            temp.push(item.Funcionario && item.Funcionario.Turno ? item.Funcionario.Turno.descricao : "")
+            temp.push(item.Funcionario ? this.$dayjs(item.Funcionario.data_admissao).format("DD/MM/YYYY") : "")
+            temp.push(item.Funcionario && item.Funcionario.Supervisor ? item.Funcionario.Supervisor.nome : "")
+            temp.push(item.Funcionario && item.Funcionario.Supervisor ? item.Funcionario.Supervisor.situacao : "")
+            temp.push(item.Funcionario && item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.nome : "")
+            temp.push(item.Funcionario && item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.situacao : "")
+            temp.push(item.Funcionario && item.Funcionario.Coordenador ? item.Funcionario.Coordenador.nome : "")
+            temp.push(item.AvaliadoPor ? item.AvaliadoPor.nome : "")
+            temp.push(item.comentario_geral)
+
+            itens.push(temp)
+          }
+
+          gerarExcel(cabecalho, itens, nomeArquivo)
+        }
+
+
+
+      }
 		},
 	}
 </script>
