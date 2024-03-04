@@ -30,7 +30,7 @@
 						</div>
 					</BotaoPadrao>
 				</template>
-				<template v-slot:[`body.codigo`]="{ item }">
+				<template v-slot:[`body.id`]="{ item }">
 					<span>{{ ("0000" + item.id).slice(-4) }}</span>
 				</template>
 				<template v-slot:[`body.StatusAvaliacao.descricao`]="{ item }">
@@ -125,12 +125,12 @@
 		data() {
 			return {
 				cabecalho: [
-					{ nome: "", valor: "acoes", largura: "w-12" },
-					{ nome: "Cód.", valor: "codigo", largura: "w-[80px]", centralizar: true },
+					{ nome: "", valor: "acoes", largura: "w-12"},
+					{ nome: "Cód.", valor: "id", largura: "w-[80px]", centralizar: true, filtro: true, tipoFiltro: "inteiro", },
 					{ nome: "Status", valor: "StatusAvaliacao.descricao", filtro: true, ordenar: true },
-					{ nome: "Matricula", valor: "Funcionario.chapa" },
-					{ nome: "Nome", valor: "Funcionario.nome" },
-					{ nome: "Cargo", valor: "Funcionario.cargo" },
+					{ nome: "Matricula", valor: "Funcionario.chapa", filtro: true },
+					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
+					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
 					{ nome: "Avaliado por", valor: "AvaliadoPor.nome", filtro: true, ordenar: true },
           { nome: "", valor: "historico" },
 				],
@@ -177,6 +177,8 @@
 				let page = this.pagina - 1
 				let size = this.itensPorPagina
 				let filtros = this.filtros
+
+        console.log(filtros);
 
 				let resp = await this.$axios.$get("/avaliacao_funcionario/buscarTodos", {
 					params: { page, size, filtros },

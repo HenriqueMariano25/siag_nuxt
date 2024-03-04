@@ -22,7 +22,7 @@ export const prepararFiltro = {
           continue
         }
 
-        if(keyPrimaria.includes('.id')){
+        if(keyPrimaria.includes('.id') || keyPrimaria === 'id'){
           filtros[keyPrimaria] = filtro[keyPrimaria]
           continue
         }
