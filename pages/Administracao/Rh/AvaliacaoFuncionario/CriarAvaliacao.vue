@@ -18,7 +18,7 @@
 								label="Funcionário"
 								obrigatorio
 								:invalido="erros.includes('funcionario_id')"
-								:options="encarregados"
+								:options="funcionarios"
 								class="col-span-6" />
 							<AppFormInput
 								readonly
@@ -39,17 +39,23 @@
 								placeholder="Ex: ENCARREGADO DE ALMOXARIFADO"
 								class="col-span-3" />
 							<div
-								class="col-span-12 flex flex-col px-2 bg-red-200 border-2 border-red-100 text-lg text-gray-900"
-								v-if="avaliacaoEncarregado"
-								:class="{ '!text-xl text-red-900': erroJaTemAvaliacao }">
-								<span>Esse funcionário já tem uma avaliação em aberto</span>
-								<span
-									>Iniciada por <strong>{{ avaliacaoEncarregado.nome }}</strong> no dia
+								class="col-span-12 flex flex-col px-2 bg-red-300 border-2 border-red-100 text-lg text-gray-900"
+								v-if="avaliacaoFuncionario && avaliacaoFuncionario.situacao === 'Encontrado'">
+								<span class="text-xl "><strong>Esse funcionário já tem uma avaliação em aberto!</strong></span>
+								<span>
+                  Iniciada por <strong>{{ avaliacaoFuncionario.nome }}</strong> no dia
 									<strong>{{
-										$dayjs(avaliacaoEncarregado.data).format("DD/MM/YYYY HH:mm")
-									}}</strong></span
-								>
+										$dayjs(avaliacaoFuncionario.data).format("DD/MM/YYYY HH:mm")
+									}}</strong>
+                </span>
 							</div>
+              <div
+                class="col-span-12 flex flex-col px-2 bg-orange-300 border-2 border-orange-100 text-lg text-gray-900"
+                v-if="avaliacaoFuncionario && avaliacaoFuncionario.situacao === 'Finalizado'">
+                <span><strong>Última avaliação realizada: </strong>{{ $dayjs(avaliacaoFuncionario.data).format("DD/MM/YYYY HH:mm") }}</span>
+                <span><strong>Avaliador: </strong>{{ avaliacaoFuncionario.nome }}</span>
+                <span><strong>Previsão para próxima avaliação: </strong>{{ $dayjs(avaliacaoFuncionario.data).add(6, 'month').format("DD/MM/YYYY") }}</span>
+              </div>
 							<AppFormSelectCompleto
 								id="formacao"
 								v-model="funcionario.formacao_id"
@@ -462,6 +468,7 @@
 						>
 						<BotaoPadrao
 							texto="SALVAR"
+              :disabled="(avaliacaoFuncionario && avaliacaoFuncionario.situacao === 'Encontrado') || ( funcionario.funcionario_id === null || funcionario.funcionario_id ==='' )"
 							@clique="jaIniciado ? editarAvaliacao(false) : iniciarAvaliacao(false)">
 							<template v-slot>
 								<img
@@ -472,6 +479,7 @@
 						</BotaoPadrao>
 						<BotaoPadrao
 							texto="SALVAR e SAIR"
+              :disabled="(avaliacaoFuncionario && avaliacaoFuncionario.situacao === 'Encontrado') || ( funcionario.funcionario_id === null || funcionario.funcionario_id ==='' )"
 							@clique="jaIniciado ? editarAvaliacao(true) : iniciarAvaliacao(true)">
 							<template v-slot>
 								<img
@@ -534,7 +542,7 @@
 		data() {
 			return {
 				tab: "funcionario",
-				encarregados: [],
+        funcionarios: [],
 				formacoes: [],
 				funcionario: {
 					funcionario_id: null,
@@ -559,7 +567,7 @@
 				avaliacao_id: null,
 				mostrarAlerta: false,
 				textoAlerta: null,
-				avaliacaoEncarregado: null,
+        avaliacaoFuncionario: null,
 				erroJaTemAvaliacao: false,
 				estaDeletando: false,
 				cargos: [],
@@ -593,7 +601,7 @@
 			},
 		},
 		async mounted() {
-			await this.buscarEncarregados()
+			await this.buscarFuncionarios()
 			await this.buscarFormacoes()
 			await this.buscarConheFuncionario()
 			await this.buscarTipoObra()
@@ -617,11 +625,11 @@
 					name: "Administracao-Rh-AvaliacaoFuncionario-Avaliacoes",
 				})
 			},
-			async buscarEncarregados() {
-				let resp = await this.$axios.$get("/avaliacao_funcionario/buscar_encarregados")
+			async buscarFuncionarios() {
+				let resp = await this.$axios.$get("/avaliacao_funcionario/buscar_funcionarios")
 
 				if (!resp.falha) {
-					this.encarregados = resp.dados.encarregados
+					this.funcionarios = resp.dados.funcionarios
 				}
 			},
 			async buscarFormacoes() {
@@ -675,16 +683,12 @@
 					tiposObra,
 					previsao_disponibilidade,
 				} = this.funcionario
-				this.erroJaTemAvaliacao = false
 				let usuario_id = this.$auth.user.id
 				let anos_experiencia = parseInt(this.anosExperiencia)
 
 				this.erros = validarFormulario(this.campos, this.funcionario)
 
 				if (this.erros.length === 0) {
-					if (this.avaliacaoEncarregado) {
-						this.erroJaTemAvaliacao = true
-					} else {
 						let resp = await this.$axios.$post("/avaliacao_funcionario/cadastrar", {
 							funcionario_id,
 							formacao_id,
@@ -724,7 +728,7 @@
 								this.mostrarAlerta = true
 							}
 						}
-					}
+
 				}
 			},
 			async editarAvaliacao(sair) {
@@ -974,20 +978,36 @@
 		watch: {
 			"funcionario.funcionario_id"(valor) {
 				if (valor) {
-					let idx = this.encarregados.findIndex((o) => o.id === valor)
+					let idx = this.funcionarios.findIndex((o) => o.id === valor)
 
-					let encarregado = this.encarregados[idx]
-					this.funcionario.chapa = encarregado.chapa
-					this.funcionario.cargo = encarregado.cargo
+					let funcionario = this.funcionarios[idx]
+
+          console.log(funcionario);
+
+					this.funcionario.chapa = funcionario.chapa
+					this.funcionario.cargo = funcionario.cargo
 
 					if (!this.jaIniciado) {
-						if (encarregado.AvaliacaoFuncionarios.length > 0) {
-							this.avaliacaoEncarregado = {
-								nome: encarregado.AvaliacaoFuncionarios[0].AvaliadoPor.nome,
-								data: encarregado.AvaliacaoFuncionarios[0].createdAt,
-							}
+						if (funcionario.AvaliacaoFuncionarios.length > 0) {
+              let avaliacao = funcionario.AvaliacaoFuncionarios[0]
+
+              console.log(avaliacao)
+
+              if(avaliacao.status_avaliacao_id === 3){
+                this.avaliacaoFuncionario = {
+                  situacao: "Finalizado",
+                  nome: funcionario.AvaliacaoFuncionarios[0].AvaliadoPor.nome,
+                  data: funcionario.AvaliacaoFuncionarios[0].createdAt,
+                }
+              }else{
+                this.avaliacaoFuncionario = {
+                  situacao: "Encontrado",
+                  nome: funcionario.AvaliacaoFuncionarios[0].AvaliadoPor.nome,
+                  data: funcionario.AvaliacaoFuncionarios[0].createdAt,
+                }
+              }
 						} else {
-							this.avaliacaoEncarregado = null
+							this.avaliacaoFuncionario = null
 						}
 					}
 				}
