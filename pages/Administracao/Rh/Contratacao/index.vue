@@ -1,7 +1,8 @@
 <template>
 	<div class="w-full grid grid-cols-1 h-fit gap-y-2">
+    <CabecalhoPagina titulo="CONTRATAÇÃO" />
 		<div
-			class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white">
+			class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white !mt-11">
 			<ButtonNavegacao
 				titulo="Cards"
 				cor="bg-[#264653]"
@@ -108,7 +109,7 @@
 				</div>
 				<div
 					class="w-full h-full bg-white grid grid-cols-2 relative divide-x divide-gray-500"
-					style="height: calc(100vh - 270px)">
+					style="height: calc(100vh - 315px)">
 					<div class="relative h-full w-full">
 						<canvas
 							id="graPorSetor"
@@ -145,12 +146,14 @@
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import Chart from "chart.js/auto"
 	import ChartDataLabels from "chartjs-plugin-datalabels"
+  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 
 	Chart.register(ChartDataLabels)
 
 	export default {
 		name: "index",
 		components: {
+      CabecalhoPagina,
 			ButtonNavegacao,
 			AppTabs,
 			AppFormInput,

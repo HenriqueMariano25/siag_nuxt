@@ -3,6 +3,7 @@
 		<CabecalhoPagina titulo="DIAS PARA AGENDAMENTO" />
 		<div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11">
 			<TabelaPadrao
+        id="diasParaAgendamento"
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"

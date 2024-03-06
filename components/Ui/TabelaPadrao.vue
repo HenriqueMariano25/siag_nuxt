@@ -424,7 +424,7 @@ export default {
     },
     altura: {
       type: String,
-      default: "calc(100vh - 136px)",
+      default: "calc(100vh - 180px)",
     },
     itensPorPagina: {
       type: Number,
@@ -560,7 +560,7 @@ export default {
       if(filtro){
         const componente = this.$refs[filtro]
         const componenteIcon = this.$refs[icone]
-        let clicouDentro = componente[0].contains(event.target) || componenteIcon[0].contains(event.target)
+        let clicouDentro = (componente && componente[0].contains(event.target)) || (componenteIcon && componenteIcon[0].contains(event.target))
 
         if (!clicouDentro) {
           this.filtroAberto = null

@@ -1,6 +1,6 @@
 <template>
 	<div class="w-full">
-		<CabecalhoPagina titulo="Acessos nas catraca" />
+		<CabecalhoPagina titulo="ACESSOS NAS CATRACA" />
 		<div class="relative">
 			<div class="!mt-11 p-1.5 bg-white grid grid-cols-12 gap-x-2 gap-y-1 items-center">
 				<AppFormInput

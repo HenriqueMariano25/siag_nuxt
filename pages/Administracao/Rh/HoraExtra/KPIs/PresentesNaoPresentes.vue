@@ -1,6 +1,7 @@
 <template>
 	<div class="w-full flex flex-col gap-y-1 print:-m-3 print:-mt-4 bg-white">
-		<div class="flex bg-white p-1 gap-2 justify-between border border-gray-300 shadow print:hidden">
+    <CabecalhoPagina titulo="PRESENTES/NÃO PRESENTES" />
+		<div class="flex bg-white p-1 gap-2 justify-between border border-gray-300 shadow print:hidden !mt-11">
 			<div class="flex">
 				<div class="flex items-end gap-2">
 					<BotaoPadrao
@@ -125,9 +126,10 @@
   import { Workbook } from "exceljs";
   import dayjs from "dayjs";
   import * as fs from "file-saver";
+  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 
 	export default {
-		components: { DialogImprimirAgendadoSPresenca, AppTabs, BotaoPadrao, AppFormInput },
+		components: { CabecalhoPagina, DialogImprimirAgendadoSPresenca, AppTabs, BotaoPadrao, AppFormInput },
 		data() {
 			return {
 				mostrarDialogAgendadosSPresenca: false,

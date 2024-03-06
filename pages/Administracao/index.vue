@@ -1,6 +1,7 @@
 <template>
   <div class="w-full grid  h-fit">
-    <div class="border grid grid-cols-4 gap-3 border-1 shadow border-gray-300 p-2 rounded bg-white ">
+    <CabecalhoPagina titulo="ADMINISTRAÇÃO" />
+    <div class="border grid grid-cols-4 gap-3 border-1 shadow border-gray-300 p-2 rounded bg-white !mt-11">
       <ButtonNavegacao titulo="RH" cor="bg-[#264653]" link="administracao/rh">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
           <path fill-rule="evenodd"
@@ -41,9 +42,11 @@
 
 <script>
 import ButtonNavegacao from "~/components/Shared/ButtonNavegacao.vue";
+import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 export default {
   name: "index",
   components:{
+    CabecalhoPagina,
     ButtonNavegacao
   },
 }

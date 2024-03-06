@@ -1,6 +1,7 @@
 <template>
 	<div class="w-full">
-		<div class="flex w-full bg-primaria-900 h-14 flex text-white">
+    <CabecalhoPagina titulo="APROVAR CARD" />
+		<div class="flex w-full bg-primaria-900 h-14 text-white !mt-11">
 			<button
 				@click="tipoAprovacao = 'controle'"
 				class="px-4 hover:bg-blue-600"
@@ -28,7 +29,7 @@
 				:itensPorPagina="itensPorPagina"
 				:pagina="pagina"
 				:totalItens="totalItens"
-				altura="calc(100vh - 190px)"
+				altura="calc(100vh - 235px)"
 				@atualizar="buscarCards()"
 				@dblclick="verDetalhesSS"
 				@selecionados="selecionados = $event"
@@ -256,11 +257,13 @@
 	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
 	import gerarExcel from "~/functions/gerarExcel"
 	import DialogUltimasAprovacoes from "~/components/Dialogs/Administracao/Rh/Contratacao/AprovarCard/DialogUltimasAprovacoes.vue"
+  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 
 	export default {
 		mixins: [buscarEtapa, prepararFiltro, buscarSetores, buscarDisciplinaCard],
 		name: "AprovarCard",
 		components: {
+      CabecalhoPagina,
 			DialogUltimasAprovacoes,
 			DialogDetalhesCard,
 			AppTabela,

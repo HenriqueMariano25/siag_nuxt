@@ -1,6 +1,7 @@
 <template>
 	<div class="w-full grow gap-y-2 flex flex-col">
-		<div class="flex flex-col p-1 bg-white gap-2 border border-gray-300 shadow print:hidden">
+    <CabecalhoPagina titulo="AGENDAR" />
+		<div class="flex flex-col p-1 bg-white gap-2 border border-gray-300 shadow print:hidden !mt-11">
 			<div class="text-gray-600">
 				<span>
 					Selecione uma data abaixo e preencha todos os campos para realizar o agendamento:
@@ -165,7 +166,7 @@
 			@filtros="filtros = $event"
 			@ordem="ordem = $event"
 			classPersonalizada="!bg-gray-400"
-			altura="calc(100vh - 277px)"
+			altura="calc(100vh - 320px)"
 			:dados-redis="true"
 			@atualizar="buscarFuncionarios()"
 			:carregando="carregandoTabela"
@@ -401,11 +402,13 @@
 	import AppTooltip from "~/components/Ui/AppTooltip.vue"
 	import DialogEditarEfetivo from "~/components/Dialogs/Administracao/Rh/Efetivo/DialogEditarEfetivo.vue"
 	import DialogEditarFuncionario from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogEditarFuncionario.vue"
+  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 
 	export default {
 		mixins: [horaExtra],
 		name: "HoraExtra",
 		components: {
+      CabecalhoPagina,
 			DialogEditarFuncionario,
 			AppTooltip,
 			AppBadge,

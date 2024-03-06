@@ -1,6 +1,7 @@
 <template>
 	<div class="w-full">
-		<div>
+    <CabecalhoPagina titulo="CONFIGURAÇÕES" />
+		<div  class="!mt-11">
 			<div class="flex flex-col gap-y-2">
 				<div class="flex flex-col bg-white border border-gray-300 p-2 gap-2">
 					<span class="text-gray-700 bg-blue-300 px-2 text-xl">
@@ -254,9 +255,11 @@
 	import AppTabela from "~/components/Ui/AppTabela.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import AppFormCheckbox from "~/components/Ui/Form/AppFormCheckbox.vue"
+  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 
 	export default {
 		components: {
+      CabecalhoPagina,
 			AppFormCheckbox,
 			AppAlerta,
 			AppTabela,

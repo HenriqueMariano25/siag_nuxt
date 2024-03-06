@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="relative flex flex-col w-full mt-2"
-		style="height: calc(100vh - 175px)">
+		style="height: calc(100vh - 213px)">
 		<div class="flex p-1.5 bg-white justify-end gap-2 w-full border border-gray-400 shadow">
 			<div class="!w-[200px]">
 				<AppFormSelectCompleto
@@ -23,7 +23,7 @@
 				</BotaoPadrao>
 			</div>
 		</div>
-		<div class="bg-white w-full relative" style="height: calc(100vh - 231px)">
+		<div class="bg-white w-full relative" style="height: calc(100vh - 270px)">
       <div class="mt-0 h-full" >
         <client-only>
           <div

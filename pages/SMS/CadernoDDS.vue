@@ -1,7 +1,7 @@
 <template>
 	<div class="w-full flex">
 		<CabecalhoPagina
-			titulo="Caderno de DDS"
+			titulo="CADERNO DE DDS"
 			class="print:hidden" />
 		<div class="w-full flex flex-col !mt-11 print:hidden">
 			<div class="bg-white p-1.5 gap-2 flex flex-col">

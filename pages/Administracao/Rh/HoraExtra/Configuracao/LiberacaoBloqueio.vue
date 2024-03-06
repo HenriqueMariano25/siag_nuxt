@@ -1,6 +1,7 @@
 <template>
 	<div class="w-full">
-		<div>
+    <CabecalhoPagina titulo="LIBERAÇÃO/BLOQUEIO" />
+		<div class="!mt-11">
 			<AppTabs
 				:tabs="tabs"
 				@tab="tab = $event">
@@ -319,6 +320,7 @@ import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
 import AppTabs from "~/components/Ui/AppTabs.vue";
 import AppAlerta from "~/components/Ui/AppAlerta.vue";
 import AppTooltip from "~/components/Ui/AppTooltip.vue";
+import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 </script>
 
 <script>

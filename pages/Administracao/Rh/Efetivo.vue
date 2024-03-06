@@ -1,6 +1,7 @@
 <template>
 	<div class="w-full">
-		<div>
+    <CabecalhoPagina titulo="EFETIVO" />
+		<div class="!mt-11">
 			<TabelaPadrao
         id="efetivo"
 				:cabecalho="cabecalho"
@@ -218,11 +219,13 @@
 	import AppFormSwitch from "~/components/Ui/AppFormSwitch.vue"
 	import DialogAtualizarHe from "~/components/Dialogs/Administracao/Rh/Efetivo/DialogAtualizarHe.vue"
 	import DialogCadastrarFuncionario from "~/components/Dialogs/Administracao/Rh/Efetivo/DialogCadastrarFuncionario.vue"
+  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 
 	export default {
 		name: "index",
 		mixins: [horaExtra],
 		components: {
+      CabecalhoPagina,
 			DialogAtualizarHe,
 			AppFormSwitch,
 			AppAlerta,

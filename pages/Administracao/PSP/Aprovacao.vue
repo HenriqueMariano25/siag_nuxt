@@ -1,6 +1,7 @@
 <template>
 	<div class="w-full">
-		<div class="flex bg-primaria-500 w-full print:hidden menuEtapas">
+    <CabecalhoPagina titulo="APROVAÇÃO" />
+		<div class="flex bg-primaria-500 w-full print:hidden menuEtapas !mt-11">
 			<div
 				v-for="etapa in etapas"
 				:key="etapa.valor"
@@ -17,6 +18,7 @@
 		</div>
 		<div>
 			<TabelaPadrao
+        class="bg-white"
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
@@ -25,7 +27,7 @@
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
 				:totalItens="totalItens"
-				altura="calc(100vh - 104px)"
+				altura="calc(100vh - 159px)"
 				@atualizar="buscarPsps"
 				selecionar
         @dblclick="verDetalhesPsp"
@@ -174,10 +176,11 @@
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
   import AppTooltip from "~/components/Ui/AppTooltip.vue";
   import DialogDetalhesPsp from "~/components/Dialogs/Administracao/Psp/DialogDetalhesPsp.vue";
+  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 
 	export default {
 		name: "Aprovacao",
-		components: { DialogDetalhesPsp, AppTooltip, AppAlerta, DialogAprovarPsp, BotaoPadrao, RodapePagina, TabelaPadrao },
+		components: { CabecalhoPagina, DialogDetalhesPsp, AppTooltip, AppAlerta, DialogAprovarPsp, BotaoPadrao, RodapePagina, TabelaPadrao },
 		data() {
 			return {
 				etapa_psp_id: null,

@@ -1,7 +1,8 @@
 <template>
 	<div class="w-full grid grid-cols-1 h-fit gap-y-2">
+    <CabecalhoPagina titulo="PSP" />
 		<div
-			class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white">
+			class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white !mt-11">
 			<ButtonNavegacao
 				titulo="Solicitações"
 				cor="bg-[#264653]"
@@ -45,10 +46,12 @@
 	import AppTabs from "~/components/Ui/AppTabs.vue"
 	import AppFormInput from "~/components/Ui/AppFormInput.vue"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
+  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 
 	export default {
 		name: "index",
 		components: {
+      CabecalhoPagina,
 			ButtonNavegacao,
 			AppTabs,
 			AppFormInput,

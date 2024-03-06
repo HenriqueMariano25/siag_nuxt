@@ -1,6 +1,6 @@
 <template>
   <div class="w-full print:!-ml-0.5">
-    <CabecalhoPagina titulo="Chips" />
+    <CabecalhoPagina titulo="CHIPS" />
     <div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11 print:hidden ">
       <TabelaPadrao
         id="chips"

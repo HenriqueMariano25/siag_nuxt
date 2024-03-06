@@ -1,6 +1,7 @@
 <template>
   <div class="w-full flex flex-col gap-2">
-    <div class="w-full">
+    <CabecalhoPagina titulo="TERCEIROS" />
+    <div class="w-full !mt-11">
       <div class="w-full flex gap-2 bg-white p-1 items-end">
         <AppFormInput id="data" type="date" label="Data" v-model="agendamento.data" class="grow" obrigatorio/>
         <AppFormSelect
@@ -30,7 +31,7 @@
     <div>
       <TabelaPadrao
         id="terceiros"
-        altura="calc(100vh - 142px)"
+        altura="calc(100vh - 185px)"
         :cabecalho="cabecalho"
         :dados="dados"
         dados-sql
@@ -88,10 +89,11 @@ import RodapePagina from "~/components/Shared/RodapePagina.vue";
 import DialogAgendamentosTerceiros
   from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogAgendamentosTerceiros.vue";
 import AppAlerta from "~/components/Ui/AppAlerta.vue";
+import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 
 export default {
   name: "Terceiros",
-  components: { AppAlerta, DialogAgendamentosTerceiros, RodapePagina, AppBadge, TabelaPadrao, BotaoPadrao, AppFormSelect, AppFormInput },
+  components: { CabecalhoPagina, AppAlerta, DialogAgendamentosTerceiros, RodapePagina, AppBadge, TabelaPadrao, BotaoPadrao, AppFormSelect, AppFormInput },
   data() {
     return {
       agendamento: {

@@ -1,7 +1,8 @@
 <template>
 	<div class="w-full grid h-fit">
+    <CabecalhoPagina titulo="TRANSPORTE" />
 		<div
-			class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white">
+			class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white !mt-11">
 			<ButtonNavegacao
 				titulo="Rotas"
 				cor="bg-[#264653]"
@@ -52,12 +53,13 @@
 <script>
 	import ButtonNavegacao from "~/components/Shared/ButtonNavegacao.vue"
 	import GraficoRotas from "~/components/Graphic/Administracao/Transporte/GraficoRotas.vue"
+  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 
 	export default {
-		components: { ButtonNavegacao, GraficoRotas },
+		components: { CabecalhoPagina, ButtonNavegacao, GraficoRotas },
 		data() {
 			return {
-				dados: { "01": 46, "02": 45, "03": 30 },
+
 			}
 		},
 		created() {},

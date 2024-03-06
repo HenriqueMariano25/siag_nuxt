@@ -1,6 +1,7 @@
 <template>
   <div class="w-full grid h-fit gap-2">
-    <div class="border grid grid-cols-4 gap-3 border-1 shadow border-gray-300 p-2 rounded bg-white ">
+    <CabecalhoPagina titulo="CONFIGURAÇÃO" />
+    <div class="border grid grid-cols-4 gap-2 border-1 shadow border-gray-300 p-2 rounded bg-white !mt-11 ">
       <ButtonNavegacao titulo="Feriados" cor="bg-[#264653]" link="/administracao/rh/horaExtra/configuracao/feriados"
                        v-if="$auth.user.permissoes.includes('horaExtra_feriados')">
         <img src="@/assets/icons/calendar-days-w.svg" alt="" class="w-8 h-8">
@@ -29,10 +30,11 @@
 
 <script>
 import ButtonNavegacao from "~/components/Shared/ButtonNavegacao.vue";
+import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 
 export default {
-  name: "index",
-  components: { ButtonNavegacao }
+  name: "Configuracoes",
+  components: { CabecalhoPagina, ButtonNavegacao }
 };
 </script>
 

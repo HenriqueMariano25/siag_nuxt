@@ -1,7 +1,8 @@
 <template>
 	<div class="w-full">
+    <CabecalhoPagina titulo="SOLICITAÇÕES" />
 		<div
-			class="flex bg-primaria-500 w-full print:hidden menuEtapas"
+			class="flex bg-primaria-500 w-full print:hidden menuEtapas !mt-11"
 			style="overflow-x: scroll">
 			<button
 				class="flex p-2 hover:bg-gray-300 hover:text-black box-border print:hidden text-white min-w-[80px] justify-center"
@@ -32,7 +33,7 @@
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
 				:totalItens="totalItens"
-				altura="calc(100vh - 194px)"
+				altura="calc(100vh - 225px)"
 				:selecionar="podeProcessar"
 				@atualizar="buscarPsps"
 				@dblclick="verDetalhesPsp"
@@ -220,10 +221,12 @@
 	import DialogDetalhesPsp from "~/components/Dialogs/Administracao/Psp/DialogDetalhesPsp.vue"
 	import DialogHistoricoPsp from "~/components/Dialogs/Administracao/Psp/DialogHistoricoPsp.vue"
 	import gerarExcel from "~/functions/gerarExcel"
+  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 
 	export default {
 		name: "Psp",
 		components: {
+      CabecalhoPagina,
 			DialogHistoricoPsp,
 			DialogDetalhesPsp,
 			AppAlerta,

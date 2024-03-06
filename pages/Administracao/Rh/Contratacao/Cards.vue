@@ -1,7 +1,8 @@
 <template>
 	<div class="w-full">
+    <CabecalhoPagina titulo="CARD" />
 		<div
-			class="flex bg-primaria-500 w-full print:hidden menuEtapas"
+			class="flex bg-primaria-500 w-full print:hidden menuEtapas !mt-11"
 			style="overflow-x: scroll">
 			<button
 				class="flex p-2 hover:bg-gray-300 hover:text-black box-border print:hidden text-white"
@@ -41,7 +42,7 @@
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
 				:totalItens="totalItens"
-				altura="calc(100vh - 194px)"
+				altura="calc(100vh - 224px)"
 				:dadosSql="true"
 				@atualizar="buscarCards"
 				@dblclick="verDetalhesSS"
@@ -362,10 +363,12 @@
 	import gerarExcel from "~/functions/gerarExcel"
 	import DialogEditarFuncao from "~/components/Dialogs/Administracao/Rh/Contratacao/DialogEditarFuncao.vue"
   import dialgoConfirmarAprovacao from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialgoConfirmarAprovacao.vue";
+  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 	export default {
 		mixins: [buscarEtapa, prepararFiltro, buscarSetores, buscarDisciplinaCard],
 		name: "Cards",
 		components: {
+      CabecalhoPagina,
 			DialogEditarFuncao,
 			RodapePagina,
 			BotaoPadrao,

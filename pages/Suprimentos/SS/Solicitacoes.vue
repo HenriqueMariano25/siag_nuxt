@@ -1,7 +1,8 @@
 <template>
 	<div class="w-full">
+    <CabecalhoPagina titulo="SOLICITAÇÕES" />
 		<div
-			class="flex bg-primaria-500 w-full print:hidden menuEtapas"
+			class="flex bg-primaria-500 w-full print:hidden menuEtapas !mt-11"
 			style="overflow-x: scroll">
 			<button
 				class="flex p-2 hover:bg-gray-300 hover:text-black box-border print:hidden text-white"
@@ -32,7 +33,7 @@
 				@itensPorPagina="itensPorPagina = $event"
 				:pagina="pagina"
 				@pagina="pagina = $event"
-				altura="calc(100vh - 194px)"
+				altura="calc(100vh - 224px)"
 				:totalItens="totalItens"
 				@atualizar="buscarSolicitacoes()"
 				@dblclick="verDetalhesSS"
@@ -331,10 +332,12 @@
 	import { buscarEtapaSS } from "@/mixins/buscarInformacoes"
 	import gerarExcel from "~/functions/gerarExcel"
 	import AppTooltip from "~/components/Ui/AppTooltip.vue"
+  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 	export default {
 		mixins: [buscarEtapaSS],
 		name: "Solicitacoes",
 		components: {
+      CabecalhoPagina,
 			AppTooltip,
 			RodapePagina,
 			BotaoPadrao,

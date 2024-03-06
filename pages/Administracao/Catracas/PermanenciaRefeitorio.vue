@@ -1,6 +1,6 @@
 <template>
   <div class="w-full print:!-ml-0.5">
-    <CabecalhoPagina titulo="Permanência no Refeitório" />
+    <CabecalhoPagina titulo="PERMANÊNCIA NO REFEITÓRIO" />
     <div class="flex flex-col w-full !mt-11 gap-2">
       <div class="flex gap-2 bg-white p-1 border border-gray-600 w-full justify-end">
         <AppFormSelect id="setor" :options="periodos" label="Período" v-model="busca.periodo" />

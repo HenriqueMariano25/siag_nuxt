@@ -1,9 +1,10 @@
 <template>
   <div class="w-full">
-    <CabecalhoPagina titulo="Cartões" />
+    <CabecalhoPagina titulo="CARTÕES" />
     <div class="relative">
       <div class="flex w-full mt-11 ">
         <TabelaPadrao
+          id="cartoes"
           :cabecalho="cabecalho"
           :dados="dados"
           :itensPorPagina="itensPorPagina"

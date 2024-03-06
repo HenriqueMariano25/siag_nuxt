@@ -1,6 +1,6 @@
 <template>
 	<div class="w-full">
-		<CabecalhoPagina titulo="AVALIAÇÃO " />
+		<CabecalhoPagina titulo="AVALIAÇÃO" />
 		<div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11 print:hidden">
 			<TabelaPadrao
 				id="avaliacoes"

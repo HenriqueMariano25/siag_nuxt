@@ -1,8 +1,9 @@
 <template>
 	<div class="w-full">
-		<CabecalhoPagina titulo="Veículos" />
+		<CabecalhoPagina titulo="VEÍCULOS" />
 		<div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11">
 			<TabelaPadrao
+        id="veiculos"
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"

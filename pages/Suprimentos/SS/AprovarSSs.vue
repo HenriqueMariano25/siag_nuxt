@@ -1,6 +1,7 @@
 <template>
 	<div class="w-full">
-		<div class="flex w-full bg-primaria-900 h-14 flex text-white">
+    <CabecalhoPagina titulo="APROVAR SS" />
+		<div class="flex w-full bg-primaria-900 h-14 text-white !mt-11">
 			<button
 				@click="tipoAprovacao = 'controle'"
 				class="px-4 hover:bg-blue-600"
@@ -31,7 +32,7 @@
 				:itensPorPagina="itensPorPagina"
 				:pagina="pagina"
 				:totalItens="totalItens"
-				altura="calc(100vh - 190px)"
+				altura="calc(100vh - 235px)"
 				@atualizar="atualizarDados"
 				@dblclick="verDetalhesSS"
 				:temDetalhes="false">
@@ -189,9 +190,11 @@
 	import DialogAprovarSS from "~/components/Dialogs/Suprimentos/SS/DialogAprovarSS.vue"
 	import DialogComentariosSS from "~/components/Dialogs/Suprimentos/SS/DialogComentariosSS.vue"
 	import DialogDetalhesSS from "~/components/Dialogs/Suprimentos/SS/DialogDetalhesSS.vue"
+  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
 	export default {
 		name: "AprovarSSs",
 		components: {
+      CabecalhoPagina,
 			DialogComentariosSS,
 			DialogAprovarSS,
 			AppTabela,
