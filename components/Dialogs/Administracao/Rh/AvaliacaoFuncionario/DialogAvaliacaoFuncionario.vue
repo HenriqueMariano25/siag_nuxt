@@ -20,7 +20,7 @@
 							type="text"
 							v-model="funcionario.chapa"
 							id="cargo"
-							label="Matricula"
+							label="Matrícula"
 							placeholder="Ex: 1950000001"
 							class="col-span-3" />
 						<AppFormInput
@@ -35,14 +35,14 @@
 						<AppFormSelectCompleto
 							id="formacao"
 							v-model="funcionario.formacao_id"
-							label="Formacação"
+							label="Formação"
 							:options="formacoes"
 							class="col-span-4" />
 						<AppFormInput
 							type="number"
 							id="ano_experiencia"
 							v-model="funcionario.anos_experiencia"
-							label="Anos de Experiencia"
+							label="Anos de Experiência"
 							placeholder="Ex: 3 anos"
 							class="col-span-3" />
 

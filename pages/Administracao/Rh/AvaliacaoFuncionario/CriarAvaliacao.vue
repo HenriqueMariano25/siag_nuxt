@@ -60,7 +60,7 @@
 								id="formacao"
 								v-model="funcionario.formacao_id"
 								:invalido="erros.includes('formacao_id')"
-								label="Formacação"
+								label="Formação"
 								obrigatorio
 								:options="formacoes"
 								class="col-span-4" />
@@ -71,7 +71,7 @@
 								:value="anosExperiencia"
 								disabled
 								readonly
-								label="Anos de Experiencia"
+								label="Anos de Experiência"
 								placeholder="Ex: 3 anos"
 								class="col-span-3" />
 
