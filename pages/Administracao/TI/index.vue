@@ -12,6 +12,33 @@
           alt=""
           class="w-8 h-8" />
       </ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="Desktop"
+        cor="bg-[#264653]"
+        link="ti/desktop">
+        <img
+          src="@/assets/icons/desktop-w.svg"
+          alt=""
+          class="w-8 h-8" />
+      </ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="Notebook"
+        cor="bg-[#264653]"
+        link="ti/chipsPlanos">
+        <img
+          src="@/assets/icons/notebook-w.svg"
+          alt=""
+          class="w-8 h-8" />
+      </ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="Monitor"
+        cor="bg-[#264653]"
+        link="ti/chipsPlanos">
+        <img
+          src="@/assets/icons/monitor-w.svg"
+          alt=""
+          class="w-8 h-8" />
+      </ButtonNavegacao>
     </div>
   </div>
 </template>

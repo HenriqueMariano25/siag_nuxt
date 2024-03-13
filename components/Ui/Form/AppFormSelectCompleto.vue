@@ -46,7 +46,7 @@
 			</div>
 		</div>
 		<div
-			class="conteudo"
+			class="conteudo shadow"
 			:id="'conteudo-' + id">
 			<div class="sub-conteudo">
 				<div class="busca items-center">
@@ -82,16 +82,16 @@
           </AppTooltip>
 
 				</div>
-				<div>
+				<div class="">
 					<ul
-						class="lista z-20"
+						class="lista z-20 "
 						:style="{ maxHeight: altura }">
 						<li
 							v-for="op of opcoesFiltradas"
 							@click="selecionarOpcao(op, $event)"
 							:key="op.key ? op.key : op.id">
-              <div class="flex justify-between divide-x divide-gray-400 gap-0.5">
-							<span>
+              <div class="flex justify-between gap-0.5 items-center">
+							<span class="px-1">
                 {{ op.nome }}
               </span>
                 <div class="flex pl-1 gap-0.5" v-if="itemPrDeletar === op.id">
