@@ -118,6 +118,7 @@
 									tooltip-add="Cadastrar local de instalação"
 									:options="sistemasOperacional" />
 								<AppFormSelectCompleto
+                  v-if="tipoCadastro === 'desktop'"
 									style="z-index: 101 !important"
 									class="grow"
 									id="local_instalacao"
@@ -130,6 +131,14 @@
 									@cadastrar="mostrarDialogCadastrarLocalInstalacao = true"
 									tooltip-add="Cadastrar local de instalação"
 									:options="locaisInstalacao" />
+                <AppFormInput
+                  label="Tela"
+                  uppercase
+                  v-if="tipoCadastro === 'notebook'"
+                  v-model="desktopnotebook.tela"
+                  placeholder="Ex: 17,3"
+                  type="text"
+                  id="tela" />
 								<AppFormInput
 									label="Lote"
 									uppercase
@@ -407,6 +416,7 @@
 							@clique="
 								mostrarDialogConfirmarTrocaFuncionario = true
 								tipoTrocaFuncionario = 'estoque'
+								novo_funcionario_id = null
 							">
 							<img
 								src="../../../../../assets/icons/box-open-b.svg"
@@ -567,6 +577,7 @@
 					data_formatacao: null,
 					observacao: null,
 					id: null,
+          tela: null
 				},
 				marcas: [],
 				modelos: [],
@@ -588,18 +599,6 @@
 				],
 				licencasVinculada: [],
 				licencasNaoViculadas: [],
-				camposObrigatorio: [
-					"serial",
-					"hostname",
-					"marcati_id",
-					"modelodesknoteti_id",
-					"processadordesknoteti_id",
-					"ramdesknoteti_id",
-					"hddesknoteti_id",
-					"localinstalacaoti_id",
-					"ultima_verificacao",
-					"data_formatacao",
-				],
 				novo_funcionario_id: null,
 				funcionario: {
 					chapa: null,
@@ -617,6 +616,23 @@
 					{ nome: "Licença", valor: "licenca", disabled: this.desktopnotebook.id === null },
 				]
 			},
+      camposObrigatorio(){
+        let campos = [
+          "serial",
+          "hostname",
+          "marcati_id",
+          "modelodesknoteti_id",
+          "processadordesknoteti_id",
+          "ramdesknoteti_id",
+          "hddesknoteti_id",
+          "ultima_verificacao",
+          "data_formatacao",
+        ]
+
+        if(this.tipoCadastro === 'desktop') campos.push("localinstalacaoti_id")
+
+        return campos
+      }
 		},
 		async mounted() {
 			this.carregando = true
@@ -1222,7 +1238,13 @@
 				if (valor !== null) {
 					this.funcionario.id = valor
 					this.buscarFuncionario()
-				}
+				}else{
+          this.funcionario = {
+            chapa: null,
+            cargo: null,
+            setor: { nome: null },
+          }
+        }
 			},
 		},
 	}

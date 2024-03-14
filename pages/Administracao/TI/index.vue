@@ -24,7 +24,7 @@
       <ButtonNavegacao
         titulo="Notebook"
         cor="bg-[#264653]"
-        link="ti/chipsPlanos">
+        link="ti/notebook">
         <img
           src="@/assets/icons/notebook-w.svg"
           alt=""
