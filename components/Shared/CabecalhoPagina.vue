@@ -82,7 +82,8 @@
           Nutricao: "Nutrição",
           EquipePlanejamento: "Equipe Planejamento",
           SubDisciplina: "Sub Disciplina",
-          Usuario: "Usuário"
+          Usuario: "Usuário",
+          Periferico: "Periférico",
 				}
 
 				let correcaoEncontrada = correcoes[nome] ? correcoes[nome] : null

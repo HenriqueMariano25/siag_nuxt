@@ -410,9 +410,6 @@
 				type: Object,
 				default: null,
 			},
-			tipoCadastro: {
-				type: String,
-			},
 		},
 		data() {
 			return {
