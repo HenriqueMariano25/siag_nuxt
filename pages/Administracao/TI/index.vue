@@ -33,7 +33,7 @@
       <ButtonNavegacao
         titulo="Monitor"
         cor="bg-[#264653]"
-        link="ti/chipsPlanos">
+        link="ti/monitor">
         <img
           src="@/assets/icons/monitor-w.svg"
           alt=""

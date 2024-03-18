@@ -4,7 +4,7 @@ export default {
   },
   ATUALIZAR_LOCALINSTALACAO_TI(state, { localInstalacao }) {
     let locaisInstalacao = state.locaisInstalacao
-    locaisInstalacao.push(locasInstalacao)
+    locaisInstalacao.push(localInstalacao)
 
     state.locaisInstalacao = locaisInstalacao.sort((a, b) => { return a.nome.localeCompare(b.nome)})
   },

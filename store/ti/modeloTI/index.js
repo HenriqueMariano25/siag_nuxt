@@ -1,3 +1,3 @@
 export const state = () => ({
-  modelosDeskNote: [],
+  modelosTI: [],
 })

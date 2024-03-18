@@ -6,7 +6,7 @@
       @cancelar="cancelar()">
       <template v-slot:corpo>
         <div class="px-2">
-          <AppFormInput id="modelo" type="text" label="Modelo" v-model="nome" placeholder="Ex: Optiplex 3050" />
+          <AppFormInput id="modelo" type="text" label="Modelo" v-model="nome" placeholder="Ex: Optiplex 3050" uppercase />
         </div>
       </template>
       <template v-slot:rodape-btn-direito>
@@ -29,7 +29,7 @@ import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue";
 export default {
   components: { BotaoPadrao, AppFormInput, BaseDialog },
   props: {
-    desk_note: {
+    equipamento: {
       type: String,
     }
   },
@@ -46,8 +46,8 @@ export default {
     async cadastrarModelo() {
       this.jaCriado = false
       let nome = this.nome
-      let desk_note = this.desk_note
-      let resp = await this.$axios.$post("/ti/modeloDeskNote/cadastrar", { nome, desk_note })
+      let equipamento = this.equipamento
+      let resp = await this.$axios.$post("/ti/modelo/cadastrar", { nome, equipamento })
 
       if (!resp.falha) {
         let { modelo, criado } = resp.dados
@@ -55,7 +55,7 @@ export default {
         if (!criado) {
           this.jaCriado = true
         } else {
-          this.$store.commit("ti/modeloDeskNoteTI/ATUALIZAR_MODELOS_DESKNOTE_TI", {
+          this.$store.commit("ti/modeloTI/ATUALIZAR_MODELOS_TI", {
             modelo
           })
           this.$emit("cadastrado")

@@ -3,10 +3,11 @@
 		<CabecalhoPagina titulo="CARROS" />
 		<div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11 print:hidden">
 			<TabelaPadrao
+				id="carros"
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
-        @itensPorPagina="itensPorPagina = $event"
+				@itensPorPagina="itensPorPagina = $event"
 				:pagina="pagina"
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
@@ -79,10 +80,9 @@
 						{{ item.StatusCarro.descricao }}
 					</span>
 				</template>
-        <template v-slot:[`body.ocultar_pool`]="{ item }">
-					<span
-						class="whitespace-nowrap">
-						{{ item.ocultar_pool ? "Sim":"Não" }}
+				<template v-slot:[`body.ocultar_pool`]="{ item }">
+					<span class="whitespace-nowrap">
+						{{ item.ocultar_pool ? "Sim" : "Não" }}
 					</span>
 				</template>
 			</TabelaPadrao>
@@ -91,12 +91,14 @@
 			<template v-slot>
 				<div class="flex justify-between w-full">
 					<div class="flex">
-            <BotaoPadrao texto="checklists" @clique="irParaChecklists()">
-              <img
-                src="@/assets/icons/checklist-b.svg"
-                alt=""
-                class="w-7 h-7" />
-            </BotaoPadrao>
+						<BotaoPadrao
+							texto="checklists"
+							@clique="irParaChecklists()">
+							<img
+								src="@/assets/icons/checklist-b.svg"
+								alt=""
+								class="w-7 h-7" />
+						</BotaoPadrao>
 					</div>
 					<div class="flex">
 						<BotaoPadrao
@@ -215,16 +217,18 @@
 				this.mostrarAlerta = true
 			},
 			async buscarCarros() {
-        let filtros = this.filtros
-        let ordem = this.ordem
-        let page = this.pagina - 1
-        let size = this.itensPorPagina
+				let filtros = this.filtros
+				let ordem = this.ordem
+				let page = this.pagina - 1
+				let size = this.itensPorPagina
 
-				let resp = await this.$axios.$get("/transporte/carros/buscar_todos", { params: { filtros, ordem, page, size }})
+				let resp = await this.$axios.$get("/transporte/carros/buscar_todos", {
+					params: { filtros, ordem, page, size },
+				})
 
 				if (!resp.falha) {
 					this.dados = resp.dados.carros
-          this.totalItens = resp.dados.total
+					this.totalItens = resp.dados.total
 				}
 			},
 			async checklistCadastrado(carro_id, checklist) {
@@ -248,9 +252,9 @@
 				this.textoAlerta = "Checklist finalizado com sucesso!"
 				this.mostrarAlerta = true
 			},
-      irParaChecklists(){
-        this.$router.push("checklists")
-      }
+			irParaChecklists() {
+				this.$router.push("checklists")
+			},
 		},
 	}
 </script>

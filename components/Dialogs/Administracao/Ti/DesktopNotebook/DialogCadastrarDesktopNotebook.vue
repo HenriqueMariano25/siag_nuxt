@@ -59,8 +59,8 @@
 									class="grow"
 									obrigatorio
 									id="modelo"
-									:invalido="erros.includes('modelodesknoteti_id')"
-									v-model="desktopnotebook.modelodesknoteti_id"
+									:invalido="erros.includes('modeloti_id')"
+									v-model="desktopnotebook.modeloti_id"
 									btn-cadastrar
 									label="Modelo"
 									@cadastrar="mostrarDialogCadastrarModelo = true"
@@ -118,7 +118,7 @@
 									tooltip-add="Cadastrar local de instalação"
 									:options="sistemasOperacional" />
 								<AppFormSelectCompleto
-                  v-if="tipoCadastro === 'desktop'"
+									v-if="tipoCadastro === 'desktop'"
 									style="z-index: 101 !important"
 									class="grow"
 									id="local_instalacao"
@@ -131,14 +131,14 @@
 									@cadastrar="mostrarDialogCadastrarLocalInstalacao = true"
 									tooltip-add="Cadastrar local de instalação"
 									:options="locaisInstalacao" />
-                <AppFormInput
-                  label="Tela"
-                  uppercase
-                  v-if="tipoCadastro === 'notebook'"
-                  v-model="desktopnotebook.tela"
-                  placeholder="Ex: 17,3"
-                  type="text"
-                  id="tela" />
+								<AppFormInput
+									label="Tela"
+									uppercase
+									v-if="tipoCadastro === 'notebook'"
+									v-model="desktopnotebook.tela"
+									placeholder="Ex: 17,3"
+									type="text"
+									id="tela" />
 								<AppFormInput
 									label="Lote"
 									uppercase
@@ -197,7 +197,9 @@
 									<div class="bg-green-700 m-2 text-center text-xl text-white py-1 font-bold">
 										<span>EM ESTOQUE</span>
 									</div>
-									<span v-if="desktopnotebook.data_entrega" class="px-2">
+									<span
+										v-if="desktopnotebook.data_entrega"
+										class="px-2">
 										<strong>DATA DE ENTREGA:</strong>
 										{{ $dayjs(desktopnotebook.data_entrega).format("DD/MM/YYYY HH:mm:ss") }}
 									</span>
@@ -444,7 +446,7 @@
 		<DialogCadastrarModelo
 			v-if="mostrarDialogCadastrarModelo"
 			@cancelar="mostrarDialogCadastrarModelo = false"
-			desk_note="desktop"
+			:equipamento="tipoCadastro"
 			@cadastrado="modeloCadastrado()" />
 		<DialogCadastrarProcessador
 			v-if="mostrarDialogCadastrarProcessador"
@@ -564,7 +566,7 @@
 					serial: null,
 					hostname: null,
 					marcati_id: null,
-					modelodesknoteti_id: null,
+					modeloti_id: null,
 					processadordesknoteti_id: null,
 					ramdesknoteti_id: null,
 					hddesknoteti_id: null,
@@ -577,7 +579,7 @@
 					data_formatacao: null,
 					observacao: null,
 					id: null,
-          tela: null
+					tela: null,
 				},
 				marcas: [],
 				modelos: [],
@@ -616,23 +618,23 @@
 					{ nome: "Licença", valor: "licenca", disabled: this.desktopnotebook.id === null },
 				]
 			},
-      camposObrigatorio(){
-        let campos = [
-          "serial",
-          "hostname",
-          "marcati_id",
-          "modelodesknoteti_id",
-          "processadordesknoteti_id",
-          "ramdesknoteti_id",
-          "hddesknoteti_id",
-          "ultima_verificacao",
-          "data_formatacao",
-        ]
+			camposObrigatorio() {
+				let campos = [
+					"serial",
+					"hostname",
+					"marcati_id",
+					"modeloti_id",
+					"processadordesknoteti_id",
+					"ramdesknoteti_id",
+					"hddesknoteti_id",
+					"ultima_verificacao",
+					"data_formatacao",
+				]
 
-        if(this.tipoCadastro === 'desktop') campos.push("localinstalacaoti_id")
+				if (this.tipoCadastro === "desktop") campos.push("localinstalacaoti_id")
 
-        return campos
-      }
+				return campos
+			},
 		},
 		async mounted() {
 			this.carregando = true
@@ -698,20 +700,22 @@
 
 			//MODELO
 			async buscarModelos() {
-				let modelos = this.$store.state.ti.modeloDeskNoteTI.modelosDeskNote
+				let modelos = this.$store.state.ti.modeloTI.modelosTI
 				if (modelos.length === 0) {
 					modelos = await this.$axios
-						.$get("/ti/modeloDeskNote/buscarTodos")
+						.$get("/ti/modelo/buscarTodos")
 						.then((resp) => resp.dados.modelos)
 
-					this.$store.commit("ti/modeloDeskNoteTI/DEFINIR_MODELOS_DESKNOTE_TI", {
+					this.$store.commit("ti/modeloTI/DEFINIR_MODELOS_TI", {
 						modelos,
 					})
 				}
 
-				this.modelos = modelos.map((o) => {
-					return { id: o.id, nome: o.nome }
-				})
+				this.modelos = modelos
+					.filter((o) => o.equipamento === this.tipoCadastro)
+					.map((o) => {
+						return { id: o.id, nome: o.nome }
+					})
 			},
 			async modeloCadastrado() {
 				this.mostrarDialogCadastrarModelo = false
@@ -721,9 +725,9 @@
 			},
 			async deletarModelo(event) {
 				let { id } = event
-				await this.$axios.$delete("/ti/modeloDeskNote/deletar", { params: { id } })
+				await this.$axios.$delete("/ti/modelo/deletar", { params: { id } })
 
-				this.$store.commit("ti/modeloDeskNoteTI/DELETAR_MODELO_DESKNOTE_TI", { id })
+				this.$store.commit("ti/modeloTI/DELETAR_TI", { id })
 
 				let idx = this.modelos.findIndex((o) => o.id === id)
 				if (idx >= 0) {
@@ -985,8 +989,7 @@
 			},
 			async licencaCadastrada(licenca) {
 				this.mostrarDialogCadastrarLicenca = false
-        console.log(licenca);
-        this.licencasNaoViculadas.push(licenca)
+				this.licencasNaoViculadas.push(licenca)
 				this.textoAlerta = "Licença cadastrada com sucesso!"
 				this.mostrarAlerta = true
 			},
@@ -1015,8 +1018,6 @@
 				}
 			},
 			async salvarLicencas() {
-				console.log(this.licencasVinculada)
-
 				let licencas = this.licencasVinculada.map((o) => o.id)
 				let { id } = this.desktopnotebook
 
@@ -1102,8 +1103,6 @@
 
 			// DESKTOP E NOTEBOOK
 			async cadastrarDesktopNotebook(sair) {
-				console.log("Cadastrando")
-
 				this.textoErro = null
 				this.erros = validarFormulario(this.camposObrigatorio, this.desktopnotebook)
 
@@ -1158,8 +1157,6 @@
 			},
 
 			async editarDesktopNotebook(sair) {
-				console.log("Editando")
-
 				this.erros = validarFormulario(this.camposObrigatorio, this.desktopnotebook)
 
 				if (this.erros.length === 0) {
@@ -1172,12 +1169,8 @@
 						usuario_id,
 					})
 					if (!resp.falha) {
-						console.log(resp.dados)
-
 						let { editado, desknote } = resp.dados
 
-						console.log(editado, desknote)
-						//
 						if (!editado) {
 							let campoErro = ""
 
@@ -1238,13 +1231,13 @@
 				if (valor !== null) {
 					this.funcionario.id = valor
 					this.buscarFuncionario()
-				}else{
-          this.funcionario = {
-            chapa: null,
-            cargo: null,
-            setor: { nome: null },
-          }
-        }
+				} else {
+					this.funcionario = {
+						chapa: null,
+						cargo: null,
+						setor: { nome: null },
+					}
+				}
 			},
 		},
 	}

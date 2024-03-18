@@ -31,7 +31,9 @@
 							</strong>
 						</span>
 					</div>
-					<div class="border border-gray-700 w-full">
+					<div
+						class="border border-gray-700 w-full"
+						v-if="licencas.length > 0">
 						<span class="px-2 bg-slate-700 text-white text-lg py-1 w-full flex">
 							LICENÇAS VINCULADAS
 						</span>
@@ -83,8 +85,7 @@
 			},
 		},
 		data() {
-			return {
-			}
+			return {}
 		},
 		methods: {
 			cancelar() {
