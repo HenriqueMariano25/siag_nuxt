@@ -4,6 +4,15 @@
     <div
       class="border grid grid-cols-4 gap-3 border-1 shadow border-gray-300 p-2 rounded bg-white !mt-11">
       <ButtonNavegacao
+        titulo="Funcionários"
+        cor="bg-[#264653]"
+        link="ti/Funcionarios">
+        <img
+          src="@/assets/icons/people-w.svg"
+          alt=""
+          class="w-8 h-8" />
+      </ButtonNavegacao>
+      <ButtonNavegacao
         titulo="Chips e Planos"
         cor="bg-[#264653]"
         link="ti/chipsPlanos">

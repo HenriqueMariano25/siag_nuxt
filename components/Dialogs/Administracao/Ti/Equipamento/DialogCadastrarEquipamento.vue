@@ -29,7 +29,7 @@
 							id="marca"
 							:invalido="erros.includes('marca')" />
 						<AppFormInput
-							label="Marca"
+							label="Modelo"
 							obrigatorio
 							placeholder="Ex: GENÉRICO"
 							type="text"
