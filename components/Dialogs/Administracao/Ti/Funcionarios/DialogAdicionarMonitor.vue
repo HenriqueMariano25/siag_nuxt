@@ -171,10 +171,12 @@ export default {
     async adicionarMonitor(monitor) {
       let funcionario_id = this.funcionario_id
       let monitorti_id = monitor.id
+      let usuario_id = this.$auth.user.id
 
       let resp = await this.$axios.$post("/ti/funcionarios/trocarMonitor", {
         funcionario_id,
         monitorti_id,
+        usuario_id
       })
 
       if (!resp.falha) {

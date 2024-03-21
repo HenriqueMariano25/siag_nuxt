@@ -177,10 +177,12 @@
 			async adicionarDeskNote(deskNote) {
 				let funcionario_id = this.funcionario_id
 				let desktopnotebookti_id = deskNote.id
+        let usuario_id = this.$auth.user.id
 
 				let resp = await this.$axios.$post("/ti/funcionarios/trocarDeskNote", {
 					funcionario_id,
 					desktopnotebookti_id,
+          usuario_id
 				})
 
 				if (!resp.falha) {

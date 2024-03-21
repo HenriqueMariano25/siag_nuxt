@@ -584,32 +584,30 @@
       //EQUIPAMENTO
       async adicionarEquipamento(){
         let equipamentoti_id = this.equipamentoti_id
-
         let funcionario_id = this.funcionario_id
+        let usuario_id = this.$auth.user.id
 
-        let resp = await this.$axios.$post("/ti/funcionario/adicionarEquipamento",  { equipamentoti_id, funcionario_id})
+        let resp = await this.$axios.$post("/ti/funcionario/adicionarEquipamento",  { equipamentoti_id, funcionario_id,
+          usuario_id})
 
         if(!resp.falha){
-          console.log(resp.dados);
-          let { criado, equipamento } = resp.dados
-          if(criado){
+          let {  equipamento } = resp.dados
             this.dadosEquipamento.push(equipamento)
             this.textoAlerta = "Equipamento adicionado com sucesso!"
-          }
+          this.mostrarAlerta = true
 
           this.equipamentoti_id = null
         }
       },
       async removerEquipamento(){
         let equipamentoti_id = this.equipamentotiIdPrDeletar
-
-        console.log(equipamentoti_id);
-
+        let usuario_id = this.$auth.user.id
         let funcionario_id = this.funcionario_id
-        let resp = await this.$axios.$post("/ti/funcionario/removerEquipamento", { equipamentoti_id, funcionario_id })
+
+        let resp = await this.$axios.$post("/ti/funcionario/removerEquipamento", { equipamentoti_id, funcionario_id,
+          usuario_id })
 
         if (!resp.falha) {
-          console.log(resp.dados);
           let idx = this.dadosEquipamento.findIndex(o => o.id === equipamentoti_id)
           if(idx >= 0 ){
             this.dadosEquipamento.splice(idx, 1)
@@ -623,10 +621,11 @@
       //LICENCA
       async adicionarLicenca() {
         let licencati_id = this.licencati_id
-
         let funcionario_id = this.funcionario_id
+        let usuario_id = this.$auth.user.id
 
-        let resp = await this.$axios.$post("/ti/funcionario/adicionarLicenca", { licencati_id, funcionario_id })
+        let resp = await this.$axios.$post("/ti/funcionario/adicionarLicenca", { licencati_id, funcionario_id,
+          usuario_id })
 
         if (!resp.falha) {
           let { criado, licenca } = resp.dados
@@ -641,10 +640,10 @@
       },
       async removerLicenca() {
         let licencati_id = this.licencatiIdPrDeletar
-
-
+        let usuario_id = this.$auth.user.id
         let funcionario_id = this.funcionario_id
-        let resp = await this.$axios.$post("/ti/funcionario/removerLicenca", { licencati_id, funcionario_id })
+
+        let resp = await this.$axios.$post("/ti/funcionario/removerLicenca", { licencati_id, funcionario_id, usuario_id })
 
         if (!resp.falha) {
           let idx = this.dadosLicenca.findIndex(o => o.id === licencati_id)

@@ -88,6 +88,19 @@
 					<span>{{ item.setor ? item.setor.nome : "" }}</span>
 
 				</template>
+        <template v-slot:[`body.historico`]="{ item }">
+          <div
+            class="bg-blue-200 border border-blue-300 flex gap-2 justify-center items-center py-0.5 text-black hover:bg-blue-300 rounded"
+            @click="
+							mostrarDialogHistoricoFuncionarioTI = true
+							id = item.id
+						">
+            <img
+              src="@/assets/icons/history-b.svg"
+              alt=""
+              class="w-6 h-6" />
+          </div>
+        </template>
 			</TabelaPadrao>
 		</div>
 		<RodapePagina>
@@ -116,6 +129,7 @@
 			@escondeu="mostrarAlerta = false">
 			{{ textoAlerta }}
 		</AppAlerta>
+    <DialogHistoricoFuncionarioTI v-if="mostrarDialogHistoricoFuncionarioTI" @cancelar="mostrarDialogHistoricoFuncionarioTI = false" :id="id"/>
 	</div>
 </template>
 
@@ -128,6 +142,8 @@
 	import DialogCadastrarEquipamento from "~/components/Dialogs/Administracao/Ti/Equipamento/DialogCadastrarEquipamento.vue"
 	import DialogEditarFuncionario from "~/components/Dialogs/Administracao/Ti/Funcionarios/DialogEditarFuncionario.vue"
   import AppTooltip from "~/components/Ui/AppTooltip.vue";
+  import DialogHistoricoFuncionarioTI
+    from "~/components/Dialogs/Administracao/Ti/Funcionarios/DialogHistoricoFuncionarioTI.vue";
 
 	export default {
 		components: {
@@ -139,6 +155,7 @@
 			RodapePagina,
 			TabelaPadrao,
 			CabecalhoPagina,
+      DialogHistoricoFuncionarioTI
 		},
 		data() {
 			return {
@@ -149,6 +166,7 @@
 					{ nome: "Nome", valor: "nome", filtro: true, ordenar: true },
 					{ nome: "Cargo", valor: "cargo", filtro: true, ordenar: true },
 					{ nome: "Setor", valor: "setor.nome", ordenar: true, filtro: true },
+					{ nome: "Histórico", valor: "historico"},
 				],
 				filtros: {},
 				ordem: null,
@@ -161,7 +179,8 @@
 				mostrarAlerta: false,
 				textoAlerta: null,
 				funcionario_id: null,
-        carregando: true
+        carregando: true,
+        mostrarDialogHistoricoFuncionarioTI: false
 			}
 		},
 		mounted() {
