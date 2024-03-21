@@ -393,8 +393,6 @@
 		},
 		async fetch() {
 			this.carregando = true
-			console.log(this.funcionario_id)
-
 			let id = this.funcionario_id
 
 			let resp = await this.$axios.$get("/ti/funcionarios/buscar", { params: { id } })

@@ -26,19 +26,81 @@
 							class="w-6 h-6" />
 					</BotaoPadrao>
 				</template>
+        <template v-slot:[`body.ativos`]="{ item }">
+<!--          <span>{{ item }}</span>-->
+          <div class="flex gap-1">
+            <div class="tag bg-[#023e8a]" v-if="item.DesktopNotebookTI.filter(o => o.tipo === 'desktop').length > 0">
+              <span>D</span>
+            </div>
+            <div class="tag bg-[#606c38]" v-if="item.DesktopNotebookTI.filter(o => o.tipo === 'notebook').length > 0">
+              <span>N</span>
+            </div>
+            <div class="tag bg-[#5f0f40]" v-if="item.MonitorTI.length > 0">
+              <span>M</span>
+            </div>
+            <div class="tag bg-[#bc6c25]" v-if="item.EquipamentoTI.length > 0">
+              <span>E</span>
+            </div>
+          </div>
+        </template>
+        <template v-slot:[`header.ativos`]="{ item }">
+          <div class="flex gap-2 justify-center">
+            <span>{{ item.nome }}</span>
+            <AppTooltip>
+              <template v-slot:corpo>
+                <img src="@/assets/icons/information-circle-w.svg" alt="" class="w-5 h-5">
+              </template>
+              <template v-slot:tooltip>
+                <div class="min-w-[300px] max-w-full flex flex-col gap-2">
+                  <div class="flex gap-2">
+                    <div class="tag bg-[#023e8a]">
+                      <span>D</span>
+                    </div>
+                    <span>DESKTOP</span>
+                  </div>
+
+                  <div class="flex gap-2">
+                  <div class="tag bg-[#606c38]">
+                    <span>N</span>
+                  </div>
+                    <span>NOTEBOOK</span>
+                  </div>
+
+                  <div class="flex gap-2">
+                  <div class="tag bg-[#5f0f40]">
+                    <span>M</span>
+                  </div>
+                    <span>MONITOR</span>
+                  </div>
+
+                  <div class="flex gap-2">
+                  <div class="tag bg-[#bc6c25]">
+                    <span>E</span>
+                  </div>
+                    <span>EQUIPAMENTO</span>
+                  </div>
+                </div>
+              </template>
+            </AppTooltip>
+          </div>
+        </template>
 				<template v-slot:[`body.setor.nome`]="{ item }">
 					<span>{{ item.setor ? item.setor.nome : "" }}</span>
+
 				</template>
 			</TabelaPadrao>
 		</div>
 		<RodapePagina>
-			<div class="w-full flex justify-start">
+			<div class="w-full flex justify-between">
 				<BotaoPadrao texto="excel">
 					<img
 						src="@/assets/icons/excel-b.svg"
 						alt=""
 						class="w-7 h-7" />
 				</BotaoPadrao>
+        <BotaoPadrao>
+          <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7">
+        </BotaoPadrao>
 			</div>
 		</RodapePagina>
 		<DialogEditarFuncionario
@@ -65,9 +127,11 @@
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import DialogCadastrarEquipamento from "~/components/Dialogs/Administracao/Ti/Equipamento/DialogCadastrarEquipamento.vue"
 	import DialogEditarFuncionario from "~/components/Dialogs/Administracao/Ti/Funcionarios/DialogEditarFuncionario.vue"
+  import AppTooltip from "~/components/Ui/AppTooltip.vue";
 
 	export default {
 		components: {
+      AppTooltip,
 			DialogEditarFuncionario,
 			DialogCadastrarEquipamento,
 			AppAlerta,
@@ -80,6 +144,7 @@
 			return {
 				cabecalho: [
 					{ nome: "", valor: "acoes", largura: "w-14" },
+					{ nome: "Ativos", valor: "ativos"},
 					{ nome: "Matricula", valor: "chapa", filtro: true, ordenar: true, centralizar: true },
 					{ nome: "Nome", valor: "nome", filtro: true, ordenar: true },
 					{ nome: "Cargo", valor: "cargo", filtro: true, ordenar: true },
@@ -154,4 +219,11 @@
 	}
 </script>
 
-<style scoped></style>
+<style scoped>
+.tag{
+  border-radius: 10px;
+  padding: 0 6px;
+  font-weight: 600;
+  color: white;
+}
+</style>
