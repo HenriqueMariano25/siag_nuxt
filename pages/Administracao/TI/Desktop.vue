@@ -12,14 +12,43 @@
 				@filtros="filtros = $event"
 				@ordem="ordem = $event"
 				:totalItens="totalItens"
+				:carregando="carregando"
 				altura="calc(100vh - 179px)"
 				@atualizar="buscarDesktop"
 				:temDetalhes="false">
-        <template v-slot:[`body.acoes`]="{ item }">
-          <BotaoPadrao icone @clique="editarDeskNote(item)">
-            <img src="@/assets/icons/edit-b.svg" alt="" class="w-6 h-6">
-          </BotaoPadrao>
-        </template>
+				<template v-slot:[`body.acoes`]="{ item }">
+					<BotaoPadrao
+						icone
+						@clique="editarDeskNote(item)">
+						<img
+							src="@/assets/icons/edit-b.svg"
+							alt=""
+							class="w-6 h-6" />
+					</BotaoPadrao>
+				</template>
+				<template v-slot:[`body.MarcaTI.nome`]="{ item }">
+					<span>{{ item.MarcaTI ? item.MarcaTI.nome : "" }}</span>
+				</template>
+				<template v-slot:[`body.ModeloTI.nome`]="{ item }">
+					<span>{{ item.ModeloTI ? item.ModeloTI.nome : "" }}</span>
+				</template>
+				<template v-slot:[`body.Funcionario.nome`]="{ item }">
+					<span>{{ item.Funcionario ? item.Funcionario.nome : "" }}</span>
+				</template>
+				<template v-slot:[`body.historico`]="{ item }">
+					<div
+						class="bg-blue-200 border border-blue-300 flex gap-2 justify-center items-center py-0.5 text-black hover:bg-blue-300"
+						@click="
+							mostrarDialogHistoricoTI = true
+							id = item.id
+						">
+						<img
+							src="@/assets/icons/history-b.svg"
+							alt=""
+							class="w-6 h-6" />
+						<span>HISTÓRICO</span>
+					</div>
+				</template>
 			</TabelaPadrao>
 		</div>
 		<RodapePagina>
@@ -46,16 +75,24 @@
 				mostrarDialogCadastrarDesktopNotebook = false
 				maquina = null
 			"
-      @cadastrado="desktopCadastrado"
-      @editado="desktopEditado"
-      tipoCadastro="desktop"
+			@cadastrado="desktopCadastrado"
+			@editado="desktopEditado"
+			tipoCadastro="desktop"
 			:maquina="maquina" />
-    <AppAlerta
-      tipo="sucesso"
-      :mostrar="mostrarAlerta"
-      @escondeu="mostrarAlerta = false">
-      {{ textoAlerta }}
-    </AppAlerta>
+		<AppAlerta
+			tipo="sucesso"
+			:mostrar="mostrarAlerta"
+			@escondeu="mostrarAlerta = false">
+			{{ textoAlerta }}
+		</AppAlerta>
+		<DialogHistoricoTI
+			v-if="mostrarDialogHistoricoTI"
+			@cancelar="
+				mostrarDialogHistoricoTI = false
+				id = null
+			"
+			:id="id"
+			modulo="desktop" />
 	</div>
 </template>
 
@@ -65,11 +102,13 @@
 	import RodapePagina from "~/components/Shared/RodapePagina.vue"
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import DialogCadastrarDesktopNotebook from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogCadastrarDesktopNotebook.vue"
-  import AppAlerta from "~/components/Ui/AppAlerta.vue";
+	import AppAlerta from "~/components/Ui/AppAlerta.vue"
+	import DialogHistoricoTI from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogHistoricoTI.vue"
 
 	export default {
 		components: {
-      AppAlerta,
+			DialogHistoricoTI,
+			AppAlerta,
 			DialogCadastrarDesktopNotebook,
 			BotaoPadrao,
 			RodapePagina,
@@ -81,9 +120,12 @@
 				cabecalho: [
 					{ nome: "", valor: "acoes", largura: "w-14" },
 					{ nome: "Patrimônio", valor: "patrimonio", filtro: true, ordenar: true },
-					{ nome: "Serial", valor: "serial" },
+					{ nome: "Serial", valor: "serial", ordenar: true, filtro: true },
 					{ nome: "Hostname", valor: "hostname", ordenar: true, filtro: true },
-					{ nome: "", valor: "historico", ordenar: true, filtro: true },
+					{ nome: "Marca", valor: "MarcaTI.nome", ordenar: true, filtro: true },
+					{ nome: "Modelo", valor: "ModeloTI.nome", ordenar: true, filtro: true },
+					{ nome: "Funcionário", valor: "Funcionario.nome", ordenar: true, filtro: true },
+					{ nome: "", valor: "historico" },
 				],
 				filtros: {},
 				ordem: null,
@@ -93,39 +135,56 @@
 				pagina: 1,
 				mostrarDialogCadastrarDesktopNotebook: false,
 				maquina: null,
-        mostrarAlerta: false,
-        textoAlerta: null
+				mostrarAlerta: false,
+				textoAlerta: null,
+				mostrarDialogHistoricoTI: false,
+				id: null,
+				carregando: false,
 			}
 		},
-    mounted() {
-      this.buscarDesktop();
-    },
+		mounted() {
+			this.buscarDesktop()
+		},
 		methods: {
 			async buscarDesktop() {
-        let resp = await this.$axios.$get("/ti/desktopNotebook/desktops/buscarTodos")
+				this.carregando = true
+				let filtros = this.filtros
+				let ordem = this.ordem
+				let page = this.pagina - 1
+				let size = this.itensPorPagina
 
-        if(!resp.falha){
-          this.dados = resp.dados.desktops
-        }
-      },
-      async editarDeskNote(item){
-        this.mostrarDialogCadastrarDesktopNotebook = true
-        this.maquina = item
-      },
-      async desktopEditado(){
-        this.mostrarDialogCadastrarDesktopNotebook = false
-        this.textoAlerta = "Desktop editado com sucesso!"
-        this.mostrarAlerta = true
-        this.maquina = null
-      },
-      async desktopCadastrado({ desknote, sair }){
-        this.dados.push(desknote)
-        if(sair){
-          this.mostrarDialogCadastrarDesktopNotebook = false
-          this.textoAlerta = "Desktop cadastrado com sucesso!"
-          this.mostrarAlerta = true
-        }
-      }
+				let resp = await this.$axios.$get("/ti/desktopNotebook/desktops/buscarTodos", {
+					params: {
+						filtros,
+						ordem,
+						page,
+						size,
+					},
+				})
+
+				if (!resp.falha) {
+					this.dados = resp.dados.desktops
+				}
+				this.carregando = false
+			},
+			async editarDeskNote(item) {
+				this.mostrarDialogCadastrarDesktopNotebook = true
+				this.maquina = item
+			},
+			async desktopEditado() {
+				this.mostrarDialogCadastrarDesktopNotebook = false
+				this.textoAlerta = "Desktop editado com sucesso!"
+				this.mostrarAlerta = true
+				this.maquina = null
+			},
+			async desktopCadastrado({ desknote, sair }) {
+				this.dados.push(desknote)
+				if (sair) {
+					this.mostrarDialogCadastrarDesktopNotebook = false
+					this.textoAlerta = "Desktop cadastrado com sucesso!"
+					this.mostrarAlerta = true
+				}
+			},
 		},
 	}
 </script>

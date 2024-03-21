@@ -159,12 +159,12 @@
 					</template>
 					<template v-slot:[`tab.desktopNotebook`]="{ item }">
 						<div class="px-2 flex gap-2 flex-col mt-2">
-							<div class="pt-2">
+							<div class="pt-2 flex flex-wrap gap-2">
 								<span class="border-b-2 border-gray-700 w-full flex px-3 font-bold">
 									Desktop/Notebook atual
 								</span>
 								<div
-									class="grid grid-cols-3 px-2 mt-1"
+									class="grid grid-cols-3 px-2 mt-1 grow"
 									v-if="monitorLocal.DesktopNotebookTI !== null">
 									<span>
 										<strong>Patrimônio: </strong>
@@ -191,6 +191,21 @@
 										}}
 									</span>
 								</div>
+                <div class="items-center flex" v-if="monitorLocal.DesktopNotebookTI !== null">
+                  <div class="flex gap-1">
+                    <BotaoPadrao cor="bg-red-300 hover:!bg-red-400" v-if="!limpandoDeskNote" @clique="limpandoDeskNote = true">
+                      <img src="@/assets/icons/delete-b.svg" alt="" class="w-7 h-7">
+                    </BotaoPadrao>
+                    <BotaoPadrao cor="bg-red-300 hover:!bg-red-400" v-if="limpandoDeskNote" @clique="limparDeskNote">
+                      <img src="@/assets/icons/delete-b.svg" alt="" class="w-7 h-7">
+                    </BotaoPadrao>
+                    <BotaoPadrao cor="bg-blue-300 hover:!bg-blue-400" v-if="limpandoDeskNote"
+                                 @clique="limpandoDeskNote = false">
+                      <img src="@/assets/icons/back-b.svg" alt="" class="w-7 h-7">
+                    </BotaoPadrao>
+
+                  </div>
+                </div>
 							</div>
 							<div class="border border-blue-200 flex gap-2 flex-col py-2 bg-blue-100 px-2">
 								<div class="flex gap-2 w-full">
@@ -201,6 +216,7 @@
 										v-model="buscaDeskNote"
 										placeholder="Ex: GNA2-0001"
 										label="Buscar por patrimônio, serial ou hostname"
+                    @keyup.enter.prevent.stop="!bloquearBuscarDeskNote ? buscarDeskNote() : null"
 										id="patrimonio_serial_hostname" />
 									<div class="flex items-end">
 										<BotaoPadrao
@@ -454,6 +470,7 @@
 				buscaDeskNote: null,
 				desktopsNotebooks: [],
 				deskNotePrTrocar: null,
+        limpandoDeskNote:false,
 			}
 		},
 		computed: {
@@ -508,10 +525,12 @@
 			async trocarDeskNote(deskNote) {
 				let { id: desktopnotebookti_id } = deskNote
 				let { id } = this.monitorLocal
+        let usuario_id = this.$auth.user.id
 
 				let resp = await this.$axios.$put("/ti/monitor/trocarDeskNote", {
 					desktopnotebookti_id,
 					id,
+          usuario_id
 				})
 
 				if (!resp.falha) {
@@ -523,6 +542,26 @@
 					this.buscaDeskNote = null
 				}
 			},
+
+      async limparDeskNote(){
+        let { id } = this.monitorLocal
+        let usuario_id = this.$auth.user.id
+
+        let resp = await this.$axios.$put("/ti/monitor/trocarDeskNote", {
+          desktopnotebookti_id: null,
+          id,
+          usuario_id
+        })
+
+        if (!resp.falha) {
+          this.monitorLocal.DesktopNotebookTI = null
+          this.textoAlerta = `Desktop/notebook desvinculado com sucesso!`
+          this.mostrarAlerta = true
+          this.deskNotePrTrocar = null
+          this.desktopsNotebooks = []
+          this.buscaDeskNote = null
+        }
+      },
 
 			//MARCAS
 			async buscarMarcas() {
@@ -668,10 +707,12 @@
 				this.mostrarDialogConfirmarTrocaFuncionario = false
 				let { id } = this.monitorLocal
 				let funcionario_id = this.novo_funcionario_id
+        let usuario_id = this.$auth.user.id
 
 				let resp = await this.$axios.$put("/ti/monitor/trocarFuncionario", {
 					id,
 					funcionario_id,
+          usuario_id,
 				})
 				if (!resp.falha) {
 					this.textoAlerta = "Funcionário trocado com sucesso!"
@@ -691,10 +732,12 @@
 			async paraEstoque() {
 				this.mostrarDialogConfirmarTrocaFuncionario = false
 				let { id } = this.monitorLocal
+        let usuario_id = this.$auth.user.id
 
 				let resp = await this.$axios.$put("/ti/monitor/trocarFuncionario", {
 					id,
 					funcionario_id: null,
+          usuario_id
 				})
 
 				if (!resp.falha) {
@@ -726,31 +769,31 @@
 						usuario_id,
 					})
 					if (!resp.falha) {
-						let { criado, monitor } = resp.dados
+						let { criado, ativo } = resp.dados
 
 						if (!criado) {
 							let campoErro = ""
 
-							if (monitor.patrimonio === patrimonio) {
+							if (ativo.patrimonio === patrimonio) {
 								campoErro = "patrimônio"
 								this.erros.push("patrimonio")
 							}
 
-							if (monitor.serial === serial) {
+							if (ativo.serial === serial) {
 								campoErro = "serial"
 								this.erros.push("serial")
 							}
 
-							this.textoErro = `Já existe um monitor com esse ${campoErro}`
+							this.textoErro = `Já existe um ativo com esse ${campoErro}`
 						} else {
 							if (sair) {
-								this.$emit("cadastrado", { monitor, sair })
+								this.$emit("cadastrado", { monitor: ativo, sair })
 							} else {
-								this.monitorLocal.id = monitor.id
+								this.monitorLocal.id = ativo.id
 								this.monitorLocal.Funcionario = null
 								this.textoAlerta = `Monitor cadastrado com sucesso!`
 								this.mostrarAlerta = true
-								this.$emit("cadastrado", { monitor, sair })
+								this.$emit("cadastrado", { monitor: ativo, sair })
 
 								await this.buscarFuncionarios()
 							}

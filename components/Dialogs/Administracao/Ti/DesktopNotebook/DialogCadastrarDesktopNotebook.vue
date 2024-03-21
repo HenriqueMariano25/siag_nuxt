@@ -1020,8 +1020,9 @@
 			async salvarLicencas() {
 				let licencas = this.licencasVinculada.map((o) => o.id)
 				let { id } = this.desktopnotebook
+        let usuario_id = this.$auth.user.id
 
-				let resp = await this.$axios.$put("/ti/desktopNotebook/salvarLicenca", { licencas, id })
+				let resp = await this.$axios.$put("/ti/desktopNotebook/salvarLicenca", { licencas, id, usuario_id })
 
 				if (!resp.falha) {
 					this.textoAlerta = `Licenças salvas com sucesso!`
@@ -1058,10 +1059,12 @@
 				this.mostrarDialogConfirmarTrocaFuncionario = false
 				let { id } = this.desktopnotebook
 				let funcionario_id = this.novo_funcionario_id
+        let usuario_id = this.$auth.user.id
 
 				let resp = await this.$axios.$put("/ti/desktopNotebook/trocarFuncionario", {
 					id,
 					funcionario_id,
+          usuario_id
 				})
 				if (!resp.falha) {
 					this.textoAlerta = "Funcionário trocado com sucesso!"
@@ -1081,10 +1084,12 @@
 			async paraEstoque() {
 				this.mostrarDialogConfirmarTrocaFuncionario = false
 				let { id } = this.desktopnotebook
+        let usuario_id = this.$auth.user.id
 
 				let resp = await this.$axios.$put("/ti/desktopNotebook/trocarFuncionario", {
 					id,
 					funcionario_id: null,
+          usuario_id
 				})
 
 				if (!resp.falha) {
@@ -1117,36 +1122,36 @@
 						usuario_id,
 					})
 					if (!resp.falha) {
-						let { criado, desknote } = resp.dados
+						let { criado, ativo } = resp.dados
 
 						if (!criado) {
 							let campoErro = ""
 
-							if (desknote.patrimonio === patrimonio) {
+							if (ativo.patrimonio === patrimonio) {
 								campoErro = "patrimônio"
 								this.erros.push("patrimonio")
 							}
 
-							if (desknote.serial === serial) {
+							if (ativo.serial === serial) {
 								campoErro = "serial"
 								this.erros.push("serial")
 							}
 
-							if (desknote.hostname === hostname) {
+							if (ativo.hostname === hostname) {
 								campoErro = "hostname"
 								this.erros.push("hostname")
 							}
 
-							this.textoErro = `Já existe um ${this.tipoCadastro} com esse ${campoErro}`
+							this.textoErro = `Já existe um ativo com esse ${campoErro}`
 						} else {
 							if (sair) {
-								this.$emit("cadastrado", { desknote, sair })
+								this.$emit("cadastrado", { desknote: ativo, sair })
 							} else {
-								this.desktopnotebook.id = desknote.id
+								this.desktopnotebook.id = ativo.id
 								this.desktopnotebook.Funcionario = null
 								this.textoAlerta = `${this.tipoCadastro} cadastrado com sucesso!`
 								this.mostrarAlerta = true
-								this.$emit("cadastrado", { desknote, sair })
+								this.$emit("cadastrado", { desknote: ativo, sair })
 
 								await this.buscarFuncionarios()
 								await this.buscarLicencas()

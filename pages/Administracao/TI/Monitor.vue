@@ -32,6 +32,23 @@
 				<template v-slot:[`body.ModeloTI.nome`]="{ item }">
 					<span>{{ item.ModeloTI ? item.ModeloTI.nome : "" }}</span>
 				</template>
+        <template v-slot:[`body.Funcionario.nome`]="{ item }">
+          <span>{{ item.Funcionario ? item.Funcionario.nome : "" }}</span>
+        </template>
+        <template v-slot:[`body.historico`]="{ item }">
+          <div
+            class="bg-blue-200 border border-blue-300 flex gap-2 justify-center items-center py-0.5 text-black hover:bg-blue-300"
+            @click="
+							mostrarDialogHistoricoTI = true
+							id = item.id
+						">
+            <img
+              src="@/assets/icons/history-b.svg"
+              alt=""
+              class="w-6 h-6" />
+            <span>HISTÓRICO</span>
+          </div>
+        </template>
 			</TabelaPadrao>
 		</div>
 		<RodapePagina>
@@ -67,6 +84,14 @@
 			@escondeu="mostrarAlerta = false">
 			{{ textoAlerta }}
 		</AppAlerta>
+    <DialogHistoricoTI
+      v-if="mostrarDialogHistoricoTI"
+      @cancelar="
+				mostrarDialogHistoricoTI = false
+				id = null
+			"
+      :id="id"
+      modulo="monitor" />
 	</div>
 </template>
 
@@ -77,9 +102,11 @@
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import DialogCadastrarMonitor from "~/components/Dialogs/Administracao/Ti/Monitor/DialogCadastrarMonitor.vue"
+  import DialogHistoricoTI from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogHistoricoTI.vue";
 
 	export default {
 		components: {
+      DialogHistoricoTI,
 			DialogCadastrarMonitor,
 			AppAlerta,
 			BotaoPadrao,
@@ -95,6 +122,7 @@
 					{ nome: "Serial", valor: "serial", filtro: true, ordenar: true },
 					{ nome: "Marca", valor: "MarcaTI.nome", ordenar: true, filtro: true },
 					{ nome: "Modelo", valor: "ModeloTI.nome", ordenar: true, filtro: true },
+          { nome: "Funcionário", valor: "Funcionario.nome", ordenar: true, filtro: true },
 					{ nome: "", valor: "historico" },
 				],
 				filtros: {},
@@ -106,6 +134,8 @@
 				mostrarDialogCadastrarMonitor: false,
 				monitor: null,
 				mostrarAlerta: false,
+        mostrarDialogHistoricoTI: false,
+        id: null,
 				textoAlerta: null,
 			}
 		},
