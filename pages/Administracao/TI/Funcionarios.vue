@@ -177,7 +177,8 @@
 				textoAlerta: null,
 				funcionario_id: null,
         carregando: true,
-        mostrarDialogHistoricoFuncionarioTI: false
+        mostrarDialogHistoricoFuncionarioTI: false,
+        id: null,
 			}
 		},
 		mounted() {
