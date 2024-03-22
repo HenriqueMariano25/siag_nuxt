@@ -111,9 +111,6 @@
 						alt=""
 						class="w-7 h-7" />
 				</BotaoPadrao>
-        <BotaoPadrao>
-          <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7">
-        </BotaoPadrao>
 			</div>
 		</RodapePagina>
 		<DialogEditarFuncionario

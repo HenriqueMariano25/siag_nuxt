@@ -984,8 +984,10 @@
 					})
 				}
 
-				this.licencas = licencas
-				this.licencasNaoViculadas = [...licencas]
+        let licencasFiltradas = licencas.filter(o => o.tipo_licenca === 'ambos' || o.tipo_licenca === 'desknote')
+
+				this.licencas = licencasFiltradas
+				this.licencasNaoViculadas = [...licencasFiltradas]
 			},
 			async licencaCadastrada(licenca) {
 				this.mostrarDialogCadastrarLicenca = false

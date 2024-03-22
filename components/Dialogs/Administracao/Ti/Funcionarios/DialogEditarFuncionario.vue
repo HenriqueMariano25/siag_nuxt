@@ -54,7 +54,7 @@
                       <span v-if="item.ProcessadorDeskNoteTI">PROCESSADOR: <strong>{{item.ProcessadorDeskNoteTI.nome }}</strong></span>
                       <span v-if="item.RamDeskNoteTI">MEMÓRIA RAM: <strong>{{item.RamDeskNoteTI.nome }}</strong></span>
                       <span v-if="item.HDDeskNoteTI">DISCO: <strong>{{item.HDDeskNoteTI.nome }}</strong></span>
-                      <span v-if="item.SistemaOpeDeskNoteTI">DISCO: <strong>{{item.SistemaOpeDeskNoteTI.nome }}</strong></span>
+                      <span v-if="item.SistemaOpeDeskNoteTI">SISTEMA OPERACIONAL: <strong>{{item.SistemaOpeDeskNoteTI.nome }}</strong></span>
                       <span v-if="item.LocalInstalacaoTI">LOCAL DE INSTALAÇÃO: <strong>{{item.LocalInstalacaoTI.nome }}</strong></span>
                       <span v-if="item.lote">LOTE: <strong>{{item.lote }}</strong></span>
                       <span v-if="item.data_compra">DATA DE COMPRA: <strong>{{ $dayjs(item.data_compra).format("DD/MM/YYYY") }}</strong></span>
