@@ -354,6 +354,7 @@
 				tiposPermanencia: [
 					{ id: "permanência", nome: "Permanência" },
 					{ id: "produtivo", nome: "Produtivo" },
+					{ id: "manutencao", nome: "Manutenção" },
 				],
 
 				//RH
