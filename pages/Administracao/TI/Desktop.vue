@@ -26,6 +26,30 @@
 							class="w-6 h-6" />
 					</BotaoPadrao>
 				</template>
+        <template v-slot:[`body.SituacaoTI.descricao`]="{ item }">
+          <div class="flex gap-1">
+            <div
+              class="situacao bg-red-400"
+              v-if="item.SituacaoTI && item.SituacaoTI.descricao === 'DEFEITO'">
+              <span>DEFEITO</span>
+            </div>
+            <div
+              class="situacao bg-orange-400"
+              v-if="item.SituacaoTI && item.SituacaoTI.descricao === 'MANUTENÇÃO'">
+              <span>MANUTENÇÃO</span>
+            </div>
+            <div
+              class="situacao bg-green-400"
+              v-if="item.funcionario_id !== null">
+              <span>EM USO</span>
+            </div>
+            <div
+              class="situacao bg-blue-400"
+              v-if="item.funcionario_id === null">
+              <span>ESTOQUE</span>
+            </div>
+          </div>
+        </template>
 				<template v-slot:[`body.MarcaTI.nome`]="{ item }">
 					<span>{{ item.MarcaTI ? item.MarcaTI.nome : "" }}</span>
 				</template>
@@ -117,8 +141,21 @@
 		},
 		data() {
 			return {
+        opcoesSituacao: [
+          { id: "defeito", texto: "defeito" },
+          { id: "manutenção", texto: "manutenção" },
+          { id: "em uso", texto: "em uso" },
+          { id: "estoque", texto: "estoque" },
+        ],
 				cabecalho: [
 					{ nome: "", valor: "acoes", largura: "w-14" },
+          {
+            nome: "Situação",
+            valor: "SituacaoTI.descricao",
+            largura: "w-14",
+            filtro: true,
+            opcoes: this.opcoesSituacao
+          },
 					{ nome: "Patrimônio", valor: "patrimonio", filtro: true, ordenar: true },
 					{ nome: "Serial", valor: "serial", ordenar: true, filtro: true },
 					{ nome: "Hostname", valor: "hostname", ordenar: true, filtro: true },
@@ -152,6 +189,25 @@
 				let ordem = this.ordem
 				let page = this.pagina - 1
 				let size = this.itensPorPagina
+        if (Object.keys(filtros).includes("$SituacaoTI.descricao$")) {
+          filtros['funcionario_id'] = { ['$or']: [] }
+          let opcoes = filtros["$SituacaoTI.descricao$"]['$or']
+          console.log(opcoes);
+          filtros["$SituacaoTI.descricao$"]['$or'] = []
+          if (opcoes.includes('defeito')) {
+            filtros["$SituacaoTI.descricao$"]['$or'].push("DEFEITO")
+          }
+          if (opcoes.includes('manutenção')) {
+            filtros["$SituacaoTI.descricao$"]['$or'].push("MANUTENÇÃO")
+          }
+          console.log(filtros);
+          if (opcoes.includes('estoque')) {
+            filtros['funcionario_id']['$or'].push(null)
+          }
+          if (opcoes.includes('em uso')) {
+            filtros['funcionario_id']['$or'].push({ '$not': null })
+          }
+        }
 
 				let resp = await this.$axios.$get("/ti/desktopNotebook/desktops/buscarTodos", {
 					params: {
@@ -189,4 +245,12 @@
 	}
 </script>
 
-<style scoped></style>
+<style scoped>
+.situacao {
+  padding: 2px 5px;
+  border-radius: 5px;
+  color: black;
+  font-weight: 500;
+  white-space: nowrap;
+}
+</style>

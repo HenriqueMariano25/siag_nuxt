@@ -15,6 +15,14 @@
 					<template v-slot:[`tab.geral`]="{ item }">
 						<div class="flex flex-col w-full px-2">
 							<div class="grid grid-cols-3 gap-x-2 gap-y-2.5">
+                <AppFormSelect
+                  class="grow"
+                  label="Situação"
+                  obrigatorio
+                  :options="situacoesTI"
+                  v-model="desktopnotebook.situacaoti_id"
+                  :invalido="erros.includes('situacaoti_id')"
+                  id="situacao" />
 								<AppFormInput
 									label="Patrimônio"
 									placeholder="Ex: 003580"
@@ -513,9 +521,11 @@
 	import DialogCadastrarLicenca from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogCadastrarLicenca.vue"
 	import { validarFormulario } from "~/mixins/validarFormulario"
 	import DialogConfirmarTrocaFuncionario from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogConfirmarTrocaFuncionario.vue"
+  import AppFormSelect from "~/components/Ui/AppFormSelect.vue";
 
 	export default {
 		components: {
+      AppFormSelect,
 			DialogConfirmarTrocaFuncionario,
 			DialogCadastrarLicenca,
 			BotaoPadrao,
@@ -580,6 +590,7 @@
 					observacao: null,
 					id: null,
 					tela: null,
+          situacaoti_id: 3
 				},
 				marcas: [],
 				modelos: [],
@@ -608,6 +619,7 @@
 					setor: { nome: null },
 				},
 				tipoTrocaFuncionario: null,
+        situacoesTI: []
 			}
 		},
 		computed: {
@@ -627,6 +639,7 @@
 					"processadordesknoteti_id",
 					"ramdesknoteti_id",
 					"hddesknoteti_id",
+					"situacaoti_id",
 					"ultima_verificacao",
 					"data_formatacao",
 				]
@@ -647,6 +660,7 @@
 			await this.buscarSistemasOperacional()
 			await this.buscarLocalInstalacao()
 			await this.buscarProcedencias()
+      await this.buscarSituacaoTI()
 
 			if (this.maquina !== null) {
 				await this.buscarLicencas()
@@ -661,6 +675,22 @@
 				this.$emit("cancelar")
 			},
 			async deletarMaquina() {},
+
+      //SITUACAO TI
+      async buscarSituacaoTI(){
+        let situacoes = this.$store.state.ti.situacaoTI.situacoes
+
+        if(situacoes.length === 0){
+          situacoes = await this.$axios.$get("/ti/situacaoTI/buscarTodos").then(resp => resp.dados.situacoes)
+
+          this.$store.commit("ti/situacaoTI/DEFINIR_SITUACOES_TI", { situacoes })
+        }
+
+
+        this.situacoesTI = situacoes.map((o) => {
+          return { id: o.id, nome: o.descricao }
+        })
+      },
 
 			//MARCAS
 			async buscarMarcas() {

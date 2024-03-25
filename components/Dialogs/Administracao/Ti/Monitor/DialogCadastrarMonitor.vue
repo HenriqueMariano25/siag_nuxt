@@ -15,6 +15,14 @@
 					<template v-slot:[`tab.geral`]="{ item }">
 						<div class="flex flex-col w-full px-2">
 							<div class="grid grid-cols-3 gap-x-2 gap-y-2.5">
+                <AppFormSelect
+                  class="grow"
+                  label="Situação"
+                  obrigatorio
+                  :options="situacoesTI"
+                  v-model="monitorLocal.situacaoti_id"
+                  :invalido="erros.includes('situacaoti_id')"
+                  id="situacao" />
 								<AppFormInput
 									label="Patrimônio"
 									placeholder="Ex: 003580"
@@ -406,9 +414,11 @@
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import { validarFormulario } from "~/mixins/validarFormulario"
 	import DialogConfirmarTrocaFuncionario from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogConfirmarTrocaFuncionario.vue"
+  import AppFormSelect from "~/components/Ui/AppFormSelect.vue";
 
 	export default {
 		components: {
+      AppFormSelect,
 			DialogConfirmarTrocaFuncionario,
 			BotaoPadrao,
 			AppFormTextarea,
@@ -446,6 +456,7 @@
 					localinstalacaoti_id: null,
 					observacao: null,
 					id: null,
+          situacaoti_id: 3,
 				},
 				marcas: [],
 				modelos: [],
@@ -466,11 +477,12 @@
 					setor: { nome: null },
 				},
 				tipoTrocaFuncionario: null,
-				camposObrigatorio: ["serial", "marcati_id", "modeloti_id"],
+				camposObrigatorio: ["serial", "marcati_id", "modeloti_id", "situacaoti_id",],
 				buscaDeskNote: null,
 				desktopsNotebooks: [],
 				deskNotePrTrocar: null,
         limpandoDeskNote:false,
+        situacoesTI: []
 			}
 		},
 		computed: {
@@ -497,6 +509,7 @@
 			await this.buscarMarcas()
 			await this.buscarModelos()
 			await this.buscarLocalInstalacao()
+      await this.buscarSituacaoTI()
 
 			if (this.monitor !== null) {
 				await this.buscarFuncionarios()
@@ -510,6 +523,22 @@
 				this.$emit("cancelar")
 			},
 			async deletarMonitor() {},
+
+      //SITUACAO TI
+      async buscarSituacaoTI() {
+        let situacoes = this.$store.state.ti.situacaoTI.situacoes
+
+        if (situacoes.length === 0) {
+          situacoes = await this.$axios.$get("/ti/situacaoTI/buscarTodos").then(resp => resp.dados.situacoes)
+
+          this.$store.commit("ti/situacaoTI/DEFINIR_SITUACOES_TI", { situacoes })
+        }
+
+
+        this.situacoesTI = situacoes.map((o) => {
+          return { id: o.id, nome: o.descricao }
+        })
+      },
 
 			async buscarDeskNote() {
 				let busca = this.buscaDeskNote

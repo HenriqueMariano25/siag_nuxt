@@ -29,26 +29,50 @@
 				<template v-slot:[`body.MarcaTI.nome`]="{ item }">
 					<span>{{ item.MarcaTI ? item.MarcaTI.nome : "" }}</span>
 				</template>
+				<template v-slot:[`body.SituacaoTI.descricao`]="{ item }">
+					<div class="flex gap-1">
+						<div
+							class="situacao bg-red-400"
+							v-if="item.SituacaoTI && item.SituacaoTI.descricao === 'DEFEITO'">
+							<span>DEFEITO</span>
+						</div>
+						<div
+							class="situacao bg-orange-400"
+							v-if="item.SituacaoTI && item.SituacaoTI.descricao === 'MANUTENÇÃO'">
+							<span>MANUTENÇÃO</span>
+						</div>
+						<div
+							class="situacao bg-green-400"
+							v-if="item.funcionario_id !== null">
+							<span>EM USO</span>
+						</div>
+						<div
+							class="situacao bg-blue-400"
+							v-if="item.funcionario_id === null">
+							<span>ESTOQUE</span>
+						</div>
+					</div>
+				</template>
 				<template v-slot:[`body.ModeloTI.nome`]="{ item }">
 					<span>{{ item.ModeloTI ? item.ModeloTI.nome : "" }}</span>
 				</template>
-        <template v-slot:[`body.Funcionario.nome`]="{ item }">
-          <span>{{ item.Funcionario ? item.Funcionario.nome : "" }}</span>
-        </template>
-        <template v-slot:[`body.historico`]="{ item }">
-          <div
-            class="bg-blue-200 border border-blue-300 flex gap-2 justify-center items-center py-0.5 text-black hover:bg-blue-300"
-            @click="
+				<template v-slot:[`body.Funcionario.nome`]="{ item }">
+					<span>{{ item.Funcionario ? item.Funcionario.nome : "" }}</span>
+				</template>
+				<template v-slot:[`body.historico`]="{ item }">
+					<div
+						class="bg-blue-200 border border-blue-300 flex gap-2 justify-center items-center py-0.5 text-black hover:bg-blue-300"
+						@click="
 							mostrarDialogHistoricoTI = true
 							id = item.id
 						">
-            <img
-              src="@/assets/icons/history-b.svg"
-              alt=""
-              class="w-6 h-6" />
-            <span>HISTÓRICO</span>
-          </div>
-        </template>
+						<img
+							src="@/assets/icons/history-b.svg"
+							alt=""
+							class="w-6 h-6" />
+						<span>HISTÓRICO</span>
+					</div>
+				</template>
 			</TabelaPadrao>
 		</div>
 		<RodapePagina>
@@ -84,14 +108,14 @@
 			@escondeu="mostrarAlerta = false">
 			{{ textoAlerta }}
 		</AppAlerta>
-    <DialogHistoricoTI
-      v-if="mostrarDialogHistoricoTI"
-      @cancelar="
+		<DialogHistoricoTI
+			v-if="mostrarDialogHistoricoTI"
+			@cancelar="
 				mostrarDialogHistoricoTI = false
 				id = null
 			"
-      :id="id"
-      modulo="monitor" />
+			:id="id"
+			modulo="monitor" />
 	</div>
 </template>
 
@@ -102,11 +126,11 @@
 	import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import DialogCadastrarMonitor from "~/components/Dialogs/Administracao/Ti/Monitor/DialogCadastrarMonitor.vue"
-  import DialogHistoricoTI from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogHistoricoTI.vue";
+	import DialogHistoricoTI from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogHistoricoTI.vue"
 
 	export default {
 		components: {
-      DialogHistoricoTI,
+			DialogHistoricoTI,
 			DialogCadastrarMonitor,
 			AppAlerta,
 			BotaoPadrao,
@@ -116,15 +140,12 @@
 		},
 		data() {
 			return {
-				cabecalho: [
-					{ nome: "", valor: "acoes", largura: "w-14" },
-					{ nome: "Patrimônio", valor: "patrimonio", filtro: true, ordenar: true },
-					{ nome: "Serial", valor: "serial", filtro: true, ordenar: true },
-					{ nome: "Marca", valor: "MarcaTI.nome", ordenar: true, filtro: true },
-					{ nome: "Modelo", valor: "ModeloTI.nome", ordenar: true, filtro: true },
-          { nome: "Funcionário", valor: "Funcionario.nome", ordenar: true, filtro: true },
-					{ nome: "", valor: "historico" },
-				],
+        opcoesSituacao: [
+          { id: "defeito", texto: "defeito" },
+          { id: "manutenção", texto: "manutenção" },
+          { id: "em uso", texto: "em uso" },
+          { id: "estoque", texto: "estoque" },
+        ],
 				filtros: {},
 				ordem: null,
 				totalItens: 0,
@@ -134,11 +155,31 @@
 				mostrarDialogCadastrarMonitor: false,
 				monitor: null,
 				mostrarAlerta: false,
-        mostrarDialogHistoricoTI: false,
-        id: null,
+				mostrarDialogHistoricoTI: false,
+				id: null,
 				textoAlerta: null,
 			}
 		},
+    computed: {
+      cabecalho() {
+        return [
+          { nome: "", valor: "acoes", largura: "w-14" },
+          {
+            nome: "Situação",
+            valor: "SituacaoTI.descricao",
+            largura: "w-14",
+            filtro: true,
+            opcoes: this.opcoesSituacao
+          },
+          { nome: "Patrimônio", valor: "patrimonio", filtro: true, ordenar: true },
+          { nome: "Serial", valor: "serial", filtro: true, ordenar: true },
+          { nome: "Marca", valor: "MarcaTI.nome", ordenar: true, filtro: true },
+          { nome: "Modelo", valor: "ModeloTI.nome", ordenar: true, filtro: true },
+          { nome: "Funcionário", valor: "Funcionario.nome", ordenar: true, filtro: true },
+          { nome: "", valor: "historico" },
+        ]
+      }
+    },
 		mounted() {
 			this.buscarMonitores()
 		},
@@ -149,6 +190,25 @@
 				let page = this.pagina - 1
 				let size = this.itensPorPagina
 
+        if(Object.keys(filtros).includes("$SituacaoTI.descricao$")){
+          filtros['funcionario_id'] = { ['$or']: []}
+          let opcoes = filtros["$SituacaoTI.descricao$"]['$or']
+          console.log(opcoes);
+          filtros["$SituacaoTI.descricao$"]['$or'] = []
+          if(opcoes.includes('defeito')){
+            filtros["$SituacaoTI.descricao$"]['$or'].push("DEFEITO")
+          }
+          if (opcoes.includes('manutenção')) {
+            filtros["$SituacaoTI.descricao$"]['$or'].push("MANUTENÇÃO")
+          }
+          console.log(filtros);
+          if (opcoes.includes('estoque')) {
+            filtros['funcionario_id']['$or'].push(null)
+          }
+          if (opcoes.includes('em uso')) {
+            filtros['funcionario_id']['$or'].push({ '$not': null })
+          }
+        }
 				let resp = await this.$axios.$get("/ti/monitor/buscarTodos", {
 					params: { filtros, ordem, page, size },
 				})
@@ -192,4 +252,12 @@
 	}
 </script>
 
-<style scoped></style>
+<style scoped>
+	.situacao {
+		padding: 2px 5px;
+		border-radius: 5px;
+		color: black;
+		font-weight: 500;
+		white-space: nowrap;
+	}
+</style>
