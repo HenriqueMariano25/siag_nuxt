@@ -147,23 +147,6 @@
           { id: "em uso", texto: "em uso" },
           { id: "estoque", texto: "estoque" },
         ],
-				cabecalho: [
-					{ nome: "", valor: "acoes", largura: "w-14" },
-          {
-            nome: "Situação",
-            valor: "SituacaoTI.descricao",
-            largura: "w-14",
-            filtro: true,
-            opcoes: this.opcoesSituacao
-          },
-					{ nome: "Patrimônio", valor: "patrimonio", filtro: true, ordenar: true },
-					{ nome: "Serial", valor: "serial", ordenar: true, filtro: true },
-					{ nome: "Hostname", valor: "hostname", ordenar: true, filtro: true },
-					{ nome: "Marca", valor: "MarcaTI.nome", ordenar: true, filtro: true },
-					{ nome: "Modelo", valor: "ModeloTI.nome", ordenar: true, filtro: true },
-					{ nome: "Funcionário", valor: "Funcionario.nome", ordenar: true, filtro: true },
-					{ nome: "", valor: "historico" },
-				],
 				filtros: {},
 				ordem: null,
 				totalItens: 0,
@@ -182,6 +165,26 @@
 		mounted() {
 			this.buscarDesktop()
 		},
+    computed: {
+      cabecalho() {
+        return [
+          { nome: "", valor: "acoes", largura: "w-14" },
+          {
+            nome: "Situação",
+            valor: "SituacaoTI.descricao",
+            largura: "w-14",
+            filtro: true,
+            opcoes: this.opcoesSituacao
+          },
+          { nome: "Patrimônio", valor: "patrimonio", filtro: true, ordenar: true },
+          { nome: "Serial", valor: "serial", filtro: true, ordenar: true },
+          { nome: "Marca", valor: "MarcaTI.nome", ordenar: true, filtro: true },
+          { nome: "Modelo", valor: "ModeloTI.nome", ordenar: true, filtro: true },
+          { nome: "Funcionário", valor: "Funcionario.nome", ordenar: true, filtro: true },
+          { nome: "", valor: "historico" },
+        ]
+      }
+    },
 		methods: {
 			async buscarDesktop() {
 				this.carregando = true

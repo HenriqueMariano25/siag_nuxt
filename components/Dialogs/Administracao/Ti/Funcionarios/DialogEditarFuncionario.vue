@@ -543,10 +543,12 @@
       },
       async enviarDeskNoteEstoque(deskNote){
         let desktopnotebookti_id = deskNote.id
+        let usuario_id = this.$auth.user.id
 
         let resp = await this.$axios.$post("/ti/funcionarios/trocarDeskNote", {
           funcionario_id: null,
           desktopnotebookti_id,
+          usuario_id
         })
 
         if(!resp.falha){
@@ -564,10 +566,12 @@
       //MONITOR
       async enviarMonitorEstoque(monitor) {
         let monitorti_id = monitor.id
+        let usuario_id = this.$auth.user.id
 
         let resp = await this.$axios.$post("/ti/funcionarios/trocarMonitor", {
           funcionario_id: null,
           monitorti_id,
+          usuario_id
         })
 
         if (!resp.falha) {

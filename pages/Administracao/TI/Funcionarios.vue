@@ -27,7 +27,6 @@
 					</BotaoPadrao>
 				</template>
         <template v-slot:[`body.ativos`]="{ item }">
-<!--          <span>{{ item }}</span>-->
           <div class="flex gap-1">
             <div class="tag bg-[#023e8a]" v-if="item.DesktopNotebookTI.filter(o => o.tipo === 'desktop').length > 0">
               <span>D</span>
