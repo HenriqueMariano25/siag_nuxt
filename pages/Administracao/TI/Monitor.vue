@@ -15,7 +15,13 @@
 				:totalItens="totalItens"
 				altura="calc(100vh - 179px)"
 				@atualizar="buscarMonitores"
-				:temDetalhes="false">
+				:temDetalhes="true">
+        <template v-slot:[`detalhes`]="{ item }">
+          <div class="grid grid-cols-3">
+            <span v-if="item.LocalInstalacaoTI">LOCAL DE INSTALAÇÃO: <strong>{{item.LocalInstalacaoTI.nome }}</strong></span>
+            <span v-if="item.observacao" class="col-span-3">OBSERVAÇÃO: <strong>{{item.observacao }}</strong></span>
+          </div>
+        </template>
 				<template v-slot:[`body.acoes`]="{ item }">
 					<BotaoPadrao
 						icone

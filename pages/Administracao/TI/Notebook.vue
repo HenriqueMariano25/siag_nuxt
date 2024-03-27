@@ -15,7 +15,23 @@
 				:totalItens="totalItens"
 				altura="calc(100vh - 179px)"
 				@atualizar="buscarNotebook"
-				:temDetalhes="false">
+				:temDetalhes="true">
+        <template v-slot:[`detalhes`]="{ item }">
+          <div class="grid grid-cols-3">
+            <span v-if="item.ProcessadorDeskNoteTI">PROCESSADOR: <strong>{{item.ProcessadorDeskNoteTI.nome }}</strong></span>
+            <span v-if="item.RamDeskNoteTI">MEMÓRIA RAM: <strong>{{item.RamDeskNoteTI.nome }}</strong></span>
+            <span v-if="item.HDDeskNoteTI">DISCO: <strong>{{item.HDDeskNoteTI.nome }}</strong></span>
+            <span v-if="item.SistemaOpeDeskNoteTI">SISTEMA OPERACIONAL: <strong>{{item.SistemaOpeDeskNoteTI.nome }}</strong></span>
+            <span v-if="item.tela">TELA: <strong>{{item.tela }}</strong></span>
+            <span v-if="item.lote">LOTE: <strong>{{item.lote }}</strong></span>
+            <span v-if="item.data_compra">DATA DE COMPRA: <strong>{{ $dayjs(item.data_compra).format("DD/MM/YYYY") }}</strong></span>
+            <span v-if="item.ProcedenciaTI">PROCEDÊNCIA: <strong>{{item.ProcedenciaTI.nome }}</strong></span>
+            <span
+              v-if="item.ultima_verificacao">ÚLTIMA VERIFICAÇÃO T.I: <strong>{{ $dayjs(item.ultima_verificacao).format("DD/MM/YYYY") }}</strong></span>
+            <span v-if="item.data_formatacao">FORMATAÇÃO: <strong>{{ $dayjs(item.data_formatacao).format("DD/MM/YYYY") }}</strong></span>
+            <span v-if="item.observacao" class="col-span-3">OBSERVAÇÃO: <strong>{{item.observacao }}</strong></span>
+          </div>
+        </template>
 				<template v-slot:[`body.acoes`]="{ item }">
 					<BotaoPadrao
 						icone
@@ -183,6 +199,7 @@
           },
           { nome: "Patrimônio", valor: "patrimonio", filtro: true, ordenar: true },
           { nome: "Serial", valor: "serial", filtro: true, ordenar: true },
+          { nome: "Hostname", valor: "hostname", filtro: true, ordenar: true },
           { nome: "Marca", valor: "MarcaTI.nome", ordenar: true, filtro: true },
           { nome: "Modelo", valor: "ModeloTI.nome", ordenar: true, filtro: true },
           { nome: "Funcionário", valor: "Funcionario.nome", ordenar: true, filtro: true },
