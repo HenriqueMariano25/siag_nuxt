@@ -113,7 +113,7 @@
 				</template>
 				<template v-slot:[`body.historico`]="{ item }">
 					<div
-						class="bg-blue-200 border border-blue-300 flex gap-2 justify-center items-center py-0.5 text-black hover:bg-blue-300 rounded"
+						class="bg-blue-200 border border-blue-300 flex gap-2 justify-center items-center py-0.5 text-black hover:bg-blue-300 rounded w-[100px]"
 						@click="
 							mostrarDialogHistoricoFuncionarioTI = true
 							id = item.id
@@ -188,7 +188,7 @@
 					{ nome: "Nome", valor: "nome", filtro: true, ordenar: true },
 					{ nome: "Cargo", valor: "cargo", filtro: true, ordenar: true },
 					{ nome: "Setor", valor: "setor.nome", ordenar: true, filtro: true },
-					{ nome: "Histórico", valor: "historico" },
+					{ nome: "Histórico", valor: "historico", largura: "w-14" },
 				],
 				filtros: {},
 				ordem: null,

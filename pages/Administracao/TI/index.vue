@@ -18,15 +18,6 @@
           class="w-8 h-8" />
       </ButtonNavegacao>
       <ButtonNavegacao
-        titulo="Chips e Planos"
-        cor="bg-[#264653]"
-        link="ti/chipsPlanos">
-        <img
-          src="@/assets/icons/sim-card-w.svg"
-          alt=""
-          class="w-8 h-8" />
-      </ButtonNavegacao>
-      <ButtonNavegacao
         titulo="Desktop"
         cor="bg-[#264653]"
         v-if="
@@ -79,6 +70,15 @@
         link="ti/Equipamento">
         <img
           src="@/assets/icons/mouse-w.svg"
+          alt=""
+          class="w-8 h-8" />
+      </ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="Chips e Planos"
+        cor="bg-[#264653]"
+        link="ti/chipsPlanos">
+        <img
+          src="@/assets/icons/sim-card-w.svg"
           alt=""
           class="w-8 h-8" />
       </ButtonNavegacao>
