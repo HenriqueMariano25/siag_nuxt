@@ -336,6 +336,73 @@
               </div>
             </div>
           </template>
+          <template v-slot:[`tab.chip`]="{item}">
+            <div class="px-2 flex gap-2 flex-col mt-2">
+              <div class="flex w-full justify-end">
+                <BotaoPadrao
+                  @clique="mostrarDialogAdicionarChip = true"
+                  texto="Adicionar"
+                  cor="bg-blue-400 hover:!bg-blue-500">
+                  <img
+                    src="@/assets/icons/add-b.svg"
+                    alt=""
+                    class="w-7 h-7" />
+                </BotaoPadrao>
+              </div>
+            <TabelaPadrao
+              id="chip"
+              :cabecalho="cabecalhoChip"
+              :dados="dadosChip"
+              :temRodape="false"
+              altura="calc(100vh - 350px)">
+              <template v-slot:[`body.acoes`]="{ item }">
+                <div class="flex gap-1">
+                  <BotaoPadrao
+                    @clique="chipIdPrDeletar = item.id"
+                    v-if="chipIdPrDeletar !== item.id"
+                    icone>
+                    <div class="w-7 h-7 flex items-center justify-center">
+                      <img
+                        src="@/assets/icons/delete-b.svg"
+                        alt=""
+                        class="w-6 h-6" />
+                    </div>
+                  </BotaoPadrao>
+                  <BotaoPadrao
+                    v-if="chipIdPrDeletar === item.id"
+                    @clique="chipIdPrDeletar = null"
+                    cor="!bg-blue-200 hover:!bg-blue-300"
+                    icone>
+                    <div class="w-7 h-7 flex items-center justify-center">
+                      <img
+                        src="@/assets/icons/back-b.svg"
+                        alt=""
+                        class="w-6 h-6" />
+                    </div>
+                  </BotaoPadrao>
+                  <BotaoPadrao
+                    v-if="chipIdPrDeletar === item.id"
+                    @clique="enviarChipEstoque(item)"
+                    cor="!bg-red-300 hover:!bg-red-400"
+                    icone>
+                    <div class="w-7 h-7 flex items-center justify-center">
+                      <img
+                        src="@/assets/icons/delete-b.svg"
+                        alt=""
+                        class="w-6 h-6" />
+                    </div>
+                  </BotaoPadrao>
+                </div>
+              </template>
+              <template v-slot:[`body.PlanoChip.nome`]="{ item }">
+                <span>{{ item.PlanoChip ? item.PlanoChip.nome : ""}}</span>
+              </template>
+              <template v-slot:[`body.data_ativacao`]="{ item }">
+                <span>{{ item.data_ativacao ? $dayjs(item.data_ativacao).format('DD/MM/YYYY') : ""}}</span>
+              </template>
+            </TabelaPadrao>
+            </div>
+          </template>
 				</AppTabs>
 			</template>
 			<template v-slot:rodape-btn-direito> </template>
@@ -353,6 +420,8 @@
 			@cancelar="mostrarDialogTrocarDesktopNotebook = false" />
     <DialogAdicionarMonitor v-if="mostrarDialogAdicionarMonitor" @cancelar="mostrarDialogAdicionarMonitor =false"
                             @trocado="monitorTrocado" :funcionario_id="funcionario_id"/>
+    <DialogAdicionarChip v-if="mostrarDialogAdicionarChip" @cancelar="mostrarDialogAdicionarChip =false"
+                            @trocado="chipTrocado" :funcionario_id="funcionario_id" />
 	</div>
 </template>
 
@@ -370,9 +439,11 @@
   import AppTooltip from "~/components/Ui/AppTooltip.vue";
   import DialogAdicionarMonitor from "~/components/Dialogs/Administracao/Ti/Funcionarios/DialogAdicionarMonitor.vue";
   import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue";
+  import DialogAdicionarChip from "~/components/Dialogs/Administracao/Ti/Funcionarios/DialogAdicionarChip.vue";
 
 	export default {
 		components: {
+      DialogAdicionarChip,
       TabelaPadrao,
       DialogAdicionarMonitor,
       AppTooltip,
@@ -404,6 +475,7 @@
         this.dadosLicenca = this.funcionario.LicencaTI
         this.dadosMonitor = this.funcionario.MonitorTI
         this.dadosDeskNote = this.funcionario.DesktopNotebookTI
+        this.dadosChip = this.funcionario.Chip
 			}
 			this.carregando = false
 		},
@@ -469,7 +541,19 @@
         dadosLicenca: [],
         licencas: [],
         licencatiIdPrDeletar: null,
-        licencati_id: null
+        licencati_id: null,
+
+        //CHIP
+        cabecalhoChip: [
+          { nome: "", valor: "acoes", largura: "w-8" },
+          { nome: "Número", valor: "numero" },
+          { nome: "Data Ativação", valor: "data_ativacao" },
+          { nome: "SimCard", valor: "sim_card" },
+          { nome: "Plano", valor: "PlanoChip.nome" },
+        ],
+        dadosChip: [],
+        chipIdPrDeletar: null,
+        mostrarDialogAdicionarChip: false
 			}
 		},
 		computed: {
@@ -490,6 +574,10 @@
           {
             nome: "Licença",
             valor: "licenca",
+          },
+          {
+            nome: "CHIP",
+            valor: "chip",
           },
 				]
 			},
@@ -541,6 +629,12 @@
         this.mostrarDialogAdicionarMonitor = false
         this.funcionario.MonitorTI.push(monitor)
       },
+      chipTrocado(chip){
+        this.textoAlerta = `Chip adicionado com sucesso!`
+        this.mostrarAlerta = true
+        this.mostrarDialogAdicionarChip = false
+        this.funcionario.Chip.push(chip)
+      },
       async enviarDeskNoteEstoque(deskNote){
         let desktopnotebookti_id = deskNote.id
         let usuario_id = this.$auth.user.id
@@ -582,7 +676,6 @@
             this.mostrarAlerta = true
           }
         }
-
       },
 
       //EQUIPAMENTO
@@ -658,7 +751,28 @@
           this.textoAlerta = "Licença removido com sucesso!"
           this.mostrarAlerta = true
         }
-      }
+      },
+
+      //CHIP
+      async enviarChipEstoque(chip) {
+        let chip_id = chip.id
+        let usuario_id = this.$auth.user.id
+
+        let resp = await this.$axios.$post("/ti/funcionarios/trocarChip", {
+          funcionario_id: null,
+          chip_id,
+          usuario_id
+        })
+
+        if (!resp.falha) {
+          let idx = this.dadosChip.findIndex(o => o.id === chip.id)
+          if (idx >= 0) {
+            this.dadosChip.splice(idx, 1)
+            this.textoAlerta = `Chip removido com sucesso!`
+            this.mostrarAlerta = true
+          }
+        }
+      },
 		},
 	}
 </script>

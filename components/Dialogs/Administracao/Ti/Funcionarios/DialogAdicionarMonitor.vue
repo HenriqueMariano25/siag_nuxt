@@ -112,10 +112,10 @@
             </div>
             <div
               class="bg-red-400 w-full px-2 text-center uppercase text-white rounded border border-red-500 py-1 font-bold mt-2"
-              v-if="monitor.Funcionario && deskNote_id === monitor.id">
+              v-if="monitor.Funcionario && monitor_id === monitor.id">
 							<span
               >
-                Esee monitor já tem um responsável, certeza que deseja fazer a troca
+                Esse monitor já tem um responsável, certeza que deseja fazer a troca
 								?
               </span
               >
