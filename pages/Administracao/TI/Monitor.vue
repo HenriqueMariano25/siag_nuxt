@@ -59,6 +59,9 @@
 				<template v-slot:[`body.Funcionario.nome`]="{ item }">
 					<span>{{ item.Funcionario ? item.Funcionario.nome : "" }}</span>
 				</template>
+        <template v-slot:[`body.Funcionario.setor.nome`]="{ item }">
+          <span>{{ item.Funcionario && item.Funcionario.setor ? item.Funcionario.setor.nome : "" }}</span>
+        </template>
 				<template v-slot:[`body.historico`]="{ item }">
 					<div
             class="bg-blue-200 border border-blue-300 flex gap-2 justify-center items-center py-0.5 text-black hover:bg-blue-300 rounded w-[100px]"
@@ -176,6 +179,7 @@
           { nome: "Marca", valor: "MarcaTI.nome", ordenar: true, filtro: true },
           { nome: "Modelo", valor: "ModeloTI.nome", ordenar: true, filtro: true },
           { nome: "Funcionário", valor: "Funcionario.nome", ordenar: true, filtro: true },
+          { nome: "Setor", valor: "Funcionario.setor.nome", ordenar: true, filtro: true },
           { nome: "Histórico", valor: "historico", largura: "w-14", },
         ]
       }
