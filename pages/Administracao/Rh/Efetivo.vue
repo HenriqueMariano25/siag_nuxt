@@ -556,7 +556,7 @@
 					}
 
 					return {
-						CPF: funcionario.cpf ? parseInt(funcionario.cpf.replaceAll(".", "").replaceAll("-", "")) : "",
+						CPF: funcionario.cpf ? funcionario.cpf.replaceAll(".", "").replaceAll("-", "") : "",
 						NOME: funcionario.nome,
 						MATRICULA: parseInt(funcionario.chapa),
 						FUNCAO_NOME: funcionario.cargo,
