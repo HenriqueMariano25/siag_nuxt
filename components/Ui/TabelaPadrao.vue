@@ -225,7 +225,7 @@
 								[classPersonalizada]: dado.ativo && dado.ativo === true,
 								'!bg-gray-500 !text-white': trAberto === dado.id,
 							}"
-							class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white h-7"
+							class="bg-white cursor-pointer even:bg-neutral-200 hover:bg-gray-600 hover:text-white h-7 whitespace-nowrap"
 							:key="dado.id"
 							@dblclick.prevent.stop="mostrarDbl(dado, $event)"
 							@click="mostrarDetalhes(dado, $event)">

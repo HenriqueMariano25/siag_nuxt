@@ -25,7 +25,6 @@
             <span v-if="item.LocalInstalacaoTI">LOCAL DE INSTALAÇÃO: <strong>{{item.LocalInstalacaoTI.nome }}</strong></span>
             <span v-if="item.lote">LOTE: <strong>{{item.lote }}</strong></span>
             <span v-if="item.data_compra">DATA DE COMPRA: <strong>{{ $dayjs(item.data_compra).format("DD/MM/YYYY") }}</strong></span>
-            <span v-if="item.ProcedenciaTI">PROCEDÊNCIA: <strong>{{item.ProcedenciaTI.nome }}</strong></span>
             <span
               v-if="item.ultima_verificacao">ÚLTIMA VERIFICAÇÃO T.I: <strong>{{ $dayjs(item.ultima_verificacao).format("DD/MM/YYYY") }}</strong></span>
             <span v-if="item.data_formatacao">FORMATAÇÃO: <strong>{{ $dayjs(item.data_formatacao).format("DD/MM/YYYY") }}</strong></span>
@@ -33,14 +32,16 @@
           </div>
         </template>
 				<template v-slot:[`body.acoes`]="{ item }">
-					<BotaoPadrao
-						icone
-						@clique="editarDeskNote(item)">
-						<img
-							src="@/assets/icons/edit-b.svg"
-							alt=""
-							class="w-6 h-6" />
-					</BotaoPadrao>
+          <div class="w-8">
+            <BotaoPadrao
+              icone
+              @clique="editarDeskNote(item)">
+              <img
+                src="@/assets/icons/edit-b.svg"
+                alt=""
+                class="w-6 h-6" />
+            </BotaoPadrao>
+          </div>
 				</template>
         <template v-slot:[`body.SituacaoTI.descricao`]="{ item }">
           <div class="flex gap-1">
@@ -98,7 +99,7 @@
 		</div>
 		<RodapePagina>
 			<div class="w-full flex justify-between">
-				<BotaoPadrao texto="excel">
+				<BotaoPadrao texto="excel" @clique="gerarExcel()">
 					<img
 						src="@/assets/icons/excel-b.svg"
 						alt=""
@@ -149,6 +150,7 @@
 	import DialogCadastrarDesktopNotebook from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogCadastrarDesktopNotebook.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import DialogHistoricoTI from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogHistoricoTI.vue"
+  import gerarExcel from "~/functions/gerarExcel";
 
 	export default {
 		components: {
@@ -268,6 +270,61 @@
 					this.mostrarAlerta = true
 				}
 			},
+      async gerarExcel() {
+        let dados = this.dados;
+
+        let cabecalho = [
+          "Patrimônio",
+          "Serial",
+          "Hostname",
+          "Marca",
+          "Modelo",
+          "Funcionário",
+          "Matricula",
+          "Cargo",
+          "Setor",
+          "Procedência",
+          "Processador",
+          "Memória RAM",
+          "Disco",
+          "Sistema Operacional",
+          "Local de instalação",
+          "Lote",
+          "Data de compra",
+          "Última verificacao",
+          "Formatação",
+          "Observação",
+        ]
+        let nomeArquivo = "desktop"
+
+        let itens = []
+        for (let item of dados) {
+          let temp = []
+          temp.push(item.patrimonio ? item.patrimonio : "")
+          temp.push(item.serial ? item.serial : "")
+          temp.push(item.hostname ? item.hostname : "")
+          temp.push(item.MarcaTI ? item.MarcaTI.nome : "")
+          temp.push(item.ModeloTI ? item.ModeloTI.nome : "")
+          temp.push(item.Funcionario ? item.Funcionario.nome : "")
+          temp.push(item.Funcionario ? item.Funcionario.chapa : "")
+          temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+          temp.push(item.Funcionario && item.Funcionario.setor ? item.Funcionario.setor.nome : "")
+          temp.push(item.ProcedenciaTI ? item.ProcedenciaTI.nome : "")
+          temp.push(item.ProcessadorDeskNoteTI ? item.ProcessadorDeskNoteTI.nome : "")
+          temp.push(item.RamDeskNoteTI ? item.RamDeskNoteTI.nome : "")
+          temp.push(item.HDDeskNoteTI ? item.HDDeskNoteTI.nome : "")
+          temp.push(item.SistemaOpeDeskNoteTI ? item.SistemaOpeDeskNoteTI.nome : "")
+          temp.push(item.LocalInstalacaoTI ? item.LocalInstalacaoTI.nome : "")
+          temp.push(item.lote ? item.lote : "")
+          temp.push(item.data_compra ? this.$dayjs(item.data_compra).format("DD/MM/YYYY") : "")
+          temp.push(item.ultima_verificacao ? this.$dayjs(item.ultima_verificacao).format("DD/MM/YYYY") : "")
+          temp.push(item.data_formatacao ? this.$dayjs(item.data_formatacao).format("DD/MM/YYYY") : "")
+          temp.push(item.observacao ? item.observacao : "")
+          itens.push(temp)
+        }
+
+        gerarExcel(cabecalho, itens, nomeArquivo)
+      },
 		},
 	}
 </script>

@@ -23,6 +23,7 @@
           </div>
         </template>
 				<template v-slot:[`body.acoes`]="{ item }">
+          <div class="w-8">
 					<BotaoPadrao
 						icone
 						@clique="editarMonitor(item)">
@@ -31,6 +32,7 @@
 							alt=""
 							class="w-6 h-6" />
 					</BotaoPadrao>
+          </div>
 				</template>
 				<template v-slot:[`body.MarcaTI.nome`]="{ item }">
 					<span>{{ item.MarcaTI ? item.MarcaTI.nome : "" }}</span>
@@ -86,7 +88,7 @@
 		</div>
 		<RodapePagina>
 			<div class="w-full flex justify-between">
-				<BotaoPadrao texto="excel">
+				<BotaoPadrao texto="excel" @clique="gerarExcel()">
 					<img
 						src="@/assets/icons/excel-b.svg"
 						alt=""
@@ -136,6 +138,7 @@
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import DialogCadastrarMonitor from "~/components/Dialogs/Administracao/Ti/Monitor/DialogCadastrarMonitor.vue"
 	import DialogHistoricoTI from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogHistoricoTI.vue"
+  import gerarExcel from "~/functions/gerarExcel";
 
 	export default {
 		components: {
@@ -258,6 +261,41 @@
 					this.mostrarAlerta = true
 				}
 			},
+      async gerarExcel() {
+        let dados = this.dados;
+
+        let cabecalho = [
+          "Patrimônio",
+          "Serial",
+          "Marca",
+          "Modelo",
+          "Funcionário",
+          "Matricula",
+          "Cargo",
+          "Setor",
+          "Local de instalação",
+          "Observação",
+        ]
+        let nomeArquivo = "monitor"
+
+        let itens = []
+        for (let item of dados) {
+          let temp = []
+          temp.push(item.patrimonio ? item.patrimonio : "")
+          temp.push(item.serial ? item.serial : "")
+          temp.push(item.MarcaTI ? item.MarcaTI.nome : "")
+          temp.push(item.ModeloTI ? item.ModeloTI.nome : "")
+          temp.push(item.Funcionario ? item.Funcionario.nome : "")
+          temp.push(item.Funcionario ? item.Funcionario.chapa : "")
+          temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+          temp.push(item.Funcionario && item.Funcionario.setor ? item.Funcionario.setor.nome : "")
+          temp.push(item.LocalInstalacaoTI ? item.LocalInstalacaoTI.nome : "")
+          temp.push(item.observacao ? item.observacao : "")
+          itens.push(temp)
+        }
+
+        gerarExcel(cabecalho, itens, nomeArquivo)
+      },
 		},
 	}
 </script>
