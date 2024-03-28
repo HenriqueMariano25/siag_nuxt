@@ -64,7 +64,7 @@
 					if (!criado) {
 						this.jaCriado = true
 					} else {
-						this.$store.commit("ti/localInstalacaoTI/ATUALIZAR_MARCAS_TI", {
+						this.$store.commit("ti/procedenciaTI/ATUALIZAR_PROCEDENCIAS_TI", {
 							procedencia,
 						})
 						this.$emit("cadastrado")

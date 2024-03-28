@@ -124,6 +124,7 @@
 			"
 			@cadastrado="notebookCadastrado"
 			@editado="notebookEditado"
+      @funcionarioTrocado="funcionarioTrocado"
 			tipoCadastro="notebook"
 			:maquina="maquina" />
 		<AppAlerta
@@ -259,11 +260,23 @@
 				this.mostrarDialogCadastrarDesktopNotebook = true
 				this.maquina = item
 			},
-			async notebookEditado() {
+			async notebookEditado({ desknote, sair}) {
+        let idx = this.dados.findIndex(o => o.id === desknote.id)
+        if(idx >= 0){
+          this.dados[idx].patrimonio = desknote.patrimonio
+          this.dados[idx].serial = desknote.serial
+          this.dados[idx].hostname = desknote.hostname
+          this.dados[idx].MarcaTI = desknote.MarcaTI
+          this.dados[idx].ModeloTI = desknote.ModeloTI
+          this.dados[idx].ProcedenciaTI = desknote.ProcedenciaTI
+          this.dados[idx].SituacaoTI = desknote.SituacaoTI
+        }
+        if(sair){
 				this.mostrarDialogCadastrarDesktopNotebook = false
 				this.textoAlerta = "Notebook editado com sucesso!"
 				this.mostrarAlerta = true
 				this.maquina = null
+        }
 			},
 			async notebookCadastrado({ desknote, sair }) {
 				this.dados.push(desknote)
@@ -327,6 +340,18 @@
         }
 
         gerarExcel(cabecalho, itens, nomeArquivo)
+      },
+
+      async funcionarioTrocado({ id, funcionario }) {
+        let idx = this.dados.findIndex((o) => o.id === id)
+        if (idx >= 0) {
+          this.dados[idx].Funcionario = funcionario
+          if (funcionario === null) {
+            this.dados[idx].funcionario_id = null
+          } else {
+            this.dados[idx].funcionario_id = funcionario.id
+          }
+        }
       },
 		},
 	}

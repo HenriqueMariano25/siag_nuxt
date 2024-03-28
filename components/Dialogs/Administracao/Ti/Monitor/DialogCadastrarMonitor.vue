@@ -744,6 +744,7 @@
           usuario_id,
 				})
 				if (!resp.falha) {
+          let funcionario = Object.assign({}, this.funcionario)
 					this.textoAlerta = "Funcionário trocado com sucesso!"
 					this.mostrarAlerta = true
 					let { data_entrega } = resp.dados
@@ -756,6 +757,9 @@
 						setor: { nome: null },
 					}
 					this.novo_funcionario_id = null
+
+
+          this.$emit("funcionarioTrocado", { id, funcionario })
 				}
 			},
 			async paraEstoque() {
@@ -780,6 +784,7 @@
 						setor: { nome: null },
 					}
 					this.novo_funcionario_id = null
+          this.$emit("funcionarioTrocado", { id, funcionario: null })
 				}
 			},
 

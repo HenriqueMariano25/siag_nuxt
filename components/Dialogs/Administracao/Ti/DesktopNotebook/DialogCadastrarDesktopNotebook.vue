@@ -1099,6 +1099,7 @@
           usuario_id
 				})
 				if (!resp.falha) {
+          let funcionario = Object.assign({}, this.funcionario)
 					this.textoAlerta = "Funcionário trocado com sucesso!"
 					this.mostrarAlerta = true
 					let { data_entrega } = resp.dados
@@ -1111,6 +1112,8 @@
 						setor: { nome: null },
 					}
 					this.novo_funcionario_id = null
+
+          this.$emit("funcionarioTrocado", { id, funcionario })
 				}
 			},
 			async paraEstoque() {
@@ -1135,6 +1138,7 @@
 						setor: { nome: null },
 					}
 					this.novo_funcionario_id = null
+          this.$emit("funcionarioTrocado", { id, funcionario: null })
 				}
 			},
 
@@ -1228,12 +1232,12 @@
 
 							this.textoErro = `Já existe um ${this.tipoCadastro} com esse ${campoErro}`
 						} else {
-							if (sair) {
-								this.$emit("editado")
-							} else {
+							if (!sair) {
 								this.textoAlerta = `${this.tipoCadastro.toUpperCase()} editado com sucesso!`
 								this.mostrarAlerta = true
 							}
+
+              this.$emit("editado", { desknote, sair })
 						}
 					}
 				}
