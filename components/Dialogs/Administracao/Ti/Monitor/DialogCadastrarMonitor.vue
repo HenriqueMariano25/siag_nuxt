@@ -5,8 +5,6 @@
 			class="uppercase"
 			:titulo="monitor === null ? `Cadastrar monitor` : `Editar monitor`"
 			:carregando="carregando"
-			:btnDeletar="monitor !== null"
-			@deletar="deletarMonitor"
 			@cancelar="cancelar()">
 			<template v-slot:corpo>
 				<AppTabs

@@ -5,8 +5,6 @@
 			class="uppercase"
 			:titulo="equipamento === null ? `Cadastrar equipamento` : `Editar equipamento`"
 			:carregando="carregando"
-			:btnDeletar="equipamento !== null"
-			@deletar="deletarEquipamento"
 			@cancelar="cancelar()">
 			<template v-slot:corpo>
 				<div class="flex flex-col w-full px-2">

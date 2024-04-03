@@ -127,14 +127,6 @@
 			</TabelaPadrao>
 		</div>
 		<RodapePagina>
-			<div class="w-full flex justify-between">
-				<BotaoPadrao texto="excel">
-					<img
-						src="@/assets/icons/excel-b.svg"
-						alt=""
-						class="w-7 h-7" />
-				</BotaoPadrao>
-			</div>
 		</RodapePagina>
 		<DialogEditarFuncionario
 			v-if="mostrarDialogEditarFuncionario"
@@ -229,34 +221,6 @@
 				}
 
 				this.carregando = false
-			},
-			async editarEquipamento(item) {
-				this.mostrarDialogCadastrarEquipamento = true
-				this.equipamento = item
-			},
-			async equipamentoEditado({ equipamento, sair }) {
-				let idx = this.dados.findIndex((o) => o.id === equipamento.id)
-
-				if (idx >= 0) {
-					this.dados[idx].nome = equipamento.nome
-					this.dados[idx].marca = equipamento.marca
-					this.dados[idx].modelo = equipamento.modelo
-				}
-
-				if (sair) {
-					this.mostrarDialogCadastrarEquipamento = false
-					this.textoAlerta = "Equipamento editado com sucesso!"
-					this.mostrarAlerta = true
-					this.equipamento = null
-				}
-			},
-			async equipamentoCadastrado({ equipamento, sair }) {
-				this.dados.push(equipamento)
-				if (sair) {
-					this.mostrarDialogCadastrarEquipamento = false
-					this.textoAlerta = "Equipamento cadastrado com sucesso!"
-					this.mostrarAlerta = true
-				}
 			},
 		},
 	}

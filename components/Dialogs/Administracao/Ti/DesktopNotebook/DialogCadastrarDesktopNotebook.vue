@@ -5,8 +5,6 @@
 			class="uppercase"
 			:titulo="maquina === null ? `Cadastrar ${tipoCadastro}` : `Editar ${tipoCadastro}`"
 			:carregando="carregando"
-			:btnDeletar="maquina !== null"
-			@deletar="deletarMaquina"
 			@cancelar="cancelar()">
 			<template v-slot:corpo>
 				<AppTabs
@@ -674,7 +672,6 @@
 			cancelar() {
 				this.$emit("cancelar")
 			},
-			async deletarMaquina() {},
 
       //SITUACAO TI
       async buscarSituacaoTI(){

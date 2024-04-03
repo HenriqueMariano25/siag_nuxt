@@ -30,7 +30,7 @@
     </div>
     <RodapePagina>
       <div class="w-full flex justify-between">
-        <BotaoPadrao texto="excel">
+        <BotaoPadrao texto="excel" @clique="gerarExcel()">
           <img
             src="@/assets/icons/excel-b.svg"
             alt=""
@@ -72,6 +72,7 @@ import BotaoPadrao from "~/components/Ui/Buttons/BotaoPadrao.vue"
 import AppAlerta from "~/components/Ui/AppAlerta.vue"
 import DialogCadastrarEquipamento
   from "~/components/Dialogs/Administracao/Ti/Equipamento/DialogCadastrarEquipamento.vue";
+import gerarExcel from "~/functions/gerarExcel";
 
 export default {
   components: {
@@ -149,6 +150,29 @@ export default {
         this.textoAlerta = "Equipamento cadastrado com sucesso!"
         this.mostrarAlerta = true
       }
+    },
+    async gerarExcel() {
+      let dados = this.dados
+
+      let cabecalho = [
+        "Nome",
+        "Marca",
+        "Modelo",
+        "Observação",
+      ]
+      let nomeArquivo = "equipamento"
+
+      let itens = []
+      for (let item of dados) {
+        let temp = []
+        temp.push(item.nome ? item.nome : "")
+        temp.push(item.marca ? item.marca : "")
+        temp.push(item.modelo ? item.modelo : "")
+        temp.push(item.observacao ? item.observacao : "")
+        itens.push(temp)
+      }
+
+      gerarExcel(cabecalho, itens, nomeArquivo)
     },
   },
 }
