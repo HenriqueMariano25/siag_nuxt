@@ -988,22 +988,20 @@
 					this.funcionario.cargo = funcionario.cargo
 
 					if (!this.jaIniciado) {
-						if (funcionario.AvaliacaoFuncionarios.length > 0) {
-              let avaliacao = funcionario.AvaliacaoFuncionarios[0]
-
-              console.log(avaliacao)
+						if (funcionario.AvaliacaoFuncionario.length > 0) {
+              let avaliacao = funcionario.AvaliacaoFuncionario[0]
 
               if(avaliacao.status_avaliacao_id === 3){
                 this.avaliacaoFuncionario = {
                   situacao: "Finalizado",
-                  nome: funcionario.AvaliacaoFuncionarios[0].AvaliadoPor.nome,
-                  data: funcionario.AvaliacaoFuncionarios[0].createdAt,
+                  nome: funcionario.AvaliacaoFuncionario[0].AvaliadoPor.nome,
+                  data: funcionario.AvaliacaoFuncionario[0].createdAt,
                 }
               }else{
                 this.avaliacaoFuncionario = {
                   situacao: "Encontrado",
-                  nome: funcionario.AvaliacaoFuncionarios[0].AvaliadoPor.nome,
-                  data: funcionario.AvaliacaoFuncionarios[0].createdAt,
+                  nome: funcionario.AvaliacaoFuncionario[0].AvaliadoPor.nome,
+                  data: funcionario.AvaliacaoFuncionario[0].createdAt,
                 }
               }
 						} else {

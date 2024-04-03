@@ -84,6 +84,7 @@
           SubDisciplina: "Sub Disciplina",
           Usuario: "Usuário",
           Periferico: "Periférico",
+          Relatorio: "Relatório",
 				}
 
 				let correcaoEncontrada = correcoes[nome] ? correcoes[nome] : null

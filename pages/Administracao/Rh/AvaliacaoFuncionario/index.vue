@@ -1,6 +1,6 @@
 <template>
 	<div class="w-full grid h-fit">
-    <CabecalhoPagina titulo="APROVAR CARD" />
+    <CabecalhoPagina titulo="AVALIAÇÃO FUNCIONÁRIO" />
 		<div
 			class="border grid grid-cols-4 space-x-3 border-1 shadow border-gray-300 p-2 rounded bg-white !mt-11">
 			<ButtonNavegacao
@@ -22,6 +22,15 @@
 					alt=""
 					class="w-8 h-8" />
 			</ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="Relatórios"
+        cor="bg-[#264653]"
+        link="/administracao/rh/AvaliacaoFuncionario/Relatorio">
+        <img
+          src="@/assets/icons/graph-w.svg"
+          alt=""
+          class="w-8 h-8" />
+      </ButtonNavegacao>
 			<ButtonNavegacao
 				titulo="Configurações"
 				cor="bg-[#264653]"
