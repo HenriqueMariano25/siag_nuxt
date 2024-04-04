@@ -41,21 +41,31 @@
 							<div
 								class="col-span-12 flex flex-col px-2 bg-red-300 border-2 border-red-100 text-lg text-gray-900"
 								v-if="avaliacaoFuncionario && avaliacaoFuncionario.situacao === 'Encontrado'">
-								<span class="text-xl "><strong>Esse funcionário já tem uma avaliação em aberto!</strong></span>
+								<span class="text-xl"
+									><strong>Esse funcionário já tem uma avaliação em aberto!</strong></span
+								>
 								<span>
-                  Iniciada por <strong>{{ avaliacaoFuncionario.nome }}</strong> no dia
+									Iniciada por <strong>{{ avaliacaoFuncionario.nome }}</strong> no dia
 									<strong>{{
 										$dayjs(avaliacaoFuncionario.data).format("DD/MM/YYYY HH:mm")
 									}}</strong>
-                </span>
+								</span>
 							</div>
-              <div
-                class="col-span-12 flex flex-col px-2 bg-orange-300 border-2 border-orange-100 text-lg text-gray-900"
-                v-if="avaliacaoFuncionario && avaliacaoFuncionario.situacao === 'Finalizado'">
-                <span><strong>Última avaliação realizada: </strong>{{ $dayjs(avaliacaoFuncionario.data).format("DD/MM/YYYY HH:mm") }}</span>
-                <span><strong>Avaliador: </strong>{{ avaliacaoFuncionario.nome }}</span>
-                <span><strong>Previsão para próxima avaliação: </strong>{{ $dayjs(avaliacaoFuncionario.data).add(6, 'month').format("DD/MM/YYYY") }}</span>
-              </div>
+							<div
+								class="col-span-12 flex flex-col px-2 bg-orange-300 border-2 border-orange-100 text-lg text-gray-900"
+								v-if="avaliacaoFuncionario && avaliacaoFuncionario.situacao === 'Finalizado'">
+								<span
+									><strong>Última avaliação realizada: </strong
+									>{{ $dayjs(avaliacaoFuncionario.data).format("DD/MM/YYYY HH:mm") }}</span
+								>
+								<span><strong>Avaliador: </strong>{{ avaliacaoFuncionario.nome }}</span>
+								<span
+									><strong>Previsão para próxima avaliação: </strong
+									>{{
+										$dayjs(avaliacaoFuncionario.data).add(6, "month").format("DD/MM/YYYY")
+									}}</span
+								>
+							</div>
 							<AppFormSelectCompleto
 								id="formacao"
 								v-model="funcionario.formacao_id"
@@ -259,43 +269,61 @@
 											colspan="2"
 											class="border-gray-500 border bg-slate-300">
 											<div class="w-full text-center justify-center flex items-center gap-1.5">
-                        <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7">
+												<img
+													src="@/assets/icons/information-circle-g.svg"
+													alt=""
+													class="w-7 h-7" />
 												<div>
 													<AppTooltip posicao="left-0">
 														<template v-slot:corpo>
-															<span class="cursor-pointer hover:!text-blue-900 hover:font-bold"> <strong>1</strong>-Não atende; </span>
+															<span class="cursor-pointer hover:!text-blue-900 hover:font-bold">
+																<strong>1</strong>-Não atende;
+															</span>
 														</template>
 														<template v-slot:tooltip>
 															<div class="w-[400px]">
-																<span>Situação em que o avaliado está abaixo do que é esperado para sua posição.</span>
+																<span
+																	>Situação em que o avaliado está abaixo do que é esperado para sua
+																	posição.</span
+																>
 															</div>
 														</template>
 													</AppTooltip>
 												</div>
-                        <div>
-                          <AppTooltip posicao="right-0">
-                            <template v-slot:corpo>
-                              <span class="cursor-pointer hover:!text-blue-900 hover:font-bold"> <strong>2</strong>-Atende; </span>
-                            </template>
-                            <template v-slot:tooltip>
-                              <div class="w-[400px]">
-                                <span>Situação em que o avaliado entrega o que é esperado para sua posição.</span>
-                              </div>
-                            </template>
-                          </AppTooltip>
-                        </div>
-                        <div>
-                          <AppTooltip posicao="right-0">
-                            <template v-slot:corpo>
-                              <span class="cursor-pointer hover:!text-blue-900 hover:font-bold"> <strong>3</strong>-Supera; </span>
-                            </template>
-                            <template v-slot:tooltip>
-                              <div class="w-[400px]">
-                                <span>Situação em que o avaliado entrega além do que é esperado para sua posição, se destacando constantemente.</span>
-                              </div>
-                            </template>
-                          </AppTooltip>
-                        </div>
+												<div>
+													<AppTooltip posicao="right-0">
+														<template v-slot:corpo>
+															<span class="cursor-pointer hover:!text-blue-900 hover:font-bold">
+																<strong>2</strong>-Atende;
+															</span>
+														</template>
+														<template v-slot:tooltip>
+															<div class="w-[400px]">
+																<span
+																	>Situação em que o avaliado entrega o que é esperado para sua
+																	posição.</span
+																>
+															</div>
+														</template>
+													</AppTooltip>
+												</div>
+												<div>
+													<AppTooltip posicao="right-0">
+														<template v-slot:corpo>
+															<span class="cursor-pointer hover:!text-blue-900 hover:font-bold">
+																<strong>3</strong>-Supera;
+															</span>
+														</template>
+														<template v-slot:tooltip>
+															<div class="w-[400px]">
+																<span
+																	>Situação em que o avaliado entrega além do que é esperado para
+																	sua posição, se destacando constantemente.</span
+																>
+															</div>
+														</template>
+													</AppTooltip>
+												</div>
 											</div>
 										</td>
 									</tr>
@@ -339,45 +367,63 @@
 										<td
 											colspan="2"
 											class="border-gray-500 border bg-slate-300">
-                      <div class="w-full text-center justify-center flex items-center gap-1.5">
-                        <img src="@/assets/icons/information-circle-g.svg" alt="" class="w-7 h-7">
-                        <div>
-                          <AppTooltip posicao="left-0">
-                            <template v-slot:corpo>
-                              <span class="cursor-pointer hover:!text-blue-900 hover:font-bold"> <strong>1</strong>-Não atende; </span>
-                            </template>
-                            <template v-slot:tooltip>
-                              <div class="w-[400px]">
-                                <span>Situação em que o avaliado está abaixo do que é esperado para sua posição.</span>
-                              </div>
-                            </template>
-                          </AppTooltip>
-                        </div>
-                        <div>
-                          <AppTooltip posicao="right-0">
-                            <template v-slot:corpo>
-                              <span class="cursor-pointer hover:!text-blue-900 hover:font-bold"> <strong>2</strong>-Atende; </span>
-                            </template>
-                            <template v-slot:tooltip>
-                              <div class="w-[400px]">
-                                <span>Situação em que o avaliado entrega o que é esperado para sua posição.</span>
-                              </div>
-                            </template>
-                          </AppTooltip>
-                        </div>
-                        <div>
-                          <AppTooltip posicao="right-0">
-                            <template v-slot:corpo>
-                              <span class="cursor-pointer hover:!text-blue-900 hover:font-bold"> <strong>3</strong>-Supera; </span>
-                            </template>
-                            <template v-slot:tooltip>
-                              <div class="w-[400px]">
-                                <span>Situação em que o avaliado entrega além do que é esperado para sua posição, se destacando constantemente.</span>
-                              </div>
-                            </template>
-                          </AppTooltip>
-                        </div>
-                      </div>
+											<div class="w-full text-center justify-center flex items-center gap-1.5">
+												<img
+													src="@/assets/icons/information-circle-g.svg"
+													alt=""
+													class="w-7 h-7" />
+												<div>
+													<AppTooltip posicao="left-0">
+														<template v-slot:corpo>
+															<span class="cursor-pointer hover:!text-blue-900 hover:font-bold">
+																<strong>1</strong>-Não atende;
+															</span>
+														</template>
+														<template v-slot:tooltip>
+															<div class="w-[400px]">
+																<span
+																	>Situação em que o avaliado está abaixo do que é esperado para sua
+																	posição.</span
+																>
+															</div>
+														</template>
+													</AppTooltip>
+												</div>
+												<div>
+													<AppTooltip posicao="right-0">
+														<template v-slot:corpo>
+															<span class="cursor-pointer hover:!text-blue-900 hover:font-bold">
+																<strong>2</strong>-Atende;
+															</span>
+														</template>
+														<template v-slot:tooltip>
+															<div class="w-[400px]">
+																<span
+																	>Situação em que o avaliado entrega o que é esperado para sua
+																	posição.</span
+																>
+															</div>
+														</template>
+													</AppTooltip>
+												</div>
+												<div>
+													<AppTooltip posicao="right-0">
+														<template v-slot:corpo>
+															<span class="cursor-pointer hover:!text-blue-900 hover:font-bold">
+																<strong>3</strong>-Supera;
+															</span>
+														</template>
+														<template v-slot:tooltip>
+															<div class="w-[400px]">
+																<span
+																	>Situação em que o avaliado entrega além do que é esperado para
+																	sua posição, se destacando constantemente.</span
+																>
+															</div>
+														</template>
+													</AppTooltip>
+												</div>
+											</div>
 										</td>
 									</tr>
 									<tr v-for="conhecimento of conheComportamentais">
@@ -468,7 +514,11 @@
 						>
 						<BotaoPadrao
 							texto="SALVAR"
-              :disabled="(avaliacaoFuncionario && avaliacaoFuncionario.situacao === 'Encontrado') || ( funcionario.funcionario_id === null || funcionario.funcionario_id ==='' )"
+							:disabled="
+								(avaliacaoFuncionario && avaliacaoFuncionario.situacao === 'Encontrado') ||
+								funcionario.funcionario_id === null ||
+								funcionario.funcionario_id === ''
+							"
 							@clique="jaIniciado ? editarAvaliacao(false) : iniciarAvaliacao(false)">
 							<template v-slot>
 								<img
@@ -479,7 +529,11 @@
 						</BotaoPadrao>
 						<BotaoPadrao
 							texto="SALVAR e SAIR"
-              :disabled="(avaliacaoFuncionario && avaliacaoFuncionario.situacao === 'Encontrado') || ( funcionario.funcionario_id === null || funcionario.funcionario_id ==='' )"
+							:disabled="
+								(avaliacaoFuncionario && avaliacaoFuncionario.situacao === 'Encontrado') ||
+								funcionario.funcionario_id === null ||
+								funcionario.funcionario_id === ''
+							"
 							@clique="jaIniciado ? editarAvaliacao(true) : iniciarAvaliacao(true)">
 							<template v-slot>
 								<img
@@ -488,9 +542,13 @@
 									class="w-7 h-7" />
 							</template>
 						</BotaoPadrao>
-            <span v-if="avaliacao.status_avaliacao_id === 2 && jaIniciado" class="text-white font-bold">Aguardando aprovação</span>
+						<span
+							v-if="avaliacao.status_avaliacao_id === 2 && jaIniciado"
+							class="text-white font-bold"
+							>Aguardando aprovação</span
+						>
 						<BotaoPadrao
-              v-if="avaliacao.status_avaliacao_id === 1 && jaIniciado"
+							v-if="avaliacao.status_avaliacao_id === 1 && jaIniciado"
 							texto="finalizar"
 							@clique="finalizarAvaliacao()">
 							<img
@@ -542,7 +600,7 @@
 		data() {
 			return {
 				tab: "funcionario",
-        funcionarios: [],
+				funcionarios: [],
 				formacoes: [],
 				funcionario: {
 					funcionario_id: null,
@@ -567,7 +625,7 @@
 				avaliacao_id: null,
 				mostrarAlerta: false,
 				textoAlerta: null,
-        avaliacaoFuncionario: null,
+				avaliacaoFuncionario: null,
 				erroJaTemAvaliacao: false,
 				estaDeletando: false,
 				cargos: [],
@@ -583,9 +641,9 @@
 				conheComportamentais: [],
 				errosHabTecnicas: false,
 				errosConheComportamental: false,
-        avaliacao:{
-          status_avaliacao_id: null
-        }
+				avaliacao: {
+					status_avaliacao_id: null,
+				},
 			}
 		},
 		computed: {
@@ -597,7 +655,9 @@
 				]
 			},
 			anosExperiencia() {
-				return this.funcionario.tiposObra.filter(item => item.anos !== null && item.anos !== "").reduce((acc, item) => acc + parseInt(item.anos), 0)
+				return this.funcionario.tiposObra
+					.filter((item) => item.anos !== null && item.anos !== "")
+					.reduce((acc, item) => acc + parseInt(item.anos), 0)
 			},
 		},
 		async mounted() {
@@ -689,46 +749,45 @@
 				this.erros = validarFormulario(this.campos, this.funcionario)
 
 				if (this.erros.length === 0) {
-						let resp = await this.$axios.$post("/avaliacao_funcionario/cadastrar", {
-							funcionario_id,
-							formacao_id,
-							anos_experiencia,
-							conhecimentos,
-							dispoTrabalho,
-							tiposObra,
-							usuario_id,
-							previsao_disponibilidade,
-						})
+					let resp = await this.$axios.$post("/avaliacao_funcionario/cadastrar", {
+						funcionario_id,
+						formacao_id,
+						anos_experiencia,
+						conhecimentos,
+						dispoTrabalho,
+						tiposObra,
+						usuario_id,
+						previsao_disponibilidade,
+					})
 
-						if (!resp.falha) {
-							let avaliacao = resp.dados.avaliacao
+					if (!resp.falha) {
+						let avaliacao = resp.dados.avaliacao
 
-							if (sair) {
-								await this.$router.push({
-									name: "Administracao-Rh-AvaliacaoFuncionario-Avaliacoes",
-									params: { acao: "Cadastrado" },
-								})
-							} else {
-								let dados = resp.dados
-								if (dados.tiposObra.length > 0) {
-									for (let cadaTipo of dados.tiposObra) {
-										let idx = this.funcionario.tiposObra.findIndex(
-											(o) =>
-												o.tipo_obra_avaliacao_id === cadaTipo.tipo_obra_avaliacao_id &&
-												o.cargo_avaliacao_id === cadaTipo.cargo_avaliacao_id,
-										)
-										if (idx >= 0) {
-											this.funcionario.tiposObra[idx].id = cadaTipo.id
-										}
+						if (sair) {
+							await this.$router.push({
+								name: "Administracao-Rh-AvaliacaoFuncionario-Avaliacoes",
+								params: { acao: "Cadastrado" },
+							})
+						} else {
+							let dados = resp.dados
+							if (dados.tiposObra.length > 0) {
+								for (let cadaTipo of dados.tiposObra) {
+									let idx = this.funcionario.tiposObra.findIndex(
+										(o) =>
+											o.tipo_obra_avaliacao_id === cadaTipo.tipo_obra_avaliacao_id &&
+											o.cargo_avaliacao_id === cadaTipo.cargo_avaliacao_id,
+									)
+									if (idx >= 0) {
+										this.funcionario.tiposObra[idx].id = cadaTipo.id
 									}
 								}
-								this.avaliacao_id = avaliacao.id
-								this.jaIniciado = true
-								this.textoAlerta = "Avaliação iniciada com sucesso!"
-								this.mostrarAlerta = true
 							}
+							this.avaliacao_id = avaliacao.id
+							this.jaIniciado = true
+							this.textoAlerta = "Avaliação iniciada com sucesso!"
+							this.mostrarAlerta = true
 						}
-
+					}
 				}
 			},
 			async editarAvaliacao(sair) {
@@ -747,68 +806,62 @@
 
 				this.erros = validarFormulario(this.campos, this.funcionario)
 
-				if (
-					this.erros.length === 0
-				) {
-          let habilidadesTecnicas = []
-          let conheComportamentais = []
+				if (this.erros.length === 0) {
+					let habilidadesTecnicas = []
+					let conheComportamentais = []
 
-          let resp = null
+					let resp = null
 
-          if(this.tab === 'descricao_cargo'){
-            let valoresHab = Object.values(
-              this.funcionario.habilidadesTecnicas.filter((o) => o !== "" && o !== null),
-            )
-            this.errosHabTecnicas = this.habilidadesTecnicas.length > valoresHab.length
+					if (this.tab === "descricao_cargo") {
+						let valoresHab = Object.values(
+							this.funcionario.habilidadesTecnicas.filter((o) => o !== "" && o !== null),
+						)
+						this.errosHabTecnicas = this.habilidadesTecnicas.length > valoresHab.length
 
-            this.errosConheComportamental =
-              this.conheComportamentais.length >
-              Object.values(this.funcionario.conheComportamentais).length
+						this.errosConheComportamental =
+							this.conheComportamentais.length >
+							Object.values(this.funcionario.conheComportamentais).length
 
-            if (this.errosHabTecnicas === false &&
-              this.errosConheComportamental === false){
-              habilidadesTecnicas= Object.keys(this.funcionario.habilidadesTecnicas).map((o) => {
-                return { id: parseInt(o), nota: this.funcionario.habilidadesTecnicas[o] }
-              })
+						if (this.errosHabTecnicas === false && this.errosConheComportamental === false) {
+							habilidadesTecnicas = Object.keys(this.funcionario.habilidadesTecnicas).map((o) => {
+								return { id: parseInt(o), nota: this.funcionario.habilidadesTecnicas[o] }
+							})
 
-              conheComportamentais = Object.keys(this.funcionario.conheComportamentais).map((o) => {
-                return { id: parseInt(o), nota: this.funcionario.conheComportamentais[o] }
-              })
+							conheComportamentais = Object.keys(this.funcionario.conheComportamentais).map((o) => {
+								return { id: parseInt(o), nota: this.funcionario.conheComportamentais[o] }
+							})
 
-              resp = await this.$axios.$post("/avaliacao_funcionario/editar", {
-                funcionario_id,
-                formacao_id,
-                anos_experiencia,
-                conhecimentos,
-                dispoTrabalho,
-                tiposObra,
-                usuario_id,
-                avaliacao_id,
-                previsao_disponibilidade,
-                habilidadesTecnicas,
-                conheComportamentais,
-                comentario_geral,
-              })
-            }
-          }else{
-            resp = await this.$axios.$post("/avaliacao_funcionario/editar", {
-              funcionario_id,
-              formacao_id,
-              anos_experiencia,
-              conhecimentos,
-              dispoTrabalho,
-              tiposObra,
-              usuario_id,
-              avaliacao_id,
-              previsao_disponibilidade,
-              habilidadesTecnicas,
-              conheComportamentais,
-              comentario_geral,
-            })
-          }
-
-
-
+							resp = await this.$axios.$post("/avaliacao_funcionario/editar", {
+								funcionario_id,
+								formacao_id,
+								anos_experiencia,
+								conhecimentos,
+								dispoTrabalho,
+								tiposObra,
+								usuario_id,
+								avaliacao_id,
+								previsao_disponibilidade,
+								habilidadesTecnicas,
+								conheComportamentais,
+								comentario_geral,
+							})
+						}
+					} else {
+						resp = await this.$axios.$post("/avaliacao_funcionario/editar", {
+							funcionario_id,
+							formacao_id,
+							anos_experiencia,
+							conhecimentos,
+							dispoTrabalho,
+							tiposObra,
+							usuario_id,
+							avaliacao_id,
+							previsao_disponibilidade,
+							habilidadesTecnicas,
+							conheComportamentais,
+							comentario_geral,
+						})
+					}
 
 					if (resp && !resp.falha) {
 						if (sair) {
@@ -914,8 +967,7 @@
 					}
 
 					this.funcionario.comentario_geral = avaliacao.comentario_geral
-          this.avaliacao.status_avaliacao_id = avaliacao.status_avaliacao_id
-          console.log(avaliacao);
+					this.avaliacao.status_avaliacao_id = avaliacao.status_avaliacao_id
 				}
 			},
 			async cancelarAvaliacao() {
@@ -982,30 +1034,30 @@
 
 					let funcionario = this.funcionarios[idx]
 
-          console.log(funcionario);
+					if (funcionario) {
+						this.funcionario.chapa = funcionario.chapa
+						this.funcionario.cargo = funcionario.cargo
 
-					this.funcionario.chapa = funcionario.chapa
-					this.funcionario.cargo = funcionario.cargo
+						if (!this.jaIniciado) {
+							if (funcionario.AvaliacaoFuncionario.length > 0) {
+								let avaliacao = funcionario.AvaliacaoFuncionario[0]
 
-					if (!this.jaIniciado) {
-						if (funcionario.AvaliacaoFuncionario.length > 0) {
-              let avaliacao = funcionario.AvaliacaoFuncionario[0]
-
-              if(avaliacao.status_avaliacao_id === 3){
-                this.avaliacaoFuncionario = {
-                  situacao: "Finalizado",
-                  nome: funcionario.AvaliacaoFuncionario[0].AvaliadoPor.nome,
-                  data: funcionario.AvaliacaoFuncionario[0].createdAt,
-                }
-              }else{
-                this.avaliacaoFuncionario = {
-                  situacao: "Encontrado",
-                  nome: funcionario.AvaliacaoFuncionario[0].AvaliadoPor.nome,
-                  data: funcionario.AvaliacaoFuncionario[0].createdAt,
-                }
-              }
-						} else {
-							this.avaliacaoFuncionario = null
+								if (avaliacao.status_avaliacao_id === 3) {
+									this.avaliacaoFuncionario = {
+										situacao: "Finalizado",
+										nome: funcionario.AvaliacaoFuncionario[0].AvaliadoPor.nome,
+										data: funcionario.AvaliacaoFuncionario[0].createdAt,
+									}
+								} else {
+									this.avaliacaoFuncionario = {
+										situacao: "Encontrado",
+										nome: funcionario.AvaliacaoFuncionario[0].AvaliadoPor.nome,
+										data: funcionario.AvaliacaoFuncionario[0].createdAt,
+									}
+								}
+							} else {
+								this.avaliacaoFuncionario = null
+							}
 						}
 					}
 				}

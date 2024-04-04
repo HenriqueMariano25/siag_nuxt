@@ -76,21 +76,21 @@
 								src="@/assets/icons/caret-up-green.svg"
 								alt=""
 								class="w-6 h-6" />
-							<span>3</span>
+							<span>3 - Supera</span>
 						</div>
 						<div class="flex gap-0.5 items-center">
 							<img
 								src="@/assets/icons/equals-blue.svg"
 								alt=""
 								class="w-6 h-6" />
-							<span>2</span>
+							<span>2 - Atende</span>
 						</div>
 						<div class="flex gap-0.5 items-center">
 							<img
 								src="@/assets/icons/caret-down-red.svg"
 								alt=""
 								class="w-6 h-6" />
-							<span>1</span>
+							<span>1 - Não atende</span>
 						</div>
 					</div>
 					<div class="w-full flex">
@@ -433,7 +433,6 @@
 				}
 
 				option && myChart.setOption(option)
-				//
 			},
 			async montarGraficoTecnica() {
 				let habTecnicas = this.habTecnicas

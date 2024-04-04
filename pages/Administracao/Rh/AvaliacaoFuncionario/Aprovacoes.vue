@@ -75,7 +75,7 @@
 						<BotaoPadrao
               @clique="mostrarDialogAprovarAvaliacao = true"
 							texto="aprovar"
-							:disabled="selecionados.length === 0">
+							:disabled="selecionados && selecionados.length === 0">
 							<img
 								src="@/assets/icons/check-circle-b.svg"
 								alt=""
