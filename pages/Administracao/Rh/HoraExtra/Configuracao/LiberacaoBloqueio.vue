@@ -471,7 +471,6 @@ import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
       async buscarUsuariosAprovacao() {
         let filtros = this.filtrosAprovacao
 
-        console.log(filtros)
         filtros["$UsuarioPermissaos.Permissao.descricao$"] = 'autorizar_he'
 
         let resp = await this.$axios.$get("/usuarios/ativos", { params: { filtros } })

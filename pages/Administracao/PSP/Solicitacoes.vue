@@ -1,6 +1,6 @@
 <template>
 	<div class="w-full">
-    <CabecalhoPagina titulo="SOLICITAÇÕES" />
+		<CabecalhoPagina titulo="SOLICITAÇÕES" />
 		<div
 			class="flex bg-primaria-500 w-full print:hidden menuEtapas !mt-11"
 			style="overflow-x: scroll">
@@ -24,7 +24,7 @@
 		</div>
 		<div class="print:hidden">
 			<TabelaPadrao
-        id="pspSolicitacoes"
+				id="pspSolicitacoes"
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
@@ -117,19 +117,16 @@
 					}}</span>
 				</template>
 				<template v-slot:[`body.historico`]="{ item }">
-					<div class="w-[120px]">
-						<BotaoPadrao
-							texto="Historico"
-							class="!py-0.5 border border-gray-500"
-							@clique="
-								mostrarDialogHistoricoPsp = true
-								psp_id = item.id
-							">
-							<img
-								src="@/assets/icons/history-b.svg"
-								alt=""
-								class="w-6 h-6" />
-						</BotaoPadrao>
+					<div
+						class="bg-blue-200 border border-blue-300 flex gap-2 justify-center items-center py-0.5 text-black hover:bg-blue-300 rounded w-[100px]"
+						@click="
+							mostrarDialogHistoricoPsp = true
+							psp_id = item.id
+						">
+						<img
+							src="@/assets/icons/history-b.svg"
+							alt=""
+							class="w-6 h-6" />
 					</div>
 				</template>
 			</TabelaPadrao>
@@ -207,6 +204,14 @@
 			@escondeu="mostrarAlerta = false">
 			{{ textoAlerta }}
 		</AppAlerta>
+		<DialogEditarPspGerenciamento
+			v-if="mostrarDialogEditarPspGerenciamento"
+			@cancelar="
+				mostrarDialogEditarPspGerenciamento = false
+				psp_id = null
+			"
+			:psp_id="psp_id"
+			@solicitanteTrocado="solicitanteTrocado" />
 	</div>
 </template>
 
@@ -221,12 +226,14 @@
 	import DialogDetalhesPsp from "~/components/Dialogs/Administracao/Psp/DialogDetalhesPsp.vue"
 	import DialogHistoricoPsp from "~/components/Dialogs/Administracao/Psp/DialogHistoricoPsp.vue"
 	import gerarExcel from "~/functions/gerarExcel"
-  import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
+	import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue"
+	import DialogEditarPspGerenciamento from "~/components/Dialogs/Administracao/Psp/DialogEditarPspGerenciamento.vue"
 
 	export default {
 		name: "Psp",
 		components: {
-      CabecalhoPagina,
+			DialogEditarPspGerenciamento,
+			CabecalhoPagina,
 			DialogHistoricoPsp,
 			DialogDetalhesPsp,
 			AppAlerta,
@@ -256,6 +263,7 @@
 				mostrarDialogDetalhesPsp: false,
 				psp_id: null,
 				mostrarDialogHistoricoPsp: false,
+				mostrarDialogEditarPspGerenciamento: false,
 			}
 		},
 		computed: {
@@ -295,12 +303,23 @@
 					{ nome: "Transporte", valor: "PspTemMeioTransporte.meio_transporte", filtro: true },
 					{ nome: "Centro Custo", valor: "CentroCustoPEP.descricao", filtro: true },
 					{ nome: "Solicitado por", valor: "criado_por.nome", filtro: true },
-					{ nome: "Histórico", valor: "historico", filtro: true, largura: "w-[150px]" },
+					{ nome: "Histórico", valor: "historico", filtro: true, largura: "w-[100px]" },
 				]
 
-				if ((this.etapa_psp_id >= 1 && this.etapa_psp_id <= 4) || this.etapa_psp_id === 10) {
-					cabecalho.unshift({ nome: "", valor: "acao", largura: "w-10" })
-				}
+        let permissao = this.$auth.user.permissoes.includes("gerenciamento_psp")
+
+        console.log(permissao);
+        if(permissao){
+          if ((this.etapa_psp_id >= 1 && this.etapa_psp_id <= 7) || this.etapa_psp_id === 10) {
+            cabecalho.unshift({ nome: "", valor: "acao", largura: "w-10" })
+          }
+        }else{
+          if ((this.etapa_psp_id >= 1 && this.etapa_psp_id <= 4) || this.etapa_psp_id === 10) {
+            cabecalho.unshift({ nome: "", valor: "acao", largura: "w-10" })
+          }
+        }
+
+
 
 				return cabecalho
 			},
@@ -332,7 +351,7 @@
 
 			async buscarPsps() {
 				this.carregandoTabela = true
-				let filtros = { }
+				let filtros = {}
 				if (this.etapa_psp_id > 0) {
 					filtros["etapa_psp_id"] = this.etapa_psp_id
 				} else {
@@ -346,17 +365,19 @@
 					filtros["$Funcionario.setor.id$"] = this.$auth.user.setor_id
 				}
 
-        filtros = Object.assign(filtros, this.filtros)
-        if(Object.keys(filtros).includes('$PspTemMeioTransporte.meio_transporte$')){
-          let valorTransporte = filtros['$PspTemMeioTransporte.meio_transporte$']
+				filtros = Object.assign(filtros, this.filtros)
+				if (Object.keys(filtros).includes("$PspTemMeioTransporte.meio_transporte$")) {
+					let valorTransporte = filtros["$PspTemMeioTransporte.meio_transporte$"]
 
-          delete filtros['$PspTemMeioTransporte.meio_transporte$']
+					delete filtros["$PspTemMeioTransporte.meio_transporte$"]
 
-          filtros = Object.assign(filtros, { $or: [
-              { '$PspTemMeioTransporte.meio_transporte$' : valorTransporte},
-              { 'meio_transporte': valorTransporte }
-            ]})
-        }
+					filtros = Object.assign(filtros, {
+						$or: [
+							{ "$PspTemMeioTransporte.meio_transporte$": valorTransporte },
+							{ meio_transporte: valorTransporte },
+						],
+					})
+				}
 				let page = this.pagina
 				let size = this.itensPorPagina
 
@@ -441,7 +462,20 @@
 
 			editarPsp(item) {
 				this.psp_id = item.id
-				this.mostrarDialogCriarPsp = true
+
+				let permissao = this.$auth.user.permissoes.includes("gerenciamento_psp")
+
+				console.log(item)
+
+				if (item.etapa_psp_id !== 10) {
+					if (permissao) {
+						this.mostrarDialogEditarPspGerenciamento = true
+					} else {
+						this.mostrarDialogCriarPsp = true
+					}
+				} else {
+					this.mostrarDialogCriarPsp = true
+				}
 			},
 
 			async gerarExcel() {
@@ -487,6 +521,18 @@
 
 				gerarExcel(cabecalho, itens, nomeArquivo)
 			},
+      async solicitanteTrocado({ solicitante, id}){
+        console.log(solicitante, id);
+
+        let idx = this.dados.findIndex(o => o.id === id)
+
+        if(idx >= 0){
+          this.dados[idx].criado_por = solicitante
+        }
+        this.mostrarDialogEditarPspGerenciamento = false
+        this.textoAlerta = "Solicitante alterado com sucesso!"
+        this.mostrarAlerta = true
+      }
 		},
 		watch: {
 			async etapa_psp_id() {
