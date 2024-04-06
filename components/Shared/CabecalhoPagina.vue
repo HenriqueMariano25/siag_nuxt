@@ -85,6 +85,7 @@
           Usuario: "Usuário",
           Periferico: "Periférico",
           Relatorio: "Relatório",
+          BloquearFaltaAtestado: "Bloq. Falta e Atestado",
 				}
 
 				let correcaoEncontrada = correcoes[nome] ? correcoes[nome] : null
