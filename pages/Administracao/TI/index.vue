@@ -6,11 +6,6 @@
       <ButtonNavegacao
         titulo="Funcionários"
         cor="bg-[#264653]"
-        v-if="
-					$auth.user.permissoes.includes(
-						'prototipo',
-					)
-				"
         link="ti/Funcionarios">
         <img
           src="@/assets/icons/people-w.svg"
@@ -20,11 +15,6 @@
       <ButtonNavegacao
         titulo="Desktop"
         cor="bg-[#264653]"
-        v-if="
-					$auth.user.permissoes.includes(
-						'prototipo',
-					)
-				"
         link="ti/desktop">
         <img
           src="@/assets/icons/desktop-w.svg"
@@ -34,11 +24,6 @@
       <ButtonNavegacao
         titulo="Notebook"
         cor="bg-[#264653]"
-        v-if="
-					$auth.user.permissoes.includes(
-						'prototipo',
-					)
-				"
         link="ti/notebook">
         <img
           src="@/assets/icons/notebook-w.svg"
@@ -47,11 +32,6 @@
       </ButtonNavegacao>
       <ButtonNavegacao
         titulo="Monitor"
-        v-if="
-					$auth.user.permissoes.includes(
-						'prototipo',
-					)
-				"
         cor="bg-[#264653]"
         link="ti/monitor">
         <img
@@ -61,11 +41,6 @@
       </ButtonNavegacao>
       <ButtonNavegacao
         titulo="Equipamento"
-        v-if="
-					$auth.user.permissoes.includes(
-						'prototipo',
-					)
-				"
         cor="bg-[#264653]"
         link="ti/Equipamento">
         <img
