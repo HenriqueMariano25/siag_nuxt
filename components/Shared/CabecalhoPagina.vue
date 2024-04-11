@@ -7,8 +7,9 @@
 			<div
 				v-for="(cadaRota, index) of rotas"
 				class="cursor-pointer hover:!text-blue-300 "
-        :class="{'text-gray-400 hover:!text-gray-400 font-bold': index + 1 === rotas.length}">
-				<span @click="index + 1 !== rotas.length ? $router.push({ name: cadaRota.caminho }) : false ">{{ cadaRota.nome }}</span>
+        :class="{'text-gray-400 hover:!text-gray-400 font-bold': index + 1 === rotas.length}"
+        @click="index + 1 !== rotas.length ? $router.push({ name: cadaRota.caminho }) : false ">
+				<span >{{ cadaRota.nome }}</span>
 				<span
 					class="text-blue-300"
 					v-if="index + 1 < rotas.length">
