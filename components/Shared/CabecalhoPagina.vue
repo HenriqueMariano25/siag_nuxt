@@ -86,6 +86,7 @@
           Periferico: "Periférico",
           Relatorio: "Relatório",
           BloquearFaltaAtestado: "Bloq. Falta e Atestado",
+          DesktopNotebook: "Desktop/Notebook",
 				}
 
 				let correcaoEncontrada = correcoes[nome] ? correcoes[nome] : null

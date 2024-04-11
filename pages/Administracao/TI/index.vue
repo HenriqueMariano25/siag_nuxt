@@ -82,6 +82,24 @@
           alt=""
           class="w-8 h-8" />
       </ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="KPI"
+        cor="bg-[#264653]"
+        link="ti/kpi">
+        <img
+          src="@/assets/icons/graph-w.svg"
+          alt=""
+          class="w-8 h-8" />
+      </ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="Configuração"
+        cor="bg-[#264653]"
+        link="ti/configuracao">
+        <img
+          src="@/assets/icons/cog-w.svg"
+          alt=""
+          class="w-8 h-8" />
+      </ButtonNavegacao>
     </div>
   </div>
 </template>
