@@ -27,7 +27,7 @@
       <ButtonNavegacao titulo="Bloq. por Faltas e Atestados" cor="bg-[#264653]" texto-pequeno
                        detalhes="Bloquei de funcionários que tiveram falta ou atestato na última competência."
                        link="/administracao/rh/horaExtra/configuracao/BloquearFaltaAtestado"
-                       v-if="$auth.user.permissoes.includes('he_data_compensacao')">
+                       v-if="$auth.user.permissoes.includes('he_bloqueio_falta_atestado')">
         <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
     </div>

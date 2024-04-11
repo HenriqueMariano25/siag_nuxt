@@ -215,6 +215,7 @@
             "Situação Engenheiro",
             "Coordenador",
             "Avaliado por",
+            "Aprovado por",
             "Comentário geral"
           ]
 
@@ -239,6 +240,7 @@
             temp.push(item.Funcionario && item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.situacao : "")
             temp.push(item.Funcionario && item.Funcionario.Coordenador ? item.Funcionario.Coordenador.nome : "")
             temp.push(item.AvaliadoPor ? item.AvaliadoPor.nome : "")
+            temp.push(item.AprovadoPor ? item.AprovadoPor.nome : "")
             temp.push(item.comentario_geral)
 
             itens.push(temp)
