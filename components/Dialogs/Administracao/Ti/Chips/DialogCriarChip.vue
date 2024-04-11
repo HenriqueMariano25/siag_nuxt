@@ -70,6 +70,11 @@
 								id="data_cancelamento"
 								v-if="chipLocal.situacao_id === 3"
 								v-model="chipLocal.data_cancelamento" />
+              <AppFormInput
+                label="Data término do contrato"
+                type="date"
+                id="data_termino_contrato"
+                v-model="chipLocal.data_termino_contrato" />
 							<AppFormInput
 								class="col-span-3"
 								label="Tipo de serviço"
@@ -475,6 +480,7 @@
 					data_cancelamento: null,
 					tipo_servico: null,
 					observacao: null,
+          data_termino_contrato: null,
 				},
 				funcionarioLocal: {
 					chapa: null,
@@ -655,6 +661,7 @@
 						observacao,
 						data_bloqueio,
 						data_cancelamento,
+            data_termino_contrato
 					} = this.chipLocal
 					let chip = {
 						id,
@@ -667,7 +674,9 @@
 						observacao,
 						data_bloqueio,
 						data_cancelamento,
+            data_termino_contrato
 					}
+
 					let usuario_id = this.$auth.user.id
 
 					let resp = await this.$axios.$post("/ti/chip/editar", {
