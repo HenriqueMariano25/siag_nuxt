@@ -16,7 +16,7 @@
 					>{{ textoDesabilitado }}</span
 				>
 			</label>
-			<div class=" w-full flex justify-end">
+			<div class="w-full flex justify-end">
 				<span
 					class="mr-1.5 text-xs"
 					v-if="value && totalCaracteres"
@@ -168,13 +168,13 @@
 							valor = event.target.value
 						}
 
-            if(vm.totalCaracteres){
-              if (valor && valor.length > vm.totalCaracteres) {
-                valor = valor.substring(0, vm.totalCaracteres);
-              }
-            }
+						if (vm.totalCaracteres) {
+							if (valor && valor.length > vm.totalCaracteres) {
+								valor = valor.substring(0, vm.totalCaracteres)
+							}
+						}
 
-            event.target.value = valor
+						event.target.value = valor
 						vm.$emit("input", vm.uppercase ? valor.toUpperCase() : valor)
 					},
 				}
@@ -189,7 +189,7 @@
 			value(value) {
 				if (this.semEspeciais) {
 					const regex = /[^\w\s]/gi
-					this.localValue = value.replace(regex, "")
+					if (this.localValue) this.localValue = value.replace(regex, "")
 				} else {
 					this.localValue = value
 				}

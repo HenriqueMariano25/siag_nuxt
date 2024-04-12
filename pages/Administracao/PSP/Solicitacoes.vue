@@ -308,7 +308,6 @@
 
         let permissao = this.$auth.user.permissoes.includes("gerenciamento_psp")
 
-        console.log(permissao);
         if(permissao){
           if ((this.etapa_psp_id >= 1 && this.etapa_psp_id <= 7) || this.etapa_psp_id === 10) {
             cabecalho.unshift({ nome: "", valor: "acao", largura: "w-10" })
@@ -465,8 +464,6 @@
 
 				let permissao = this.$auth.user.permissoes.includes("gerenciamento_psp")
 
-				console.log(item)
-
 				if (item.etapa_psp_id !== 10) {
 					if (permissao) {
 						this.mostrarDialogEditarPspGerenciamento = true
@@ -522,8 +519,6 @@
 				gerarExcel(cabecalho, itens, nomeArquivo)
 			},
       async solicitanteTrocado({ solicitante, id}){
-        console.log(solicitante, id);
-
         let idx = this.dados.findIndex(o => o.id === id)
 
         if(idx >= 0){
