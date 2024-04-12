@@ -18,7 +18,7 @@
 					</div>
 					<div
 						id="imprimir"
-						class="print:w-[1600px] w-[1800px]">
+						class="print:w-[1600px] w-full">
 						<div
 							class="bg-primaria-700 p-1 text-white flex justify-between items-center hidden print:flex print:w-[1600px] w-[1800px]">
 							<img
@@ -269,12 +269,22 @@
 				graficoComportamental: null,
 				graficoTecnica: null,
 				print_mode: false,
+        isChrome: false,
+        isFirefox: false,
 			}
 		},
 		mounted() {
 			if (this.funcionario_id) {
 				this.buscarRelatorio()
 			}
+
+      let navegador = navigator.userAgent
+
+      if (navegador.indexOf("Chrome") !== -1) {
+        this.isChrome = true
+      } else if (navegador.indexOf("Firefox") !== -1) {
+        this.isFirefox = true
+      }
 		},
 		methods: {
 			cancelar() {
@@ -562,13 +572,16 @@
 				let widthOriginalTecnica = chartDomTecnica.getWidth()
 				let heightOriginalTecnica = chartDomTecnica.getHeight()
 
-				chartDomTecnica.resize({ width: 1600, height: 610 })
-
 				let widthOriginalComportametais = charDomComportamentais.getWidth()
 				let heightOriginalComportametais = charDomComportamentais.getHeight()
 
-				chartDomTecnica.resize({ width: 1600, height: 610 })
-				charDomComportamentais.resize({ width: 1600, height: 610 })
+        if (this.isChrome) {
+          chartDomTecnica.resize({ width: 1600, height: 590 })
+          charDomComportamentais.resize({ width: 1600, height: 590 })
+        }else if(this.isFirefox){
+          chartDomTecnica.resize({ width: 1600, height: 610 })
+          charDomComportamentais.resize({ width: 1600, height: 610 })
+        }
 
 				setTimeout(() => {
 					window.print()

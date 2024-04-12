@@ -129,8 +129,6 @@
 
 			let navegador = navigator.userAgent
 
-			console.log(navigator)
-
 			if (navegador.indexOf("Chrome") !== -1) {
 				this.isChrome = true
 			} else if (navegador.indexOf("Firefox") !== -1) {
