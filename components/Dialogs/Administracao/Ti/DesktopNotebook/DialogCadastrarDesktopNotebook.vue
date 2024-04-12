@@ -41,12 +41,10 @@
 								<AppFormInput
 									label="HostName"
 									uppercase
-									obrigatorio
 									v-model="desktopnotebook.hostname"
 									placeholder="Ex: GNA2-WKS001"
 									type="text"
-									id="hostname"
-									:invalido="erros.includes('hostname')" />
+									id="hostname" />
 								<AppFormSelectCompleto
 									style="z-index: 103 !important"
 									class="grow"
@@ -631,7 +629,6 @@
 			camposObrigatorio() {
 				let campos = [
 					"serial",
-					"hostname",
 					"marcati_id",
 					"modeloti_id",
 					"processadordesknoteti_id",
