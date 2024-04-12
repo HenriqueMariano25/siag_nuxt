@@ -923,6 +923,7 @@
 			//LOCAL DE INSTALAÇÃO
 			async buscarLocalInstalacao() {
 				let locaisInstalacao = this.$store.state.ti.localInstalacaoTI.locaisInstalacao
+
 				if (locaisInstalacao.length === 0) {
 					locaisInstalacao = await this.$axios
 						.$get("/ti/localInstalacao/buscarTodos")

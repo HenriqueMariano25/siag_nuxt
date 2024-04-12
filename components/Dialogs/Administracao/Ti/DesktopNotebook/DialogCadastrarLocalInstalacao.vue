@@ -65,7 +65,7 @@
 						this.jaCriado = true
 					} else {
 						this.$store.commit("ti/localInstalacaoTI/ATUALIZAR_LOCALINSTALACAO_TI", {
-							local,
+              localInstalacao: local,
 						})
 						this.$emit("cadastrado")
 					}
