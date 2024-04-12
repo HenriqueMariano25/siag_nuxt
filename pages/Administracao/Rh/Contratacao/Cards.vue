@@ -533,7 +533,11 @@
         return setores.length !== 1
       }
 		},
-		async mounted() {
+    created() {
+      this.carregandoTabela = true
+    },
+    async mounted() {
+
 			await this.buscarEtapas()
 			this.setores = await this.buscarSetores()
 			this.disciplinas = await this.buscarDisciplinaCard()
@@ -935,37 +939,6 @@
 								temp.push("")
 							}
 						}
-						// temp.push(item["Etapa.nome"] ? item["Etapa.nome"] : "")
-						// temp.push(this.$dayjs(item.ultima_data).format("DD/MM/YYYY"))
-						// temp.push(
-						//   this.$dayjs().diff(item.ultima_data, "day") <= item["Etapa.leadtime"]
-						//     ? "No prazo"
-						//     : "Atrasado",
-						// )
-						// temp.push(item["Setor.nome"] ? item["Setor.nome"] : "")
-						// temp.push(item["DisciplinaCard.sigla"] ? `${item["DisciplinaCard.sigla"]}` : "")
-						// temp.push(item["Indicacao.nome"] ? item["Indicacao.nome"] : "")
-						// temp.push(item["Indicacao.cpf"] ? item["Indicacao.cpf"].replace(/[^\w\s]/gi, "") : "")
-						// temp.push(item["FuncaoCard.nome"] ? item["FuncaoCard.nome"].trim() : "")
-						// temp.push(item["Indicacao.telefone"] ? item["Indicacao.telefone"] : "")
-						// temp.push(item["Indicacao.email"] ? item["Indicacao.email"] : "")
-						// temp.push(this.$dayjs(item.created_at).format("DD/MM/YYYY"))
-						// temp.push(this.$dayjs(item.data_necessidade).format("DD/MM/YYYY"))
-						// temp.push(
-						//   item.data_previsao
-						//     ? this.$dayjs(item.data_previsao).add(30, "day").format("DD/MM/YYYY")
-						//     : "",
-						// )
-						// temp.push(item.tipo_recrutamento)
-						// temp.push(item["Responsavel.nome"] ? item["Responsavel.nome"] : "")
-						// temp.push(item.treinamentos !== null ? item.treinamentos.join("; ") : "")
-						// temp.push(
-						//   item["CentroCustoPEP.numero_pep"] || item["CentroCustoPEP.descricao"]
-						//     ? `${item["CentroCustoPEP.numero_pep"]} - ${item["CentroCustoPEP.descricao"]}`
-						//     : "",
-						// )
-						// temp.push(item.mobilizacao)
-						// item["Comentarios.descricao"] ? temp.push(item["Comentarios.descricao"]) : temp.push("")
 						itens.push(temp)
 					}
 
