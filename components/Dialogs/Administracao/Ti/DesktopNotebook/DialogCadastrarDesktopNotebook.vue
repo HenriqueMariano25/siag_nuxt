@@ -1159,6 +1159,7 @@
 							let campoErro = ""
 
 							if (ativo.patrimonio === patrimonio) {
+                console.log();
 								campoErro = "patrimônio"
 								this.erros.push("patrimonio")
 							}
@@ -1172,6 +1173,11 @@
 								campoErro = "hostname"
 								this.erros.push("hostname")
 							}
+
+              console.log(ativo.hostname);
+              console.log(hostname);
+
+              console.log(campoErro);
 
 							this.textoErro = `Já existe um ativo com esse ${campoErro}`
 						} else {
