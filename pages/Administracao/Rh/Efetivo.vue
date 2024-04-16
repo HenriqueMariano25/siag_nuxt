@@ -89,14 +89,14 @@
 					<span
 						class="whitespace-nowrap"
 						v-if="item.data_admissao"
-						>{{ $dayjs(item.data_admissao).format("DD/MM/YYYY") }}</span
+						>{{ $dayjs(item.data_admissao).utc().format("DD/MM/YYYY") }}</span
 					>
 				</template>
 				<template v-slot:[`body.data_demissao`]="{ item }">
 					<span
 						class="whitespace-nowrap"
 						v-if="item.data_demissao"
-						>{{ $dayjs(item.data_demissao).format("DD/MM/YYYY") }}</span
+						>{{ $dayjs(item.data_demissao).utc().format("DD/MM/YYYY") }}</span
 					>
 				</template>
 				<template v-slot:[`body.historico_mudanca`]="{ item }">
@@ -383,8 +383,8 @@
 					{ nome: "Jornada", valor: "JornadaTrabalho.descricao", filtro: true },
 					{ nome: "Equipe Planejamento", valor: "EquipePlanejamento.descricao", filtro: true },
 					{ nome: "Permanência", valor: "permanencia", filtro: true },
-					{ nome: "Data Admissão", valor: "data_admissao", centralizar: true },
-					{ nome: "Data Demissão", valor: "data_demissao", centralizar: true },
+					{ nome: "Data Admissão", valor: "data_admissao", centralizar: true, tipoFiltro: "data", filtro:true },
+					{ nome: "Data Demissão", valor: "data_demissao", centralizar: true, tipoFiltro: "data", filtro: true },
 					{ nome: "CPF", valor: "cpf", filtro: true },
 					{ nome: "D/I", valor: "direto_indireto", filtro: true, centralizar: true },
 					{ nome: "Situação", valor: "situacao", filtro: true,},
@@ -422,20 +422,21 @@
 				}
 			},
 
-			// recebendoFiltro(filtros) {
-			// 	this.filtros = filtros
-			// },
 			async buscarEfetivo() {
 				this.carregando = true
 
 				let filtros = this.filtros
 				let ordem = this.ordem
 
-				if (this.mostrarDemitidos === false) {
-					filtros["data_demissao"] = null
-				} else {
-					delete filtros.data_demissao
-				}
+        if(filtros.data_demissao){
+          this.mostrarDemitidos === true
+        }else{
+          if (this.mostrarDemitidos === false) {
+            filtros["data_demissao"] = null
+          } else {
+            delete filtros.data_demissao
+          }
+        }
 
 				let resp = await this.$axios.$get("/efetivo/buscar_funcionarios", {
 					params: {

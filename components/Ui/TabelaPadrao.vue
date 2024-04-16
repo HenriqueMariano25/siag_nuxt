@@ -501,7 +501,7 @@
 						if (componente[0].$el !== undefined) {
 							clicouDentro =
 								(componente && componente[0].$el.contains(event.target)) ||
-                (componenteIcon && componenteIcon[0].contains(event.target))
+								(componenteIcon && componenteIcon[0].contains(event.target))
 						} else {
 							clicouDentro =
 								(componente && componente[0].contains(event.target)) ||
@@ -835,9 +835,14 @@
 				}
 				let { dataInicial, dataFinal } = this.dataFiltros
 
-				if (item.includes(".")) item = `$${item}$`
-				let filtro = { [item]: { $bet: [dataInicial, dataFinal] } }
-				this.filtros.push(filtro)
+				if (this.dadosRedis) {
+					this.filtros[item] = { tipoFiltro: "data", valores: [dataInicial, dataFinal] }
+				} else {
+					if (item.includes(".")) item = `$${item}$`
+					let filtro = { [item]: { $bet: [dataInicial, dataFinal] } }
+					this.filtros.push(filtro)
+				}
+
 				this.dataFiltros = { dataInicial: null, dataFinal: null }
 
 				this.localPagina = 1
@@ -851,18 +856,22 @@
 					this.filtrosAtivos.splice(idx, 1)
 				}
 
-				if (item.includes(".")) item = `$${item}$`
+				if (this.dadosRedis) {
+          delete this.filtros[item]
+				} else {
+					if (item.includes(".")) item = `$${item}$`
 
-				let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
+					let idx = this.filtros.findIndex((o) => Object.keys(o).some((o) => o === item))
 
-				if (idx >= 0) {
-					this.filtros.splice(idx, 1)
-					this.dataFiltros = { dataInicial: null, dataFinal: null }
+					if (idx >= 0) {
+						this.filtros.splice(idx, 1)
 
-					this.localPagina = 1
-					this.filtroAberto = null
-					this.atualizarDados()
+					}
 				}
+        this.dataFiltros = { dataInicial: null, dataFinal: null }
+        this.localPagina = 1
+        this.filtroAberto = null
+        this.atualizarDados()
 			},
 
 			opcoesFiltradas(opcoes) {
