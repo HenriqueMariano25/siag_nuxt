@@ -18,7 +18,11 @@
 				:temDetalhes="false">
 				<template v-slot:[`body.acoes`]="{ item }">
 					<BotaoPadrao
-						v-if="item.AvaliadoPor.nome === $auth.user.nome && (item.status_avaliacao_id !== 3 && item.status_avaliacao_id !== 4)"
+						v-if="
+							item.AvaliadoPor.nome === $auth.user.nome &&
+							item.status_avaliacao_id !== 3 &&
+							item.status_avaliacao_id !== 4
+						"
 						icone
 						class="!p-0.5"
 						@clique="irParaEdicao(item.id)">
@@ -54,21 +58,45 @@
 				<template v-slot:[`body.AvaliadoPor.nome`]="{ item }">
 					<span class="whitespace-nowrap">{{ item.AvaliadoPor ? item.AvaliadoPor.nome : "" }}</span>
 				</template>
-        <template v-slot:[`body.historico`]="{ item }">
-          <BotaoPadrao texto="histórico" class="w-full border border-gray-700 !py-0 !justify-center"
-                       cor="bg-blue-100 hover:!bg-blue-300"
-                       @clique="mostrarDialogHistoricoAvaliacao = true; avaliacao_id = item.id">
-            <img src="@/assets/icons/history-b.svg" alt="" class="w-6 h-6">
-          </BotaoPadrao>
-        </template>
+				<template v-slot:[`body.historico`]="{ item }">
+					<BotaoPadrao
+						texto="histórico"
+						class="w-full border border-gray-700 !py-0 !justify-center"
+						cor="bg-blue-100 hover:!bg-blue-300"
+						@clique="
+							mostrarDialogHistoricoAvaliacao = true
+							avaliacao_id = item.id
+						">
+						<img
+							src="@/assets/icons/history-b.svg"
+							alt=""
+							class="w-6 h-6" />
+					</BotaoPadrao>
+				</template>
 			</TabelaPadrao>
 		</div>
 		<RodapePagina>
 			<template v-slot>
 				<div class="flex justify-between w-full">
-          <BotaoPadrao texto="Excel" @clique="gerarExcel()">
-            <img src="@/assets/icons/excel-b.svg" alt="" class="w-7 h-7">
-          </BotaoPadrao>
+					<div class="flex gap-2">
+						<BotaoPadrao
+							texto="Excel"
+							@clique="gerarExcel()">
+							<img
+								src="@/assets/icons/excel-b.svg"
+								alt=""
+								class="w-7 h-7" />
+						</BotaoPadrao>
+						<BotaoPadrao
+							texto="Relátorio"
+              v-if="$auth.user.permissoes.includes('avaliacao_funcionario_visao_geral')"
+							@clique="gerarRelatorio()">
+							<img
+								src="@/assets/icons/excel-b.svg"
+								alt=""
+								class="w-7 h-7" />
+						</BotaoPadrao>
+					</div>
 					<div class="flex">
 						<BotaoPadrao
 							texto="AVALIAR"
@@ -85,10 +113,13 @@
 		<DialogAvaliacaoFuncionario
 			v-if="mostrarDialogCriaAvaliacaoFuncionario"
 			@cancelar="mostrarDialogCriaAvaliacaoFuncionario = false" />
-    <DialogHistoricoAvaliacao
-      v-if="mostrarDialogHistoricoAvaliacao"
-      @cancelar="mostrarDialogHistoricoAvaliacao = false; avaliacao_id = null"
-      :avaliacao_id="avaliacao_id" />
+		<DialogHistoricoAvaliacao
+			v-if="mostrarDialogHistoricoAvaliacao"
+			@cancelar="
+				mostrarDialogHistoricoAvaliacao = false
+				avaliacao_id = null
+			"
+			:avaliacao_id="avaliacao_id" />
 		<AppAlerta
 			tipo="sucesso"
 			:mostrar="mostrarAlerta"
@@ -106,14 +137,13 @@
 	import TabelaPadrao from "~/components/Ui/TabelaPadrao.vue"
 	import DialogAvaliacaoFuncionario from "~/components/Dialogs/Administracao/Rh/AvaliacaoFuncionario/DialogAvaliacaoFuncionario.vue"
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
-  import DialogHistoricoAvaliacao
-    from "~/components/Dialogs/Administracao/Rh/AvaliacaoFuncionario/DialogHistoricoAvaliacao.vue";
-  import gerarExcel from "~/functions/gerarExcel";
+	import DialogHistoricoAvaliacao from "~/components/Dialogs/Administracao/Rh/AvaliacaoFuncionario/DialogHistoricoAvaliacao.vue"
+	import gerarExcel from "~/functions/gerarExcel"
 
 	export default {
 		name: "AvaliacaoFuncionario",
 		components: {
-      DialogHistoricoAvaliacao,
+			DialogHistoricoAvaliacao,
 			AppAlerta,
 			DialogAvaliacaoFuncionario,
 			TabelaPadrao,
@@ -125,14 +155,21 @@
 		data() {
 			return {
 				cabecalho: [
-					{ nome: "", valor: "acoes", largura: "w-12"},
-					{ nome: "Cód.", valor: "id", largura: "w-[80px]", centralizar: true, filtro: true, tipoFiltro: "inteiro", },
-					{ nome: "Status", valor: "StatusAvaliacao.descricao", filtro: true},
+					{ nome: "", valor: "acoes", largura: "w-12" },
+					{
+						nome: "Cód.",
+						valor: "id",
+						largura: "w-[80px]",
+						centralizar: true,
+						filtro: true,
+						tipoFiltro: "inteiro",
+					},
+					{ nome: "Status", valor: "StatusAvaliacao.descricao", filtro: true },
 					{ nome: "Matricula", valor: "Funcionario.chapa", filtro: true },
 					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
 					{ nome: "Avaliado por", valor: "AvaliadoPor.nome", filtro: true },
-          { nome: "", valor: "historico" },
+					{ nome: "", valor: "historico" },
 				],
 				filtros: {},
 				ordem: null,
@@ -143,8 +180,8 @@
 				mostrarDialogCriaAvaliacaoFuncionario: false,
 				mostrarAlerta: false,
 				textoAlerta: null,
-        mostrarDialogHistoricoAvaliacao: false,
-        avaliacao_id: null
+				mostrarDialogHistoricoAvaliacao: false,
+				avaliacao_id: null,
 			}
 		},
 		mounted() {
@@ -196,62 +233,192 @@
 					params: { id: id },
 				})
 			},
-      async gerarExcel(){
-        let resp = await this.$axios.$get("/avaliacao_funcionario/buscarRelatorio")
-        if(!resp.falha){
-          let { avaliacoes } = resp.dados
-          let cabecalho = [
-            "Código",
-            "Status",
-            "Matricula",
-            "Nome",
-            "Cargo",
-            "CPF",
-            "Turno",
-            "Data admissão",
-            "Supervisor",
-            "Situação Supervisor",
-            "Engenheiro",
-            "Situação Engenheiro",
-            "Coordenador",
-            "Avaliado por",
-            "Aprovado por",
-            "Comentário geral"
-          ]
+			async gerarExcel() {
+				let resp = await this.$axios.$get("/avaliacao_funcionario/buscarRelatorio")
+				if (!resp.falha) {
+					let { avaliacoes } = resp.dados
+					let cabecalho = [
+						"Código",
+						"Status",
+						"Matricula",
+						"Nome",
+						"Cargo",
+						"CPF",
+						"Turno",
+						"Data admissão",
+						"Supervisor",
+						"Situação Supervisor",
+						"Engenheiro",
+						"Situação Engenheiro",
+						"Coordenador",
+						"Avaliado por",
+						"Aprovado por",
+						"Comentário geral",
+					]
 
-          let nomeArquivo
+					let nomeArquivo
 
-          nomeArquivo = "avaliacoes"
+					nomeArquivo = "avaliacoes"
 
-          let itens = []
-          for (let item of avaliacoes) {
-            let temp = []
-            temp.push(("0000" + item.id).slice(-4))
-            temp.push(item.StatusAvaliacao ? item.StatusAvaliacao.descricao : "")
-            temp.push(item.Funcionario ? item.Funcionario.chapa : "")
-            temp.push(item.Funcionario ? item.Funcionario.nome : "")
-            temp.push(item.Funcionario ? item.Funcionario.cargo : "")
-            temp.push(item.Funcionario ? item.Funcionario.cpf : "")
-            temp.push(item.Funcionario && item.Funcionario.Turno ? item.Funcionario.Turno.descricao : "")
-            temp.push(item.Funcionario ? this.$dayjs(item.Funcionario.data_admissao).format("DD/MM/YYYY") : "")
-            temp.push(item.Funcionario && item.Funcionario.Supervisor ? item.Funcionario.Supervisor.nome : "")
-            temp.push(item.Funcionario && item.Funcionario.Supervisor ? item.Funcionario.Supervisor.situacao : "")
-            temp.push(item.Funcionario && item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.nome : "")
-            temp.push(item.Funcionario && item.Funcionario.Engenheiro ? item.Funcionario.Engenheiro.situacao : "")
-            temp.push(item.Funcionario && item.Funcionario.Coordenador ? item.Funcionario.Coordenador.nome : "")
-            temp.push(item.AvaliadoPor ? item.AvaliadoPor.nome : "")
-            temp.push(item.AprovadoPor ? item.AprovadoPor.nome : "")
-            temp.push(item.comentario_geral)
+					let itens = []
+					for (let item of avaliacoes) {
+						let temp = []
+						temp.push(("0000" + item.id).slice(-4))
+						temp.push(item.StatusAvaliacao ? item.StatusAvaliacao.descricao : "")
+						temp.push(item.Funcionario ? item.Funcionario.chapa : "")
+						temp.push(item.Funcionario ? item.Funcionario.nome : "")
+						temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+						temp.push(item.Funcionario ? item.Funcionario.cpf : "")
+						temp.push(
+							item.Funcionario && item.Funcionario.Turno ? item.Funcionario.Turno.descricao : "",
+						)
+						temp.push(
+							item.Funcionario
+								? this.$dayjs(item.Funcionario.data_admissao).format("DD/MM/YYYY")
+								: "",
+						)
+						temp.push(
+							item.Funcionario && item.Funcionario.Supervisor
+								? item.Funcionario.Supervisor.nome
+								: "",
+						)
+						temp.push(
+							item.Funcionario && item.Funcionario.Supervisor
+								? item.Funcionario.Supervisor.situacao
+								: "",
+						)
+						temp.push(
+							item.Funcionario && item.Funcionario.Engenheiro
+								? item.Funcionario.Engenheiro.nome
+								: "",
+						)
+						temp.push(
+							item.Funcionario && item.Funcionario.Engenheiro
+								? item.Funcionario.Engenheiro.situacao
+								: "",
+						)
+						temp.push(
+							item.Funcionario && item.Funcionario.Coordenador
+								? item.Funcionario.Coordenador.nome
+								: "",
+						)
+						temp.push(item.AvaliadoPor ? item.AvaliadoPor.nome : "")
+						temp.push(item.AprovadoPor ? item.AprovadoPor.nome : "")
+						temp.push(item.comentario_geral)
 
-            itens.push(temp)
-          }
+						itens.push(temp)
+					}
 
-          gerarExcel(cabecalho, itens, nomeArquivo)
-        }
+					gerarExcel(cabecalho, itens, nomeArquivo)
+				}
+			},
+			async gerarRelatorio() {
+				let resp = await this.$axios.$get("/avaliacao_funcionario/relatorio/completo")
+
+				if (!resp.falha) {
+					let { funcionarios, habilidadesTecnicas, habilidadesCompotametais } = resp.dados
+
+					let cabecalho = [
+						"Matricula",
+						"Nome",
+						"Cargo",
+						"Setor",
+						"Formação",
+						"Prev. Disponibilidade",
+						"Conhecimento",
+						"Localidade/Dispo. de trabalho",
+						"Tipo obra (Exp. profissionais)",
+						"Cargo (Exp. profissionais)",
+						"Anos (Exp. profissionais)",
+						"Status avaliação",
+						"Comentario geral",
+					]
+
+					for (let hab of habilidadesTecnicas) {
+						cabecalho.push(hab.descricao)
+					}
+					for (let hab of habilidadesCompotametais) {
+						cabecalho.push(hab.descricao)
+					}
+
+					let nomeArquivo
+
+					nomeArquivo = "avaliacoes"
+
+					let itens = []
+					for (let item of funcionarios) {
+						let temp = []
+						temp.push(item.chapa)
+						temp.push(item.nome)
+						temp.push(item.cargo)
+						temp.push(item.setor ? item.setor.nome : "")
+						temp.push(item.FormacaoDescCargo ? item.FormacaoDescCargo.descricao : "")
+						temp.push(
+							item.previsao_disponibilidade
+								? this.$dayjs(item.previsao_disponibilidade).format("MM/YYYY")
+								: "",
+						)
+						temp.push(
+							item.ConheFuncionarioAvaliacao.length > 0
+								? item.ConheFuncionarioAvaliacao.map((o) => o.descricao).join("; ")
+								: "",
+						)
+						temp.push(
+							item.DispoTrabalhoAvaliacao.length > 0
+								? item.DispoTrabalhoAvaliacao.map((o) => o.descricao).join("; ")
+								: "",
+						)
+						temp.push(
+							item.FuncionarioTemTipoObras.length > 0
+								? item.FuncionarioTemTipoObras.map((o) =>
+										o.TipoObraAvaliacao ? o.TipoObraAvaliacao.descricao : "",
+								  ).join("; ")
+								: "",
+						)
+						temp.push(
+							item.FuncionarioTemTipoObras.length > 0
+								? item.FuncionarioTemTipoObras.map((o) =>
+										o.CargoAvaliacao ? o.CargoAvaliacao.nome : "",
+								  ).join("; ")
+								: "",
+						)
+						temp.push(
+							item.FuncionarioTemTipoObras.length > 0
+								? item.FuncionarioTemTipoObras.map((o) => o.anos).join("; ")
+								: "",
+						)
+						temp.push(
+							item.AvaliacaoFuncionario.length > 0 && item.AvaliacaoFuncionario[0].StatusAvaliacao
+								? item.AvaliacaoFuncionario[0].StatusAvaliacao.descricao
+								: "",
+						)
+						temp.push(
+							item.AvaliacaoFuncionario.length > 0
+								? item.AvaliacaoFuncionario[0].comentario_geral
+								: "",
+						)
+            for(let habTecnica of habilidadesTecnicas){
+              if(item.AvaliacaoFuncionario.length > 0){
+                let idxTecnica = item.AvaliacaoFuncionario[0].AvaliacaoTemHabTecnicas.findIndex(o => o.habilidade_tecnica === habTecnica.id)
+
+                if(idxTecnica >= 0) temp.push(item.AvaliacaoFuncionario[0].AvaliacaoTemHabTecnicas[idxTecnica].nota)
+                else temp.push("")
 
 
+              }
+            }
 
-      }
+            for(let habComp of habilidadesCompotametais){
+              let idxCompotamental = item.AvaliacaoFuncionario[0].AvaliacaoTemConheComportamental.findIndex(o => o.conhe_comp === habComp.id)
+              if (idxCompotamental >= 0) temp.push(item.AvaliacaoFuncionario[0].AvaliacaoTemConheComportamental[idxCompotamental].nota)
+              else temp.push("")
+            }
+						itens.push(temp)
+					}
+
+					gerarExcel(cabecalho, itens, nomeArquivo)
+				}
+			},
 		},
 	}
 </script>
