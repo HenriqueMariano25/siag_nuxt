@@ -174,7 +174,7 @@
 					{ nome: "Marca/Modelo", valor: "marca_modelo", filtro: true, ordenar: true },
 					{ nome: "Setor", valor: "Setor.nome", filtro: true, ordenar: true },
 					{ nome: "Status", valor: "StatusCarro.descricao", filtro: true, ordenar: true },
-					{ nome: "Ocuto Pool", valor: "ocultar_pool" },
+					{ nome: "Oculto Pool", valor: "ocultar_pool" },
 				],
 				filtros: {},
 				ordem: null,

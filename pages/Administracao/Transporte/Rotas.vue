@@ -1,7 +1,7 @@
 <template>
 	<div class="w-full">
 		<CabecalhoPagina titulo="ROTAS" />
-		<div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11">
+		<div class="w-full bg-white flex flex-col gap-2 overflow-y-auto !mt-11 print:hidden">
 			<TabelaPadrao
         id="rotas"
 				:cabecalho="cabecalho"
@@ -61,7 +61,7 @@
 		<RodapePagina>
 			<template v-slot>
 				<div class="flex justify-between w-full">
-					<div>
+					<div class="flex gap-2">
 						<BotaoPadrao
 							texto="ocupações"
 							@clique="gerarRelatorioGeral">
@@ -70,6 +70,14 @@
 								alt=""
 								class="w-7 h-7" />
 						</BotaoPadrao>
+            <BotaoPadrao
+              texto="KPI"
+              @clique="mostrarDialogKpiRota = true">
+              <img
+                src="@/assets/icons/graph-b.svg"
+                alt=""
+                class="w-7 h-7" />
+            </BotaoPadrao>
 					</div>
 					<div class="flex">
 						<BotaoPadrao
@@ -101,6 +109,7 @@
 			@escondeu="mostrarAlerta = false">
 			{{ textoAlerta }}
 		</AppAlerta>
+    <DialogKpiRota v-if="mostrarDialogKpiRota" @cancelar="mostrarDialogKpiRota = false"/>
 	</div>
 </template>
 
@@ -115,9 +124,11 @@
 	import { jsPDF } from "jspdf"
 	import "jspdf-autotable"
 	import logo from "~/assets/img/logoagcnovo.png"
+  import DialogKpiRota from "~/components/Dialogs/Administracao/Transporte/Rotas/DialogKpiRota.vue";
 
 	export default {
 		components: {
+      DialogKpiRota,
 			DialogCriarRota,
 			AppAlerta,
 			RodapePagina,
@@ -146,6 +157,7 @@
 				rota: null,
 				mostrarAlerta: false,
 				textoAlerta: null,
+        mostrarDialogKpiRota: false
 			}
 		},
 		created() {
