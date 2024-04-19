@@ -89,7 +89,7 @@
 						</BotaoPadrao>
 						<BotaoPadrao
 							texto="Relátorio"
-              v-if="$auth.user.permissoes.includes('avaliacao_funcionario_visao_geral')"
+							v-if="$auth.user.permissoes.includes('avaliacao_funcionario_visao_geral')"
 							@clique="gerarRelatorio()">
 							<img
 								src="@/assets/icons/excel-b.svg"
@@ -316,7 +316,8 @@
 				let resp = await this.$axios.$get("/avaliacao_funcionario/relatorio/completo")
 
 				if (!resp.falha) {
-					let { funcionarios, habilidadesTecnicas, habilidadesCompotametais } = resp.dados
+					let { habilidadesTecnicas, habilidadesCompotametais, avaliacoes } =
+						resp.dados
 
 					let cabecalho = [
 						"Matricula",
@@ -346,73 +347,139 @@
 					nomeArquivo = "avaliacoes"
 
 					let itens = []
-					for (let item of funcionarios) {
+					// for (let item of funcionarios) {
+					// 	let temp = []
+					// 	temp.push(item.chapa)
+					// 	temp.push(item.nome)
+					// 	temp.push(item.cargo)
+					// 	temp.push(item.setor ? item.setor.nome : "")
+					// 	temp.push(item.FormacaoDescCargo ? item.FormacaoDescCargo.descricao : "")
+					// 	temp.push(
+					// 		item.previsao_disponibilidade
+					// 			? this.$dayjs(item.previsao_disponibilidade).format("MM/YYYY")
+					// 			: "",
+					// 	)
+					// 	temp.push(
+					// 		item.ConheFuncionarioAvaliacao.length > 0
+					// 			? item.ConheFuncionarioAvaliacao.map((o) => o.descricao).join("; ")
+					// 			: "",
+					// 	)
+					// 	temp.push(
+					// 		item.DispoTrabalhoAvaliacao.length > 0
+					// 			? item.DispoTrabalhoAvaliacao.map((o) => o.descricao).join("; ")
+					// 			: "",
+					// 	)
+					// 	temp.push(
+					// 		item.FuncionarioTemTipoObras.length > 0
+					// 			? item.FuncionarioTemTipoObras.map((o) =>
+					// 					o.TipoObraAvaliacao ? o.TipoObraAvaliacao.descricao : "",
+					// 			  ).join("; ")
+					// 			: "",
+					// 	)
+					// 	temp.push(
+					// 		item.FuncionarioTemTipoObras.length > 0
+					// 			? item.FuncionarioTemTipoObras.map((o) =>
+					// 					o.CargoAvaliacao ? o.CargoAvaliacao.nome : "",
+					// 			  ).join("; ")
+					// 			: "",
+					// 	)
+					// 	temp.push(
+					// 		item.FuncionarioTemTipoObras.length > 0
+					// 			? item.FuncionarioTemTipoObras.map((o) => o.anos).join("; ")
+					// 			: "",
+					// 	)
+					// 	temp.push(
+					// 		item.AvaliacaoFuncionario.length > 0 && item.AvaliacaoFuncionario[0].StatusAvaliacao
+					// 			? item.AvaliacaoFuncionario[0].StatusAvaliacao.descricao
+					// 			: "",
+					// 	)
+					// 	temp.push(
+					// 		item.AvaliacaoFuncionario.length > 0
+					// 			? item.AvaliacaoFuncionario[0].comentario_geral
+					// 			: "",
+					// 	)
+					//   for(let habTecnica of habilidadesTecnicas){
+					//     if(item.AvaliacaoFuncionario.length > 0){
+					//       let idxTecnica = item.AvaliacaoFuncionario[0].AvaliacaoTemHabTecnicas.findIndex(o => o.habilidade_tecnica === habTecnica.id)
+					//
+					//       if(idxTecnica >= 0) temp.push(item.AvaliacaoFuncionario[0].AvaliacaoTemHabTecnicas[idxTecnica].nota)
+					//       else temp.push("")
+					//
+					//
+					//     }
+					//   }
+					//
+					//   for(let habComp of habilidadesCompotametais){
+					//     let idxCompotamental = item.AvaliacaoFuncionario[0].AvaliacaoTemConheComportamental.findIndex(o => o.conhe_comp === habComp.id)
+					//     if (idxCompotamental >= 0) temp.push(item.AvaliacaoFuncionario[0].AvaliacaoTemConheComportamental[idxCompotamental].nota)
+					//     else temp.push("")
+					//   }
+					// 	itens.push(temp)
+					// }
+
+					for (let item of avaliacoes) {
 						let temp = []
-						temp.push(item.chapa)
-						temp.push(item.nome)
-						temp.push(item.cargo)
-						temp.push(item.setor ? item.setor.nome : "")
-						temp.push(item.FormacaoDescCargo ? item.FormacaoDescCargo.descricao : "")
+						temp.push(item.Funcionario ? item.Funcionario.chapa : "")
+						temp.push(item.Funcionario ? item.Funcionario.nome : "")
+						temp.push(item.Funcionario ? item.Funcionario.cargo : "")
+						temp.push(item.Funcionario && item.Funcionario.setor ? item.Funcionario.setor.nome : "")
 						temp.push(
-							item.previsao_disponibilidade
-								? this.$dayjs(item.previsao_disponibilidade).format("MM/YYYY")
+							item.Funcionario && item.Funcionario.FormacaoDescCargo
+								? item.Funcionario.FormacaoDescCargo.descricao
 								: "",
 						)
 						temp.push(
-							item.ConheFuncionarioAvaliacao.length > 0
-								? item.ConheFuncionarioAvaliacao.map((o) => o.descricao).join("; ")
+							item.Funcionario && item.Funcionario.previsao_disponibilidade
+								? this.$dayjs(item.Funcionario.previsao_disponibilidade).format("MM/YYYY")
 								: "",
 						)
 						temp.push(
-							item.DispoTrabalhoAvaliacao.length > 0
-								? item.DispoTrabalhoAvaliacao.map((o) => o.descricao).join("; ")
+							item.Funcionario.ConheFuncionarioAvaliacao.length > 0
+								? item.Funcionario.ConheFuncionarioAvaliacao.map((o) => o.descricao).join("; ")
 								: "",
 						)
 						temp.push(
-							item.FuncionarioTemTipoObras.length > 0
-								? item.FuncionarioTemTipoObras.map((o) =>
+							item.Funcionario.DispoTrabalhoAvaliacao.length > 0
+								? item.Funcionario.DispoTrabalhoAvaliacao.map((o) => o.descricao).join("; ")
+								: "",
+						)
+						temp.push(
+							item.Funcionario.FuncionarioTemTipoObras.length > 0
+								? item.Funcionario.FuncionarioTemTipoObras.map((o) =>
 										o.TipoObraAvaliacao ? o.TipoObraAvaliacao.descricao : "",
 								  ).join("; ")
 								: "",
 						)
 						temp.push(
-							item.FuncionarioTemTipoObras.length > 0
-								? item.FuncionarioTemTipoObras.map((o) =>
+							item.Funcionario.FuncionarioTemTipoObras.length > 0
+								? item.Funcionario.FuncionarioTemTipoObras.map((o) =>
 										o.CargoAvaliacao ? o.CargoAvaliacao.nome : "",
 								  ).join("; ")
 								: "",
 						)
 						temp.push(
-							item.FuncionarioTemTipoObras.length > 0
-								? item.FuncionarioTemTipoObras.map((o) => o.anos).join("; ")
+							item.Funcionario.FuncionarioTemTipoObras.length > 0
+								? item.Funcionario.FuncionarioTemTipoObras.map((o) => o.anos).join("; ")
 								: "",
 						)
-						temp.push(
-							item.AvaliacaoFuncionario.length > 0 && item.AvaliacaoFuncionario[0].StatusAvaliacao
-								? item.AvaliacaoFuncionario[0].StatusAvaliacao.descricao
-								: "",
-						)
-						temp.push(
-							item.AvaliacaoFuncionario.length > 0
-								? item.AvaliacaoFuncionario[0].comentario_geral
-								: "",
-						)
-            for(let habTecnica of habilidadesTecnicas){
-              if(item.AvaliacaoFuncionario.length > 0){
-                let idxTecnica = item.AvaliacaoFuncionario[0].AvaliacaoTemHabTecnicas.findIndex(o => o.habilidade_tecnica === habTecnica.id)
+						temp.push(item.StatusAvaliacao ? item.StatusAvaliacao.descricao : "")
+						temp.push(item.comentario_geral ? item.comentario_geral : "")
+						for (let habTecnica of habilidadesTecnicas) {
+							let idxTecnica = item.AvaliacaoTemHabTecnicas.findIndex(
+								(o) => o.HabilidadeTecnicaAvaliacaoId === habTecnica.id,
+							)
+							if (idxTecnica >= 0) temp.push(item.AvaliacaoTemHabTecnicas[idxTecnica].nota)
+							else temp.push("")
+						}
 
-                if(idxTecnica >= 0) temp.push(item.AvaliacaoFuncionario[0].AvaliacaoTemHabTecnicas[idxTecnica].nota)
-                else temp.push("")
-
-
-              }
-            }
-
-            for(let habComp of habilidadesCompotametais){
-              let idxCompotamental = item.AvaliacaoFuncionario[0].AvaliacaoTemConheComportamental.findIndex(o => o.conhe_comp === habComp.id)
-              if (idxCompotamental >= 0) temp.push(item.AvaliacaoFuncionario[0].AvaliacaoTemConheComportamental[idxCompotamental].nota)
-              else temp.push("")
-            }
+						for (let habComp of habilidadesCompotametais) {
+							let idxCompotamental = item.AvaliacaoTemConheComportamental.findIndex(
+								(o) => o.ConheComportamentalAvaliacaoId === habComp.id,
+							)
+							if (idxCompotamental >= 0)
+								temp.push(item.AvaliacaoTemConheComportamental[idxCompotamental].nota)
+							else temp.push("")
+						}
 						itens.push(temp)
 					}
 
