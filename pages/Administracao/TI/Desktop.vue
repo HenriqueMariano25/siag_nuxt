@@ -98,7 +98,8 @@
 					<span>{{ item.ModeloTI ? item.ModeloTI.nome : "" }}</span>
 				</template>
 				<template v-slot:[`body.Funcionario.nome`]="{ item }">
-					<span>{{ item.Funcionario ? item.Funcionario.nome : "" }}</span>
+					<span v-if="item.Funcionario && item.Funcionario.data_demissao" class="text-red-700 font-bold hover:!text-red-700 bg-red-100 px-0.5 rounded" style="font-size: 16px">{{ item.Funcionario.nome}}</span>
+					<span v-else>{{ item.Funcionario ? item.Funcionario.nome : "" }}</span>
 				</template>
 				<template v-slot:[`body.Funcionario.setor.nome`]="{ item }">
 					<span>{{
@@ -151,7 +152,7 @@
 			"
 			@cadastrado="desktopCadastrado"
 			@editado="desktopEditado"
-      @funcionarioTrocado="funcionarioTrocado"
+			@funcionarioTrocado="funcionarioTrocado"
 			tipoCadastro="desktop"
 			:maquina="maquina" />
 		<AppAlerta
@@ -180,9 +181,11 @@
 	import AppAlerta from "~/components/Ui/AppAlerta.vue"
 	import DialogHistoricoTI from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogHistoricoTI.vue"
 	import gerarExcel from "~/functions/gerarExcel"
+	import AppTooltip from "~/components/Ui/AppTooltip.vue"
 
 	export default {
 		components: {
+			AppTooltip,
 			DialogHistoricoTI,
 			AppAlerta,
 			DialogCadastrarDesktopNotebook,
@@ -374,17 +377,17 @@
 				gerarExcel(cabecalho, itens, nomeArquivo)
 			},
 
-      async funcionarioTrocado({ id, funcionario }) {
-        let idx = this.dados.findIndex((o) => o.id === id)
-        if (idx >= 0) {
-          this.dados[idx].Funcionario = funcionario
-          if (funcionario === null) {
-            this.dados[idx].funcionario_id = null
-          } else {
-            this.dados[idx].funcionario_id = funcionario.id
-          }
-        }
-      },
+			async funcionarioTrocado({ id, funcionario }) {
+				let idx = this.dados.findIndex((o) => o.id === id)
+				if (idx >= 0) {
+					this.dados[idx].Funcionario = funcionario
+					if (funcionario === null) {
+						this.dados[idx].funcionario_id = null
+					} else {
+						this.dados[idx].funcionario_id = funcionario.id
+					}
+				}
+			},
 		},
 	}
 </script>

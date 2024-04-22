@@ -70,9 +70,12 @@
 				<template v-slot:[`body.ModeloTI.nome`]="{ item }">
 					<span>{{ item.ModeloTI ? item.ModeloTI.nome : "" }}</span>
 				</template>
-				<template v-slot:[`body.Funcionario.nome`]="{ item }">
-					<span>{{ item.Funcionario ? item.Funcionario.nome : "" }}</span>
-				</template>
+        <template v-slot:[`body.Funcionario.nome`]="{ item }">
+          <span v-if="item.Funcionario && item.Funcionario.data_demissao"
+                class="text-red-700 font-bold hover:!text-red-700 bg-red-100 px-0.5 rounded"
+                style="font-size: 16px">{{ item.Funcionario.nome}}</span>
+          <span v-else>{{ item.Funcionario ? item.Funcionario.nome : "" }}</span>
+        </template>
 				<template v-slot:[`body.Funcionario.setor.nome`]="{ item }">
 					<span>{{
 						item.Funcionario && item.Funcionario.setor ? item.Funcionario.setor.nome : ""
