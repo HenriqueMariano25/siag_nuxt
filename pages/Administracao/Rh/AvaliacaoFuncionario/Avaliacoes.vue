@@ -347,139 +347,62 @@
 					nomeArquivo = "avaliacoes"
 
 					let itens = []
-					// for (let item of funcionarios) {
-					// 	let temp = []
-					// 	temp.push(item.chapa)
-					// 	temp.push(item.nome)
-					// 	temp.push(item.cargo)
-					// 	temp.push(item.setor ? item.setor.nome : "")
-					// 	temp.push(item.FormacaoDescCargo ? item.FormacaoDescCargo.descricao : "")
-					// 	temp.push(
-					// 		item.previsao_disponibilidade
-					// 			? this.$dayjs(item.previsao_disponibilidade).format("MM/YYYY")
-					// 			: "",
-					// 	)
-					// 	temp.push(
-					// 		item.ConheFuncionarioAvaliacao.length > 0
-					// 			? item.ConheFuncionarioAvaliacao.map((o) => o.descricao).join("; ")
-					// 			: "",
-					// 	)
-					// 	temp.push(
-					// 		item.DispoTrabalhoAvaliacao.length > 0
-					// 			? item.DispoTrabalhoAvaliacao.map((o) => o.descricao).join("; ")
-					// 			: "",
-					// 	)
-					// 	temp.push(
-					// 		item.FuncionarioTemTipoObras.length > 0
-					// 			? item.FuncionarioTemTipoObras.map((o) =>
-					// 					o.TipoObraAvaliacao ? o.TipoObraAvaliacao.descricao : "",
-					// 			  ).join("; ")
-					// 			: "",
-					// 	)
-					// 	temp.push(
-					// 		item.FuncionarioTemTipoObras.length > 0
-					// 			? item.FuncionarioTemTipoObras.map((o) =>
-					// 					o.CargoAvaliacao ? o.CargoAvaliacao.nome : "",
-					// 			  ).join("; ")
-					// 			: "",
-					// 	)
-					// 	temp.push(
-					// 		item.FuncionarioTemTipoObras.length > 0
-					// 			? item.FuncionarioTemTipoObras.map((o) => o.anos).join("; ")
-					// 			: "",
-					// 	)
-					// 	temp.push(
-					// 		item.AvaliacaoFuncionario.length > 0 && item.AvaliacaoFuncionario[0].StatusAvaliacao
-					// 			? item.AvaliacaoFuncionario[0].StatusAvaliacao.descricao
-					// 			: "",
-					// 	)
-					// 	temp.push(
-					// 		item.AvaliacaoFuncionario.length > 0
-					// 			? item.AvaliacaoFuncionario[0].comentario_geral
-					// 			: "",
-					// 	)
-					//   for(let habTecnica of habilidadesTecnicas){
-					//     if(item.AvaliacaoFuncionario.length > 0){
-					//       let idxTecnica = item.AvaliacaoFuncionario[0].AvaliacaoTemHabTecnicas.findIndex(o => o.habilidade_tecnica === habTecnica.id)
-					//
-					//       if(idxTecnica >= 0) temp.push(item.AvaliacaoFuncionario[0].AvaliacaoTemHabTecnicas[idxTecnica].nota)
-					//       else temp.push("")
-					//
-					//
-					//     }
-					//   }
-					//
-					//   for(let habComp of habilidadesCompotametais){
-					//     let idxCompotamental = item.AvaliacaoFuncionario[0].AvaliacaoTemConheComportamental.findIndex(o => o.conhe_comp === habComp.id)
-					//     if (idxCompotamental >= 0) temp.push(item.AvaliacaoFuncionario[0].AvaliacaoTemConheComportamental[idxCompotamental].nota)
-					//     else temp.push("")
-					//   }
-					// 	itens.push(temp)
-					// }
 
 					for (let item of avaliacoes) {
 						let temp = []
-						temp.push(item.Funcionario ? item.Funcionario.chapa : "")
-						temp.push(item.Funcionario ? item.Funcionario.nome : "")
-						temp.push(item.Funcionario ? item.Funcionario.cargo : "")
-						temp.push(item.Funcionario && item.Funcionario.setor ? item.Funcionario.setor.nome : "")
+            temp.push(item["Funcionario.chapa"] ? item["Funcionario.chapa"] : "")
+            temp.push(item["Funcionario.nome"] ? item["Funcionario.nome"] : "")
+            temp.push(item["Funcionario.cargo"] ? item["Funcionario.cargo"] : "")
+            temp.push(item["Funcionario.setor.nome"] ? item["Funcionario.setor.nome"] : "")
+            temp.push(item["Funcionario.FormacaoDescCargo"] ? item["Funcionario.FormacaoDescCargo"] : "")
+            temp.push(item["Funcionario.previsao_disponibilidade"] ? item["Funcionario.previsao_disponibilidade"] : "")
 						temp.push(
-							item.Funcionario && item.Funcionario.FormacaoDescCargo
-								? item.Funcionario.FormacaoDescCargo.descricao
+							item.conhecimentosFuncionario
+								? item.conhecimentosFuncionario
 								: "",
 						)
-						temp.push(
-							item.Funcionario && item.Funcionario.previsao_disponibilidade
-								? this.$dayjs(item.Funcionario.previsao_disponibilidade).format("MM/YYYY")
+            temp.push(
+							item.dispoTrabFuncionario
+								? item.dispoTrabFuncionario
 								: "",
 						)
-						temp.push(
-							item.Funcionario.ConheFuncionarioAvaliacao.length > 0
-								? item.Funcionario.ConheFuncionarioAvaliacao.map((o) => o.descricao).join("; ")
+            temp.push(
+							item.tiposObra
+								? item.tiposObra
 								: "",
 						)
-						temp.push(
-							item.Funcionario.DispoTrabalhoAvaliacao.length > 0
-								? item.Funcionario.DispoTrabalhoAvaliacao.map((o) => o.descricao).join("; ")
+            temp.push(
+							item.cargosObra
+								? item.cargosObra
 								: "",
 						)
-						temp.push(
-							item.Funcionario.FuncionarioTemTipoObras.length > 0
-								? item.Funcionario.FuncionarioTemTipoObras.map((o) =>
-										o.TipoObraAvaliacao ? o.TipoObraAvaliacao.descricao : "",
-								  ).join("; ")
-								: "",
-						)
-						temp.push(
-							item.Funcionario.FuncionarioTemTipoObras.length > 0
-								? item.Funcionario.FuncionarioTemTipoObras.map((o) =>
-										o.CargoAvaliacao ? o.CargoAvaliacao.nome : "",
-								  ).join("; ")
-								: "",
-						)
-						temp.push(
-							item.Funcionario.FuncionarioTemTipoObras.length > 0
-								? item.Funcionario.FuncionarioTemTipoObras.map((o) => o.anos).join("; ")
-								: "",
-						)
-						temp.push(item.StatusAvaliacao ? item.StatusAvaliacao.descricao : "")
-						temp.push(item.comentario_geral ? item.comentario_geral : "")
-						for (let habTecnica of habilidadesTecnicas) {
-							let idxTecnica = item.AvaliacaoTemHabTecnicas.findIndex(
-								(o) => o.HabilidadeTecnicaAvaliacaoId === habTecnica.id,
-							)
-							if (idxTecnica >= 0) temp.push(item.AvaliacaoTemHabTecnicas[idxTecnica].nota)
-							else temp.push("")
-						}
+            temp.push(
+              item.anosObra
+                ? item.anosObra
+                : "",
+            )
+            temp.push(
+              item["AvaliacaoFuncionario.status"]
+                ? item["AvaliacaoFuncionario.status"]
+                : "",
+            )
 
-						for (let habComp of habilidadesCompotametais) {
-							let idxCompotamental = item.AvaliacaoTemConheComportamental.findIndex(
-								(o) => o.ConheComportamentalAvaliacaoId === habComp.id,
-							)
-							if (idxCompotamental >= 0)
-								temp.push(item.AvaliacaoTemConheComportamental[idxCompotamental].nota)
-							else temp.push("")
-						}
+            temp.push(
+              item["AvaliacaoFuncionario.comentario_geral"]
+                ? item["AvaliacaoFuncionario.comentario_geral"]
+                : "",
+            )
+            let habTecFuncionario = item.habilidadestecnicas.split(";")
+            habilidadesTecnicas.forEach(hab => {
+              let habEncontrada = habTecFuncionario.find(o => o.includes(`${hab.id}:`))
+              temp.push(habEncontrada ? habEncontrada.split(":")[1] : "")
+            })
+
+            let habComFuncionario = item.conhecomportamental.split(";")
+            habilidadesCompotametais.forEach(hab => {
+              let habEncontrada = habComFuncionario.find(o => o.includes(`${hab.id}:`))
+              temp.push(habEncontrada ? habEncontrada.split(":")[1] : "")
+            })
 						itens.push(temp)
 					}
 
