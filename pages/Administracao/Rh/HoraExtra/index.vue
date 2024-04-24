@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full grid gap-2 overflow-y-auto " style="height: calc(100vh - 17px)">
+  <div class="w-full grid gap-2 overflow-y-auto h-fit">
     <CabecalhoPagina titulo="HORA EXTRA" />
     <div class="border grid grid-cols-4 gap-2 border-1 shadow border-gray-300 p-2 rounded bg-white !mt-11 ">
       <ButtonNavegacao titulo="Agendar" cor="bg-[#264653]" link="/administracao/rh/horaExtra/agendar"
@@ -23,79 +23,28 @@
         <img src="@/assets/icons/cog-w.svg" alt="" class="w-8 h-8">
       </ButtonNavegacao>
     </div>
-    <div class="bg-white items-center flex" style="height: calc(100vh - 165px)">
-      <div ref="graAgendamento" class="flex w-full"></div>
-    </div>
+    <div
+      class="p-1 flex border  bg-white"
+      id="grafico"
+      style="min-height: 300px; height: calc(100vh - 350px)"></div>
+    <DialogDadosGrafico v-if="mostrarDialogDadosGrafico" @cancelar="mostrarDialogDadosGrafico = false" :tipo="tipo" :data="data"/>
   </div>
 </template>
 
 <script>
 import ButtonNavegacao from "~/components/Shared/ButtonNavegacao.vue";
 import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue";
+import * as echarts from "echarts";
+import DialogDadosGrafico from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogDadosGrafico.vue";
 
 export default {
-  components: { CabecalhoPagina, ButtonNavegacao},
+  components: { DialogDadosGrafico, CabecalhoPagina, ButtonNavegacao},
   data() {
     return {
       valoresAgendamento: [],
-      opcoesAgendamento: {
-          chart: {
-            type: 'bar',
-            height: 500,
-            stacked: true,
-            toolbar: {
-              show: true
-            },
-            zoom: {
-              enabled: true
-            }
-          },
-          responsive: [{
-            breakpoint: 480,
-            options: {
-              legend: {
-                position: 'bottom',
-                offsetX: -10,
-                offsetY: 0
-              }
-            }
-          }],
-        title: {
-          text: 'Agendamentos de HE aprovadas e pendentes',
-          offsetY: 0,
-          align: 'top',
-          style: {
-            color: '#444',
-            fontSize: '18px',
-            fontWeight: 'bold',
-          }
-        },
-          plotOptions: {
-            bar: {
-              horizontal: false,
-              borderRadius: 10,
-              dataLabels: {
-                total: {
-                  enabled: true,
-                  style: {
-                    fontSize: '13px',
-                    fontWeight: 900
-                  }
-                }
-              }
-            },
-          },
-          xaxis: {
-            categories: [],
-          },
-          legend: {
-            position: 'top',
-            // offsetY: 40
-          },
-          fill: {
-            opacity: 1
-          }
-      },
+      tipo: null,
+      data: null,
+      mostrarDialogDadosGrafico: false
     };
   },
   async mounted() {
@@ -106,41 +55,120 @@ export default {
       let resp = await this.$axios.$get('/hora_extra/graficos/todos_agendamentos')
 
       if(!resp.falha){
-
-
         let { datas, aprovados, pendentesGestor, pendentesSite } = resp.dados
 
-        this.valoresAgendamento = [{
-          name: 'Aprovados',
-          data: [...aprovados]
-        }, {
-          name: 'Sem Aprov. Gestor',
-          data: [...pendentesGestor]
-        }, {
-          name: 'Sem Aprov. Site Manager',
-          data: [...pendentesSite]
-        }]
+        let series = [
+          {
+            data: aprovados,
+            type: "bar",
+            stack: "a",
+            name: "Aprovados",
+            label: {
+              show: true,
+              position: 'inside',
+              fontWeight: 'bold',
+              fontSize: 16,
+              formatter: ({ data }) => data > 0 ? data : ""
+            },
+            triggerLineEvent: true,
+          },
+          {
+            data: pendentesGestor,
+            type: "bar",
+            stack: "a",
+            name: "Pend. Gestor Área",
+            label: {
+              show: true,
+              position: 'inside',
+              fontWeight: 'bold',
+              fontSize: 16,
+              formatter: ({ data }) => data > 0 ? data : ""
+            },
+            triggerLineEvent: true,
+          },
+          {
+            data: pendentesSite,
+            type: "bar",
+            stack: "a",
+            name: "Pend. Site Manager",
+            label: {
+              show: true,
+              position: 'inside',
+              fontWeight: 'bold',
+              fontSize: 16,
+              formatter: ({ data }) => data > 0 ? data : ""
+            },
+            triggerLineEvent: true,
+          },
+        ]
 
-        this.opcoesAgendamento.xaxis.categories = [...datas]
+        let myChart = echarts.init(document.getElementById("grafico"))
+        this.graficoBarra = myChart
+        let option
 
-        let valores = this.valoresAgendamento
-        let opcoes = Object.assign({}, this.opcoesAgendamento)
+        option = {
+          color: ["#008FFB", "#00E396", "#FEB019"],
+          legend: {
+            textStyle: {
+              fontSize: 18,
+            },
+            left: "50%",
+          },
+          tooltip: {
+            trigger: "axis",
+            axisPointer: {
+              type: "cross",
+              crossStyle: {
+                color: "#999",
+              },
+            },
+          },
+          title: {
+            show: true,
+            text: "Agendamentos de HE aprovadas e pendentes",
+          },
+          xAxis: {
+            type: "category",
+            data: datas,
+            offset: 5,
+            axisTick: {
+              length: 10,
+            },
+            axisLabel: {
+              interval: 0,
+              rotate: 35,
+            },
+          },
+          yAxis: {
+            name: "Total de ativos e usuários",
+            axisLabel: { fontSize: 16 },
+            nameTextStyle: { fontSize: 16 },
+            nameLocation: "middle",
+            nameGap: 37,
+            min: 0,
+          },
 
-        const chartContainer = this.$refs.graAgendamento;
+          series: series,
+          grid: {
+            left: 15,
+            right: 2,
+            bottom: 0,
+            containLabel: true,
+          },
+        }
 
-        const chart = new ApexCharts(chartContainer, {
-          ...opcoes,
+        option && myChart.setOption(option)
 
-          series: valores,
+        let page = this
+        myChart.on('click', 'series', function(params) {
+          let tipo = params.seriesName
+          page.tipo = tipo === "Aprovados" ? "aprovados" : tipo === "Pend. Gestor Área" ? "pendente gestor" : "pendente site"
+          page.data = params.name
+
+          page.mostrarDialogDadosGrafico = true;
         });
-
-        await chart.render();
       }
-
-
-
-
-    }
+    },
   }
 }
 </script>
