@@ -349,61 +349,73 @@
 					let itens = []
 
 					for (let item of avaliacoes) {
-						let temp = []
-            temp.push(item["Funcionario.chapa"] ? item["Funcionario.chapa"] : "")
-            temp.push(item["Funcionario.nome"] ? item["Funcionario.nome"] : "")
-            temp.push(item["Funcionario.cargo"] ? item["Funcionario.cargo"] : "")
-            temp.push(item["Funcionario.setor.nome"] ? item["Funcionario.setor.nome"] : "")
-            temp.push(item["Funcionario.FormacaoDescCargo"] ? item["Funcionario.FormacaoDescCargo"] : "")
-            temp.push(item["Funcionario.previsao_disponibilidade"] ? item["Funcionario.previsao_disponibilidade"] : "")
-						temp.push(
-							item.conhecimentosFuncionario
-								? item.conhecimentosFuncionario
-								: "",
-						)
-            temp.push(
-							item.dispoTrabFuncionario
-								? item.dispoTrabFuncionario
-								: "",
-						)
-            temp.push(
-							item.tiposObra
-								? item.tiposObra
-								: "",
-						)
-            temp.push(
-							item.cargosObra
-								? item.cargosObra
-								: "",
-						)
-            temp.push(
-              item.anosObra
-                ? item.anosObra
-                : "",
-            )
-            temp.push(
-              item["AvaliacaoFuncionario.status"]
-                ? item["AvaliacaoFuncionario.status"]
-                : "",
-            )
+            let conhecimentos = item.conhecimentosFuncionario.split(";")
+            let dispoTrabalho = item.dispoTrabFuncionario.split(";")
+            let cargosObra = item.cargosObra.split(";")
+            let tiposObra = item.tiposObra.split(";")
+            let anosObra = item.tiposObra.split(";")
 
-            temp.push(
-              item["AvaliacaoFuncionario.comentario_geral"]
-                ? item["AvaliacaoFuncionario.comentario_geral"]
-                : "",
-            )
-            let habTecFuncionario = item.habilidadestecnicas.split(";")
-            habilidadesTecnicas.forEach(hab => {
-              let habEncontrada = habTecFuncionario.find(o => o.includes(`${hab.id}:`))
-              temp.push(habEncontrada ? habEncontrada.split(":")[1] : "")
-            })
+            let valorMaximo = Math.max(...[conhecimentos.length, dispoTrabalho.length, cargosObra.length, tiposObra.length, anosObra.length])
 
-            let habComFuncionario = item.conhecomportamental.split(";")
-            habilidadesCompotametais.forEach(hab => {
-              let habEncontrada = habComFuncionario.find(o => o.includes(`${hab.id}:`))
-              temp.push(habEncontrada ? habEncontrada.split(":")[1] : "")
-            })
-						itens.push(temp)
+            for(let x = 0; x < valorMaximo; x++) {
+              let temp = []
+              temp.push(item["Funcionario.chapa"] ? item["Funcionario.chapa"] : "")
+              temp.push(item["Funcionario.nome"] ? item["Funcionario.nome"] : "")
+              temp.push(item["Funcionario.cargo"] ? item["Funcionario.cargo"] : "")
+              temp.push(item["Funcionario.setor.nome"] ? item["Funcionario.setor.nome"] : "")
+              temp.push(item["Funcionario.FormacaoDescCargo"] ? item["Funcionario.FormacaoDescCargo"] : "")
+              temp.push(item["Funcionario.previsao_disponibilidade"] ? item["Funcionario.previsao_disponibilidade"] : "")
+              temp.push(
+                conhecimentos[x]
+                  ? conhecimentos[x].trim()
+                  : "",
+              )
+              temp.push(
+                dispoTrabalho[x]
+                  ? dispoTrabalho[x].trim()
+                  : "",
+              )
+              temp.push(
+                tiposObra[x]
+                  ? tiposObra[x].trim()
+                  : "",
+              )
+              temp.push(
+                cargosObra[x]
+                  ? cargosObra[x].trim()
+                  : "",
+              )
+              temp.push(
+                anosObra[x]
+                  ? anosObra[x].trim()
+                  : "",
+              )
+              temp.push(
+                item["AvaliacaoFuncionario.status"]
+                  ? item["AvaliacaoFuncionario.status"]
+                  : "",
+              )
+
+              temp.push(
+                item["AvaliacaoFuncionario.comentario_geral"]
+                  ? item["AvaliacaoFuncionario.comentario_geral"]
+                  : "",
+              )
+              let habTecFuncionario = item.habilidadestecnicas.split(";")
+              habilidadesTecnicas.forEach(hab => {
+                let habEncontrada = habTecFuncionario.find(o => o.includes(`${hab.id}:`))
+                temp.push(habEncontrada ? habEncontrada.split(":")[1] : "")
+              })
+
+              let habComFuncionario = item.conhecomportamental.split(";")
+              habilidadesCompotametais.forEach(hab => {
+                let habEncontrada = habComFuncionario.find(o => o.includes(`${hab.id}:`))
+                temp.push(habEncontrada ? habEncontrada.split(":")[1] : "")
+              })
+              itens.push(temp)
+            }
+
+
 					}
 
 					gerarExcel(cabecalho, itens, nomeArquivo)
