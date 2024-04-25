@@ -97,7 +97,6 @@
 				</div>
 			</div>
 			<div class="flex gap-1">
-				<!--        {{ agendamento.data }}-->
 				<AppFormSelect
 					obrigatorio
 					label="Turno"
@@ -172,6 +171,7 @@
 			:carregando="carregandoTabela"
 			corOverlay="!bg-gray-600/70"
 			:limparSelecionar="limparSelecionar"
+      @dblclick="verAgendamentosFuncionario"
 			selecionar
 			@selecionados="funcionariosSelecionados = $event"
 			:overlay="agendamento.data === null || agendamento.data === ''">
@@ -425,6 +425,7 @@
 			"
 			:funcionario="funcionario"
 			@editado="editadoFuncionario" />
+    <DialogAgendamentosFuncionario v-if="mostrarDialogAgendamentosFuncionario" @cancelar="mostrarDialogAgendamentosFuncionario = false; matricula = null" :matricula="matricula"/>
 	</div>
 </template>
 
@@ -445,11 +446,14 @@
 	import DialogEditarEfetivo from "~/components/Dialogs/Administracao/Rh/Efetivo/DialogEditarEfetivo.vue"
 	import DialogEditarFuncionario from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogEditarFuncionario.vue"
 	import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue"
+  import DialogAgendamentosFuncionario
+    from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogAgendamentosFuncionario.vue";
 
 	export default {
 		mixins: [horaExtra],
 		name: "HoraExtra",
 		components: {
+      DialogAgendamentosFuncionario,
 			CabecalhoPagina,
 			DialogEditarFuncionario,
 			AppTooltip,
@@ -512,6 +516,8 @@
 				agendamentosPorDia: {},
 				mostrarDialogEditarFuncionario: false,
 				funcionario: null,
+        mostrarDialogAgendamentosFuncionario: false,
+        matricula: null
 			}
 		},
 		computed: {
@@ -890,6 +896,11 @@
 					await this.buscarAgendFuncDia()
 				}
 			},
+
+      async verAgendamentosFuncionario(dados){
+        this.matricula = dados.chapa
+        this.mostrarDialogAgendamentosFuncionario = true
+      }
 		},
 		watch: {
 			"agendamento.data"() {
