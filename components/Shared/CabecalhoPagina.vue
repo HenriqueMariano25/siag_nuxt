@@ -88,6 +88,8 @@
           Relatorio: "Relatório",
           BloquearFaltaAtestado: "Bloq. Falta e Atestado",
           DesktopNotebook: "Desktop/Notebook",
+          ServicosGerais: "Serviços Gerais",
+          Republicas: "Repúblicas",
 				}
 
 				let correcaoEncontrada = correcoes[nome] ? correcoes[nome] : null
