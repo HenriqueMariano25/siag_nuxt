@@ -90,6 +90,7 @@
           DesktopNotebook: "Desktop/Notebook",
           ServicosGerais: "Serviços Gerais",
           Republicas: "Repúblicas",
+          Licenca: "Licenças",
 				}
 
 				let correcaoEncontrada = correcoes[nome] ? correcoes[nome] : null

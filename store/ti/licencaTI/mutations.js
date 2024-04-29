@@ -15,5 +15,8 @@ export default {
     if (idx >= 0) {
       state.licencas.splice(idx, 1)
     }
+  },
+  LIMPAR_LICENCAS(state){
+    state.licencas = null
   }
 }

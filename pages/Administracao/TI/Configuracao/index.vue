@@ -12,6 +12,15 @@
           alt=""
           class="w-8 h-8" />
       </ButtonNavegacao>
+      <ButtonNavegacao
+        titulo="Licença"
+        cor="bg-[#264653]"
+        link="configuracao/licenca">
+        <img
+          src="@/assets/icons/cog-w.svg"
+          alt=""
+          class="w-8 h-8" />
+      </ButtonNavegacao>
     </div>
   </div>
 </template>
