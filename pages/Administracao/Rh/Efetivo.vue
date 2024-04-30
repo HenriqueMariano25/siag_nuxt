@@ -100,18 +100,17 @@
 					>
 				</template>
 				<template v-slot:[`body.historico_mudanca`]="{ item }">
-					<BotaoPadrao
-						texto="Historico"
-						class="!p-1"
-						@clique="
-							funcionario_id = item.id
+          <div
+            class="bg-blue-200 border border-blue-300 flex gap-2 justify-center items-center py-0.5 text-black hover:bg-blue-300 rounded w-[100px]"
+            @click="
 							mostrarDialogHistoricoMudanca = true
+							funcionario_id = item.id
 						">
-						<img
-							src="@/assets/icons/history-b.svg"
-							alt=""
-							class="w-6 h-6" />
-					</BotaoPadrao>
+            <img
+              src="@/assets/icons/history-b.svg"
+              alt=""
+              class="w-6 h-6" />
+          </div>
 				</template>
 			</TabelaPadrao>
 			<RodapePagina>
@@ -388,7 +387,7 @@
 					{ nome: "CPF", valor: "cpf", filtro: true },
 					{ nome: "D/I", valor: "direto_indireto", filtro: true, centralizar: true },
 					{ nome: "Situação", valor: "situacao", filtro: true,},
-					{ nome: "His. Mudanças", valor: "historico_mudanca", largura: "w-30" },
+					{ nome: "Histórico", valor: "historico_mudanca", largura: "w-30" },
 				]
 
 				return cabecalho

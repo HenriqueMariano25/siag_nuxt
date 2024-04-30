@@ -59,19 +59,17 @@
 					<span class="whitespace-nowrap">{{ item.AvaliadoPor ? item.AvaliadoPor.nome : "" }}</span>
 				</template>
 				<template v-slot:[`body.historico`]="{ item }">
-					<BotaoPadrao
-						texto="histórico"
-						class="w-full border border-gray-700 !py-0 !justify-center"
-						cor="bg-blue-100 hover:!bg-blue-300"
-						@clique="
+          <div
+            class="bg-blue-200 border border-blue-300 flex gap-2 justify-center items-center py-0.5 text-black hover:bg-blue-300 rounded w-[100px]"
+            @click="
 							mostrarDialogHistoricoAvaliacao = true
 							avaliacao_id = item.id
 						">
-						<img
-							src="@/assets/icons/history-b.svg"
-							alt=""
-							class="w-6 h-6" />
-					</BotaoPadrao>
+            <img
+              src="@/assets/icons/history-b.svg"
+              alt=""
+              class="w-6 h-6" />
+          </div>
 				</template>
 			</TabelaPadrao>
 		</div>
@@ -169,7 +167,7 @@
 					{ nome: "Nome", valor: "Funcionario.nome", filtro: true },
 					{ nome: "Cargo", valor: "Funcionario.cargo", filtro: true },
 					{ nome: "Avaliado por", valor: "AvaliadoPor.nome", filtro: true },
-					{ nome: "", valor: "historico" },
+					{ nome: "Histórico", valor: "historico", largura: "w-24" },
 				],
 				filtros: {},
 				ordem: null,

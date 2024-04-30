@@ -14,8 +14,7 @@
 				:totalItens="totalItens"
 				:carregando="carregando"
 				altura="calc(100vh - 179px)"
-				@atualizar="buscarLicencas"
-				:temDetalhes="true">
+				@atualizar="buscarLicencas">
 				<template v-slot:[`body.acoes`]="{ item }">
 					<div class="w-8">
 						<BotaoPadrao
