@@ -106,6 +106,15 @@
 						alt=""
 						class="w-7 h-7" />
 				</BotaoPadrao>
+        <div class="flex gap-1 text-white">
+          <AppFormFile
+            label="Selecione o arquivo"
+            id="arquivo"
+            @change="arquivoImportacao = $event" />
+          <BotaoPadrao texto="importar" @clique="importar()">
+
+          </BotaoPadrao>
+        </div>
 				<BotaoPadrao
 					texto="cadastrar"
 					@clique="mostrarDialogCadastrarMonitor = true">
@@ -152,9 +161,11 @@
 	import DialogCadastrarMonitor from "~/components/Dialogs/Administracao/Ti/Monitor/DialogCadastrarMonitor.vue"
 	import DialogHistoricoTI from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogHistoricoTI.vue"
 	import gerarExcel from "~/functions/gerarExcel"
+  import AppFormFile from "~/components/Ui/Form/AppFormFile.vue";
 
 	export default {
 		components: {
+      AppFormFile,
 			DialogHistoricoTI,
 			DialogCadastrarMonitor,
 			AppAlerta,
@@ -183,6 +194,7 @@
 				mostrarDialogHistoricoTI: false,
 				id: null,
 				textoAlerta: null,
+        arquivoImportacao: null
 			}
 		},
 		computed: {
@@ -322,6 +334,19 @@
           }
 				}
 			},
+      async importar(){
+        let arquivo = this.arquivoImportacao
+        let formData = new FormData()
+        formData.append("file", arquivo)
+        let resp = await this.$axios.$post("/ti/monitor/importar", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        if (!resp.falha) {
+          this.$emit("atualizado")
+        }
+      }
 		},
 	}
 </script>
