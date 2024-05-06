@@ -179,9 +179,9 @@
 					</span>
 				</template>
 				<template v-slot:[`body.comentarios`]="{ item }">
-          <div class="border border-gray-400 bg-gray-300 !text-black w-full min-w-[185px] shadow">
+          <div :class="{'border border-gray-400 bg-gray-300': item.ComentarioSS.length > 0}" class=" !text-black w-full shadow">
 					<button
-						class="flex hover:bg-gray-400 min-w-[235px] p-1"
+						class="flex hover:bg-gray-400 min-w-[235px] w-full p-1"
 						v-if="item.ComentarioSS.length > 0"
 						@click="
 							ss_id = item.id
@@ -195,8 +195,8 @@
 						<span
 							v-if="item.ComentarioSS.at(0).descricao"
 							class="whitespace-nowrap">
-							{{ item.ComentarioSS.at(0).descricao.substr(0, 25)
-							}}{{ item.ComentarioSS.at(0).descricao.length > 25 ? "..." : "" }}
+							{{ item.ComentarioSS.at(0).descricao.substr(0, 25) }}
+              {{ item.ComentarioSS.at(0).descricao.length > 25 ? "..." : "" }}
 						</span>
 					</button>
           </div>
