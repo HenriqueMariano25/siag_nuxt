@@ -7,6 +7,7 @@
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
+        @itensPorPagina="itensPorPagina = $event"
 				:pagina="pagina"
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
@@ -269,6 +270,7 @@
 
 				if (!resp.falha) {
 					this.dados = resp.dados.notebooks
+          this.totalItens = resp.dados.total
 				}
 
 				this.carregando = false
