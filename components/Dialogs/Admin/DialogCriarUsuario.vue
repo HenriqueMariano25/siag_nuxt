@@ -67,7 +67,7 @@
                   {{ p.descricao }}
                 </div>
                 <div>
-                  <BotaoPadrao @clique="deletarPermissao(p.UsuarioPermissao.id)">
+                  <BotaoPadrao @clique="deletarPermissao(p.UsuarioPermissao.id, p.id)">
                     <img src="@/assets/icons/delete-b.svg" alt="" class="w-7 h-7">
                   </BotaoPadrao>
                 </div>
@@ -237,9 +237,9 @@ export default {
       this.permissao_id = null
     },
 
-    async deletarPermissao(permissao_id){
+    async deletarPermissao(usuarioPermissao_id, permissao_id){
       try{
-        await this.$axios.$delete(`/usuario/permissao/${permissao_id}`)
+        await this.$axios.$delete(`/usuario/permissao/${usuarioPermissao_id}`)
 
         let idx = this.usuario.Permissaos.findIndex((obj) => obj.id === permissao_id)
 
