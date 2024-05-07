@@ -122,8 +122,8 @@
 				})
 
 				if (!resp.falha) {
-					this.totalItens = resp.dados.usuarios.count
-					this.dados = resp.dados.usuarios.rows
+					this.dados = resp.dados.usuarios
+					this.totalItens = resp.dados.total
 				}
 			},
 			async atualizarDados(parametros) {
