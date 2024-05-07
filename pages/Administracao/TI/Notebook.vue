@@ -30,6 +30,20 @@
               v-if="item.ultima_verificacao">ÚLTIMA VERIFICAÇÃO T.I: <strong>{{ $dayjs(item.ultima_verificacao).format("DD/MM/YYYY") }}</strong></span>
             <span v-if="item.data_formatacao">FORMATAÇÃO: <strong>{{ $dayjs(item.data_formatacao).format("DD/MM/YYYY") }}</strong></span>
             <span v-if="item.observacao" class="col-span-3">OBSERVAÇÃO: <strong>{{item.observacao }}</strong></span>
+            <template v-if="item.MonitorTI.length > 0">
+              <div class="col-span-3 border-b border-slate-700"></div>
+              <span class="col-span-3 font-xl mt-1"><strong>MONITORES</strong></span>
+              <template
+                v-for="monitor of item.MonitorTI">
+								<span class="uppercase">
+									PATRIMONIO: {{ monitor.patrimonio ? monitor.patrimonio : "" }}
+								</span>
+                <span class="uppercase">
+									MARCA: {{ monitor.MarcaTI ? monitor.MarcaTI.nome : "" }}
+								</span>
+                <span class="uppercase">SERIAL: {{ monitor.serial ? monitor.serial : "" }} </span>
+              </template>
+            </template>
           </div>
         </template>
 				<template v-slot:[`body.acoes`]="{ item }">

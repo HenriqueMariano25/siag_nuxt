@@ -53,6 +53,20 @@
 							class="col-span-3"
 							>OBSERVAÇÃO: <strong>{{ item.observacao }}</strong></span
 						>
+						<template v-if="item.MonitorTI.length > 0">
+							<div class="col-span-3 border-b border-slate-700"></div>
+							<span class="col-span-3 font-xl mt-1"><strong>MONITORES</strong></span>
+							<template
+								v-for="monitor of item.MonitorTI">
+								<span class="uppercase">
+									PATRIMONIO: {{ monitor.patrimonio ? monitor.patrimonio : "" }}
+								</span>
+								<span class="uppercase">
+									MARCA: {{ monitor.MarcaTI ? monitor.MarcaTI.nome : "" }}
+								</span>
+								<span class="uppercase">SERIAL: {{ monitor.serial ? monitor.serial : "" }} </span>
+							</template>
+						</template>
 					</div>
 				</template>
 				<template v-slot:[`body.acoes`]="{ item }">
@@ -98,7 +112,12 @@
 					<span>{{ item.ModeloTI ? item.ModeloTI.nome : "" }}</span>
 				</template>
 				<template v-slot:[`body.Funcionario.nome`]="{ item }">
-					<span v-if="item.Funcionario && item.Funcionario.data_demissao" class="text-red-700 font-bold hover:!text-red-700 bg-red-100 px-0.5 rounded" style="font-size: 16px">{{ item.Funcionario.nome}}</span>
+					<span
+						v-if="item.Funcionario && item.Funcionario.data_demissao"
+						class="text-red-700 font-bold hover:!text-red-700 bg-red-100 px-0.5 rounded"
+						style="font-size: 16px"
+						>{{ item.Funcionario.nome }}</span
+					>
 					<span v-else>{{ item.Funcionario ? item.Funcionario.nome : "" }}</span>
 				</template>
 				<template v-slot:[`body.Funcionario.setor.nome`]="{ item }">
