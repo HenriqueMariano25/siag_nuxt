@@ -391,41 +391,43 @@
 		computed: {
 			listaAcao() {
 				let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
+        let lista = []
 
 				if (permissoes.includes("ss_gerenciamento")) {
-					return [7, 8, 10, 13, 14, 15, 16, 17, 23, 24]
+          lista.push(7, 8, 10, 13, 14, 15, 16, 17, 23, 24)
 				}
 
 				if (permissoes.includes("ss_sap")) {
-					return [8]
+          lista.push(8)
 				}
 
 				if (permissoes.includes("ss_comprador")) {
-					return [10, 13, 14, 15, 16]
+          lista.push(10, 13, 14, 15, 16)
 				}
 
 				if (permissoes.includes("ss_juridico")) {
-					return [10, 13, 14, 15, 16, 23, 24]
+          lista.push(10, 13, 14, 15, 16, 23, 24)
 				}
 
-				return []
+				return lista
 			},
 			listaSelect() {
 				let permissoes = this.$auth.user ? this.$auth.user.permissoes : []
+        let lista = []
 
 				if (permissoes.includes("ss_gerenciamento")) {
-					return [9, 11, 12, 18, 19, 20, 21, 22]
+					lista.push(9, 11, 12, 18, 19, 20, 21, 22)
 				}
 
 				if (permissoes.includes("ss_comprador")) {
-					return [9, 11, 12]
+          lista.push(9, 11, 12)
 				}
 
 				if (permissoes.includes("ss_juridico")) {
-					return [18, 19, 20, 21, 22]
+          lista.push(18, 19, 20, 21, 22)
 				}
 
-				return []
+				return lista
 			},
 			cabecalho() {
 				let cabecalho = [
