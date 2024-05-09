@@ -288,17 +288,22 @@
 			</template>
 			<template v-slot:[`body.hora_extra`]="{ item }">
 				<span
+          v-if="agendamento.data < configuracaoHE.data_fim"
 					class="whitespace-nowrap"
 					:class="{
 						'font-bold  text-yellow-500': item.hora_extra >= 24 && item.hora_extra < 33.99,
 						'font-bold  text-amber-700': item.hora_extra >= 34 && item.hora_extra < 39.99,
 						'font-bold  text-red-600': item.hora_extra >= 40,
 					}">
-					{{ horaExtra(item.hora_extra) }}
+					{{horaExtra(item.hora_extra) }}
 				</span>
+        <span v-else>
+          00:00
+        </span>
 			</template>
 			<template v-slot:[`body.hora_extra_projetada`]="{ item }">
 				<span
+          v-if="agendamento.data < configuracaoHE.data_fim"
 					class="whitespace-nowrap"
 					:class="{
 						'font-bold  text-yellow-500':
@@ -312,6 +317,22 @@
 							? horaExtra(item.hora_extra_projetada)
 							: horaExtra(item.hora_extra)
 					}}
+				</span>
+        <span
+          v-else
+          class="whitespace-nowrap"
+          :class="{
+						'font-bold  text-yellow-500':
+							item.hora_extra_projetada_zerada >= 24 && item.hora_extra_projetada_zerada < 33.99,
+						'font-bold  text-amber-700':
+							item.hora_extra_projetada_zerada >= 34 && item.hora_extra_projetada_zerada < 39.99,
+						'font-bold  text-red-600': item.hora_extra_projetada_zerada >= 40,
+					}">
+					{{
+            item.hora_extra_projetada_zerada
+              ? horaExtra(item.hora_extra_projetada_zerada)
+              : '00:00'
+          }}
 				</span>
 			</template>
 			<template v-slot:[`body.Turno.descricao`]="{ item }">
@@ -448,6 +469,7 @@
 	import CabecalhoPagina from "~/components/Shared/CabecalhoPagina.vue"
   import DialogAgendamentosFuncionario
     from "~/components/Dialogs/Administracao/Rh/HoraExtra/DialogAgendamentosFuncionario.vue";
+  import configuracaoGeral from "~/pages/Administracao/Rh/AvaliacaoFuncionario/Configuracoes/ConfiguracaoGeral.vue";
 
 	export default {
 		mixins: [horaExtra],
@@ -484,7 +506,7 @@
 				cabecalho: [
 					{ nome: "Situação", valor: "situacao" },
 					{ nome: "HE atual", valor: "hora_extra", centralizar: true, ordenar: true },
-					{ nome: "HE projetada", valor: "hora_extra_projetada", centralizar: true },
+					{ nome: "HE projetada", valor: "hora_extra_projetada", centralizar: true, dica: true, },
 					{ nome: "Matrícula", valor: "chapa", filtro: true, centralizar: true },
 					{ nome: "Nome", valor: "nome", filtro: true, colunaTabela: "fun.nome" },
 					{ nome: "Cargo", valor: "cargo", filtro: true },
@@ -773,11 +795,30 @@
 			},
 
 			async buscarConfiguracao() {
-				let resp = await this.$axios.$get("/hora_extra/configuracao")
-				if (!resp.falha) {
-					this.configuracaoHE = resp.dados.configuracao
-					this.verificaSeAberto()
-				}
+        let resp = await this.$axios.$get("/hora_extra/configuracao")
+        if (!resp.falha) {
+          let configuracao = resp.dados.configuracao
+          let dia_atual = this.$dayjs().date()
+          let data_fim
+
+          let { data_abertura_folha } = configuracao
+
+          if (dia_atual < data_abertura_folha) {
+            data_fim = this.$dayjs()
+              .date(data_abertura_folha - 1)
+              .format("YYYY-MM-DD")
+          } else {
+            data_fim = this.$dayjs()
+              .add(1, "month")
+              .date(data_abertura_folha - 1)
+              .format("YYYY-MM-DD")
+          }
+
+          configuracao.data_fim = data_fim
+          this.configuracaoHE = configuracao
+
+          this.verificaSeAberto()
+        }
 			},
 
 			async buscarPorTagDia(data) {

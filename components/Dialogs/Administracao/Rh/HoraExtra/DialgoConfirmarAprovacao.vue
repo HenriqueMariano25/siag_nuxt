@@ -7,6 +7,7 @@
         <div class="px-2">
           <div>
             <TabelaPadrao
+              id="aprovarHe"
               :cabecalho="cabecalho"
               :dados="dados"
               :itensPorPagina="itensPorPagina"
