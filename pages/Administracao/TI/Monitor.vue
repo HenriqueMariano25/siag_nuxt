@@ -60,11 +60,16 @@
 							v-if="item.funcionario_id !== null">
 							<span>EM USO</span>
 						</div>
-						<div
-							class="situacao bg-blue-400"
-							v-if="item.funcionario_id === null">
-							<span>ESTOQUE</span>
-						</div>
+            <div
+              class="situacao bg-gray-400"
+              v-if="item.SituacaoTI && ( item.SituacaoTI.descricao === 'PREPARANDO P/ VENDA' || item.SituacaoTI.descricao === 'VENDIDO')">
+              <span>{{ item.SituacaoTI.descricao }}</span>
+            </div>
+            <div
+              class="situacao bg-blue-400"
+              v-if="item.funcionario_id === null && item.SituacaoTI.descricao !== 'PREPARANDO P/ VENDA' && item.SituacaoTI.descricao !== 'VENDIDO'">
+              <span>ESTOQUE</span>
+            </div>
 					</div>
 				</template>
 				<template v-slot:[`body.ModeloTI.nome`]="{ item }">
