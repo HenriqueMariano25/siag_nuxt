@@ -532,9 +532,9 @@
 					temp.push(item.JornadaTrabalho ? item.JornadaTrabalho.descricao : "")
 					temp.push(item.EquipePlanejamento ? item.EquipePlanejamento.descricao : "")
 					temp.push(item.permanencia ? item.permanencia : "")
-					temp.push(this.$dayjs(item.data_admissao).format("DD/MM/YYYY"))
+					temp.push(this.$dayjs(item.data_admissao).utc().format("DD/MM/YYYY"))
 					item.data_demissao
-						? temp.push(this.$dayjs(item.data_demissao).format("DD/MM/YYYY"))
+						? temp.push(this.$dayjs(item.data_demissao).utc().format("DD/MM/YYYY"))
 						: temp.push("")
 					temp.push(item.cpf)
 					temp.push(item.direto_indireto)
@@ -564,10 +564,10 @@
 						EQUIPE_NOME: funcionario.EncarregadoLider ? funcionario.EncarregadoLider.nome : null,
 						EQUIPE_ID: parseInt(funcionario.encarregado_lider_id),
 						DATA_ADMISSAO: funcionario.data_admissao
-							? this.$dayjs(funcionario.data_admissao).format("YYYY-MM-DD")
+							? this.$dayjs(funcionario.data_admissao).utc().format("YYYY-MM-DD")
 							: "",
 						DATA_DEMISSAO: funcionario.data_demissao
-							? this.$dayjs(funcionario.data_demissao).format("YYYY-MM-DD")
+							? this.$dayjs(funcionario.data_demissao).utc().format("YYYY-MM-DD")
 							: "",
 						ATIVO: funcionario.data_demissao === null ? true : false,
 						CREATED_AT: this.$dayjs(funcionario.createdAt).format("YYYY-MM-DD HH:mm:ss"),
