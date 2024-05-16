@@ -7,7 +7,7 @@
 				:cabecalho="cabecalho"
 				:dados="dados"
 				:itensPorPagina="itensPorPagina"
-        @itensPorPagina="itensPorPagina = $event"
+				@itensPorPagina="itensPorPagina = $event"
 				:pagina="pagina"
 				@pagina="pagina = $event"
 				@filtros="filtros = $event"
@@ -57,8 +57,7 @@
 						<template v-if="item.MonitorTI.length > 0">
 							<div class="col-span-3 border-b border-slate-700"></div>
 							<span class="col-span-3 font-xl mt-1"><strong>MONITORES</strong></span>
-							<template
-								v-for="monitor of item.MonitorTI">
+							<template v-for="monitor of item.MonitorTI">
 								<span class="uppercase">
 									PATRIMONIO: {{ monitor.patrimonio ? monitor.patrimonio : "" }}
 								</span>
@@ -100,14 +99,22 @@
 							v-if="item.funcionario_id !== null">
 							<span>EM USO</span>
 						</div>
-            <div
-              class="situacao bg-gray-400"
-              v-if="item.SituacaoTI && ( item.SituacaoTI.descricao === 'PREPARANDO P/ VENDA' || item.SituacaoTI.descricao === 'VENDIDO')">
-              <span>{{ item.SituacaoTI.descricao }}</span>
-            </div>
+						<div
+							class="situacao bg-gray-400"
+							v-if="
+								item.SituacaoTI &&
+								(item.SituacaoTI.descricao === 'PREPARANDO P/ VENDA' ||
+									item.SituacaoTI.descricao === 'VENDIDO')
+							">
+							<span>{{ item.SituacaoTI.descricao }}</span>
+						</div>
 						<div
 							class="situacao bg-blue-400"
-							v-if="item.funcionario_id === null && item.SituacaoTI.descricao !== 'PREPARANDO P/ VENDA' && item.SituacaoTI.descricao !== 'VENDIDO'">
+							v-if="
+								item.funcionario_id === null &&
+								item.SituacaoTI.descricao !== 'PREPARANDO P/ VENDA' &&
+								item.SituacaoTI.descricao !== 'VENDIDO'
+							">
 							<span>ESTOQUE</span>
 						</div>
 					</div>
@@ -152,17 +159,27 @@
 		</div>
 		<RodapePagina>
 			<div class="w-full flex justify-between">
-				<BotaoPadrao
-					texto="excel"
-					@clique="gerarExcel()">
-					<img
-						src="@/assets/icons/excel-b.svg"
-						alt=""
-						class="w-7 h-7" />
-				</BotaoPadrao>
+				<div class="flex gap-2">
+					<BotaoPadrao
+						texto="excel"
+						@clique="gerarExcel()">
+						<img
+							src="@/assets/icons/excel-b.svg"
+							alt=""
+							class="w-7 h-7" />
+					</BotaoPadrao>
+					<BotaoPadrao
+						texto="Filtro avançado"
+						@clique="mostrarFiltroAvancado = true">
+						<img
+							src="@/assets/icons/filter-b.svg"
+							alt=""
+							class="w-7 h-7" />
+					</BotaoPadrao>
+				</div>
 				<BotaoPadrao
 					texto="cadastrar"
-					@clique="mostrarDialogCadastrarDesktopNotebook = true">
+					@clique="mostrarFiltroAvancado = true">
 					<img
 						src="@/assets/icons/add-b.svg"
 						alt=""
@@ -195,6 +212,12 @@
 			"
 			:id="id"
 			modulo="desktop" />
+		<FiltroAvancado
+			v-if="mostrarFiltroAvancado"
+			@cancelar="mostrarFiltroAvancado = false"
+			:filtros="filtrosAvancados"
+      :jaFiltrado="jaFiltrado"
+			@filtrar="filtradoAvancado" />
 	</div>
 </template>
 
@@ -208,9 +231,13 @@
 	import DialogHistoricoTI from "~/components/Dialogs/Administracao/Ti/DesktopNotebook/DialogHistoricoTI.vue"
 	import gerarExcel from "~/functions/gerarExcel"
 	import AppTooltip from "~/components/Ui/AppTooltip.vue"
+	import DialogFiltroAvancadoDesktopNotebook from "~/components/Ui/FiltroAvancado.vue"
+	import FiltroAvancado from "~/components/Ui/FiltroAvancado.vue"
 
 	export default {
 		components: {
+			FiltroAvancado,
+			DialogFiltroAvancadoDesktopNotebook,
 			AppTooltip,
 			DialogHistoricoTI,
 			AppAlerta,
@@ -241,6 +268,20 @@
 				mostrarDialogHistoricoTI: false,
 				id: null,
 				carregando: false,
+				mostrarFiltroAvancado: false,
+				filtrosAvancados: [
+					{ nome: "OBSERVAÇÃO", id: "observacao" },
+					{ nome: "SISTEMA OPERACIONAL", id: "$SistemaOpeDeskNoteTI.nome$" },
+					{ nome: "PROCESSADOR", id: "$ProcessadorDeskNoteTI.nome$" },
+					{ nome: "MEMÓRIA RAM", id: "$RamDeskNoteTI.nome$" },
+					{ nome: "DISCO", id: "$HDDeskNoteTI.nome$" },
+					{ nome: "LOCAL DE INSTALAÇÃO", id: "$LocalInstalacaoTI.nome$" },
+					{ nome: "LOTE", id: "lote" },
+					{ nome: "DATA DA COMPRA", id: "data_compra", tipo: "date" },
+					{ nome: "ÚLTIMA VERIFICAÇÃO T.I", id: "ultima_verificacao", tipo: "date" },
+					{ nome: "DATA DA FORMATAÇÃO", id: "data_formatacao", tipo: "date" },
+				],
+        jaFiltrado: []
 			}
 		},
 		mounted() {
@@ -279,7 +320,6 @@
 				if (Object.keys(filtros).includes("$SituacaoTI.descricao$")) {
 					filtros["funcionario_id"] = { ["$or"]: [] }
 					let opcoes = filtros["$SituacaoTI.descricao$"]["$or"]
-					console.log(opcoes)
 					filtros["$SituacaoTI.descricao$"]["$or"] = []
 					if (opcoes.includes("defeito")) {
 						filtros["$SituacaoTI.descricao$"]["$or"].push("DEFEITO")
@@ -287,7 +327,6 @@
 					if (opcoes.includes("manutenção")) {
 						filtros["$SituacaoTI.descricao$"]["$or"].push("MANUTENÇÃO")
 					}
-					console.log(filtros)
 					if (opcoes.includes("estoque")) {
 						filtros["funcionario_id"]["$or"].push(null)
 					}
@@ -306,10 +345,8 @@
 				})
 
 				if (!resp.falha) {
-
-
 					this.dados = resp.dados.desktops
-          this.totalItens = resp.dados.total
+					this.totalItens = resp.dados.total
 				}
 				this.carregando = false
 			},
@@ -416,6 +453,19 @@
 						this.dados[idx].funcionario_id = funcionario.id
 					}
 				}
+			},
+
+			filtradoAvancado({ filtro, filtrosSelecionados }) {
+        for(let filtro of this.jaFiltrado){
+          if(!filtrosSelecionados.find(o => o.campo ===filtro.campo)){
+            delete this.filtros[filtro.campo]
+          }
+        }
+
+				this.mostrarFiltroAvancado = false
+				this.filtros = Object.assign(this.filtros, filtro)
+				this.buscarDesktop()
+        this.jaFiltrado = new Array(...filtrosSelecionados)
 			},
 		},
 	}
