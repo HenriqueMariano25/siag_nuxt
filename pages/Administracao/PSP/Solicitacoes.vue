@@ -211,7 +211,7 @@
 				psp_id = null
 			"
 			:psp_id="psp_id"
-			@solicitanteTrocado="solicitanteTrocado" />
+			@editado="solicitanteTrocado" />
 	</div>
 </template>
 
@@ -518,14 +518,18 @@
 
 				gerarExcel(cabecalho, itens, nomeArquivo)
 			},
-      async solicitanteTrocado({ solicitante, id}){
-        let idx = this.dados.findIndex(o => o.id === id)
+      async solicitanteTrocado({ psp }){
+        console.log(psp);
 
+        let idx = this.dados.findIndex(o => o.id === psp.id)
+        //
         if(idx >= 0){
-          this.dados[idx].criado_por = solicitante
+          this.dados[idx].criado_por = psp.criado_por
+          this.dados[idx].data_ida = psp.data_ida
+          this.dados[idx].PspTemMeioTransporte = psp.PspTemMeioTransporte
         }
         this.mostrarDialogEditarPspGerenciamento = false
-        this.textoAlerta = "Solicitante alterado com sucesso!"
+        this.textoAlerta = "PSP editada com sucesso!"
         this.mostrarAlerta = true
       }
 		},

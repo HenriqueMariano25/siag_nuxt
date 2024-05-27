@@ -44,7 +44,7 @@
                 <img src="@/assets/icons/alert-triangle-r.svg" alt="" class="w-8 h-8">
               </template>
               <template v-slot:tooltip>
-                <div class="w-[300px] text-sm">
+                <div class="w-min-[300px] text-sm">
                   <span><strong>Intervalo entre PSPs menor do que previsto !</strong></span>
                   <span><strong>Data prevista para PSP: {{ item['data_previsao_psp'] }}</strong></span>
                 </div>
