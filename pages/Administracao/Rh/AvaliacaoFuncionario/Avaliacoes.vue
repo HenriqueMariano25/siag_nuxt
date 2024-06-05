@@ -323,6 +323,13 @@
 						"Cargo",
 						"Setor",
 						"Formação",
+            "Rua",
+            "Número",
+            "Bairro",
+            "Cidade",
+            "Estado",
+            "E-mail",
+            "Telefone",
 						"Prev. Disponibilidade",
 						"Conhecimento",
 						"Localidade/Dispo. de trabalho",
@@ -362,6 +369,13 @@
               temp.push(item["Funcionario.cargo"] ? item["Funcionario.cargo"] : "")
               temp.push(item["Funcionario.setor.nome"] ? item["Funcionario.setor.nome"] : "")
               temp.push(item["Funcionario.FormacaoDescCargo"] ? item["Funcionario.FormacaoDescCargo"] : "")
+              temp.push(item["Funcionario.rua"] ? item["Funcionario.rua"] : "")
+              temp.push(item["Funcionario.numero_endereco"] ? item["Funcionario.numero_endereco"] : "")
+              temp.push(item["Funcionario.bairro"] ? item["Funcionario.bairro"] : "")
+              temp.push(item["Funcionario.cidade"] ? item["Funcionario.cidade"] : "")
+              temp.push(item["Funcionario.estado"] ? item["Funcionario.estado"] : "")
+              temp.push(item["Funcionario.email"] ? item["Funcionario.email"] : "")
+              temp.push(item["Funcionario.celular"] ? item["Funcionario.celular"] : "")
               temp.push(item["Funcionario.previsao_disponibilidade"] ? item["Funcionario.previsao_disponibilidade"] : "")
               temp.push(
                 conhecimentos[x]
